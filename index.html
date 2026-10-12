@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HD Attingal Sales</title>
+<link rel="stylesheet" href="assets/theme.css">
+<link rel="stylesheet" href="assets/dashboard.css">
+</head>
+<body>
+<div id="dash-root">
+<div class="hd">
+  <header class="hd-head" id="overview">
+    <h1>HD Attingal — sales register, Apr–Sep 2026</h1>
+    <p id="takeaway"><span class="dash-skeleton">Loading</span></p>
+  </header>
+
+  <section class="hd-kpis" id="kpis">
+    <div class="hd-kpi"><span class="lbl">Gross billing (incl. GST)</span><span class="val dash-skeleton" data-source="kpis" data-field="gross" data-row="0">—</span><span class="sub" id="sub-gross">&nbsp;</span></div>
+    <div class="hd-kpi"><span class="lbl">Net revenue (after discount, ex-GST)</span><span class="val dash-skeleton" data-source="kpis" data-field="taxable" data-row="0">—</span><span class="sub">GST collected <b data-source="kpis" data-field="gst" data-row="0">—</b></span></div>
+    <div class="hd-kpi"><span class="lbl">Service jobs billed</span><span class="val dash-skeleton" data-source="kpis" data-field="service_jobs" data-row="0">—</span><span class="sub">Service + AMC service bills</span></div>
+    <div class="hd-kpi"><span class="lbl">Avg bill per service job</span><span class="val dash-skeleton" data-source="kpis" data-field="avg_job" data-row="0">—</span><span class="sub">Gross, incl. GST</span></div>
+    <div class="hd-kpi"><span class="lbl">Discounts given</span><span class="val dash-skeleton" data-source="kpis" data-field="discount" data-row="0">—</span><span class="sub"><b data-source="kpis" data-field="discount_rate" data-row="0">—</b> of revenue before discount</span></div>
+  </section>
+
+  <section class="hd-grid">
+    <div class="hd-card" id="monthly-card">
+      <h2>Gross billing by month</h2>
+      <p class="note">Incl. GST. April covers 10–30 Apr only (register starts 10 Apr).</p>
+      <div class="hd-chart dash-skeleton" id="ch-monthly" data-source="monthly"></div>
+    </div>
+    <div class="hd-card" id="mix-card">
+      <h2>Revenue mix by month</h2>
+      <p class="note">Ex-GST, before discounts.</p>
+      <div class="hd-legend" id="lg-mix" data-source="streams"></div>
+      <div class="hd-chart dash-skeleton" id="ch-mix" data-source="streams"></div>
+    </div>
+  </section>
+
+  <section class="hd-card" id="daily-card">
+    <h2>Daily billing</h2>
+    <p class="note">Gross billing per billing day, incl. GST.</p>
+    <div class="hd-chart dash-skeleton" id="ch-daily" data-source="daily"></div>
+  </section>
+
+  <section class="hd-grid">
+    <div class="hd-card" id="heads-card">
+      <h2>Where the revenue comes from</h2>
+      <p class="note">Each income ledger for the half-year, ex-GST, before discounts.</p>
+      <div class="hd-legend" id="lg-heads" data-source="heads"></div>
+      <div class="hd-chart tall dash-skeleton" id="ch-heads" data-source="heads"></div>
+    </div>
+    <div class="hd-card" id="types-card">
+      <h2>By voucher type</h2>
+      <p class="note">Bill counts and value for the half-year.</p>
+      <div class="hd-tablebox">
+        <table id="tb-types" data-source="voucher_types" data-row-key="voucher_type">
+          <thead><tr>
+            <th data-field="voucher_type">Voucher type</th>
+            <th class="num" data-field="invoices">Bills</th>
+            <th class="num" data-field="gross">Gross</th>
+            <th class="num hide-sm" data-field="taxable">Net ex-GST</th>
+            <th class="num" data-source="vt_avg" data-field="avg_bill">Avg bill</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="hd-card" id="items-card">
+    <h2>Top parts and accessories sold</h2>
+    <p class="note">Top 150 of 1,345 items by value (ex-GST, before discount). Channel = where the item mostly sold.</p>
+    <input class="hd-search" id="item-search" type="search" placeholder="Search item or part no.">
+    <div class="hd-tablebox">
+      <table id="tb-items" data-source="items" data-row-key="part_no">
+        <thead><tr>
+          <th data-field="item"><button data-k="item">Item</button></th>
+          <th class="hide-sm" data-field="part_no"><button data-k="part_no">Part no.</button></th>
+          <th class="hide-sm" data-field="main_channel"><button data-k="main_channel">Channel</button></th>
+          <th class="num" data-field="qty"><button data-k="qty">Qty</button></th>
+          <th class="num" data-field="value"><button data-k="value">Value</button></th>
+          <th class="hide-sm" aria-hidden="true"></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+<p class="dash-footer">Source: Marikar Motors Ltd, Attingal — Service Bill Register, 10 Apr – 30 Sep 2026. Amounts in INR. Figures reconcile to the register's Grand Total.</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="assets/dash-shim.js"></script>
+<script src="assets/dashboard.js"></script>
+</body>
+</html>
