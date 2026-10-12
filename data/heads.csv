@@ -1,22 +1,22 @@
-head,group,amount
-Sales -Spares Parts,Spare parts,3455328.85
-Sales Accessories,Accessories,1984079.64
-E Module Calibration charges,Labour & service charges,890242.0
-LABOUR CHARGE,Labour & service charges,877907.0
-Burnishing Charges,Labour & service charges,726200.0
-AMC SALE,AMC & warranty,406911.03
-ACCESSORY FITMENT LABOUR,Labour & service charges,348470.0
-Transfer of Spares to Branches,Branch transfers,267366.25
-Consumable Charges,Labour & service charges,173719.0
-PAINTING,Labour & service charges,162950.0
-PAID SERVICE,Labour & service charges,132370.0
-ACCIDENTAL REPAIRS,Labour & service charges,113250.0
-CLUTCH OVERHAULING,Labour & service charges,103315.0
-GEAR OIL REFILLING CHARGES,Labour & service charges,86257.0
-Extended Warranty Plus,AMC & warranty,69358.73
-OUT SIDE REPAIR WORK,Labour & service charges,46880.0
-WASHING CHARGES,Labour & service charges,21247.0
-CHAIN LUBRICATION,Labour & service charges,14700.0
-ESTIMATE CHARGES,Labour & service charges,577.0
-DISCOUNT-GST(LABOUR),Discounts,-159063.05
-DISCOUNT-GST(SPARES),Discounts,-1006247.96
+company,head,group,amount
+HD-ATL,Sales -Spares Parts,Spare parts,3455328.85
+HD-ATL,Sales Accessories,Accessories,1984079.64
+HD-ATL,E Module Calibration charges,Labour & service charges,890242.0
+HD-ATL,LABOUR CHARGE,Labour & service charges,877907.0
+HD-ATL,Burnishing Charges,Labour & service charges,726200.0
+HD-ATL,AMC SALE,AMC & warranty,406911.03
+HD-ATL,ACCESSORY FITMENT LABOUR,Labour & service charges,348470.0
+HD-ATL,Transfer of Spares to Branches,Branch transfers,267366.25
+HD-ATL,Consumable Charges,Labour & service charges,173719.0
+HD-ATL,PAINTING,Labour & service charges,162950.0
+HD-ATL,PAID SERVICE,Labour & service charges,132370.0
+HD-ATL,ACCIDENTAL REPAIRS,Labour & service charges,113250.0
+HD-ATL,CLUTCH OVERHAULING,Labour & service charges,103315.0
+HD-ATL,GEAR OIL REFILLING CHARGES,Labour & service charges,86257.0
+HD-ATL,Extended Warranty Plus,AMC & warranty,69358.73
+HD-ATL,OUT SIDE REPAIR WORK,Labour & service charges,46880.0
+HD-ATL,WASHING CHARGES,Labour & service charges,21247.0
+HD-ATL,CHAIN LUBRICATION,Labour & service charges,14700.0
+HD-ATL,ESTIMATE CHARGES,Labour & service charges,577.0
+HD-ATL,DISCOUNT-GST(LABOUR),Discounts,-159063.05
+HD-ATL,DISCOUNT-GST(SPARES),Discounts,-1006247.96
