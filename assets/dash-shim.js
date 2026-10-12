@@ -1,5 +1,5 @@
 // Minimal data layer for the dashboard: loads the CSVs in data/ and exposes
-// dash.data / dash.onData / dash.calc / dash.colors to assets/dashboard.js.
+// dash.data / dash.onData / dash.calc / dash.params / dash.colors to assets/dashboard.js.
 window.dash = (() => {
   const FILES = {
     monthly: 'data/monthly.csv',
@@ -8,7 +8,11 @@ window.dash = (() => {
     voucher_types: 'data/voucher_types.csv',
     daily: 'data/daily.csv',
     items: 'data/items.csv',
+    companies: 'data/companies.csv',
+    completeness: 'data/completeness.csv',
   };
+  const DEFAULT_PARAMS = { company: null };
+  let params = { ...DEFAULT_PARAMS };
   const state = {};
   const calcs = {};
   const subs = [];
@@ -46,6 +50,9 @@ window.dash = (() => {
     data,
     onData(fn) { subs.push(fn); fn(); },
     calc(id, def) { calcs[id] = { inputs: def.inputs, fn: def.fn }; },
+    params() { return { ...params }; },
+    setParams(p) { params = { ...params, ...p }; run(); },
+    resetParams() { params = { ...DEFAULT_PARAMS }; run(); },
     colors: ['#3b6fd8', '#e0873a', '#2fa37a', '#9a5fd0', '#8a8f98', '#d6577a', '#c9a227', '#3fa5c4'],
   };
 })();
