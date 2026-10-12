@@ -1,24 +1,24 @@
 /* Design tokens used by dashboard.css / dashboard.js. Light by default, dark via prefers-color-scheme. */
 :root {
-  --font-anthropic-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-anthropic-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-anthropic-serif: Georgia, "Times New Roman", serif;
 
-  --color-bg: #f7f6f2;
+  --color-bg: #f5f6f8;
   --color-panel: #ffffff;
-  --color-fg: #1f1e1c;
-  --color-fg-muted: #6b6862;
-  --color-border-line: #e4e1da;
-  --color-ok: #1f7a4d;
-  --color-warn: #a86400;
-  --color-bad: #c0392b;
+  --color-fg: #101828;
+  --color-fg-muted: #586174;
+  --color-border-line: #e2e5eb;
+  --color-ok: #17694d;
+  --color-warn: #92560a;
+  --color-bad: #a3271d;
 
-  --cds-chart-grid: #ece9e2;
-  --cds-chart-axis: #b9b4aa;
-  --cds-chart-muted: #e9e6df;
+  --cds-chart-grid: #eceef2;
+  --cds-chart-axis: #b4b9c4;
+  --cds-chart-muted: #e8ebf0;
   --cds-chart-status-critical: #d0543f;
   --cds-surface-popover: #ffffff;
-  --cds-border: #dcd8cf;
-  --cds-text-secondary: #6b6862;
+  --cds-border: #dde1e8;
+  --cds-text-secondary: #586174;
   --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .12);
 
   --cds-font-size-caption: 0.8125rem;
@@ -36,21 +36,21 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #191817;
-    --color-panel: #222120;
-    --color-fg: #ecebe7;
-    --color-fg-muted: #a29e96;
-    --color-border-line: #353330;
+    --color-bg: #0d1220;
+    --color-panel: #151c2e;
+    --color-fg: #e9ecf3;
+    --color-fg-muted: #9aa3b5;
+    --color-border-line: #263049;
     --color-ok: #5cc28e;
     --color-warn: #e0a24a;
     --color-bad: #ef6f5e;
-    --cds-chart-grid: #302e2b;
-    --cds-chart-axis: #5a5650;
-    --cds-chart-muted: #34322f;
+    --cds-chart-grid: #222b42;
+    --cds-chart-axis: #4a5570;
+    --cds-chart-muted: #263049;
     --cds-chart-status-critical: #ef6f5e;
-    --cds-surface-popover: #2a2927;
-    --cds-border: #3d3a36;
-    --cds-text-secondary: #a29e96;
+    --cds-surface-popover: #1b2338;
+    --cds-border: #2c3650;
+    --cds-text-secondary: #9aa3b5;
     --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .5);
   }
 }

@@ -52,6 +52,8 @@ const cnt = (v) => Math.round(v).toLocaleString('en-IN');
 const pct = d3.format('.1%');
 const monName = (m) => d3.utcFormat('%b')(new Date(m + '-01'));
 const dayFmt = (d) => d3.utcFormat('%-d %b %Y')(new Date(d));
+// Series colours come from the group palette (dashboard.css), so light and dark both follow it.
+const SER = ['var(--hd-s1)', 'var(--hd-s2)', 'var(--hd-s3)', 'var(--hd-s4)', 'var(--hd-s5)'];
 const STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers'];
 
 // The company filter lives in the page: every dataset carries a `company` column.
@@ -182,7 +184,7 @@ function drawMonthly() {
   const tip = tipFor(el);
   svg.selectAll('rect.b').data(rows).join('rect').attr('class', 'b')
     .attr('x', r => x(r.m) + Math.max(0, (x.bandwidth() - 32) / 2)).attr('width', Math.min(32, x.bandwidth()))
-    .attr('y', r => y(r.g)).attr('height', r => y(0) - y(r.g)).attr('rx', 4).attr('fill', dash.colors[0])
+    .attr('y', r => y(r.g)).attr('height', r => y(0) - y(r.g)).attr('rx', 4).attr('fill', SER[0])
     .on('mousemove', (ev, r) => tip.show(ev, d3.utcFormat('%B %Y')(new Date(r.m + '-01')), [[null, 'Gross', inrFull(r.g)], [null, 'Bills', cnt(r.inv)], [null, 'Service jobs', cnt(r.sj)]]))
     .on('mouseleave', () => tip.hide());
   svg.selectAll('text.vlab').data(rows).join('text').attr('class', 'vlab').attr('text-anchor', 'middle')
@@ -194,7 +196,7 @@ function drawMonthly() {
 function drawMix() {
   const el = document.getElementById('ch-mix'), lg = document.getElementById('lg-mix');
   if (!gate(el, 'streams')) { lg.replaceChildren(); return; }
-  const col = (s) => dash.colors[STREAMS.indexOf(s)];
+  const col = (s) => SER[STREAMS.indexOf(s)];
   legend(lg, STREAMS.map(s => [col(s), s]));
   const data = rowsOf('streams');
   const months = [...new Set(data.map(r => r.month))].sort();
@@ -234,7 +236,7 @@ function drawDaily() {
   yAxis(svg, y, W, ml, inr);
   const tip = tipFor(el);
   svg.selectAll('rect').data(rows).join('rect').attr('x', r => x(r.d)).attr('width', bw)
-    .attr('y', r => y(r.g)).attr('height', r => y(0) - y(r.g)).attr('rx', Math.min(2, bw / 2)).attr('fill', dash.colors[0])
+    .attr('y', r => y(r.g)).attr('height', r => y(0) - y(r.g)).attr('rx', Math.min(2, bw / 2)).attr('fill', SER[0])
     .on('mousemove', (ev, r) => tip.show(ev, d3.utcFormat('%a %-d %b')(r.d), [[null, 'Gross', inrFull(r.g)], [null, 'Bills', cnt(r.inv)], [null, 'Service jobs', cnt(r.sj)]]))
     .on('mouseleave', () => tip.hide());
   d3.utcMonth.range(d3.utcMonth.ceil(x0), x1).concat([x0]).forEach(m => {
@@ -245,7 +247,7 @@ function drawDaily() {
 function drawHeads() {
   const el = document.getElementById('ch-heads'), lg = document.getElementById('lg-heads');
   if (!gate(el, 'heads')) { lg.replaceChildren(); return; }
-  const col = (g) => g === 'Discounts' ? 'var(--cds-chart-status-critical)' : dash.colors[STREAMS.indexOf(g)];
+  const col = (g) => g === 'Discounts' ? 'var(--hd-crit)' : SER[STREAMS.indexOf(g)];
   const rows = sumBy(rowsOf('heads'), ['head', 'group'], ['amount'])
     .map(r => ({ h: r.head.charAt(0) + r.head.slice(1).toLowerCase(), g: r.group, v: r.amount })).sort((a, b) => b.v - a.v);
   const groups = STREAMS.filter(s => rows.some(r => r.g === s)).concat(rows.some(r => r.g === 'Discounts') ? ['Discounts'] : []);
@@ -313,14 +315,14 @@ function drawItems() {
   const rows = all.filter(r => !q || (r.item + ' ' + r.part_no).toLowerCase().includes(q));
   rows.sort((a, b) => numeric.includes(itemSort.k) ? (num(a[itemSort.k]) - num(b[itemSort.k])) * itemSort.dir : String(a[itemSort.k]).localeCompare(String(b[itemSort.k])) * itemSort.dir);
   const max = d3.max(all, r => num(r.value)) || 1;
-  const chCol = { 'Service': dash.colors[0], 'Counter sale': dash.colors[1], 'Branch transfer': dash.colors[4] };
+  const chCol = { 'Service': SER[0], 'Counter sale': SER[1], 'Branch transfer': SER[4] };
   rows.forEach(r => {
     const tr = document.createElement('tr');
     cell(tr, r.company, 'hide-sm'); cell(tr, r.item); cell(tr, r.part_no, 'part hide-sm'); cell(tr, r.main_channel, 'hide-sm');
     cell(tr, cnt(num(r.qty)), 'num'); cell(tr, inrFull(num(r.value)), 'num');
     const td = cell(tr, '', 'barc hide-sm');
     const o = document.createElement('div'); o.className = 'inbar'; const i = document.createElement('div');
-    i.style.width = (num(r.value) / max * 100) + '%'; i.style.background = chCol[r.main_channel] || dash.colors[0];
+    i.style.width = (num(r.value) / max * 100) + '%'; i.style.background = chCol[r.main_channel] || SER[0];
     o.appendChild(i); td.appendChild(o);
     tb.appendChild(tr);
   });
