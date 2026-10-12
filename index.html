@@ -142,6 +142,26 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 .pilot .row b { font-weight: 700; }
 .sticky { background: var(--note); color: var(--note-ink); font-size: 13.5px; line-height: 1.5; padding: 12px 14px; border-radius: 10px; border-left: 3px solid var(--gold); margin-top: 16px; }
 
+/* Insights */
+.ins-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); grid-auto-flow: dense; gap: 14px; }
+.ins-wide { grid-column: span 2; grid-row: span 2; display: flex; flex-direction: column; justify-content: space-between; }
+@media (max-width: 620px) { .ins-wide { grid-column: auto; grid-row: auto; } }
+.ins { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ins-tag { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ins .big { font-size: 30px; font-weight: 800; line-height: 1.1; letter-spacing: -.01em; }
+.ins h3, .ins-wide h3 { margin: 0; font-size: 15px; font-weight: 700; }
+.ins p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.ask { margin-top: auto !important; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px !important; color: var(--ink) !important; }
+.ins-wide .ask { margin-top: 10px !important; }
+.ask b { font-weight: 700; }
+.ins-legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.ins-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.ins-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.lg-prev { background: var(--gray); opacity: .5; } .lg-now { background: var(--violet); }
+.chart .mprev { fill: var(--gray); opacity: .5; } .chart .mnow { fill: var(--violet); }
+.chart .zero { stroke: var(--muted); stroke-width: 1; }
+.chart .lbl { fill: var(--ink); font-weight: 600; }
+
 /* Watch list */
 .watch { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 10px; }
 .w { background: var(--warn-soft); border-radius: 12px; padding: 12px 14px; font-size: 13.5px; }
@@ -336,6 +356,77 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     </div>
   </section>
 
+  <section id="insights">
+    <div class="sec-head"><h2>Insights for the H1 review</h2><p>Worked out from the FY 2025–26 accounts and the HD Attingal register. Each ends with a question for the owner.</p></div>
+    <div class="ins-grid">
+      <div class="panel ins-wide">
+        <div class="ins-tag">FY 2025–26 accounts · Note 28.03</div>
+        <h3>Margins thinned on every line as revenue grew</h3>
+        <p class="sub">Gross margin = sales − (opening stock + purchases − closing stock), as a share of sales.</p>
+        <svg class="chart" id="margin-chart" viewBox="0 0 560 190" role="img" aria-label="Gross margin by line. Two-wheelers 7.2% in FY25, 6.8% in FY26. Spares, accessories and oil 11.4% to 9.9%. Office automation −3.3% to −2.5%."></svg>
+        <div class="ins-legend"><span><i class="lg-prev"></i>FY 2024–25</span><span><i class="lg-now"></i>FY 2025–26</span></div>
+        <p class="ask"><b>Ask Accounts:</b> office automation shows a negative margin in both years. "Purchases" includes expenses, so confirm whether Canon/OAIP really sells below cost.</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">Accounts</div>
+        <b class="big num">+31%</b>
+        <h3>Vehicle stock grew faster than sales</h3>
+        <p>Closing stock rose from 845 to 1,111 units while units sold rose 18% (11,835 to 14,010).</p>
+        <p class="ask"><b>Ask:</b> what are the ageing and holding cost of the extra 266 units?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">Accounts</div>
+        <b class="big num">+62%</b>
+        <h3>Finance costs outpaced revenue</h3>
+        <p>Finance costs rose from ₹2.34 Cr to ₹3.79 Cr, against revenue growth of 19.3%. Higher stock is a likely driver.</p>
+        <p class="ask"><b>Ask:</b> how much of the borrowing funds inventory?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">Accounts</div>
+        <b class="big num">₹88,081</b>
+        <h3>Average price per vehicle, up 5.3%</h3>
+        <p>Two-wheeler sales value divided by units, up from ₹83,664. Price and mix did part of the growth work.</p>
+        <p class="ask"><b>Ask:</b> how much is model mix and how much is price increases?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">29%</b>
+        <h3>Spare-parts discount on spares sales</h3>
+        <p>₹10.1 L of discount against ₹34.6 L of spares (18.5% if it also covers accessories). 23.6% of service jobs carry a discount.</p>
+        <p class="ask"><b>Ask:</b> who approves discounts, and is there a cap per job?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">₹1,511</b>
+        <h3>An average service job</h3>
+        <p>₹725 of labour plus ₹786 of parts and accessories, before GST and discount, across 5,037 jobs.</p>
+        <p class="ask"><b>Ask:</b> what is the target per job for H2?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">15.6%</b>
+        <h3>Jobs with E-module calibration and burnishing</h3>
+        <p>Each appears on the same share of jobs, so they are likely sold as a pair. Together they earned ₹16.2 L.</p>
+        <p class="ask"><b>Ask:</b> what share of eligible vehicles should get it?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">123</b>
+        <h3>Items that make up 80% of item value</h3>
+        <p>Of 1,345 items sold, 9% carry 80% of the value. Engine oil 600 ml alone is ₹8.0 L.</p>
+        <p class="ask"><b>Ask:</b> are these 123 items ever out of stock?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">60 vs 48</b>
+        <h3>Jobs a day, Tue–Wed against Thursday</h3>
+        <p>The workshop is busiest early in the week. Sundays average 18 bills on the 6 Sundays it billed.</p>
+        <p class="ask"><b>Ask:</b> can bookings move to Thursday?</p>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:12px">Not possible yet: repeat visits and service intervals need a clean customer or vehicle ID in the export, and division-level comparisons need the uploaded H1 decks.</p>
+  </section>
+
   <section id="roadmap">
     <div class="sec-head"><h2>The road to 31 March 2027</h2><p>Action plan levels from the minutes.</p></div>
     <div class="tl">
@@ -368,6 +459,23 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     mk('text', { x: x + bw / 2, y: y - 7, 'text-anchor': 'middle', class: 'v' }, v.toFixed(1));
     mk('text', { x: x + bw / 2, y: H - 7, 'text-anchor': 'middle' }, label);
   });
+
+  // Gross margin by line, FY25 vs FY26, on one scale around zero.
+  const m = document.getElementById('margin-chart');
+  const rows = [['Two-wheelers', 7.15, 6.80], ['Spares, accessories & oil', 11.40, 9.94], ['Office automation', -3.28, -2.49]];
+  const add = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; m.appendChild(e); return e; };
+  const labW = 170, right = 548, lo = -5, hi = 13, x = (v) => labW + (v - lo) / (hi - lo) * (right - labW);
+  const fmt = (v) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(1) + '%';
+  rows.forEach(([name, prev, now], i) => {
+    const y = 14 + i * 58;
+    add('text', { x: 0, y: y + 20, class: 'lbl' }, name);
+    [[prev, 'mprev', 0], [now, 'mnow', 20]].forEach(([v, cls, dy]) => {
+      const x0 = Math.min(x(0), x(v)), w = Math.abs(x(v) - x(0));
+      add('rect', { x: x0, y: y + dy, width: Math.max(w, 1), height: 16, rx: 3, class: cls });
+      add('text', { x: v >= 0 ? x(v) + 6 : x(v) - 6, y: y + dy + 12, 'text-anchor': v >= 0 ? 'start' : 'end', class: cls === 'mnow' ? 'v' : '' }, fmt(v));
+    });
+  });
+  add('line', { x1: x(0), x2: x(0), y1: 6, y2: 184, class: 'zero' });
 })();
 </script>
 </body>
