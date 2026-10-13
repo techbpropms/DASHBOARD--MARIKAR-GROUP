@@ -40,11 +40,11 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | Landing page (self-contained apart from the two logos) |
+| `index.html` | Landing page (self-contained apart from the logo) |
 | `dashboard.html` | Dashboard page shell and markup |
 | `note.html` | Pilot reconciliation note, rendered from `docs/reconciliation-note.md` |
 | `tracker.html` | HOD action tracker: live on claude.ai, read-only here from `data/tracker/` |
-| `assets/img/` | Marikar Group logo (from the group's Drive) and the BPro logo |
+| `assets/img/` | Marikar Group logo (from the group's Drive) |
 | `assets/theme.css` | Colour, type and spacing tokens (light and dark) |
 | `assets/dashboard.css` | Dashboard layout and chart styles |
 | `assets/dash-shim.js` | Loads `data/*.csv` and gives the charts a small data and filter API |
