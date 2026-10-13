@@ -3,6 +3,9 @@
   "name": "HD Attingal",
   "register_from": "2026-04-10",
   "register_to": "2026-09-30",
+  "fys": [
+    "2026-27"
+  ],
   "bills": 7677,
   "gross": 10252514.46,
   "item_value": 5712868.26,

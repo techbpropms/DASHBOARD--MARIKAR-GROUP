@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="assets/dashboard.css">
 </head>
 <body>
-<nav class="dash-nav"><a href="index.html">← Marikar Group performance hub</a></nav>
+<nav class="dash-nav"><a href="index.html">← Marikar Group performance hub</a><a href="report.html">Report builder (PDF / Excel)</a></nav>
 <div id="dash-root">
 <div class="hd">
   <header class="hd-head" id="overview">
@@ -25,6 +25,8 @@
   <div class="hd-bar" id="filters">
     <label for="company-sel">Company</label>
     <select class="hd-select" id="company-sel" data-source="companies"><option value="">All companies</option></select>
+    <label for="fy-sel">Financial year</label>
+    <select class="hd-select" id="fy-sel" data-source="monthly"><option value="">All years</option></select>
     <span class="note hd-legend" id="scope-note"></span>
   </div>
 
@@ -81,9 +83,10 @@
       <h2>By voucher type</h2>
       <p class="note">Bill counts and value for the period.</p>
       <div class="hd-tablebox">
-        <table id="tb-types" data-source="voucher_types" data-row-key="company,voucher_type">
+        <table id="tb-types" data-source="voucher_types" data-row-key="company,fy,voucher_type">
           <thead><tr>
             <th data-field="company">Company</th>
+            <th class="hide-sm" data-field="fy">Year</th>
             <th data-field="voucher_type">Voucher type</th>
             <th class="num" data-field="invoices">Bills</th>
             <th class="num" data-field="gross">Gross</th>
@@ -91,6 +94,7 @@
             <th class="num" data-source="vt_avg" data-field="avg_bill">Avg bill</th>
           </tr></thead>
           <tbody></tbody>
+          <tfoot></tfoot>
         </table>
       </div>
     </div>
@@ -98,12 +102,13 @@
 
   <section class="hd-card" id="items-card">
     <h2>Top parts and accessories sold</h2>
-    <p class="note">Each company's top 150 items by value (ex-GST, before discount). Channel = where the item mostly sold.</p>
+    <p class="note">Each company's top 150 items per year by value (ex-GST, before discount). Channel = where the item mostly sold.</p>
     <input class="hd-search" id="item-search" type="search" placeholder="Search item or part no." aria-label="Search items">
     <div class="hd-tablebox">
-      <table id="tb-items" data-source="items" data-row-key="company,part_no">
+      <table id="tb-items" data-source="items" data-row-key="company,fy,part_no">
         <thead><tr>
           <th class="hide-sm" data-field="company"><button data-k="company">Company</button></th>
+          <th class="hide-sm" data-field="fy"><button data-k="fy">Year</button></th>
           <th data-field="item"><button data-k="item">Item</button></th>
           <th class="hide-sm" data-field="part_no"><button data-k="part_no">Part no.</button></th>
           <th class="hide-sm" data-field="main_channel"><button data-k="main_channel">Channel</button></th>
@@ -112,6 +117,7 @@
           <th class="hide-sm" aria-hidden="true"></th>
         </tr></thead>
         <tbody></tbody>
+        <tfoot></tfoot>
       </table>
     </div>
   </section>
@@ -133,6 +139,7 @@
             <th class="num" data-source="coverage" data-field="received">Files</th>
           </tr></thead>
           <tbody></tbody>
+          <tfoot></tfoot>
         </table>
       </div>
     </div>
@@ -152,6 +159,7 @@
       </div>
     </div>
   </section>
+  <footer class="hd-credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
 </div>
 
 <p class="dash-footer">Source: TallyPrime Service Bill Register exports, one per company (HD Attingal: 10 Apr – 30 Sep 2026). Amounts in INR. Each company's figures reconcile to its register's Grand Total.</p>

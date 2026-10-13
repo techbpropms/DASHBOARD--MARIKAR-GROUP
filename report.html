@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marikar Group Report Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="icon" href="assets/img/marikar-group.png">
+<style>
+/* Layout: the hub's navy masthead, a parameter panel, then the report preview with subtotals and grand totals. */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --ink: #101828; --muted: #586174; --line: #e2e5eb;
+  --mast: #0f1b33; --mast-2: #16244a; --violet: #2e3192; --gray: #75787b; --gold: #a87b2a;
+  --accent-text: #2e3192; --sub: #f2f4f8; --ok: #17694d; --warn: #92560a;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
+  --accent-text: #b9bcf5; --sub: #1b2338; --ok: #6cc9a0; --warn: #e2ab5a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
+  --accent-text: #b9bcf5; --sub: #1b2338; --ok: #6cc9a0; --warn: #e2ab5a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14.5px; line-height: 1.5; }
+a { color: var(--accent-text); }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+.mast { background: linear-gradient(180deg, var(--mast) 0%, var(--mast-2) 100%); color: #fff; padding-block: 30px 28px; position: relative; }
+.mast::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, var(--violet) 0 72%, var(--gray) 72% 100%); }
+.hub-link { font-size: 12.5px; margin-bottom: 14px; }
+.hub-link a { color: rgba(255,255,255,.75); text-decoration: none; margin-right: 16px; }
+.hub-link a:hover { color: #fff; text-decoration: underline; }
+.brand { display: flex; align-items: center; gap: 18px; }
+.logo { flex: none; background: #fff; border-radius: 12px; padding: 6px 8px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.logo img { display: block; height: 72px; width: auto; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.mast h1 { font-size: clamp(24px, 3.6vw, 34px); line-height: 1.15; font-weight: 800; margin: 4px 0 6px; }
+.mast p { margin: 0; opacity: .85; max-width: 70ch; }
+main { padding-block: 24px 40px; display: flex; flex-direction: column; gap: 22px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-width: 0; }
+.panel h2 { font-size: 16px; font-weight: 800; margin: 0 0 4px; }
+.sub-note { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+.params { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 14px; margin: 0; min-width: 0; }
+legend { font-weight: 700; font-size: 13px; padding: 0 6px; }
+.opts { display: flex; flex-direction: column; gap: 6px; }
+.opts label { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+.opts .inline { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-left: 26px; color: var(--muted); font-size: 12.5px; }
+.opts .inline label { font-size: 12.5px; gap: 5px; }
+.opts .disabled { opacity: .55; }
+select, input[type="text"] { font: inherit; font-size: 13px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+.btn { font: inherit; font-weight: 700; font-size: 13.5px; border-radius: 10px; padding: 9px 16px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.btn.primary { background: var(--mast-2); border-color: var(--mast-2); color: #fff; }
+.btn:disabled { opacity: .5; cursor: default; }
+.status { font-size: 13px; color: var(--muted); }
+.section { margin-top: 6px; }
+.section + .section { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); }
+.section h3 { margin: 0 0 2px; font-size: 15.5px; font-weight: 800; }
+.tbl { overflow-x: auto; margin-top: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); }
+td.n, th.n { text-align: right; white-space: nowrap; }
+tr.sub td { background: var(--sub); font-weight: 600; }
+tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom: 0; }
+.empty { color: var(--muted); font-size: 13.5px; padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; }
+.credit { text-align: center; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+.credit a { font-weight: 600; }
+@media (max-width: 560px) { .logo img { height: 54px; } .brand { align-items: flex-start; } }
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <div class="hub-link"><a href="index.html">← Marikar Group performance hub</a><a href="dashboard.html">Sales &amp; inventory dashboard</a></div>
+    <div class="brand">
+      <div class="logo"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
+      <div>
+        <div class="eyebrow">Marikar Group · Reports</div>
+        <h1>Report builder</h1>
+        <p>Pick the companies, years, sections and measures, then download one PDF or Excel file with subtotals and grand totals.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel" id="params">
+    <h2>Report parameters</h2>
+    <p class="sub-note">Every table has a subtotal per company and year, and a grand total. Amounts are in rupees.</p>
+    <div class="params">
+      <fieldset><legend>Companies</legend><div class="opts" id="opt-companies"><span class="status">Loading…</span></div></fieldset>
+      <fieldset><legend>Financial years</legend><div class="opts" id="opt-fys"><span class="status">Loading…</span></div></fieldset>
+      <fieldset>
+        <legend>Sections and measures</legend>
+        <div class="opts" id="opt-sections">
+          <label><input type="checkbox" id="s-monthly" checked> Monthly summary</label>
+          <div class="inline" data-for="s-monthly">
+            <label><input type="checkbox" name="m-monthly" value="invoices" checked> Bills</label>
+            <label><input type="checkbox" name="m-monthly" value="service_jobs" checked> Service jobs</label>
+            <label><input type="checkbox" name="m-monthly" value="gross" checked> Gross</label>
+            <label><input type="checkbox" name="m-monthly" value="taxable" checked> Net</label>
+            <label><input type="checkbox" name="m-monthly" value="gst"> GST</label>
+            <label><input type="checkbox" name="m-monthly" value="discount" checked> Discount</label>
+          </div>
+          <label><input type="checkbox" id="s-streams"> Revenue streams by month</label>
+          <label><input type="checkbox" id="s-heads" checked> Revenue by ledger</label>
+          <label><input type="checkbox" id="s-types" checked> Voucher types</label>
+          <div class="inline" data-for="s-types">
+            <label><input type="checkbox" name="m-types" value="invoices" checked> Bills</label>
+            <label><input type="checkbox" name="m-types" value="gross" checked> Gross</label>
+            <label><input type="checkbox" name="m-types" value="taxable" checked> Net</label>
+            <label><input type="checkbox" name="m-types" value="avg" checked> Avg bill</label>
+          </div>
+          <label><input type="checkbox" id="s-items" checked> Top items</label>
+          <div class="inline" data-for="s-items">
+            <label><input type="checkbox" name="m-items" value="qty" checked> Qty</label>
+            <label><input type="checkbox" name="m-items" value="value" checked> Value</label>
+            <label><input type="checkbox" name="m-items" value="lines"> Bill lines</label>
+            <label>Top <select id="items-n" aria-label="Number of items"><option>10</option><option selected>25</option><option>50</option><option>150</option></select></label>
+            <label>by <select id="items-by" aria-label="Rank items by"><option value="value">value</option><option value="qty">qty</option></select></label>
+          </div>
+          <label id="yoy-label"><input type="checkbox" id="s-yoy"> Year-on-year comparison</label>
+          <div class="inline" id="yoy-note">Needs two financial years selected.</div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="btn-preview" type="button">Preview</button>
+      <button class="btn" id="btn-xlsx" type="button">Download Excel</button>
+      <button class="btn" id="btn-pdf" type="button">Download PDF</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+  </section>
+
+  <section class="panel" id="preview" aria-live="polite">
+    <h2>Preview</h2>
+    <div id="out"><div class="empty">Choose your parameters and press Preview.</div></div>
+  </section>
+
+  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="assets/report.js"></script>
+</body>
+</html>

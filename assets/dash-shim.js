@@ -11,7 +11,7 @@ window.dash = (() => {
     companies: 'data/companies.csv',
     completeness: 'data/completeness.csv',
   };
-  const DEFAULT_PARAMS = { company: null };
+  const DEFAULT_PARAMS = { company: null, fy: null };
   let params = { ...DEFAULT_PARAMS };
   const state = {};
   const calcs = {};

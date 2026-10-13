@@ -73,3 +73,12 @@
 .hd-pill.wait { color: var(--hd-warn); }
 .hd td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.75rem; color: var(--color-fg-muted); word-break: break-all; }
 .hd td:first-child { white-space: nowrap; }
+
+.hd tr.hd-subtotal th, .hd tr.hd-subtotal td { background: var(--color-bg); font-weight: var(--cds-font-weight-medium); border-top: 1px solid var(--color-border-line); }
+.hd tr.hd-total th, .hd tr.hd-total td { font-weight: 700; border-top: 2px solid var(--color-fg); border-bottom: 0; background: var(--color-panel); }
+.hd tfoot tr.hd-total th, .hd tfoot tr.hd-total td { position: sticky; bottom: 0; }
+.hd tr.hd-subtotal th { position: static; }
+.hd tr.hd-subtotal th, .hd tr.hd-total th { text-align: left; color: var(--color-fg); text-transform: none; letter-spacing: 0; font-size: var(--cds-font-size-caption); white-space: normal; }
+.hd-credit { border-top: 1px solid var(--color-border-line); padding-top: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); text-align: center; }
+.hd-credit a { color: var(--hd-s1); font-weight: var(--cds-font-weight-medium); }
+.hd td.num, .hd td.nw { white-space: nowrap; }

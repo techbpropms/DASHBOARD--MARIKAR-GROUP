@@ -1,8 +1,8 @@
 const num = (x) => +x || 0;
 dash.calc('kpis', {
   inputs: ['monthly'],
-  title: 'Headline figures by company',
-  description: 'Sums each monthly column per company and for the group (company ALL); average bill = service gross / service jobs; discount rate = discount / (net + discount); last month vs the one before.',
+  title: 'Headline figures by company and year',
+  description: 'Sums each monthly column per company and financial year, with ALL for the group and for all years; average bill = service gross / service jobs; discount rate = discount / (net + discount); last month vs the one before.',
   fn: (monthly) => {
     const sum = (rows) => {
       const s = (k) => rows.reduce((a, r) => a + (+r[k] || 0), 0);
@@ -19,15 +19,51 @@ dash.calc('kpis', {
         mom: prev ? byMonth[last] / byMonth[prev] - 1 : null
       };
     };
-    const codes = [...new Set(monthly.map(r => r.company))];
-    return [{ company: 'ALL', ...sum(monthly) }].concat(codes.map(c => ({ company: c, ...sum(monthly.filter(r => r.company === c)) })));
+    const codes = ['ALL', ...new Set(monthly.map(r => r.company))], fys = ['ALL', ...new Set(monthly.map(r => r.fy))];
+    const out = [];
+    codes.forEach(c => fys.forEach(f => {
+      const rows = monthly.filter(r => (c === 'ALL' || r.company === c) && (f === 'ALL' || r.fy === f));
+      if (rows.length) out.push({ company: c, fy: f, ...sum(rows) });
+    }));
+    return out;
   }
 });
 dash.calc('vt_avg', {
   inputs: ['voucher_types'],
   title: 'Average bill by voucher type',
-  description: 'Gross value divided by number of bills, per company and voucher type.',
-  fn: (voucher_types) => voucher_types.map(r => ({ company: r.company, voucher_type: r.voucher_type, avg_bill: +r.gross / +r.invoices }))
+  description: 'Gross value divided by number of bills, per company, year and voucher type.',
+  fn: (voucher_types) => voucher_types.map(r => ({ company: r.company, fy: r.fy, voucher_type: r.voucher_type, avg_bill: +r.gross / +r.invoices }))
+});
+// Subtotals (per company and year) and grand totals (ALL), used by the tables' total rows.
+const totalsBy = (rows, vals) => {
+  const out = {};
+  rows.forEach(r => [[r.company, r.fy], [r.company, 'ALL'], ['ALL', r.fy], ['ALL', 'ALL']].forEach(([c, f]) => {
+    const k = c + '|' + f, o = out[k] || (out[k] = { company: c, fy: f, rows: 0 });
+    o.rows++; vals.forEach(v => { o[v] = (o[v] || 0) + (+r[v] || 0); });
+  }));
+  return Object.values(out);
+};
+dash.calc('vt_totals', {
+  inputs: ['voucher_types'],
+  title: 'Voucher type totals',
+  description: 'Bills, gross and net summed per company and year (subtotals) and for ALL (grand totals); average bill = gross / bills.',
+  fn: (voucher_types) => totalsBy(voucher_types, ['invoices', 'gross', 'taxable']).map(o => ({ ...o, avg_bill: o.gross / o.invoices }))
+});
+dash.calc('item_totals', {
+  inputs: ['items'],
+  title: 'Top items totals',
+  description: 'Quantity and value of the listed top items, summed per company and year (subtotals) and for ALL (grand totals).',
+  fn: (items) => totalsBy(items, ['qty', 'value'])
+});
+dash.calc('company_totals', {
+  inputs: ['companies', 'coverage'],
+  title: 'Companies totals',
+  description: 'Bills and gross summed across the companies loaded, with requested files received out of required.',
+  fn: (companies, coverage) => [{
+    company: 'ALL', companies: companies.length,
+    bills: companies.reduce((a, r) => a + (+r.bills || 0), 0), gross: companies.reduce((a, r) => a + (+r.gross || 0), 0),
+    received: coverage.reduce((a, r) => a + r.received, 0), required: coverage.reduce((a, r) => a + r.required, 0)
+  }]
 });
 dash.calc('coverage', {
   inputs: ['completeness'],
@@ -58,7 +94,14 @@ const STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC 
 
 // The company filter lives in the page: every dataset carries a `company` column.
 const picked = () => dash.params().company || null;
-const rowsOf = (id) => { const d = dash.data(id); if (d.status !== 'ok') return []; const c = picked(); return c ? d.data.filter(r => r.company === c) : d.data; };
+const pickedFy = () => dash.params().fy || null;
+const rowsOf = (id) => {
+  const d = dash.data(id); if (d.status !== 'ok') return [];
+  const c = picked(), f = pickedFy();
+  return d.data.filter(r => (!c || r.company === c) && (!f || r.fy === undefined || r.fy === f));
+};
+const fyLabel = (f) => 'FY ' + f.replace('-', '–');
+const whereOf = (c, f) => 'company=' + encodeURIComponent(c) + '&fy=' + encodeURIComponent(f);
 const sumBy = (rows, keys, vals) => {
   const m = new Map();
   rows.forEach(r => {
@@ -71,6 +114,8 @@ const sumBy = (rows, keys, vals) => {
 };
 const sel = document.getElementById('company-sel');
 sel.addEventListener('change', () => dash.setParams({ company: sel.value || null }));
+const fySel = document.getElementById('fy-sel');
+fySel.addEventListener('change', () => dash.setParams({ fy: fySel.value || null }));
 
 function tipFor(box) {
   let t = box.querySelector('.hd-tip');
@@ -133,17 +178,22 @@ function drawFilter() {
     sel.replaceChildren(new Option('All companies', ''), ...list.map(r => new Option(`${r.name} (${r.company})`, r.company)));
     sel.value = picked() || '';
   }
+  const m = dash.data('monthly'), fys = [...new Set((m.status === 'ok' ? m.data : []).map(r => r.fy))].sort().reverse();
+  if (document.activeElement !== fySel) {
+    fySel.replaceChildren(new Option(fys.length > 1 ? 'All years' : 'All years loaded', ''), ...fys.map(f => new Option(fyLabel(f), f)));
+    fySel.value = pickedFy() || '';
+  }
   const note = document.getElementById('scope-note');
   note.textContent = c.status === 'ok' ? `${list.length} of the group's companies loaded so far · more appear as their exports arrive` : '';
   // Headline marks point at the picked company's row of the calculation.
-  document.querySelectorAll('.hd-kpis [data-source="kpis"]').forEach(e => { e.dataset.where = 'company=' + encodeURIComponent(picked() || 'ALL'); });
+  document.querySelectorAll('.hd-kpis [data-source="kpis"]').forEach(e => { e.dataset.where = whereOf(picked() || 'ALL', pickedFy() || 'ALL'); });
 }
 
 function drawKpis() {
   const k = dash.data('kpis');
   const vals = document.querySelectorAll('.hd-kpis [data-source="kpis"]');
   const tk = document.getElementById('takeaway'), sub = document.getElementById('sub-gross');
-  const r = k.status === 'ok' ? k.data.find(x => x.company === (picked() || 'ALL')) : null;
+  const r = k.status === 'ok' ? k.data.find(x => x.company === (picked() || 'ALL') && x.fy === (pickedFy() || 'ALL')) : null;
   if (!r) {
     vals.forEach(e => { e.textContent = '—'; });
     if (k.status === 'error') { vals.forEach(e => e.classList.remove('dash-skeleton')); tk.textContent = ''; }
@@ -159,7 +209,7 @@ function drawKpis() {
     s.textContent = (r.mom >= 0 ? '+' : '−') + pct(Math.abs(r.mom)); sub.appendChild(s);
     sub.append(` vs ${pm}`);
   }
-  const where = 'company=' + encodeURIComponent(r.company);
+  const where = whereOf(r.company, r.fy);
   const b = (t, field) => { const e = document.createElement('b'); e.textContent = t; e.dataset.source = 'kpis'; e.dataset.field = field; e.dataset.where = where; return e; };
   const comps = dash.data('companies'), names = comps.status === 'ok' ? comps.data : [];
   const who = picked() ? ((names.find(x => x.company === picked()) || {}).name || picked()) : (names.length === 1 ? names[0].name + ', the only company loaded so far,' : 'The group');
@@ -292,23 +342,47 @@ function drawWaiting(elId, files, what) {
   }
 }
 
-function drawTypes() {
-  const tb = document.querySelector('#tb-types tbody'), a = dash.data('vt_avg');
-  tb.replaceChildren();
-  const avg = new Map((a.status === 'ok' ? a.data : []).map(r => [r.company + '|' + r.voucher_type, r.avg_bill]));
-  rowsOf('voucher_types').slice().sort((p, q) => num(q.gross) - num(p.gross)).forEach(r => {
-    const tr = document.createElement('tr');
-    cell(tr, r.company); cell(tr, r.voucher_type); cell(tr, cnt(num(r.invoices)), 'num'); cell(tr, inr(num(r.gross)), 'num');
-    cell(tr, inr(num(r.taxable)), 'num hide-sm');
-    const k = r.company + '|' + r.voucher_type; cell(tr, avg.has(k) ? inrFull(avg.get(k)) : '—', 'num');
-    tb.appendChild(tr);
+// A total row: marked cell by cell against a totals calculation, so each figure is checkable.
+function totalRow(tbody, cls, calcId, where, label, cells, span) {
+  const tr = document.createElement('tr'); tr.className = cls;
+  const th = document.createElement('th'); th.scope = 'row'; th.colSpan = span; th.textContent = label; tr.appendChild(th);
+  cells.forEach(([text, field, c]) => {
+    const td = cell(tr, text, c);
+    if (field) { td.dataset.source = calcId; td.dataset.field = field; td.dataset.where = where; }
   });
+  tbody.appendChild(tr);
+}
+const groupOrder = (a, b) => a.company.localeCompare(b.company) || String(b.fy).localeCompare(String(a.fy));
+
+function drawTypes() {
+  const tb = document.querySelector('#tb-types tbody'), tf = document.querySelector('#tb-types tfoot');
+  const a = dash.data('vt_avg'), tt = dash.data('vt_totals');
+  tb.replaceChildren(); tf.replaceChildren();
+  const avg = new Map((a.status === 'ok' ? a.data : []).map(r => [r.company + '|' + r.fy + '|' + r.voucher_type, r.avg_bill]));
+  const tot = new Map((tt.status === 'ok' ? tt.data : []).map(r => [r.company + '|' + r.fy, r]));
+  const rows = rowsOf('voucher_types').slice().sort((p, q) => groupOrder(p, q) || num(q.gross) - num(p.gross));
+  const groups = [...new Set(rows.map(r => r.company + '|' + r.fy))];
+  const sumCells = (o) => [[cnt(o.invoices), 'invoices', 'num'], [inr(o.gross), 'gross', 'num'], [inr(o.taxable), 'taxable', 'num hide-sm'], [inrFull(o.avg_bill), 'avg_bill', 'num']];
+  groups.forEach(g => {
+    rows.filter(r => r.company + '|' + r.fy === g).forEach(r => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = [r.company, r.fy, r.voucher_type].map(encodeURIComponent).join(',');
+      cell(tr, r.company); cell(tr, fyLabel(r.fy), 'hide-sm nw'); cell(tr, r.voucher_type); cell(tr, cnt(num(r.invoices)), 'num'); cell(tr, inr(num(r.gross)), 'num');
+      cell(tr, inr(num(r.taxable)), 'num hide-sm');
+      const k = r.company + '|' + r.fy + '|' + r.voucher_type; cell(tr, avg.has(k) ? inrFull(avg.get(k)) : '—', 'num');
+      tb.appendChild(tr);
+    });
+    const [c, f] = g.split('|'), o = tot.get(g);
+    if (groups.length > 1 && o) totalRow(tb, 'hd-subtotal', 'vt_totals', whereOf(c, f), `Subtotal · ${c} · ${fyLabel(f)}`, sumCells(o), 3);
+  });
+  const all = tot.get((picked() || 'ALL') + '|' + (pickedFy() || 'ALL'));
+  if (rows.length && all) totalRow(tf, 'hd-total', 'vt_totals', whereOf(all.company, all.fy), 'Grand total', sumCells(all), 3);
 }
 
 let itemSort = { k: 'value', dir: -1 };
 function drawItems() {
-  const tb = document.querySelector('#tb-items tbody');
-  tb.replaceChildren();
+  const tb = document.querySelector('#tb-items tbody'), tf = document.querySelector('#tb-items tfoot'), tt = dash.data('item_totals');
+  tb.replaceChildren(); tf.replaceChildren();
   const all = rowsOf('items');
   const q = document.getElementById('item-search').value.trim().toLowerCase();
   const numeric = ['qty', 'value'];
@@ -318,7 +392,8 @@ function drawItems() {
   const chCol = { 'Service': SER[0], 'Counter sale': SER[1], 'Branch transfer': SER[4] };
   rows.forEach(r => {
     const tr = document.createElement('tr');
-    cell(tr, r.company, 'hide-sm'); cell(tr, r.item); cell(tr, r.part_no, 'part hide-sm'); cell(tr, r.main_channel, 'hide-sm');
+    tr.dataset.key = [r.company, r.fy, r.part_no].map(encodeURIComponent).join(',');
+    cell(tr, r.company, 'hide-sm'); cell(tr, fyLabel(r.fy), 'hide-sm nw'); cell(tr, r.item); cell(tr, r.part_no, 'part hide-sm'); cell(tr, r.main_channel, 'hide-sm');
     cell(tr, cnt(num(r.qty)), 'num'); cell(tr, inrFull(num(r.value)), 'num');
     const td = cell(tr, '', 'barc hide-sm');
     const o = document.createElement('div'); o.className = 'inbar'; const i = document.createElement('div');
@@ -326,6 +401,12 @@ function drawItems() {
     o.appendChild(i); td.appendChild(o);
     tb.appendChild(tr);
   });
+  const tot = new Map((tt.status === 'ok' ? tt.data : []).map(r => [r.company + '|' + r.fy, r]));
+  const groups = [...new Set(all.map(r => r.company + '|' + r.fy))].sort((x, y) => { const [xc, xf] = x.split('|'), [yc, yf] = y.split('|'); return xc.localeCompare(yc) || yf.localeCompare(xf); });
+  const cellsOf = (o) => [[cnt(o.qty), 'qty', 'num'], [inrFull(o.value), 'value', 'num'], ['', null, 'hide-sm']];
+  if (groups.length > 1) groups.forEach(g => { const [c, f] = g.split('|'), o = tot.get(g); if (o) totalRow(tf, 'hd-subtotal', 'item_totals', whereOf(c, f), `Subtotal · ${c} · ${fyLabel(f)} (${o.rows} items)`, cellsOf(o), 5); });
+  const gt = tot.get((picked() || 'ALL') + '|' + (pickedFy() || 'ALL'));
+  if (all.length && gt) totalRow(tf, 'hd-total', 'item_totals', whereOf(gt.company, gt.fy), `Grand total · ${gt.rows} items listed${q ? ' (before search)' : ''}`, cellsOf(gt), 5);
   document.querySelectorAll('#tb-items th').forEach(th => {
     const bt = th.querySelector('button');
     if (bt) th.setAttribute('aria-sort', bt.dataset.k === itemSort.k ? (itemSort.dir > 0 ? 'ascending' : 'descending') : 'none');
@@ -349,6 +430,11 @@ function drawCompanies() {
     const c = cov.get(r.company); cell(tr, c ? `${c.received} of ${c.required}` : '—', 'num');
     tb.appendChild(tr);
   });
+  const tf = document.querySelector('#tb-companies tfoot'), ct = dash.data('company_totals');
+  tf.replaceChildren();
+  const o = ct.status === 'ok' ? ct.data[0] : null;
+  if (o && !picked()) totalRow(tf, 'hd-total', 'company_totals', 'company=ALL', `Total · ${o.companies} ${o.companies === 1 ? 'company' : 'companies'}`,
+    [[cnt(o.bills), 'bills', 'num'], [inr(o.gross), 'gross', 'num'], [`${o.received} of ${o.required}`, 'received', 'num']], 4);
 }
 
 function drawCompleteness() {

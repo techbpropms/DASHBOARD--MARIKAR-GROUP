@@ -164,6 +164,10 @@ table { width: 100%; border-collapse: collapse; }
 .synced { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
 .empty { padding: 28px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; }
 .foot { margin-top: 28px; color: var(--muted); font-size: 12px; }
+.credit { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: 12.5px; }
+.credit a { color: var(--due); font-weight: 600; }
+tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom: 0; }
+td.num { white-space: nowrap; }
 </style>
 
 <header class="mast">
@@ -197,6 +201,7 @@ table { width: 100%; border-collapse: collapse; }
         <table class="league">
           <thead><tr><th></th><th>Division</th><th class="r">Done</th><th class="r">Earned</th><th>Progress</th></tr></thead>
           <tbody id="league"><tr><td colspan="5" class="empty" style="border:0">Standings appear once the actions load.</td></tr></tbody>
+          <tfoot id="league-total"></tfoot>
         </table>
       </div>
     </div>
@@ -220,6 +225,7 @@ table { width: 100%; border-collapse: collapse; }
       <table class="up">
         <thead><tr id="up-head"><th>Presenting unit</th></tr></thead>
         <tbody id="up-body"><tr><td class="empty" style="border:0">Upload status appears once it loads.</td></tr></tbody>
+        <tfoot id="up-total"></tfoot>
       </table>
     </div>
     <p class="synced" id="up-synced"></p>
@@ -243,6 +249,7 @@ table { width: 100%; border-collapse: collapse; }
   </section>
 
   <p class="foot">Target dates and points are as proposed in the minutes (v1.1, 10 Oct 2026). Anyone with edit or contributor access can mark an action done; everyone else sees a read-only view.</p>
+  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
 </main>
 
 <script>
@@ -300,6 +307,16 @@ table { width: 100%; border-collapse: collapse; }
       const tdb = el('td'), bar = el('div', 'bar'), fill = el('i'); fill.style.width = (pct * 100) + '%'; bar.append(fill); tdb.append(bar); tr.append(tdb);
       tb.append(tr);
     });
+    // Grand total across divisions.
+    const tf = document.getElementById('league-total'); tf.replaceChildren();
+    if (rows.length) {
+      const T = rows.reduce((a, d) => ({ n: a.n + d.n, done: a.done + d.done, earned: a.earned + d.earned, avail: a.avail + d.avail }), { n: 0, done: 0, earned: 0, avail: 0 });
+      const tr = el('tr', 'total'), pct = T.avail ? T.earned / T.avail : 0;
+      tr.append(el('td', ''), el('td', '', 'Grand total'), el('td', 'r num', `${T.done}/${T.n}`));
+      const tdp = el('td', 'r'); tdp.append(el('span', 'pts num', `${T.earned % 1 ? T.earned.toFixed(1) : T.earned}/${T.avail}`)); tr.append(tdp);
+      const tdb = el('td', 'num', `${Math.round(pct * 100)}% earned`); tr.append(tdb);
+      tf.append(tr);
+    }
   }
 
   function renderLevels() {
@@ -437,6 +454,15 @@ table { width: 100%; border-collapse: collapse; }
       });
       body.append(tr);
     });
+    // Totals per meeting: units with a deck in, and files uploaded.
+    const tf = document.getElementById('up-total'); tf.replaceChildren();
+    const ttr = el('tr', 'total'); ttr.append(el('td', 'unit', 'Total'));
+    meetings.forEach(m => {
+      const inUnits = units.filter(u => u.meetings && u.meetings[m.date] && u.meetings[m.date].files);
+      const files = inUnits.reduce((a, u) => a + u.meetings[m.date].files, 0);
+      ttr.append(el('td', 'num', `${inUnits.length} of ${units.length} units · ${files} files`));
+    });
+    tf.append(ttr);
     meetings.forEach(m => {
       const n = units.filter(u => u.meetings && u.meetings[m.date] && u.meetings[m.date].files).length;
       sum.append(el('span', 'pill ' + (n === units.length ? 's-done' : today() > m.date ? 's-over' : 's-wait'), `${m.label}: ${n} of ${units.length} in`));

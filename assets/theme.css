@@ -78,5 +78,5 @@ body {
 .dash-footer { margin-top: var(--cds-gap-xl); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 
 .dash-nav { max-width: 1400px; margin-inline: auto; padding: 14px var(--dash-gutter) 0; font-size: var(--cds-font-size-caption); }
-.dash-nav a { color: var(--color-fg-muted); text-decoration: none; }
+.dash-nav a { color: var(--color-fg-muted); text-decoration: none; margin-right: 18px; }
 .dash-nav a:hover { color: var(--color-fg); text-decoration: underline; }

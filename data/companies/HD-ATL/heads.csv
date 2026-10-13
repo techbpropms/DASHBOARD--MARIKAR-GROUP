@@ -1,22 +1,22 @@
-head,group,amount
-Sales -Spares Parts,Spare parts,3455328.85
-Sales Accessories,Accessories,1984079.64
-E Module Calibration charges,Labour & service charges,890242.0
-LABOUR CHARGE,Labour & service charges,877907.0
-Burnishing Charges,Labour & service charges,726200.0
-AMC SALE,AMC & warranty,406911.03
-ACCESSORY FITMENT LABOUR,Labour & service charges,348470.0
-Transfer of Spares to Branches,Branch transfers,267366.25
-Consumable Charges,Labour & service charges,173719.0
-PAINTING,Labour & service charges,162950.0
-PAID SERVICE,Labour & service charges,132370.0
-ACCIDENTAL REPAIRS,Labour & service charges,113250.0
-CLUTCH OVERHAULING,Labour & service charges,103315.0
-GEAR OIL REFILLING CHARGES,Labour & service charges,86257.0
-Extended Warranty Plus,AMC & warranty,69358.73
-OUT SIDE REPAIR WORK,Labour & service charges,46880.0
-WASHING CHARGES,Labour & service charges,21247.0
-CHAIN LUBRICATION,Labour & service charges,14700.0
-ESTIMATE CHARGES,Labour & service charges,577.0
-DISCOUNT-GST(LABOUR),Discounts,-159063.05
-DISCOUNT-GST(SPARES),Discounts,-1006247.96
+fy,head,group,amount
+2026-27,Sales -Spares Parts,Spare parts,3455328.85
+2026-27,Sales Accessories,Accessories,1984079.64
+2026-27,E Module Calibration charges,Labour & service charges,890242.0
+2026-27,LABOUR CHARGE,Labour & service charges,877907.0
+2026-27,Burnishing Charges,Labour & service charges,726200.0
+2026-27,AMC SALE,AMC & warranty,406911.03
+2026-27,ACCESSORY FITMENT LABOUR,Labour & service charges,348470.0
+2026-27,Transfer of Spares to Branches,Branch transfers,267366.25
+2026-27,Consumable Charges,Labour & service charges,173719.0
+2026-27,PAINTING,Labour & service charges,162950.0
+2026-27,PAID SERVICE,Labour & service charges,132370.0
+2026-27,ACCIDENTAL REPAIRS,Labour & service charges,113250.0
+2026-27,CLUTCH OVERHAULING,Labour & service charges,103315.0
+2026-27,GEAR OIL REFILLING CHARGES,Labour & service charges,86257.0
+2026-27,Extended Warranty Plus,AMC & warranty,69358.73
+2026-27,OUT SIDE REPAIR WORK,Labour & service charges,46880.0
+2026-27,WASHING CHARGES,Labour & service charges,21247.0
+2026-27,CHAIN LUBRICATION,Labour & service charges,14700.0
+2026-27,ESTIMATE CHARGES,Labour & service charges,577.0
+2026-27,DISCOUNT-GST(LABOUR),Discounts,-159063.05
+2026-27,DISCOUNT-GST(SPARES),Discounts,-1006247.96
