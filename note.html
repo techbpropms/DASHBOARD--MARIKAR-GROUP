@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HD Attingal Reconciliation Note</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="icon" href="assets/img/marikar-group.png">
+<style>
+/* Layout: the hub's navy masthead, then one reading column for the note. */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --ink: #101828; --muted: #586174; --line: #e2e5eb;
+  --mast: #0f1b33; --mast-2: #16244a; --violet: #2e3192; --gray: #75787b; --gold: #a87b2a;
+  --accent-text: #2e3192; --ok: #17694d; --ok-soft: #e3f1ea; --warn: #92560a; --warn-soft: #f8eedd;
+  --part: #7a5200; --part-soft: #f6ecd6; --code: #eef0f4;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
+  --accent-text: #b9bcf5; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --part: #e2bd6c; --part-soft: #352c18; --code: #1f2840; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
+  --accent-text: #b9bcf5; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --part: #e2bd6c; --part-soft: #352c18; --code: #1f2840; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+a { color: var(--accent-text); }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 920px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+.mast { background: linear-gradient(180deg, var(--mast) 0%, var(--mast-2) 100%); color: #fff; padding-block: 30px 30px; position: relative; }
+.mast::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, var(--violet) 0 72%, var(--gray) 72% 100%); }
+.hub-link { font-size: 12.5px; margin-bottom: 16px; }
+.hub-link a { color: rgba(255,255,255,.75); text-decoration: none; }
+.hub-link a:hover { color: #fff; text-decoration: underline; }
+.brand { display: flex; align-items: center; gap: 18px; }
+.logo { flex: none; background: #fff; border-radius: 12px; padding: 6px 8px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.logo img { display: block; height: 72px; width: auto; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.mast h1 { font-size: clamp(24px, 3.6vw, 34px); line-height: 1.15; font-weight: 800; margin: 4px 0 6px; text-wrap: balance; }
+.mast .by { margin: 0; opacity: .85; font-size: 14px; }
+main { padding-block: 28px 48px; }
+article { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: clamp(18px, 4vw, 36px); }
+article h2 { font-size: 19px; font-weight: 800; margin: 32px 0 10px; padding-top: 18px; border-top: 1px solid var(--line); letter-spacing: -.01em; }
+article h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+article p, article li { max-width: 70ch; }
+article p { margin: 0 0 12px; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .86em; background: var(--code); padding: 1px 5px; border-radius: 5px; word-break: break-word; }
+.tbl { overflow-x: auto; margin: 6px 0 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: bottom; }
+td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+.r { text-align: right; white-space: nowrap; }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.part { background: var(--part-soft); color: var(--part); }
+.pill.wait { background: var(--warn-soft); color: var(--warn); }
+ul, ol { padding-left: 20px; margin: 0 0 14px; }
+li { margin: 4px 0; }
+ul.checks { list-style: none; padding: 0; }
+ul.checks li { display: flex; gap: 10px; align-items: flex-start; }
+.box { flex: none; width: 18px; height: 18px; margin-top: 3px; border-radius: 5px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+li.done .box { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+li.done > span:last-child { color: var(--muted); }
+.credit { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: 12.5px; }
+.credit a { font-weight: 600; }
+.live { margin-top: 18px; font-size: 13px; color: var(--muted); }
+@media (max-width: 560px) { .brand { align-items: flex-start; } .logo img { height: 54px; } }
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <div class="hub-link"><a href="index.html">← Marikar Group performance hub</a></div>
+    <div class="brand">
+      <div class="logo"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
+      <div>
+        <div class="eyebrow">Power BI data readiness · Pilot export</div>
+        <h1>HD Attingal pilot export — reconciliation note</h1>
+        <p class="by">12 October 2026 · Dr. Babu B., BPro Consulting &amp; Technologies</p>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <article>
+<h2 id="summary">Summary</h2>
+<p>The HD Attingal sales register for Apr–Sep 2026 works as the pilot export. It reconciles to Tally's own Grand Total to the rupee: ₹1,02,52,514 gross and ₹57,12,868 of item value.</p>
+<p>The pilot passes 3 of the playbook's 8 checks outright, 2 in part, and 3 are pending on files not yet sent. Before rollout we need the FY 2025–26 register, the two stock summaries and the stock movement reports, plus an agreed company code for this unit.</p>
+<h2 id="what-was-received">What was received</h2>
+<p>One file: <code>HD_ATL_01.04.26_to_30.09.26_sales_register_with_inventory.xls</code>, a Tally <em>Service Bill Register</em> for MARIKAR (MOTORS) LTD, Attingal (Honda two-wheelers). It is item-wise: one row per bill, then one row per item on it.</p>
+<div class="tbl"><table><thead><tr><th class="">Measure</th><th class="">Value</th></tr></thead><tbody><tr><td class="">Period on the report header</td><td class="">1 Apr – 30 Sep 2026</td></tr><tr><td class="">First and last bill</td><td class="">10 Apr – 30 Sep 2026 (147 billing days)</td></tr><tr><td class="">Bills</td><td class="">7,677</td></tr><tr><td class="">Item lines</td><td class="">21,732 (1,345 distinct items)</td></tr><tr><td class="">Columns</td><td class="">33 (date, party, voucher type and number, quantity, value, 25 ledger columns)</td></tr></tbody></table></div>
+<div class="tbl"><table><thead><tr><th class="">Voucher type</th><th class="r">Bills</th><th class="">Number series</th></tr></thead><tbody><tr><td class="">Service Bill</td><td class="r">4,465</td><td class="">KL07BB0126000001–4465</td></tr><tr><td class="">Local Sales</td><td class="r">1,850</td><td class="">HASBC26270001–1851</td></tr><tr><td class="">Spare Sale Invoice</td><td class="r">681</td><td class="">KL07BB0126C00001–681</td></tr><tr><td class="">AMC Service Bill</td><td class="r">572</td><td class="">KL07BB0126R00001–572</td></tr><tr><td class="">Branch Transfer Out Spare</td><td class="r">106</td><td class="">HABO26270001–107</td></tr><tr><td class="">Extended Warranty Sales</td><td class="r">3</td><td class="">KL07BB0126E00001–3</td></tr></tbody></table></div>
+<p>The file is really an Excel 2007+ (.xlsx) workbook with an .xls name. Excel opens it fine, but some tools reject it until it is renamed.</p>
+<h2 id="reconciliation-results">Reconciliation results</h2>
+<p>Every total we rebuilt from the rows matches the register's Grand Total row.</p>
+<div class="tbl"><table><thead><tr><th class="">Check</th><th class="">Rebuilt from rows (₹)</th><th class="">Tally Grand Total (₹)</th><th class="">Result</th></tr></thead><tbody><tr><td class="">Gross total, incl. GST</td><td class="">1,02,52,514.46</td><td class="">1,02,52,514.46</td><td class=""><span class="pill ok">Match</span></td></tr><tr><td class="">Item value (sum of item lines)</td><td class="">57,12,868.26</td><td class="">57,12,868.26</td><td class=""><span class="pill ok">Match</span></td></tr><tr><td class="">Sales – spare parts</td><td class="">34,55,328.85</td><td class="">34,55,328.85</td><td class=""><span class="pill ok">Match</span></td></tr><tr><td class="">Sales – accessories</td><td class="">19,84,079.64</td><td class="">19,84,079.64</td><td class=""><span class="pill ok">Match</span></td></tr><tr><td class="">CGST and SGST (each)</td><td class="">7,68,334.93</td><td class="">7,68,334.93</td><td class=""><span class="pill ok">Match</span></td></tr><tr><td class="">Discounts (spares + labour)</td><td class="">11,65,311.01</td><td class="">11,65,311.01</td><td class=""><span class="pill ok">Match</span></td></tr><tr><td class="">Other 19 income ledgers</td><td class="">each summed separately</td><td class="">each column</td><td class=""><span class="pill ok">All match</span></td></tr></tbody></table></div>
+<p>The export drops minus signs, so two things needed correcting before the totals tie:</p>
+<ul><li><strong>21 service bills with a negative total.</strong> On these the discount was bigger than the bill. Tally's Grand Total treats them as negative, but the rows show them as positive. Taken at face value they overstate gross by ₹14,057.44 (2 × ₹7,028.72). We detect these bills by checking each bill's ledger arithmetic and flip their sign.</li><li><strong>Round-off.</strong> Round-off amounts add up to ₹1,864.77 as shown, against a net of ₹27.11 in the Grand Total, because negative round-offs lose their sign. The effect on revenue is immaterial, but any model must not add the column at face value.</li></ul>
+<p>IGST is not a column here because all sales are intra-state, and the GSTIN column is filled on only 75 bills (B2B customers).</p>
+<h2 id="checklist-against-the-playbook">Checklist against the playbook</h2>
+<p>Three checks pass, two pass in part and three wait on files not yet sent (playbook section 06).</p>
+<div class="tbl"><table><thead><tr><th class="r">#</th><th class="">Check</th><th class="">Status</th><th class="">Finding</th></tr></thead><tbody><tr><td class="r">01</td><td class="">Correct company and reporting period</td><td class=""><span class="pill part">Partial</span></td><td class="">Company is right. The header says 1 Apr, but every number series starts at 1 on 10 Apr: Accounts to confirm no bills were raised 1–9 Apr (or say where they are).</td></tr><tr><td class="r">02</td><td class="">Sales totals reconciled to TallyPrime</td><td class=""><span class="pill ok">Pass</span></td><td class="">Ties to the register's Grand Total to the paisa. Still to do: tie to the sales ledgers in Tally's P&amp;L and to GSTR-1 for the same months.</td></tr><tr><td class="r">03</td><td class="">Returns, credit notes, discounts and taxes treated consistently</td><td class=""><span class="pill part">Partial</span></td><td class="">Discounts and CGST/SGST are present. No sales returns or credit notes appear, and the export drops minus signs (see above).</td></tr><tr><td class="r">04</td><td class="">Item-wise details included</td><td class=""><span class="pill ok">Pass</span></td><td class="">21,732 item lines with name, part number, quantity and value.</td></tr><tr><td class="r">05</td><td class="">Stock closing quantities and values reconciled</td><td class=""><span class="pill wait">Pending</span></td><td class="">No stock summary was sent.</td></tr><tr><td class="r">06</td><td class="">Company code in every export and folder</td><td class=""><span class="pill wait">Pending</span></td><td class="">File uses "HD_ATL", not an agreed PC code.</td></tr><tr><td class="r">07</td><td class="">No records deleted or manually changed</td><td class=""><span class="pill ok">Pass</span></td><td class="">No duplicate numbers. Two numbers are missing: Local Sales HASBC26270623 and Branch Transfer HABO26270049. Accounts to confirm these were cancelled.</td></tr><tr><td class="r">08</td><td class="">All periods and report types supplied</td><td class=""><span class="pill wait">Pending</span></td><td class="">1 of 6 files received (see the next section).</td></tr></tbody></table></div>
+<h2 id="files-still-needed-from-accounts">Files still needed from Accounts</h2>
+<p>Five of the six playbook files for this unit are outstanding. Without them there is no year-on-year comparison and no inventory view. <code>PCxx</code> stands for the company code still to be agreed.</p>
+<ul class="checks"><li class="done"><span class="box" aria-label="received">✓</span><span><code>PCxx_SalesRegister_FY2026-27_Apr-Sep.xlsx</code> — received as the HD_ATL file; rename once the code is agreed</span></li><li class="todo"><span class="box" aria-label="outstanding"></span><span><code>PCxx_SalesRegister_FY2025-26.xlsx</code> — 1 Apr 2025 – 31 Mar 2026, same report and layout as the pilot; this is what makes the Apr–Sep year-on-year comparison possible</span></li><li class="todo"><span class="box" aria-label="outstanding"></span><span><code>PCxx_StockSummary_2026-03-31.xlsx</code> — item-wise closing quantity and value, stock group, UOM, godown</span></li><li class="todo"><span class="box" aria-label="outstanding"></span><span><code>PCxx_StockSummary_2026-09-30.xlsx</code> — same layout</span></li><li class="todo"><span class="box" aria-label="outstanding"></span><span><code>PCxx_StockMovement_FY2025-26.xlsx</code> — inventory vouchers: date, voucher reference, item, inward and outward quantity, rate, value, godown</span></li><li class="todo"><span class="box" aria-label="outstanding"></span><span><code>PCxx_StockMovement_FY2026-27_Apr-Sep.xlsx</code> — same layout</span></li><li class="todo"><span class="box" aria-label="outstanding"></span><span>Monthly month-end stock snapshots, Apr 2025 – Sep 2026 (preferred, not required)</span></li></ul>
+<p>Open questions for Accounts:</p>
+<ol><li>Which company code does HD Attingal get?</li><li>Were any bills raised 1–9 Apr 2026, perhaps in another company or series?</li><li>Were HASBC26270623 and HABO26270049 cancelled?</li><li>Are sales returns and credit notes kept in a separate register? If so, please export it for both periods.</li></ol>
+<h2 id="export-notes-for-the-other-companies">Export notes for the other companies</h2>
+<p>The pilot shows what to ask for up front so later exports need no rework:</p>
+<ul><li><strong>Keep the pilot's layout.</strong> Use the register's item-wise view (bill row, then item rows) with every ledger as its own column. That is what lets totals tie column by column.</li><li><strong>Export minus signs, or use Dr/Cr columns.</strong> If Tally's Excel export drops signs, also send the register as XML or with separate debit and credit columns, so negative bills and round-offs keep their sign.</li><li><strong>Save as real .xls or .xlsx.</strong> Avoid exporting as .xlsx under an .xls name.</li><li><strong>Separate customer from vehicle.</strong> "Particulars" combines the customer's name with the vehicle number, and some phone numbers are in it too. The dashboard needs neither, so the files can be shared with fewer people if the party ledger is exported cleanly or masked.</li><li><strong>Include the Grand Total row.</strong> It is the reconciliation anchor for check 02.</li><li><strong>One period per file, whole months.</strong> Name it by company code and period exactly as in playbook section 05.</li></ul>
+<h2 id="next-steps">Next steps</h2>
+<p>If the outstanding files arrive by 23 Oct, the pilot dashboard can show the year-on-year view at the 3 Nov HOD meeting. That is also the date for HOD action A2, the standard review template.</p>
+<div class="tbl"><table><thead><tr><th class="">Step</th><th class="">Owner</th><th class="">Due</th></tr></thead><tbody><tr><td class="">Agree company codes for all units</td><td class="">Finance Head</td><td class="">16 Oct 2026</td></tr><tr><td class="">Answer the four open questions</td><td class="">Accounts</td><td class="">16 Oct 2026</td></tr><tr><td class="">Send the five outstanding HD Attingal files</td><td class="">Accounts</td><td class="">23 Oct 2026</td></tr><tr><td class="">Tie the pilot to the Tally P&amp;L sales ledgers and GSTR-1 (check 02)</td><td class="">Accounts, with BPro</td><td class="">23 Oct 2026</td></tr><tr><td class="">Add YoY and stock views to the pilot dashboard; issue it as the A2 template, alongside AMZES (A10)</td><td class="">BPro</td><td class="">3 Nov 2026</td></tr><tr><td class="">Roll the export out to the other companies</td><td class="">Accounts, all units</td><td class="">after sign-off on 3 Nov</td></tr></tbody></table></div>
+<p>The pilot dashboard already shows Apr–Sep 2026 sales for HD Attingal, and the files in this note are what complete it.</p>
+  </article>
+  <p class="live">The editable version of this note lives on claude.ai, where Accounts and BPro comment on it: <a href="https://claude.ai/code/artifact/bd142289-1c36-41f8-8980-c8092bb7b324" target="_blank" rel="noopener">open the live note</a> (for people it has been shared with). Source text: <a href="docs/reconciliation-note.md">docs/reconciliation-note.md</a>.</p>
+  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
+</main>
+</body>
+</html>

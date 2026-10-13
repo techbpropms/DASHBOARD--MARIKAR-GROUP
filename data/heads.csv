@@ -1,22 +1,22 @@
-company,head,group,amount
-HD-ATL,Sales -Spares Parts,Spare parts,3455328.85
-HD-ATL,Sales Accessories,Accessories,1984079.64
-HD-ATL,E Module Calibration charges,Labour & service charges,890242.0
-HD-ATL,LABOUR CHARGE,Labour & service charges,877907.0
-HD-ATL,Burnishing Charges,Labour & service charges,726200.0
-HD-ATL,AMC SALE,AMC & warranty,406911.03
-HD-ATL,ACCESSORY FITMENT LABOUR,Labour & service charges,348470.0
-HD-ATL,Transfer of Spares to Branches,Branch transfers,267366.25
-HD-ATL,Consumable Charges,Labour & service charges,173719.0
-HD-ATL,PAINTING,Labour & service charges,162950.0
-HD-ATL,PAID SERVICE,Labour & service charges,132370.0
-HD-ATL,ACCIDENTAL REPAIRS,Labour & service charges,113250.0
-HD-ATL,CLUTCH OVERHAULING,Labour & service charges,103315.0
-HD-ATL,GEAR OIL REFILLING CHARGES,Labour & service charges,86257.0
-HD-ATL,Extended Warranty Plus,AMC & warranty,69358.73
-HD-ATL,OUT SIDE REPAIR WORK,Labour & service charges,46880.0
-HD-ATL,WASHING CHARGES,Labour & service charges,21247.0
-HD-ATL,CHAIN LUBRICATION,Labour & service charges,14700.0
-HD-ATL,ESTIMATE CHARGES,Labour & service charges,577.0
-HD-ATL,DISCOUNT-GST(LABOUR),Discounts,-159063.05
-HD-ATL,DISCOUNT-GST(SPARES),Discounts,-1006247.96
+company,fy,head,group,amount
+HD-ATL,2026-27,Sales -Spares Parts,Spare parts,3455328.85
+HD-ATL,2026-27,Sales Accessories,Accessories,1984079.64
+HD-ATL,2026-27,E Module Calibration charges,Labour & service charges,890242.0
+HD-ATL,2026-27,LABOUR CHARGE,Labour & service charges,877907.0
+HD-ATL,2026-27,Burnishing Charges,Labour & service charges,726200.0
+HD-ATL,2026-27,AMC SALE,AMC & warranty,406911.03
+HD-ATL,2026-27,ACCESSORY FITMENT LABOUR,Labour & service charges,348470.0
+HD-ATL,2026-27,Transfer of Spares to Branches,Branch transfers,267366.25
+HD-ATL,2026-27,Consumable Charges,Labour & service charges,173719.0
+HD-ATL,2026-27,PAINTING,Labour & service charges,162950.0
+HD-ATL,2026-27,PAID SERVICE,Labour & service charges,132370.0
+HD-ATL,2026-27,ACCIDENTAL REPAIRS,Labour & service charges,113250.0
+HD-ATL,2026-27,CLUTCH OVERHAULING,Labour & service charges,103315.0
+HD-ATL,2026-27,GEAR OIL REFILLING CHARGES,Labour & service charges,86257.0
+HD-ATL,2026-27,Extended Warranty Plus,AMC & warranty,69358.73
+HD-ATL,2026-27,OUT SIDE REPAIR WORK,Labour & service charges,46880.0
+HD-ATL,2026-27,WASHING CHARGES,Labour & service charges,21247.0
+HD-ATL,2026-27,CHAIN LUBRICATION,Labour & service charges,14700.0
+HD-ATL,2026-27,ESTIMATE CHARGES,Labour & service charges,577.0
+HD-ATL,2026-27,DISCOUNT-GST(LABOUR),Discounts,-159063.05
+HD-ATL,2026-27,DISCOUNT-GST(SPARES),Discounts,-1006247.96

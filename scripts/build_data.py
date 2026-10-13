@@ -18,6 +18,7 @@ Only aggregates are written; customer names, phones and vehicle numbers never le
 import argparse
 import collections
 import csv
+import datetime
 import glob
 import json
 import os
@@ -40,17 +41,23 @@ REQUIRED = [
 ]
 
 FILES = {
-    'monthly': ['month', 'invoices', 'service_jobs', 'gross', 'taxable', 'gst', 'discount', 'service_gross'],
-    'streams': ['month', 'stream', 'amount'],
-    'heads': ['head', 'group', 'amount'],
-    'voucher_types': ['voucher_type', 'invoices', 'gross', 'taxable'],
-    'daily': ['date', 'invoices', 'service_jobs', 'gross'],
-    'items': ['part_no', 'item', 'qty', 'value', 'lines', 'main_channel'],
+    'monthly': ['fy', 'month', 'invoices', 'service_jobs', 'gross', 'taxable', 'gst', 'discount', 'service_gross'],
+    'streams': ['fy', 'month', 'stream', 'amount'],
+    'heads': ['fy', 'head', 'group', 'amount'],
+    'voucher_types': ['fy', 'voucher_type', 'invoices', 'gross', 'taxable'],
+    'daily': ['fy', 'date', 'invoices', 'service_jobs', 'gross'],
+    'items': ['fy', 'part_no', 'item', 'qty', 'value', 'lines', 'main_channel'],
 }
 
 
 def num(v):
     return v if isinstance(v, (int, float)) else 0
+
+
+def fy_of(d):
+    """Indian financial year label for a date: 1 Apr 2026 - 31 Mar 2027 is '2026-27'."""
+    y = d.year if d.month >= 4 else d.year - 1
+    return f'{y}-{(y + 1) % 100:02d}'
 
 
 def summarise(path):
@@ -67,11 +74,12 @@ def summarise(path):
     vt = collections.defaultdict(lambda: [0, 0.0, 0.0])
     day = collections.defaultdict(lambda: [0, 0, 0.0])
     items = collections.defaultdict(lambda: [0, 0.0, 0, collections.Counter()])
-    cur = None
+    cur, cur_fy = None, None
     for r in body:
         if r[0] is not None:
             d, t = r[0], r[2]
             m = d.strftime('%Y-%m')
+            fy = fy_of(d)
             plus = sum(num(r[i]) for i in GROUP)
             disc = sum(num(r[i]) for i in DISCOUNT_COLS)
             gst = num(r[10]) + num(r[11])
@@ -87,18 +95,18 @@ def summarise(path):
                 M['service_jobs'] += 1; M['service_gross'] += g
             for i, grp in GROUP.items():
                 if num(r[i]):
-                    stream[(m, grp)] += num(r[i]); heads[(hdr[i], grp)] += num(r[i])
+                    stream[(m, grp)] += num(r[i]); heads[(fy, hdr[i], grp)] += num(r[i])
             stream[(m, 'Discounts')] -= disc
             for i in DISCOUNT_COLS:
                 if num(r[i]):
-                    heads[(hdr[i], 'Discounts')] -= num(r[i])
-            V = vt[t]; V[0] += 1; V[1] += g; V[2] += taxable
+                    heads[(fy, hdr[i], 'Discounts')] -= num(r[i])
+            V = vt[(fy, t)]; V[0] += 1; V[1] += g; V[2] += taxable
             D = day[d.strftime('%Y-%m-%d')]; D[0] += 1; D[1] += t in SERVICE; D[2] += g
-            cur = t
+            cur, cur_fy = t, fy
         elif r[1]:
             mm = re.match(r'^(.*)\[([^\]]+)\]\s*$', r[1])
             name, pn = (mm.group(1).strip(), mm.group(2).strip()) if mm else (r[1].strip(), '')
-            I = items[(pn, name)]
+            I = items[(cur_fy, pn, name)]
             I[0] += num(r[6]); I[1] += num(r[7]); I[2] += 1; I[3][cur] += 1
 
     def chan(c):
@@ -110,18 +118,22 @@ def summarise(path):
         return 'Counter sale'
 
     months = sorted(mon)
-    top = sorted(items.items(), key=lambda kv: -kv[1][1])[:150]
+    fym = lambda m: fy_of(datetime.date(int(m[:4]), int(m[5:7]), 1))
+    top = []
+    for fy in sorted({k[0] for k in items}):  # each year's top 150 items by value
+        top += sorted([kv for kv in items.items() if kv[0][0] == fy], key=lambda kv: -kv[1][1])[:150]
     out = {
-        'monthly': [[m, int(mon[m]['invoices']), int(mon[m]['service_jobs'])] +
+        'monthly': [[fym(m), m, int(mon[m]['invoices']), int(mon[m]['service_jobs'])] +
                     [round(mon[m][k], 2) for k in ['gross', 'taxable', 'gst', 'discount', 'service_gross']] for m in months],
-        'streams': [[m, s, round(v, 2)] for (m, s), v in sorted(stream.items())],
-        'heads': sorted([[h, g, round(v, 2)] for (h, g), v in heads.items()], key=lambda x: -x[2]),
-        'voucher_types': sorted([[k, v[0], round(v[1], 2), round(v[2], 2)] for k, v in vt.items()], key=lambda x: -x[2]),
-        'daily': [[k, v[0], v[1], round(v[2], 2)] for k, v in sorted(day.items())],
-        'items': [[pn or nm, nm, q, round(v, 2), l, chan(c)] for (pn, nm), (q, v, l, c) in top],
+        'streams': [[fym(m), m, s, round(v, 2)] for (m, s), v in sorted(stream.items())],
+        'heads': sorted([[fy, h, g, round(v, 2)] for (fy, h, g), v in heads.items()], key=lambda x: (x[0], -x[3])),
+        'voucher_types': sorted([[fy, k, v[0], round(v[1], 2), round(v[2], 2)] for (fy, k), v in vt.items()], key=lambda x: (x[0], -x[3])),
+        'daily': [[fym(k[:7]), k, v[0], v[1], round(v[2], 2)] for k, v in sorted(day.items())],
+        'items': [[fy, pn or nm, nm, q, round(v, 2), l, chan(c)] for (fy, pn, nm), (q, v, l, c) in top],
     }
     dates = sorted(day)
     info = {'register_from': dates[0], 'register_to': dates[-1],
+            'fys': sorted({r[0] for r in out['monthly']}),
             'bills': sum(v[0] for v in vt.values()), 'gross': round(sum(v[1] for v in vt.values()), 2),
             'item_value': round(sum(v[1] for v in items.values()), 2), 'distinct_items': len(items)}
     return out, info
@@ -153,8 +165,8 @@ def merge(out):
                 rows.append([c['code']] + [r[k] for k in cols])
         write_csv(os.path.join(out, fid + '.csv'), ['company'] + cols, rows)
     write_csv(os.path.join(out, 'companies.csv'),
-              ['company', 'name', 'register_from', 'register_to', 'bills', 'gross'],
-              [[c['code'], c['name'], c['register_from'], c['register_to'], c['bills'], c['gross']] for c in companies])
+              ['company', 'name', 'register_from', 'register_to', 'bills', 'gross', 'fys'],
+              [[c['code'], c['name'], c['register_from'], c['register_to'], c['bills'], c['gross'], ' '.join(c.get('fys', []))] for c in companies])
     received = {(r['company'], r['file']) for r in read_csv(os.path.join(out, 'received.csv'))}
     comp = []
     for c in companies:
@@ -187,7 +199,7 @@ def main():
         with open(os.path.join(d, 'company.json'), 'w') as f:
             json.dump({'code': a.company, 'name': a.name, **info}, f, indent=2)
         print(f"{a.company}: {info['bills']:,} bills, gross {info['gross']:,.2f}, "
-              f"item value {info['item_value']:,.2f}, {info['register_from']} to {info['register_to']}")
+              f"item value {info['item_value']:,.2f}, {info['register_from']} to {info['register_to']} (FY {', '.join(info['fys'])})")
     companies = merge(a.out)
     print(f"group files rebuilt in {a.out}/ for {len(companies)} compan{'y' if len(companies) == 1 else 'ies'}")
 

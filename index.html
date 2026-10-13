@@ -5,42 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Marikar Group Performance Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="icon" href="assets/img/marikar-group.png">
 </head>
 <body>
 <style>
 /* Layout: a violet masthead with the group mark and the half-year in one line, then highlights by division, the FY 2025-26 baseline, and the doors into each tool. */
 :root {
-  --bg: #f5f5f8;
+  --bg: #f5f6f8;
   --surface: #ffffff;
-  --ink: #181a33;
-  --muted: #5f6275;
-  --line: #e3e3ec;
-  --violet: #2e3192;      /* Pantone Violet C, per the group's colour guideline */
-  --violet-deep: #1d1f66;
-  --violet-soft: #e8e8f6;
+  --ink: #101828;
+  --muted: #586174;
+  --line: #e2e5eb;
+  --mast: #0f1b33;        /* deep navy masthead */
+  --mast-2: #16244a;
+  --violet: #2e3192;      /* Pantone Violet C, per the group's colour guideline: accents only */
+  --violet-deep: #1f2266;
+  --violet-soft: #ebecf7;
+  --accent-text: #2e3192;
   --gray: #75787b;        /* Pantone Cool Gray 9C */
-  --gold: #c9962b;
-  --gold-soft: #f7ecd3;
-  --ok: #1d7a4c; --ok-soft: #dcf1e5;
-  --warn: #9a5b00; --warn-soft: #fbedd6;
-  --sticky: #fbe9a0; --sticky-ink: #3b3210;
+  --gold: #a87b2a;
+  --gold-soft: #f4ecdc;
+  --ok: #17694d; --ok-soft: #e3f1ea;
+  --warn: #92560a; --warn-soft: #f8eedd;
+  --bad: #a3271d;
+  --note: #f2f4f8; --note-ink: #1d2939;
   --on-violet: #ffffff;
   --focus: #2e3192;
   --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-hand: "Caveat", "Segoe Print", cursive;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #11121f; --surface: #1a1c2e; --ink: #ecedf5; --muted: #a0a3b8; --line: #2c2f47;
-  --violet: #3a3eb0; --violet-deep: #22256f; --violet-soft: #262a52; --gray: #9a9da1;
-  --gold: #e0b252; --gold-soft: #3a3020; --ok: #6fd3a0; --ok-soft: #1b3428; --warn: #e8b35c; --warn-soft: #3a2d18;
-  --sticky: #4a4220; --sticky-ink: #f4e9b8; --focus: #9ea1f0; color-scheme: dark; } }
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --violet-deep: #2a2e80; --violet-soft: #20264a; --accent-text: #b9bcf5;
+  --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --bad: #ef8a7e; --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #11121f; --surface: #1a1c2e; --ink: #ecedf5; --muted: #a0a3b8; --line: #2c2f47;
-  --violet: #3a3eb0; --violet-deep: #22256f; --violet-soft: #262a52; --gray: #9a9da1;
-  --gold: #e0b252; --gold-soft: #3a3020; --ok: #6fd3a0; --ok-soft: #1b3428; --warn: #e8b35c; --warn-soft: #3a2d18;
-  --sticky: #4a4220; --sticky-ink: #f4e9b8; --focus: #9ea1f0; color-scheme: dark; }
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --violet-deep: #2a2e80; --violet-soft: #20264a; --accent-text: #b9bcf5;
+  --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --bad: #ef8a7e; --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
@@ -50,21 +53,19 @@ a { color: inherit; }
 .num { font-variant-numeric: tabular-nums; }
 
 /* Masthead */
-.mast { background: linear-gradient(160deg, var(--violet) 0%, var(--violet-deep) 100%); color: var(--on-violet); padding-block: 28px 44px; position: relative; overflow: hidden; }
-.mast::after { content: ""; position: absolute; right: -120px; top: -140px; width: 420px; height: 420px; border-radius: 50%; border: 60px solid rgba(255,255,255,.05); pointer-events: none; }
+.mast { background: linear-gradient(180deg, var(--mast) 0%, var(--mast-2) 100%); color: var(--on-violet); padding-block: 34px 44px; position: relative; overflow: hidden; }
+.mast::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, var(--violet) 0 72%, var(--gray) 72% 100%); }
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
 .brand { display: flex; align-items: center; gap: 14px; }
 .brand .tile { width: 78px; height: 96px; background: #fff; border-radius: 14px; display: grid; place-items: center; box-shadow: 0 6px 18px rgba(0,0,0,.18); flex: none; }
 .brand .tile img { height: 84px; width: auto; display: block; }
 .brand .name { font-weight: 800; letter-spacing: .02em; font-size: 18px; line-height: 1.15; }
 .brand .name small { display: block; font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
-.by { display: flex; align-items: center; gap: 10px; font-size: 12px; opacity: .9; }
-.by img { height: 34px; width: auto; border-radius: 6px; display: block; }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
 .mast h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.08; font-weight: 800; letter-spacing: -.02em; margin: 8px 0 14px; max-width: 18ch; text-wrap: balance; }
 .mast .lede { max-width: 62ch; font-size: 16.5px; opacity: .92; margin: 0 0 26px; }
 .hero-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 920px; }
-.hs { background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 14px 16px; }
+.hs { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-top: 2px solid var(--gold); border-radius: 14px; padding: 14px 16px; }
 .hs b { display: block; font-size: clamp(22px, 3vw, 30px); font-weight: 800; line-height: 1.1; }
 .hs span { font-size: 12.5px; opacity: .85; }
 @media (max-width: 720px) { .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -77,16 +78,12 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 /* Doors */
 .doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 14px; }
 .door { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; text-decoration: none; transition: transform .15s ease, border-color .15s ease; min-width: 0; }
-.door:hover { transform: translateY(-2px); border-color: var(--violet); }
-.door .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--violet-soft); color: var(--violet); display: grid; place-items: center; }
-:root[data-theme="dark"] .door .ic { color: #c7c9ff; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .door .ic { color: #c7c9ff; } }
+.door:hover { transform: translateY(-2px); border-color: var(--accent-text); box-shadow: 0 6px 18px rgba(16,24,40,.06); }
+.door .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--violet-soft); color: var(--accent-text); display: grid; place-items: center; }
 .door .ic svg { width: 20px; height: 20px; }
 .door h3 { margin: 4px 0 0; font-size: 16px; font-weight: 700; }
 .door p { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1; }
-.door .go { font-size: 13px; font-weight: 700; color: var(--violet); }
-:root[data-theme="dark"] .door .go { color: #c7c9ff; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .door .go { color: #c7c9ff; } }
+.door .go { font-size: 13px; font-weight: 700; color: var(--accent-text); }
 .door.soon { border-style: dashed; }
 .door.soon .go { color: var(--warn); }
 
@@ -99,19 +96,16 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 .pill { display: inline-block; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; white-space: nowrap; }
 .pill.strong { background: var(--ok-soft); color: var(--ok); }
 .pill.watch { background: var(--warn-soft); color: var(--warn); }
-.pill.plan { background: var(--violet-soft); color: var(--violet); }
-:root[data-theme="dark"] .pill.plan { color: #c7c9ff; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pill.plan { color: #c7c9ff; } }
+.pill.plan { background: var(--violet-soft); color: var(--accent-text); }
 .dv .lens { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
 .dv .lens b { white-space: nowrap; }
-.dv .lens b { font-size: 30px; font-weight: 800; color: var(--violet); line-height: 1; letter-spacing: -.01em; }
-:root[data-theme="dark"] .dv .lens b { color: #c7c9ff; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .dv .lens b { color: #c7c9ff; } }
+.dv .lens b { font-size: 30px; font-weight: 800; color: var(--ink); line-height: 1; letter-spacing: -.01em; }
 .dv .lens span { color: var(--muted); font-size: 13px; }
 .dv ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
 .dv ul li { margin: 2px 0; }
 .dv .badges { display: flex; flex-wrap: wrap; gap: 6px; }
 .badge { font-size: 11.5px; font-weight: 700; background: var(--gold-soft); border-radius: 999px; padding: 2px 9px; }
+.badge { color: var(--ink); }
 .badge::before { content: "★ "; color: var(--gold); }
 .dv .next { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; margin-top: auto; }
 .dv .next b { color: var(--ink); font-weight: 600; }
@@ -128,9 +122,7 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 .kpi b { display: block; font-size: 22px; font-weight: 800; line-height: 1.15; }
 .kpi span { font-size: 12px; color: var(--muted); }
 .kpi .d { font-size: 12px; font-weight: 700; }
-.up { color: var(--ok); } .down { color: #b4332a; }
-:root[data-theme="dark"] .down { color: #f08a7f; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .down { color: #f08a7f; } }
+.up { color: var(--ok); } .down { color: var(--bad); }
 .chart { width: 100%; height: auto; display: block; }
 .chart text { font-family: var(--f-body); fill: var(--muted); font-size: 12px; }
 .chart .v { fill: var(--ink); font-weight: 700; }
@@ -146,19 +138,40 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 .pilot .row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
 .pilot .row:last-of-type { border-bottom: 0; }
 .pilot .row b { font-weight: 700; }
-.sticky { background: var(--sticky); color: var(--sticky-ink); font-family: var(--f-hand); font-size: 21px; line-height: 1.2; padding: 12px 16px; border-radius: 4px; transform: rotate(-.8deg); box-shadow: 0 6px 14px rgba(0,0,0,.08); margin-top: 16px; }
+.sticky { background: var(--note); color: var(--note-ink); font-size: 13.5px; line-height: 1.5; padding: 12px 14px; border-radius: 10px; border-left: 3px solid var(--gold); margin-top: 16px; }
+
+/* Insights */
+.ins-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); grid-auto-flow: dense; gap: 14px; }
+.ins-wide { grid-column: span 2; grid-row: span 2; display: flex; flex-direction: column; justify-content: space-between; }
+@media (max-width: 620px) { .ins-wide { grid-column: auto; grid-row: auto; } }
+.ins { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ins-tag { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ins .big { font-size: 30px; font-weight: 800; line-height: 1.1; letter-spacing: -.01em; }
+.ins h3, .ins-wide h3 { margin: 0; font-size: 15px; font-weight: 700; }
+.ins p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.ask { margin-top: auto !important; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px !important; color: var(--ink) !important; }
+.ins-wide .ask { margin-top: 10px !important; }
+.ask b { font-weight: 700; }
+.ins-legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.ins-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.ins-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.lg-prev { background: var(--gray); opacity: .5; } .lg-now { background: var(--violet); }
+.chart .mprev { fill: var(--gray); opacity: .5; } .chart .mnow { fill: var(--violet); }
+.chart .zero { stroke: var(--muted); stroke-width: 1; }
+.chart .lbl { fill: var(--ink); font-weight: 600; }
 
 /* Watch list */
 .watch { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 10px; }
 .w { background: var(--warn-soft); border-radius: 12px; padding: 12px 14px; font-size: 13.5px; }
+.w { border-left: 3px solid var(--warn); }
 .w b { display: block; color: var(--warn); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
 
 /* Timeline */
 .tl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; position: relative; }
 .tl::before { content: ""; position: absolute; left: 0; right: 0; top: 13px; height: 3px; background: var(--line); border-radius: 2px; }
 .st { position: relative; padding: 32px 12px 0 0; }
-.st::before { content: ""; position: absolute; top: 6px; left: 0; width: 17px; height: 17px; border-radius: 50%; background: var(--surface); border: 3px solid var(--violet); }
-.st.now::before { background: var(--violet); }
+.st::before { content: ""; position: absolute; top: 6px; left: 0; width: 17px; height: 17px; border-radius: 50%; background: var(--surface); border: 3px solid var(--accent-text); }
+.st.now::before { background: var(--accent-text); }
 .st b { display: block; font-size: 13px; }
 .st strong { display: block; font-size: 15px; margin: 2px 0; }
 .st span { font-size: 12.5px; color: var(--muted); }
@@ -170,6 +183,7 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 }
 
 footer { color: var(--muted); font-size: 12.5px; padding-block: 8px 40px; border-top: 1px solid var(--line); margin-top: 8px; }
+footer .credit a { color: var(--accent-text); font-weight: 600; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; padding-top: 16px; }
 @media (prefers-reduced-motion: reduce) { .door { transition: none; } }
 </style>
@@ -181,7 +195,6 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <div class="tile"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
         <div class="name">Marikar Group<small>Performance hub</small></div>
       </div>
-      <div class="by"><span>Prepared with</span><img src="assets/img/bpro.png" alt="BPro — HRMS, PMS, LMS, Consulting"></div>
     </div>
     <div class="eyebrow">H1 FY 2026–27 review · HOD meeting, 9 October 2026</div>
     <h1>Five divisions strong, two to watch, 31 actions under way</h1>
@@ -197,7 +210,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
 
 <main class="wrap">
   <section id="tools">
-    <div class="sec-head"><h2>Open a review tool</h2><p>The tracker and the note open on claude.ai, for people they are shared with.</p></div>
+    <div class="sec-head"><h2>Open a review tool</h2><p>All open here in the hub.</p></div>
     <div class="doors">
       <a class="door" href="dashboard.html">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
@@ -205,17 +218,23 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <p>Billing, revenue mix, top items and data completeness by company, from TallyPrime exports.</p>
         <span class="go">Open dashboard →</span>
       </a>
-      <a class="door" href="https://claude.ai/artifact/QLryquq3eBo7LDxpAKfVos" target="_blank" rel="noopener">
+      <a class="door" href="tracker.html">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span>
         <h3>HOD action tracker</h3>
         <p>All 31 actions with owners and dates, the Action Points League and presentation uploads.</p>
         <span class="go">Open tracker →</span>
       </a>
-      <a class="door" href="https://claude.ai/code/artifact/bd142289-1c36-41f8-8980-c8092bb7b324" target="_blank" rel="noopener">
+      <a class="door" href="note.html">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
         <h3>Pilot reconciliation note</h3>
         <p>How the HD Attingal export reconciled, and the files still needed from Accounts.</p>
         <span class="go">Read the note →</span>
+      </a>
+      <a class="door" href="report.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+        <h3>Report builder</h3>
+        <p>Choose companies, years, sections and measures; download one PDF or Excel file with subtotals and grand totals.</p>
+        <span class="go">Build a report →</span>
       </a>
       <div class="door soon" id="division-door">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
@@ -341,6 +360,77 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     </div>
   </section>
 
+  <section id="insights">
+    <div class="sec-head"><h2>Insights for the H1 review</h2><p>Worked out from the FY 2025–26 accounts and the HD Attingal register. Each ends with a question for the owner.</p></div>
+    <div class="ins-grid">
+      <div class="panel ins-wide">
+        <div class="ins-tag">FY 2025–26 accounts · Note 28.03</div>
+        <h3>Margins thinned on every line as revenue grew</h3>
+        <p class="sub">Gross margin = sales − (opening stock + purchases − closing stock), as a share of sales.</p>
+        <svg class="chart" id="margin-chart" viewBox="0 0 560 190" role="img" aria-label="Gross margin by line. Two-wheelers 7.2% in FY25, 6.8% in FY26. Spares, accessories and oil 11.4% to 9.9%. Office automation −3.3% to −2.5%."></svg>
+        <div class="ins-legend"><span><i class="lg-prev"></i>FY 2024–25</span><span><i class="lg-now"></i>FY 2025–26</span></div>
+        <p class="ask"><b>Ask Accounts:</b> office automation shows a negative margin in both years. "Purchases" includes expenses, so confirm whether Canon/OAIP really sells below cost.</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">Accounts</div>
+        <b class="big num">+31%</b>
+        <h3>Vehicle stock grew faster than sales</h3>
+        <p>Closing stock rose from 845 to 1,111 units while units sold rose 18% (11,835 to 14,010).</p>
+        <p class="ask"><b>Ask:</b> what are the ageing and holding cost of the extra 266 units?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">Accounts</div>
+        <b class="big num">+62%</b>
+        <h3>Finance costs outpaced revenue</h3>
+        <p>Finance costs rose from ₹2.34 Cr to ₹3.79 Cr, against revenue growth of 19.3%. Higher stock is a likely driver.</p>
+        <p class="ask"><b>Ask:</b> how much of the borrowing funds inventory?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">Accounts</div>
+        <b class="big num">₹88,081</b>
+        <h3>Average price per vehicle, up 5.3%</h3>
+        <p>Two-wheeler sales value divided by units, up from ₹83,664. Price and mix did part of the growth work.</p>
+        <p class="ask"><b>Ask:</b> how much is model mix and how much is price increases?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">29%</b>
+        <h3>Spare-parts discount on spares sales</h3>
+        <p>₹10.1 L of discount against ₹34.6 L of spares (18.5% if it also covers accessories). 23.6% of service jobs carry a discount.</p>
+        <p class="ask"><b>Ask:</b> who approves discounts, and is there a cap per job?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">₹1,511</b>
+        <h3>An average service job</h3>
+        <p>₹725 of labour plus ₹786 of parts and accessories, before GST and discount, across 5,037 jobs.</p>
+        <p class="ask"><b>Ask:</b> what is the target per job for H2?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">15.6%</b>
+        <h3>Jobs with E-module calibration and burnishing</h3>
+        <p>Each appears on the same share of jobs, so they are likely sold as a pair. Together they earned ₹16.2 L.</p>
+        <p class="ask"><b>Ask:</b> what share of eligible vehicles should get it?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">123</b>
+        <h3>Items that make up 80% of item value</h3>
+        <p>Of 1,345 items sold, 9% carry 80% of the value. Engine oil 600 ml alone is ₹8.0 L.</p>
+        <p class="ask"><b>Ask:</b> are these 123 items ever out of stock?</p>
+      </div>
+      <div class="ins">
+        <div class="ins-tag">HD Attingal · H1</div>
+        <b class="big num">60 vs 48</b>
+        <h3>Jobs a day, Tue–Wed against Thursday</h3>
+        <p>The workshop is busiest early in the week. Sundays average 18 bills on the 6 Sundays it billed.</p>
+        <p class="ask"><b>Ask:</b> can bookings move to Thursday?</p>
+      </div>
+    </div>
+    <p class="sub" style="margin-top:12px">Not possible yet: repeat visits and service intervals need a clean customer or vehicle ID in the export, and division-level comparisons need the uploaded H1 decks.</p>
+  </section>
+
   <section id="roadmap">
     <div class="sec-head"><h2>The road to 31 March 2027</h2><p>Action plan levels from the minutes.</p></div>
     <div class="tl">
@@ -355,7 +445,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
 <footer>
   <div class="wrap">
     <span>Sources: HOD Review minutes (Ref. MML/HOD/MoM/2026-10/01, v1.1), FY 2025–26 provisional financial statements, HD Attingal TallyPrime register. Internal circulation.</span>
-    <span>Prepared by Dr. Babu B. · BPro Consulting &amp; Technologies</span>
+    <span class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span>
   </div>
 </footer>
 
@@ -373,6 +463,23 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     mk('text', { x: x + bw / 2, y: y - 7, 'text-anchor': 'middle', class: 'v' }, v.toFixed(1));
     mk('text', { x: x + bw / 2, y: H - 7, 'text-anchor': 'middle' }, label);
   });
+
+  // Gross margin by line, FY25 vs FY26, on one scale around zero.
+  const m = document.getElementById('margin-chart');
+  const rows = [['Two-wheelers', 7.15, 6.80], ['Spares, accessories & oil', 11.40, 9.94], ['Office automation', -3.28, -2.49]];
+  const add = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; m.appendChild(e); return e; };
+  const labW = 170, right = 548, lo = -5, hi = 13, x = (v) => labW + (v - lo) / (hi - lo) * (right - labW);
+  const fmt = (v) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(1) + '%';
+  rows.forEach(([name, prev, now], i) => {
+    const y = 14 + i * 58;
+    add('text', { x: 0, y: y + 20, class: 'lbl' }, name);
+    [[prev, 'mprev', 0], [now, 'mnow', 20]].forEach(([v, cls, dy]) => {
+      const x0 = Math.min(x(0), x(v)), w = Math.abs(x(v) - x(0));
+      add('rect', { x: x0, y: y + dy, width: Math.max(w, 1), height: 16, rx: 3, class: cls });
+      add('text', { x: v >= 0 ? x(v) + 6 : x(v) - 6, y: y + dy + 12, 'text-anchor': v >= 0 ? 'start' : 'end', class: cls === 'mnow' ? 'v' : '' }, fmt(v));
+    });
+  });
+  add('line', { x1: x(0), x2: x(0), y1: 6, y2: 184, class: 'zero' });
 })();
 </script>
 </body>

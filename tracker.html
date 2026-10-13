@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HOD Action Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="icon" href="assets/img/marikar-group.png">
+</head>
+<body>
+<style>
+/* Layout: a navy masthead with the season's numbers, then the league standings beside the review timeline, then the full action list. */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --ink: #101828;
+  --muted: #586174;
+  --line: #e2e5eb;
+  --navy: #16244a;
+  --navy-ink: #ffffff;
+  --mast: #0f1b33;
+  --violet: #2e3192;      /* Pantone Violet C: accents only */
+  --gray: #75787b;        /* Pantone Cool Gray 9C */
+  --gold: #a87b2a;
+  --gold-soft: #f4ecdc;
+  --high: #a3271d;
+  --high-soft: #fbe9e7;
+  --med: #92560a;
+  --med-soft: #f8eedd;
+  --ok: #17694d;
+  --ok-soft: #e3f1ea;
+  --late: #7a5200;
+  --late-soft: #f6ecd6;
+  --due: #2e3192;
+  --due-soft: #ebecf7;
+  --note: #f2f4f8;
+  --note-ink: #1d2939;
+  --focus: #2e3192;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --navy: #2a3a66; --navy-ink: #ffffff; --mast: #0a1226; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a;
+  --high: #ef8a7e; --high-soft: #3a2220; --med: #e2ab5a; --med-soft: #352a18;
+  --ok: #6cc9a0; --ok-soft: #16302a; --late: #e2bd6c; --late-soft: #352c18; --due: #b9bcf5; --due-soft: #20264a;
+  --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
+  --navy: #2a3a66; --navy-ink: #ffffff; --mast: #0a1226; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a;
+  --high: #ef8a7e; --high-soft: #3a2220; --med: #e2ab5a; --med-soft: #352a18;
+  --ok: #6cc9a0; --ok-soft: #16302a; --late: #e2bd6c; --late-soft: #352c18; --due: #b9bcf5; --due-soft: #20264a;
+  --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.5; margin: 0; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: clamp(16px, 3vw, 32px); padding-block: 0 48px; }
+.num { font-variant-numeric: tabular-nums; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.mast { background: linear-gradient(180deg, var(--mast) 0%, var(--navy) 100%); color: var(--navy-ink); padding-block: 32px 24px; margin-bottom: 24px; position: relative; }
+.mast::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, var(--violet) 0 72%, var(--gray) 72% 100%); }
+.mast .wrap { padding-block: 0; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: flex-end; justify-content: space-between; }
+.hub-link { margin-bottom: 14px; font-size: 12.5px; }
+.hub-link a { color: rgba(255,255,255,.75); text-decoration: none; }
+.hub-link a:hover { color: #ffffff; text-decoration: underline; }
+.notice a { color: var(--due); font-weight: 600; }
+.brand { display: flex; align-items: center; gap: 18px; min-width: 0; }
+.logo { flex: none; background: #ffffff; border-radius: 12px; padding: 6px 8px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+.logo img { display: block; height: 76px; width: auto; }
+@media (max-width: 640px) { .brand { align-items: flex-start; } .logo img { height: 56px; } }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.mast h1 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; margin: 4px 0 6px; letter-spacing: -.01em; text-wrap: balance; }
+.mast p { margin: 0; opacity: .85; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; min-width: min(100%, 560px); }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-top: 2px solid var(--gold); border-radius: 12px; padding: 12px 14px; }
+.stat b { display: block; font-size: 26px; font-weight: 800; line-height: 1.1; }
+.stat span { font-size: 12px; opacity: .8; }
+@media (max-width: 640px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.notice { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; color: var(--muted); }
+.notice[hidden] { display: none; }
+
+.top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; margin-bottom: 28px; align-items: start; }
+@media (max-width: 900px) { .top { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; min-width: 0; }
+.panel h2 { font-size: 16px; font-weight: 700; margin: 0 0 2px; }
+.panel .sub { color: var(--muted); font-size: 12.5px; margin: 0 0 12px; }
+
+table { width: 100%; border-collapse: collapse; }
+.league th { text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.league td { padding: 8px; border-bottom: 1px solid var(--line); }
+.league tr:last-child td { border-bottom: 0; }
+.league .r { text-align: right; }
+.rank { color: var(--muted); width: 1.5em; }
+.bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; min-width: 60px; }
+.bar i { display: block; height: 100%; background: var(--gold); border-radius: 4px; }
+.pts { display: inline-flex; align-items: center; gap: 4px; background: var(--gold-soft); color: var(--ink); border-radius: 999px; padding: 1px 8px; font-weight: 700; font-size: 12px; white-space: nowrap; }
+.pts::before { content: "★"; color: var(--gold); font-size: 11px; }
+
+.levels { display: flex; flex-direction: column; gap: 10px; }
+.level { display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.level .when { font-weight: 700; font-size: 13px; }
+.level .when small { display: block; font-weight: 500; color: var(--muted); font-size: 11.5px; }
+.level .seg { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 6px; padding: 1px 6px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.chip.done { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+.chip.over { background: var(--high-soft); border-color: transparent; color: var(--high); }
+.level .cnt { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.sticky { margin-top: 16px; background: var(--note); color: var(--note-ink); padding: 12px 14px; border-radius: 10px; border-left: 3px solid var(--gold); font-size: 13.5px; line-height: 1.5; }
+
+.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+.tools h2 { font-size: 18px; font-weight: 800; margin: 0 auto 0 0; }
+.seg-ctl { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg-ctl button { border: 0; background: none; padding: 6px 12px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); }
+.seg-ctl button[aria-pressed="true"] { background: var(--navy); color: var(--navy-ink); }
+.tools select, .tools input[type=search] { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 10px; font-size: 13px; }
+.tools input[type=search] { width: min(100%, 220px); }
+
+.list { display: flex; flex-direction: column; gap: 8px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 6px 14px; align-items: start; }
+.item.is-done { border-left: 3px solid var(--ok); }
+.item.is-over { border-left: 3px solid var(--high); }
+.item .id { font-weight: 800; color: var(--navy); font-size: 15px; }
+:root[data-theme="dark"] .item .id { color: var(--due); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .item .id { color: var(--due); } }
+.item .what { font-weight: 600; }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+.meta b { color: var(--ink); font-weight: 600; }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+.pill.high { background: var(--high-soft); color: var(--high); }
+.pill.medium { background: var(--med-soft); color: var(--med); }
+.pill.s-done { background: var(--ok-soft); color: var(--ok); }
+.pill.s-late { background: var(--late-soft); color: var(--late); }
+.pill.s-over { background: var(--high-soft); color: var(--high); }
+.pill.s-open { background: var(--due-soft); color: var(--due); }
+.side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.side .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.act { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 5px 10px; cursor: pointer; font-weight: 600; font-size: 12.5px; }
+.act.primary { background: var(--navy); color: var(--navy-ink); border-color: var(--navy); }
+.act:disabled { opacity: .5; cursor: default; }
+.item input[type=date] { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 3px 6px; font-size: 12.5px; }
+.note { grid-column: 2 / -1; display: flex; gap: 6px; }
+.note input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 5px 9px; font-size: 12.5px; }
+.note .who { color: var(--muted); font-size: 11.5px; align-self: center; white-space: nowrap; }
+.remark { font-style: italic; }
+@media (max-width: 640px) {
+  .item { grid-template-columns: 40px minmax(0, 1fr); }
+  .side { grid-column: 2; align-items: flex-start; }
+  .side .row { justify-content: flex-start; }
+  .note { grid-column: 1 / -1; flex-wrap: wrap; }
+}
+.uploads { margin-bottom: 28px; }
+.uploads .head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+.uploads .sum { display: flex; flex-wrap: wrap; gap: 8px; }
+.up th { text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.up th small { display: block; text-transform: none; letter-spacing: 0; font-weight: 500; }
+.up td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
+.up tr:last-child td { border-bottom: 0; }
+.up td.unit { font-weight: 600; }
+.up td.unit small { display: block; font-weight: 500; color: var(--muted); font-size: 11.5px; }
+.pill.s-wait { background: var(--med-soft); color: var(--med); }
+.synced { color: var(--muted); font-size: 12px; margin: 10px 0 0; }
+.empty { padding: 28px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; }
+.foot { margin-top: 28px; color: var(--muted); font-size: 12px; }
+.credit { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: 12.5px; }
+.credit a { color: var(--due); font-weight: 600; }
+tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom: 0; }
+td.num { white-space: nowrap; }
+</style>
+
+<header class="mast">
+  <div class="wrap hub-link"><a href="index.html">← Marikar Group performance hub</a></div>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
+      <div>
+      <div class="eyebrow">Marikar Group · HOD Review · Ref. MML/HOD/MoM/2026-10/01</div>
+      <h1>HOD Action Tracker</h1>
+      <p>Action Points League, Season 1 · 9 Oct 2026 – 31 Mar 2027 · Next review <b>Tue 3 Nov 2026</b></p>
+      </div>
+    </div>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><b class="num" id="st-done">–</b><span>Actions done</span></div>
+      <div class="stat"><b class="num" id="st-over">–</b><span>Overdue</span></div>
+      <div class="stat"><b class="num" id="st-due">–</b><span>Still due by 3 Nov</span></div>
+      <div class="stat"><b class="num" id="st-pts">–</b><span>League points earned</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="top">
+    <div class="panel" id="league-panel">
+      <h2>League standings</h2>
+      <p class="sub">Ranked by share of available points earned. High = 20, Medium = 10. Done by target: full points · done late: half · overdue: 0.</p>
+      <div style="overflow-x:auto">
+        <table class="league">
+          <thead><tr><th></th><th>Division</th><th class="r">Done</th><th class="r">Earned</th><th>Progress</th></tr></thead>
+          <tbody id="league"><tr><td colspan="5" class="empty" style="border:0">Standings appear once the actions load.</td></tr></tbody>
+          <tfoot id="league-total"></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Roadmap to 31 March</h2>
+      <p class="sub">The four levels from the minutes. Green = done, red = overdue.</p>
+      <div class="levels" id="levels"></div>
+      <div class="sticky">Update your status before each HOD meeting — the tracker is the agenda's item 01.</div>
+    </div>
+  </section>
+
+  <section class="panel uploads" id="uploads">
+    <div class="head">
+      <div>
+        <h2>Presentation uploads</h2>
+        <p class="sub" style="margin:0">Each presenting unit's deck for the HOD meeting, from the upload form (p. 25 of the minutes). Counts only.</p>
+      </div>
+      <div class="sum" id="up-sum"></div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="up">
+        <thead><tr id="up-head"><th>Presenting unit</th></tr></thead>
+        <tbody id="up-body"><tr><td class="empty" style="border:0">Upload status appears once it loads.</td></tr></tbody>
+        <tfoot id="up-total"></tfoot>
+      </table>
+    </div>
+    <p class="synced" id="up-synced"></p>
+  </section>
+
+  <section>
+    <div class="tools">
+      <h2>All actions</h2>
+      <div class="seg-ctl" role="group" aria-label="Show">
+        <button type="button" data-f="all" aria-pressed="true">All</button>
+        <button type="button" data-f="open" aria-pressed="false">Open</button>
+        <button type="button" data-f="over" aria-pressed="false">Overdue</button>
+        <button type="button" data-f="nov3" aria-pressed="false">Due by 3 Nov</button>
+        <button type="button" data-f="done" aria-pressed="false">Done</button>
+      </div>
+      <label class="sr" for="f-div" hidden>Division</label>
+      <select id="f-div" aria-label="Division"><option value="">All divisions</option></select>
+      <input id="f-q" type="search" placeholder="Search action or owner" aria-label="Search actions">
+    </div>
+    <div class="list" id="list"><div class="empty">Loading the 31 actions from the 9 October minutes…</div></div>
+  </section>
+
+  <p class="foot">Target dates and points are as proposed in the minutes (v1.1, 10 Oct 2026). Anyone with edit or contributor access can mark an action done; everyone else sees a read-only view.</p>
+  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
+</main>
+
+<script>
+(() => {
+  const PTS = { High: 20, Medium: 10 };
+  const LEVELS = [
+    { name: 'Quick wins', by: '2026-10-16', label: '16 Oct', ids: ['A1', 'A10', 'A13', 'A18'] },
+    { name: 'Plans on the table', by: '2026-11-03', label: '3 Nov', ids: ['A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A11', 'A14', 'A16', 'A17', 'A19', 'A20', 'A21', 'A22', 'A23', 'A24', 'A30'] },
+    { name: 'Systems live', by: '2026-12-31', label: '31 Dec', ids: ['A9', 'A12', 'A15', 'A25', 'A27', 'A28', 'A31'] },
+    { name: 'Embed and sustain', by: '2027-03-31', label: '31 Mar 2027', ids: ['A26', 'A29'] },
+  ];
+  const NEXT = '2026-11-03';
+  const today = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+  const fmt = (iso) => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: iso.slice(0, 4) === '2026' ? undefined : 'numeric' }) : '';
+
+  let actions = [];
+  let filter = 'all';
+  let canWrite = false;
+  let db = null, user = null;
+  const drafts = {};
+
+  function score(a) {
+    const full = PTS[a.priority] || 0;
+    if (a.status === 'done') {
+      const late = a.done_on && a.done_on > a.target;
+      return { state: late ? 'late' : 'done', earned: late ? full / 2 : full, full };
+    }
+    return { state: today() > a.target ? 'over' : 'open', earned: 0, full };
+  }
+
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+  function renderStats() {
+    const s = actions.map(score);
+    document.getElementById('st-done').textContent = `${s.filter(x => x.state === 'done' || x.state === 'late').length}/${actions.length}`;
+    document.getElementById('st-over').textContent = s.filter(x => x.state === 'over').length;
+    document.getElementById('st-due').textContent = actions.filter((a, i) => a.target <= NEXT && (s[i].state === 'open' || s[i].state === 'over')).length;
+    const earned = s.reduce((t, x) => t + x.earned, 0), avail = s.reduce((t, x) => t + x.full, 0);
+    document.getElementById('st-pts').textContent = `${earned % 1 ? earned.toFixed(1) : earned}/${avail}`;
+  }
+
+  function renderLeague() {
+    const by = new Map();
+    actions.forEach(a => {
+      const s = score(a), d = by.get(a.division) || { div: a.division, n: 0, done: 0, earned: 0, avail: 0 };
+      d.n++; d.avail += s.full; d.earned += s.earned; if (s.state === 'done' || s.state === 'late') d.done++;
+      by.set(a.division, d);
+    });
+    const rows = [...by.values()].sort((x, y) => (y.earned / y.avail) - (x.earned / x.avail) || y.earned - x.earned || x.div.localeCompare(y.div));
+    const tb = document.getElementById('league'); tb.replaceChildren();
+    rows.forEach((d, i) => {
+      const tr = el('tr'), pct = d.avail ? d.earned / d.avail : 0;
+      tr.append(el('td', 'rank num', d.earned ? String(i + 1) : '–'), el('td', '', d.div), el('td', 'r num', `${d.done}/${d.n}`));
+      const tdp = el('td', 'r'); tdp.append(el('span', 'pts num', `${d.earned % 1 ? d.earned.toFixed(1) : d.earned}/${d.avail}`)); tr.append(tdp);
+      const tdb = el('td'), bar = el('div', 'bar'), fill = el('i'); fill.style.width = (pct * 100) + '%'; bar.append(fill); tdb.append(bar); tr.append(tdb);
+      tb.append(tr);
+    });
+    // Grand total across divisions.
+    const tf = document.getElementById('league-total'); tf.replaceChildren();
+    if (rows.length) {
+      const T = rows.reduce((a, d) => ({ n: a.n + d.n, done: a.done + d.done, earned: a.earned + d.earned, avail: a.avail + d.avail }), { n: 0, done: 0, earned: 0, avail: 0 });
+      const tr = el('tr', 'total'), pct = T.avail ? T.earned / T.avail : 0;
+      tr.append(el('td', ''), el('td', '', 'Grand total'), el('td', 'r num', `${T.done}/${T.n}`));
+      const tdp = el('td', 'r'); tdp.append(el('span', 'pts num', `${T.earned % 1 ? T.earned.toFixed(1) : T.earned}/${T.avail}`)); tr.append(tdp);
+      const tdb = el('td', 'num', `${Math.round(pct * 100)}% earned`); tr.append(tdb);
+      tf.append(tr);
+    }
+  }
+
+  function renderLevels() {
+    const box = document.getElementById('levels'); box.replaceChildren();
+    const byId = new Map(actions.map(a => [a.id, a]));
+    LEVELS.forEach(L => {
+      const row = el('div', 'level');
+      const w = el('div', 'when', L.label); w.append(el('small', '', L.name)); row.append(w);
+      const seg = el('div', 'seg'); let done = 0;
+      L.ids.forEach(id => {
+        const a = byId.get(id); const s = a ? score(a) : null;
+        const c = el('span', 'chip' + (s && (s.state === 'done' || s.state === 'late') ? ' done' : s && s.state === 'over' ? ' over' : ''), id);
+        if (a) c.title = a.action;
+        if (s && (s.state === 'done' || s.state === 'late')) done++;
+        seg.append(c);
+      });
+      row.append(seg, el('div', 'cnt num', `${done}/${L.ids.length} done`));
+      box.append(row);
+    });
+  }
+
+  async function save(a, patch) {
+    if (!db || !canWrite) return;
+    const uid = user ? await user.id().catch(() => null) : null;
+    try {
+      await db.doc('actions/' + a.id).update({ ...patch, updated_at: new Date().toISOString(), updated_by: uid });
+    } catch (e) {
+      showNotice(e && e.code === 'not_granted' ? 'You can view this tracker but not change it. Ask the owner for contributor access.' : 'That change did not save. Check your connection and try again.');
+    }
+  }
+
+  let names = {};
+  async function resolveNames(ids) {
+    if (!user || !ids.length) return;
+    try { names = { ...names, ...(await user.profiles(ids)) }; } catch (e) {}
+  }
+
+  function renderList() {
+    const box = document.getElementById('list'); box.replaceChildren();
+    const q = document.getElementById('f-q').value.trim().toLowerCase();
+    const dv = document.getElementById('f-div').value;
+    const shown = actions.filter(a => {
+      const s = score(a).state;
+      if (filter === 'open' && !(s === 'open' || s === 'over')) return false;
+      if (filter === 'over' && s !== 'over') return false;
+      if (filter === 'done' && !(s === 'done' || s === 'late')) return false;
+      if (filter === 'nov3' && !(a.target <= NEXT && (s === 'open' || s === 'over'))) return false;
+      if (dv && a.division !== dv) return false;
+      if (q && !(a.action + ' ' + a.owner + ' ' + a.id).toLowerCase().includes(q)) return false;
+      return true;
+    });
+    if (!shown.length) { box.append(el('div', 'empty', actions.length ? 'No actions match these filters.' : 'No actions yet. They appear here once the tracker is seeded.')); return; }
+    shown.forEach(a => {
+      const s = score(a);
+      const it = el('article', 'item' + (s.state === 'done' || s.state === 'late' ? ' is-done' : s.state === 'over' ? ' is-over' : ''));
+      it.append(el('div', 'id', a.id));
+      const mid = el('div');
+      mid.append(el('div', 'what', a.action));
+      const meta = el('div', 'meta');
+      const own = el('span'); own.append('Owner '); own.append(el('b', '', a.owner)); meta.append(own);
+      const tg = el('span', 'num'); tg.append('Target '); tg.append(el('b', '', fmt(a.target))); meta.append(tg);
+      meta.append(el('span', '', a.division));
+      if (a.remarks) meta.append(el('span', 'remark', a.remarks));
+      mid.append(meta); it.append(mid);
+
+      const side = el('div', 'side');
+      const r1 = el('div', 'row');
+      r1.append(el('span', 'pill ' + a.priority.toLowerCase(), a.priority));
+      r1.append(el('span', 'pts num', s.state === 'late' ? `${s.earned}/${s.full}` : s.state === 'done' ? `${s.full}` : `+${s.full}`));
+      const lab = { done: 'Done on time', late: 'Done late', over: 'Overdue', open: 'Open' }[s.state];
+      r1.append(el('span', 'pill s-' + s.state, lab + (a.done_on && a.status === 'done' ? ' · ' + fmt(a.done_on) : '')));
+      side.append(r1);
+      if (canWrite) {
+        const r2 = el('div', 'row');
+        if (a.status === 'done') {
+          const di = el('input'); di.type = 'date'; di.value = a.done_on || today(); di.id = 'd-' + a.id; di.setAttribute('aria-label', 'Completed on, ' + a.id);
+          di.addEventListener('change', () => di.value && save(a, { done_on: di.value }));
+          const re = el('button', 'act', 'Reopen'); re.type = 'button';
+          re.addEventListener('click', () => save(a, { status: 'open', done_on: null }));
+          r2.append(di, re);
+        } else {
+          const b = el('button', 'act primary', 'Mark done'); b.type = 'button';
+          b.addEventListener('click', () => save(a, { status: 'done', done_on: today() }));
+          r2.append(b);
+        }
+        side.append(r2);
+      }
+      it.append(side);
+
+      const nt = el('div', 'note');
+      if (canWrite) {
+        const ni = el('input'); ni.id = 'n-' + a.id; ni.placeholder = 'Status update for the next meeting'; ni.setAttribute('aria-label', 'Status update, ' + a.id);
+        ni.value = drafts[a.id] != null ? drafts[a.id] : (a.note || '');
+        ni.addEventListener('input', () => { drafts[a.id] = ni.value; });
+        ni.addEventListener('change', () => { const v = ni.value.trim(); delete drafts[a.id]; if (v !== (a.note || '')) save(a, { note: v }); });
+        nt.append(ni);
+      } else if (a.note) {
+        nt.append(el('span', 'remark', a.note));
+      }
+      if (a.updated_by && a.updated_at) {
+        const who = (names[a.updated_by] && names[a.updated_by].name) || 'Someone';
+        nt.append(el('span', 'who', `${who} · ${fmt(a.updated_at.slice(0, 10))}`));
+      }
+      if (nt.childNodes.length) it.append(nt);
+      box.append(it);
+    });
+  }
+
+  function renderAll() { renderStats(); renderLeague(); renderLevels(); renderList(); }
+
+  let units = [], upInfo = null;
+  function renderUploads() {
+    const head = document.getElementById('up-head'), body = document.getElementById('up-body');
+    const sum = document.getElementById('up-sum'), synced = document.getElementById('up-synced');
+    const meetings = (upInfo && upInfo.meetings) || [];
+    head.replaceChildren(el('th', '', 'Presenting unit'));
+    meetings.forEach(m => { const th = el('th', '', m.label); th.append(el('small', '', m.report + ' report')); head.append(th); });
+    body.replaceChildren(); sum.replaceChildren();
+    if (!units.length || !meetings.length) {
+      const tr = el('tr'), td = el('td', 'empty', 'No upload status yet.'); td.colSpan = meetings.length + 1; td.style.border = '0'; tr.append(td); body.append(tr);
+      synced.textContent = ''; return;
+    }
+    units.forEach(u => {
+      const tr = el('tr'), name = el('td', 'unit', u.unit);
+      if (u.note) name.append(el('small', '', u.note));
+      tr.append(name);
+      meetings.forEach(m => {
+        const got = u.meetings && u.meetings[m.date], td = el('td');
+        if (got && got.files) {
+          td.append(el('span', 'pill s-done', `${got.files} file${got.files > 1 ? 's' : ''} · ${fmt(got.last)}`));
+        } else {
+          td.append(el('span', 'pill ' + (today() > m.date ? 's-over' : 's-wait'), today() > m.date ? 'Missing' : 'Not yet'));
+        }
+        tr.append(td);
+      });
+      body.append(tr);
+    });
+    // Totals per meeting: units with a deck in, and files uploaded.
+    const tf = document.getElementById('up-total'); tf.replaceChildren();
+    const ttr = el('tr', 'total'); ttr.append(el('td', 'unit', 'Total'));
+    meetings.forEach(m => {
+      const inUnits = units.filter(u => u.meetings && u.meetings[m.date] && u.meetings[m.date].files);
+      const files = inUnits.reduce((a, u) => a + u.meetings[m.date].files, 0);
+      ttr.append(el('td', 'num', `${inUnits.length} of ${units.length} units · ${files} files`));
+    });
+    tf.append(ttr);
+    meetings.forEach(m => {
+      const n = units.filter(u => u.meetings && u.meetings[m.date] && u.meetings[m.date].files).length;
+      sum.append(el('span', 'pill ' + (n === units.length ? 's-done' : today() > m.date ? 's-over' : 's-wait'), `${m.label}: ${n} of ${units.length} in`));
+    });
+    synced.textContent = upInfo.synced_at
+      ? `Last synced from “${upInfo.source}” on ${new Date(upInfo.synced_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}. ${upInfo.note || ''}`
+      : '';
+  }
+
+  function showNotice(t) { const n = document.getElementById('notice'); n.textContent = t; n.hidden = !t; }
+
+  document.querySelectorAll('.seg-ctl button').forEach(b => b.addEventListener('click', () => {
+    filter = b.dataset.f;
+    document.querySelectorAll('.seg-ctl button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderList();
+  }));
+  document.getElementById('f-div').addEventListener('change', renderList);
+  document.getElementById('f-q').addEventListener('input', renderList);
+
+  renderLevels();
+
+  (async () => {
+    const host = typeof claude !== 'undefined' ? claude : null;
+    db = host ? await host.use('db') : null;
+    user = host ? await host.use('user') : null;
+    if (!db) {
+      // Outside claude.ai (for example the repository copy), show the saved snapshot read-only.
+      try {
+        const get = (f) => fetch('data/tracker/' + f + '.json').then(r => { if (!r.ok) throw new Error(f); return r.json(); });
+        const [snap, ups, meta] = await Promise.all([get('actions'), get('uploads'), get('upload_meta')]);
+        actions = snap.actions.slice().sort((x, y) => (x.n || 0) - (y.n || 0));
+        const sel = document.getElementById('f-div');
+        sel.replaceChildren(el('option', '', 'All divisions')); sel.firstChild.value = '';
+        [...new Set(actions.map(a => a.division))].forEach(d => { const o = el('option', '', d); o.value = d; sel.append(o); });
+        units = ups.slice().sort((x, y) => (x.order || 0) - (y.order || 0)); upInfo = meta;
+        const n = document.getElementById('notice');
+        n.replaceChildren(`Read-only copy saved on ${fmt(snap.exported_at)}. Owners mark actions done on the `);
+        const a = el('a', '', 'live tracker on claude.ai'); a.href = 'https://claude.ai/artifact/QLryquq3eBo7LDxpAKfVos'; a.target = '_blank'; a.rel = 'noopener';
+        n.append(a, '.'); n.hidden = false;
+        renderAll(); renderUploads();
+      } catch (e) {
+        showNotice('Open this tracker on claude.ai while signed in to see and update the actions.');
+        document.getElementById('list').replaceChildren(el('div', 'empty', 'Sign in on claude.ai to load the actions.'));
+      }
+      return;
+    }
+    if (user) {
+      const c = await user.can('data.write').catch(() => null);
+      canWrite = c !== false;
+    }
+    db.collection('actions').onSnapshot(async (snap) => {
+      actions = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((x, y) => (x.n || 0) - (y.n || 0));
+      const sel = document.getElementById('f-div'), cur = sel.value;
+      const divs = [...new Set(actions.map(a => a.division))];
+      sel.replaceChildren(el('option', '', 'All divisions')); sel.firstChild.value = '';
+      divs.forEach(d => { const o = el('option', '', d); o.value = d; sel.append(o); });
+      sel.value = cur;
+      const ids = [...new Set(actions.map(a => a.updated_by).filter(Boolean))];
+      renderAll();
+      if (ids.length) { await resolveNames(ids); renderList(); }
+    }, () => showNotice('The tracker could not load. Reload the page to try again.'));
+    db.collection('uploads').onSnapshot((snap) => {
+      units = snap.docs.map(d => d.data()).sort((x, y) => (x.order || 0) - (y.order || 0));
+      renderUploads();
+    }, () => {});
+    db.doc('upload_meta/info').onSnapshot((snap) => {
+      upInfo = snap.exists ? snap.data() : null;
+      renderUploads();
+    }, () => {});
+  })();
+})();
+</script>
+</body>
+</html>

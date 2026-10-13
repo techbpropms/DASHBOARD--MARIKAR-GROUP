@@ -1,9 +1,12 @@
 # Dashboard — Marikar Group
 
-The Marikar Group performance hub. It has two pages:
+The Marikar Group performance hub. It has five pages:
 
 - **Landing page** (`index.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
+- **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
+- **Report builder** (`report.html`): pick companies, financial years, sections and measures (quantity, value, bills, gross, net, GST, discount), preview them, and download one PDF or Excel file. Every table has a subtotal per company and year and a grand total. With two years loaded, a year-on-year section compares them.
+- **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai.
 
 **Loaded so far:** HD Attingal (Marikar Motors Ltd, Honda two-wheelers), 10 Apr – 30 Sep 2026, the
 pilot company. Other companies appear in the company list as their exports are built.
@@ -29,7 +32,7 @@ The page loads its CSVs with `fetch`, so serve the folder rather than opening th
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000 (landing page) or http://localhost:8000/dashboard.html
+# open http://localhost:8000 (landing page), /dashboard.html, /report.html, /tracker.html or /note.html
 ```
 
 It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, root folder).
@@ -38,15 +41,19 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | Landing page (self-contained apart from the two logos) |
+| `index.html` | Landing page (self-contained apart from the logo) |
 | `dashboard.html` | Dashboard page shell and markup |
-| `assets/img/` | Marikar Group logo (from the group's Drive) and the BPro logo |
+| `report.html`, `assets/report.js` | Report builder: Excel via SheetJS, PDF via jsPDF + AutoTable (loaded from cdnjs) |
+| `note.html` | Pilot reconciliation note, rendered from `docs/reconciliation-note.md` |
+| `tracker.html` | HOD action tracker: live on claude.ai, read-only here from `data/tracker/` |
+| `assets/img/` | Marikar Group logo (from the group's Drive) |
 | `assets/theme.css` | Colour, type and spacing tokens (light and dark) |
 | `assets/dashboard.css` | Dashboard layout and chart styles |
 | `assets/dash-shim.js` | Loads `data/*.csv` and gives the charts a small data and filter API |
 | `assets/dashboard.js` | Charts, tables, filter and headline calculations |
 | `data/companies/<CODE>/` | One company's summary, written by the build script |
-| `data/*.csv` | Group files the page reads: every row carries a `company` column |
+| `data/*.csv` | Group files the pages read: every row carries `company` and financial year `fy` (e.g. `2026-27`) columns |
+| `data/tracker/*.json` | Snapshot of the tracker's actions and upload status |
 | `data/received.csv` | Requested files received besides the FY 2026–27 sales register (`company,file`) |
 | `scripts/build_data.py` | Builds a company from its register export and rebuilds the group files |
 | `TEMPLATE.md` | The standard monthly review layout (HOD action A2) |
@@ -88,4 +95,20 @@ The landing page's highlights are typed into the page, unlike the dashboard's da
 - **CSPW projection:** "CSPW Performance Vs Projection.xlsx" (FY 2026–27 projection; FY 2025–26 target).
 - **HD Attingal pilot:** this repository's data.
 
-The tracker and reconciliation-note links point to claude.ai pages. They open only for people they have been shared with.
+### Tracker snapshot
+
+`tracker.html` is the same page as the live tracker. Outside claude.ai it has no database, so it reads `data/tracker/actions.json`, `uploads.json` and `upload_meta.json` and shows them read-only, with a link to the live tracker.
+
+To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_meta` collections and commit the JSON. Leave out viewer IDs. Owners' names in the actions come from the minutes.
+
+### Totals and report outputs
+
+- **Totals in tables:**
+  - The dashboard's voucher-type and top-item tables show a subtotal per company and year when more than one is in view, and always a grand total.
+  - The companies table has a total.
+  - The tracker's league table and upload panel show totals.
+- **A year filter** on the dashboard selects one financial year or all of them.
+- **Report outputs:**
+  - The Excel file has a Parameters sheet, then one sheet per section with numbers formatted as numbers.
+  - The PDF is A4 landscape with the parameters on page 1, one table per section, and page numbers.
+- **The footer** "D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com" appears on every hub page, on every PDF page and on every Excel sheet. Its links are clickable.
