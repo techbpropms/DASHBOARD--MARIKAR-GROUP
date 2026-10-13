@@ -1,0 +1,14 @@
+{
+  "name": "Marikar Group Performance Hub",
+  "short_name": "Marikar Hub",
+  "description": "H1 FY 2026–27 review: division dashboards, sales dashboard, HOD action tracker, reports and document verification.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f2ea",
+  "theme_color": "#131c38",
+  "icons": [
+    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

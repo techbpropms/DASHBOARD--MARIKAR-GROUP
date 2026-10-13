@@ -1,8 +1,9 @@
 # Dashboard — Marikar Group
 
-The Marikar Group performance hub. It has six pages:
+The Marikar Group performance hub. It has seven pages, and installs on a phone as an app:
 
 - **Landing page** (`index.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
+- **Division dashboards** (`divisions.html`): one view per division (group vehicle sales, CSPW, Honda Kerala, AMZES, Nissan, Royal Enfield, BigWing, Canon / OAIP, HR) with H1 FY 2026–27 against H1 FY 2025–26, the full year to 31 March 2026 and the FY 2026–27 target: KPI tiles, monthly charts, breakdown tables with totals, highlights, watch points, next actions, and the files each figure came from. Data: `data/divisions.json`, transcribed from the decks and reports uploaded for the 9 October 2026 HOD meeting.
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
 - **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
 - **Report builder** (`report.html`): pick companies, financial years, sections and measures (quantity, value, bills, gross, net, GST, discount), preview them, and download one PDF or Excel file. Every table has a subtotal per company and year and a grand total. With two years loaded, a year-on-year section compares them. Every download carries the Marikar and BPro logos, a document ID and a verification QR code.
@@ -45,6 +46,8 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | `index.html` | Landing page (self-contained apart from the logo) |
 | `dashboard.html` | Dashboard page shell and markup |
 | `report.html`, `assets/report.js` | Report builder: Excel via ExcelJS (jsDelivr), PDF via jsPDF + AutoTable (cdnjs); also checks report QR codes |
+| `divisions.html`, `assets/divisions.js`, `assets/divisions.css` | Division dashboards, drawn from `data/divisions.json` |
+| `manifest.webmanifest`, `sw.js`, `assets/pwa.js`, `version.json` | Installable app and its update message |
 | `verify.html` | Document verification for fixed documents, against `data/verify/registry.json` |
 | `assets/brand.css` | The BPro credit block in every page's footer |
 | `assets/vendor/qrcode.js` | QR code generator (qrcode-generator 1.4.4, MIT) |
@@ -151,3 +154,13 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
   python3 finish.py /tmp/note.pdf ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf RN-HDATL-2026-01
   sha256sum ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf
   ```
+
+### Division dashboards: data
+
+`data/divisions.json` holds, per division, KPI tiles (`h1_fy27`, `h1_fy26`, `fy26_full`, `fy27_target`), monthly series, breakdown tables and notes, each with its source file and slide. Figures are copied from the decks as stated; where decks disagree (they sometimes do), the tile tooltip and the "Still missing" list say so. Personal details are left out: sales reps in territory tables are numbered, and HR shows the plan only. To refresh after the next HOD meeting, re-extract the new uploads into the same shape and update the file.
+
+### Mobile app and update message
+
+The hub installs on a phone ("Add to Home Screen" / "Install app"). It works offline with the last data it saw, and checks for a new version when reopened and every 30 minutes. When one is published, a banner says "Update available" with the release notes from `version.json`; **Update** switches to it.
+
+To publish an update: change `VERSION` in `sw.js` and `version` (plus `title` and `notes`) in `version.json` to the same new value, and push. Phones pick it up on their next check. This is an in-app message; notifications to a closed app would need a push server, which a static site does not have.
