@@ -1,9 +1,10 @@
 # Dashboard — Marikar Group
 
-The Marikar Group performance hub. It has two pages:
+The Marikar Group performance hub. It has three pages:
 
 - **Landing page** (`index.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
+- **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
 
 **Loaded so far:** HD Attingal (Marikar Motors Ltd, Honda two-wheelers), 10 Apr – 30 Sep 2026, the
 pilot company. Other companies appear in the company list as their exports are built.
@@ -29,7 +30,7 @@ The page loads its CSVs with `fetch`, so serve the folder rather than opening th
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000 (landing page) or http://localhost:8000/dashboard.html
+# open http://localhost:8000 (landing page), /dashboard.html or /tracker.html
 ```
 
 It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, root folder).
@@ -40,6 +41,7 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | --- | --- |
 | `index.html` | Landing page (self-contained apart from the two logos) |
 | `dashboard.html` | Dashboard page shell and markup |
+| `tracker.html` | HOD action tracker: live on claude.ai, read-only here from `data/tracker/` |
 | `assets/img/` | Marikar Group logo (from the group's Drive) and the BPro logo |
 | `assets/theme.css` | Colour, type and spacing tokens (light and dark) |
 | `assets/dashboard.css` | Dashboard layout and chart styles |
@@ -47,6 +49,7 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | `assets/dashboard.js` | Charts, tables, filter and headline calculations |
 | `data/companies/<CODE>/` | One company's summary, written by the build script |
 | `data/*.csv` | Group files the page reads: every row carries a `company` column |
+| `data/tracker/*.json` | Snapshot of the tracker's actions and upload status |
 | `data/received.csv` | Requested files received besides the FY 2026–27 sales register (`company,file`) |
 | `scripts/build_data.py` | Builds a company from its register export and rebuilds the group files |
 | `TEMPLATE.md` | The standard monthly review layout (HOD action A2) |
@@ -88,4 +91,10 @@ The landing page's highlights are typed into the page, unlike the dashboard's da
 - **CSPW projection:** "CSPW Performance Vs Projection.xlsx" (FY 2026–27 projection; FY 2025–26 target).
 - **HD Attingal pilot:** this repository's data.
 
-The tracker and reconciliation-note links point to claude.ai pages. They open only for people they have been shared with.
+The reconciliation-note link points to a claude.ai page. It opens only for people it has been shared with.
+
+### Tracker snapshot
+
+`tracker.html` is the same page as the live tracker. Outside claude.ai it has no database, so it reads `data/tracker/actions.json`, `uploads.json` and `upload_meta.json` and shows them read-only, with a link to the live tracker.
+
+To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_meta` collections and commit the JSON. Leave out viewer IDs. Owners' names in the actions come from the minutes.
