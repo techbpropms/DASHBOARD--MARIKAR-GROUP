@@ -6,7 +6,7 @@ The Marikar Group performance hub. It has five pages:
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
 - **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
 - **Report builder** (`report.html`): pick companies, financial years, sections and measures (quantity, value, bills, gross, net, GST, discount), preview them, and download one PDF or Excel file. Every table has a subtotal per company and year and a grand total. With two years loaded, a year-on-year section compares them.
-- **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai.
+- **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai. A print-ready PDF on BPro letterhead is in `docs/HD_Attingal_Reconciliation_Note_BPro.pdf`.
 
 **Loaded so far:** HD Attingal (Marikar Motors Ltd, Honda two-wheelers), 10 Apr – 30 Sep 2026, the
 pilot company. Other companies appear in the company list as their exports are built.
@@ -45,6 +45,7 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | `dashboard.html` | Dashboard page shell and markup |
 | `report.html`, `assets/report.js` | Report builder: Excel via SheetJS, PDF via jsPDF + AutoTable (loaded from cdnjs) |
 | `note.html` | Pilot reconciliation note, rendered from `docs/reconciliation-note.md` |
+| `docs/HD_Attingal_Reconciliation_Note_BPro.pdf` | The reconciliation note as a 5-page A4 PDF on BPro letterhead, for Finance |
 | `tracker.html` | HOD action tracker: live on claude.ai, read-only here from `data/tracker/` |
 | `assets/img/` | Marikar Group logo (from the group's Drive) |
 | `assets/theme.css` | Colour, type and spacing tokens (light and dark) |
