@@ -1,12 +1,13 @@
 # Dashboard — Marikar Group
 
-The Marikar Group performance hub. It has five pages:
+The Marikar Group performance hub. It has six pages:
 
 - **Landing page** (`index.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
 - **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
-- **Report builder** (`report.html`): pick companies, financial years, sections and measures (quantity, value, bills, gross, net, GST, discount), preview them, and download one PDF or Excel file. Every table has a subtotal per company and year and a grand total. With two years loaded, a year-on-year section compares them.
-- **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai. A print-ready PDF on BPro letterhead is in `docs/HD_Attingal_Reconciliation_Note_BPro.pdf`.
+- **Report builder** (`report.html`): pick companies, financial years, sections and measures (quantity, value, bills, gross, net, GST, discount), preview them, and download one PDF or Excel file. Every table has a subtotal per company and year and a grand total. With two years loaded, a year-on-year section compares them. Every download carries the Marikar and BPro logos, a document ID and a verification QR code.
+- **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai. A print-ready PDF on BPro letterhead, with a verification QR code, is in `docs/HD_Attingal_Reconciliation_Note_BPro.pdf` (document RN-HDATL-2026-01).
+- **Document verification** (`verify.html`): enter a document ID or scan a document's QR code to confirm it was issued from the hub, and check a digital copy's SHA-256 fingerprint against the register.
 
 **Loaded so far:** HD Attingal (Marikar Motors Ltd, Honda two-wheelers), 10 Apr – 30 Sep 2026, the
 pilot company. Other companies appear in the company list as their exports are built.
@@ -32,7 +33,7 @@ The page loads its CSVs with `fetch`, so serve the folder rather than opening th
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000 (landing page), /dashboard.html, /report.html, /tracker.html or /note.html
+# open http://localhost:8000 (landing page), /dashboard.html, /report.html, /tracker.html, /note.html or /verify.html
 ```
 
 It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, root folder).
@@ -43,11 +44,14 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | --- | --- |
 | `index.html` | Landing page (self-contained apart from the logo) |
 | `dashboard.html` | Dashboard page shell and markup |
-| `report.html`, `assets/report.js` | Report builder: Excel via SheetJS, PDF via jsPDF + AutoTable (loaded from cdnjs) |
+| `report.html`, `assets/report.js` | Report builder: Excel via ExcelJS (jsDelivr), PDF via jsPDF + AutoTable (cdnjs); also checks report QR codes |
+| `verify.html` | Document verification for fixed documents, against `data/verify/registry.json` |
+| `assets/brand.css` | The BPro credit block in every page's footer |
+| `assets/vendor/qrcode.js` | QR code generator (qrcode-generator 1.4.4, MIT) |
 | `note.html` | Pilot reconciliation note, rendered from `docs/reconciliation-note.md` |
 | `docs/HD_Attingal_Reconciliation_Note_BPro.pdf` | The reconciliation note as a 5-page A4 PDF on BPro letterhead, for Finance |
 | `tracker.html` | HOD action tracker: live on claude.ai, read-only here from `data/tracker/` |
-| `assets/img/` | Marikar Group logo (from the group's Drive) |
+| `assets/img/` | Marikar Group logo (from the group's Drive) and BPro logo (`bpro.png` for pages, `bpro.jpg` for downloads) |
 | `assets/theme.css` | Colour, type and spacing tokens (light and dark) |
 | `assets/dashboard.css` | Dashboard layout and chart styles |
 | `assets/dash-shim.js` | Loads `data/*.csv` and gives the charts a small data and filter API |
@@ -55,7 +59,9 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | `data/companies/<CODE>/` | One company's summary, written by the build script |
 | `data/*.csv` | Group files the pages read: every row carries `company` and financial year `fy` (e.g. `2026-27`) columns |
 | `data/tracker/*.json` | Snapshot of the tracker's actions and upload status |
+| `data/verify/registry.json` | Register of issued fixed documents: ID, title, issuer, file and SHA-256 |
 | `data/received.csv` | Requested files received besides the FY 2026–27 sales register (`company,file`) |
+| `scripts/letterhead/` | Builds the letterhead PDF of the reconciliation note (logo, document ID, QR codes) |
 | `scripts/build_data.py` | Builds a company from its register export and rebuilds the group files |
 | `TEMPLATE.md` | The standard monthly review layout (HOD action A2) |
 
@@ -112,4 +118,36 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
 - **Report outputs:**
   - The Excel file has a Parameters sheet, then one sheet per section with numbers formatted as numbers.
   - The PDF is A4 landscape with the parameters on page 1, one table per section, and page numbers.
-- **The footer** "D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com" appears on every hub page, on every PDF page and on every Excel sheet. Its links are clickable.
+- **The footer** "D&D by Dr.Babu.B. Bpro Consulting & Technologies · www.drbabu.in | www.bpropms.com" appears on every hub page (beside the BPro logo), on every PDF page and on every Excel sheet. Its links are clickable.
+
+### Branding, layout and verification of downloads
+
+- **Look:** a warm palette (ivory surfaces, BPro navy and violet, copper and amber accents) across every page, in light and dark mode. The chart colours were checked for colour-blind separation and contrast in both modes.
+- **Report PDF:** A4 landscape.
+  - Page 1 has a cover band with both logos, a parameters card and a verification card.
+  - Later pages have a running header with the BPro logo.
+  - Tables have navy headers, banded rows, shaded subtotals and a ruled grand total. Rows never split across pages.
+  - Every page has the credit, the document ID, its verification code, a QR code and "Page n of N".
+- **Report Excel:**
+  - A cover sheet holds the parameters and verification details, then one styled sheet per section.
+  - Each sheet has both logos and the QR code, frozen header rows and hyperlinked credits.
+  - Each sheet prints on A4 landscape, fitted to the page width, with repeating headings, a header and footer, and page numbers.
+- **How reports verify:**
+  - The document ID and code are the SHA-256 of the report's parameters, time of generation and every cell.
+  - The QR code opens the report builder with those parameters. It rebuilds the report from the hub's data and shows **Verified** or **Not verified**.
+  - A report verifies while the data it was built from is unchanged.
+  - The QR link points at wherever the hub is served, so generate reports from the published hub (for example GitHub Pages).
+- **How fixed documents verify:** the letterhead PDF's QR code opens `verify.html?d=<ID>`.
+  - The page shows the registered details.
+  - It checks the hub's copy against its fingerprint.
+  - It compares a copy the reader chooses, in the browser, without uploading it.
+  - The QR codes use the GitHub Pages address, so Pages must be on for them to open.
+- **Re-issuing the letterhead PDF:** after changing `scripts/letterhead/note.html`, run the following (Playwright and pypdf needed), then update the file's `sha256` in `data/verify/registry.json`. A new issue should get a new document ID.
+
+  ```sh
+  cd scripts/letterhead
+  node build.js note.html /tmp/note.html RN-HDATL-2026-01 https://techbpropms.github.io/DASHBOARD--MARIKAR-GROUP/
+  node render.js /tmp/note.html /tmp/note.pdf
+  python3 finish.py /tmp/note.pdf ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf RN-HDATL-2026-01
+  sha256sum ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf
+  ```

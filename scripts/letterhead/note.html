@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HD Attingal Pilot Export — Reconciliation Note</title>
+<style>
+/* BPro letterhead, A4 portrait. Header band and footer strip are fixed, so they repeat on every printed page;
+   the table's thead/tfoot spacers keep body text clear of them on every page. */
+:root {
+  --band: #0e1f35;      /* matches the BPro logo background */
+  --navy: #1f2b55;
+  --ink: #2a241f;
+  --muted: #6b6157;
+  --line: #e8dfd1;
+  --label: #f6f0e6;
+  --teal: #b8612b;      /* warm copper accent (kept under its old name) */
+  --violet: #5b4f9e;
+  --lilac: #a99bd8;
+  --amber: #d49a3a;
+  --amber-bg: #fbf1e1;
+  --teal-bg: #f8ece2;
+  --ok: #2d7550; --ok-bg: #e6f0e6;
+  --part: #8a5a00; --part-bg: #f6ecd6;
+  --wait: #a63a2a; --wait-bg: #f9e6df;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: "Inter", "Liberation Sans", Arial, sans-serif; font-size: 9.3pt; line-height: 1.5; color: var(--ink);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact; font-feature-settings: "tnum" 1, "cv11" 1; }
+
+/* ---------- letterhead (repeats on every page) ---------- */
+.lh-top { position: fixed; top: 0; left: 0; right: 0; height: 33mm; background: var(--band); overflow: hidden; }
+.lh-top .dots { position: absolute; left: 0; top: 0; width: 62mm; height: 30mm;
+  background-image: radial-gradient(circle, rgba(255,255,255,.34) 0.55mm, transparent 0.65mm);
+  background-size: 2.6mm 2.6mm;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,.55) 45%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,.55) 45%, transparent 100%); }
+.lh-top .logo { position: absolute; right: 16mm; top: 3mm; height: 24mm; }
+.lh-top .rule { position: absolute; left: 0; right: 0; bottom: 0; height: 3mm;
+  background: linear-gradient(105deg, #f1e6d6 0 31%, transparent 31.2%), linear-gradient(90deg, var(--violet) 0%, var(--lilac) 55%, var(--amber) 100%); }
+.lh-foot { position: fixed; left: 18mm; right: 18mm; bottom: 0; height: 15mm; border-top: 0.3mm solid var(--line); padding-top: 1.6mm;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 6mm; font-size: 7.4pt; color: var(--muted); }
+.lh-foot::before { content: ""; position: absolute; left: 0; top: -0.45mm; width: 14mm; height: 0.6mm; background: var(--teal); }
+.lh-foot .qr { flex: none; width: 13.5mm; height: 13.5mm; display: block; }
+.lh-foot .qr svg { width: 100%; height: 100%; display: block; }
+.lh-foot .grow { flex: 1; }
+.lh-foot .brand { font-weight: 700; color: var(--navy); }
+.lh-foot .credit a { color: var(--violet); text-decoration: none; font-weight: 600; }
+
+/* page frame */
+table.frame { width: 100%; border-collapse: collapse; }
+table.frame > thead td { height: 41mm; padding: 0; }
+table.frame > tfoot td { height: 18mm; padding: 0; }
+table.frame > tbody > tr > td { padding: 0 18mm; vertical-align: top; }
+
+/* ---------- title block ---------- */
+.eyebrow { font-size: 7.8pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); margin: 0 0 1.5mm; }
+h1 { font-size: 23pt; line-height: 1.08; font-weight: 800; color: var(--navy); margin: 0; letter-spacing: -.01em; text-transform: uppercase; }
+.subtitle { font-size: 11pt; color: var(--muted); margin: 2mm 0 0; }
+.title-rule { height: 0.5mm; background: var(--teal); margin: 4.5mm 0 4mm; width: 100%; }
+
+table.memo { width: 100%; border-collapse: collapse; margin-bottom: 5mm; font-size: 8.6pt; }
+table.memo td { border: 0.25mm solid var(--line); padding: 2.1mm 3mm; vertical-align: top; }
+table.memo td.k { width: 33mm; background: var(--label); font-weight: 700; color: var(--navy); font-size: 7.6pt; letter-spacing: .04em; text-transform: uppercase; }
+
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 0 0 6mm; break-inside: avoid; }
+.kpi { border: 0.25mm solid var(--line); border-top: 0.9mm solid var(--navy); border-radius: 1.6mm; padding: 2.6mm 3mm 2.4mm; }
+.kpi b { display: block; font-size: 14pt; font-weight: 800; color: var(--navy); line-height: 1.15; letter-spacing: -.01em; }
+.kpi span { display: block; font-size: 7.5pt; color: var(--muted); margin-top: .6mm; }
+.kpi.ok { border-top-color: var(--ok); } .kpi.warn { border-top-color: var(--amber); }
+
+/* ---------- sections ---------- */
+h2 { font-size: 12.5pt; font-weight: 800; color: var(--navy); margin: 5.5mm 0 2.2mm; text-transform: uppercase; letter-spacing: .01em;
+  break-after: avoid; page-break-after: avoid; }
+h2 .n { color: var(--teal); }
+h3 { font-size: 9.6pt; font-weight: 700; color: var(--navy); margin: 4mm 0 1.5mm; break-after: avoid; }
+p { margin: 0 0 2.4mm; text-align: justify; hyphens: auto; }
+code { font-family: "DejaVu Sans Mono", monospace; font-size: 7.6pt; background: #f4eee4; padding: .2mm 1mm; border-radius: .8mm; word-break: break-all; }
+
+table.data { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3.5mm; font-size: 8.3pt; break-inside: auto; }
+table.data thead th { background: var(--navy); color: #fff; font-weight: 700; font-size: 7.4pt; letter-spacing: .05em; text-transform: uppercase;
+  text-align: left; padding: 2.1mm 2.6mm; border: 0.25mm solid var(--navy); }
+table.data td { padding: 1.35mm 2.6mm; border: 0.25mm solid var(--line); vertical-align: top; }
+table.data tbody tr:nth-child(even) td { background: #faf6ef; }
+table.data tr { break-inside: avoid; }
+table.data .r { text-align: right; white-space: nowrap; }
+table.data .c { text-align: center; }
+table.data .nw { white-space: nowrap; }
+table.data tr.total td { font-weight: 800; background: var(--label) !important; border-top: 0.45mm solid var(--navy); }
+
+.pill { display: inline-block; border-radius: 10mm; padding: .2mm 2.2mm; font-size: 7.2pt; font-weight: 700; white-space: nowrap; }
+.pill.ok { background: var(--ok-bg); color: var(--ok); }
+.pill.part { background: var(--part-bg); color: var(--part); }
+.pill.wait { background: var(--wait-bg); color: var(--wait); }
+
+.callout { border-left: 1.1mm solid var(--amber); background: var(--amber-bg); padding: 3mm 4mm; margin: 2.5mm 0 3.5mm; border-radius: 0 1.2mm 1.2mm 0; break-inside: avoid; }
+.callout.teal { border-left-color: var(--teal); background: var(--teal-bg); }
+.callout .t { display: block; font-size: 7.6pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); margin-bottom: .8mm; }
+.callout.teal .t { color: var(--teal); }
+.callout p:last-child, .callout ol:last-child { margin-bottom: 0; }
+
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; margin: 2mm 0 3.5mm; }
+.cards.three { grid-template-columns: 1fr 1fr 1fr; }
+.card { border: 0.25mm solid var(--line); border-radius: 1.6mm; padding: 2.4mm 3.2mm; break-inside: avoid; }
+.card h4 { margin: 0 0 1mm; font-size: 8.8pt; color: var(--navy); }
+.card h4 .n { display: inline-block; min-width: 5.2mm; height: 5.2mm; line-height: 5.2mm; text-align: center; border-radius: 50%; background: var(--navy); color: #fff; font-size: 7pt; margin-right: 1.6mm; }
+.card p { margin: 0; text-align: left; font-size: 8.3pt; }
+.card .fig { font-size: 13pt; font-weight: 800; color: var(--wait); }
+
+ol.qs { margin: 0; padding-left: 5mm; } ol.qs li { margin: .8mm 0; }
+.box { display: inline-block; width: 3.6mm; height: 3.6mm; border: 0.35mm solid #b2a698; border-radius: .6mm; vertical-align: -0.6mm; text-align: center; line-height: 3.1mm; font-size: 7pt; font-weight: 800; }
+.box.done { background: var(--ok); border-color: var(--ok); color: #fff; }
+
+.path { display: flex; gap: 0; margin: 2mm 0 4mm; break-inside: avoid; }
+.path div { flex: 1; position: relative; padding: 2.4mm 2mm 2.4mm 5mm; font-size: 7.8pt; font-weight: 700; color: var(--navy); background: var(--label);
+  clip-path: polygon(0 0, calc(100% - 3mm) 0, 100% 50%, calc(100% - 3mm) 100%, 0 100%, 3mm 50%); }
+.path div:first-child { clip-path: polygon(0 0, calc(100% - 3mm) 0, 100% 50%, calc(100% - 3mm) 100%, 0 100%); padding-left: 3mm; }
+.path div.done { background: var(--ok); color: #fff; }
+.path div.now { background: var(--navy); color: #fff; }
+.path small { display: block; font-weight: 500; font-size: 6.8pt; opacity: .85; }
+
+.verify { display: flex; gap: 4.5mm; align-items: center; border: 0.25mm solid var(--line); border-left: 1.1mm solid var(--violet); border-radius: 0 1.6mm 1.6mm 0;
+  background: #f8f6fc; padding: 2mm 3mm; margin: 0; flex: 1.25; gap: 3mm; break-inside: avoid; }
+.verify .qr { flex: none; width: 18mm; height: 18mm; display: block; background: #fff; }
+.verify .qr svg { width: 100%; height: 100%; display: block; }
+.verify .t { display: block; font-size: 7.6pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--violet); margin-bottom: .8mm; }
+.verify p { margin: 0; text-align: left; font-size: 7pt; line-height: 1.35; color: var(--muted); }
+.verify .id { font-weight: 800; color: var(--navy); font-size: 9pt; letter-spacing: .02em; }
+.verify a { color: var(--violet); text-decoration: none; word-break: break-all; }
+.signoff { display: flex; gap: 7mm; margin-top: 4mm; align-items: flex-end; break-inside: avoid; }
+.signoff .sig { flex: 1; }
+.sig .line { border-bottom: 0.3mm solid var(--ink); height: 9mm; margin-bottom: 1.6mm; }
+.sig b { display: block; color: var(--navy); font-size: 8.8pt; }
+.sig span { display: block; color: var(--muted); font-size: 7.8pt; }
+.end { margin-top: 3mm; font-size: 7.4pt; color: var(--muted); text-align: center; letter-spacing: .08em; text-transform: uppercase; }
+.keep, table.data.keep { break-inside: avoid; page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<div class="lh-top"><div class="dots"></div><img class="logo" src="__LOGO__" alt="BPro — HRMS | PMS | LMS | Consulting"><div class="rule"></div></div>
+<div class="lh-foot">
+  <div class="grow"><span class="brand">BPRO PMS &nbsp;|&nbsp; Power BI Data Readiness</span><br>Document __DOCID__ · Confidential<br>Scan the QR code to verify this document</div>
+  <div class="credit" style="text-align:right">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies<br><a href="https://www.drbabu.in">www.drbabu.in</a> &nbsp;|&nbsp; <a href="https://www.bpropms.com">www.bpropms.com</a></div>
+  <a class="qr" href="__VERIFY__">__QR__</a>
+</div>
+
+<table class="frame">
+<thead><tr><td></td></tr></thead>
+<tfoot><tr><td></td></tr></tfoot>
+<tbody><tr><td>
+
+<div class="eyebrow">BPro PMS / Management Reporting &amp; Analytics</div>
+<h1>Pilot Export<br>Reconciliation Note</h1>
+<p class="subtitle">HD Attingal · TallyPrime Service Bill Register · 10 Apr – 30 Sep 2026</p>
+<div class="title-rule"></div>
+
+<table class="memo">
+  <tr><td class="k">To</td><td>Finance Head / Accounts Department, Marikar (Motors) Ltd</td></tr>
+  <tr><td class="k">From</td><td>Dr. Babu B., BPro Consulting &amp; Technologies</td></tr>
+  <tr><td class="k">Date</td><td>12 October 2026</td></tr>
+  <tr><td class="k">Subject</td><td>Pilot export for the consolidated Power BI sales &amp; inventory dashboard: HD Attingal reconciliation</td></tr>
+  <tr><td class="k">Reference</td><td>Data Request &amp; Export Playbook, sections 02–06</td></tr>
+  <tr><td class="k">Classification</td><td>Confidential: internal circulation</td></tr>
+</table>
+
+<div class="kpis">
+  <div class="kpi ok"><b>₹1,02,52,514</b><span>Gross billing, ties to Tally's Grand Total</span></div>
+  <div class="kpi ok"><b>₹57,12,868</b><span>Item value, ties to Tally's Grand Total</span></div>
+  <div class="kpi warn"><b>3 · 2 · 3</b><span>Playbook checks: pass · partial · pending</span></div>
+  <div class="kpi warn"><b>1 of 6</b><span>Requested files received for this unit</span></div>
+</div>
+
+<h2><span class="n">01 |</span> Summary</h2>
+<p>The HD Attingal sales register for April to September 2026 works as the pilot export. It reconciles to Tally's own Grand Total to the rupee: ₹1,02,52,514 gross and ₹57,12,868 of item value.</p>
+<p>The pilot passes three of the playbook's eight checks outright and two in part. The remaining three are pending on files not yet sent.</p>
+<div class="callout"><span class="t">Before rollout to the other companies</span><p>We need the FY 2025–26 register, the two stock summaries and the two stock movement reports for this unit, plus an agreed company code. With them, the dashboard can show the April–September year-on-year view at the 3 November HOD meeting.</p></div>
+
+<div class="keep">
+<h2><span class="n">02 |</span> What was received</h2>
+<p>One file, <code>HD_ATL_01.04.26_to_30.09.26_sales_register_with_inventory.xls</code>: a Tally <em>Service Bill Register</em> for MARIKAR (MOTORS) LTD, Attingal (Honda two-wheelers). It is item-wise, with one row per bill followed by one row per item on it.</p>
+<table class="data">
+  <thead><tr><th style="width:42%">Measure</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Period on the report header</td><td>1 Apr – 30 Sep 2026</td></tr>
+    <tr><td>First and last bill</td><td>10 Apr – 30 Sep 2026 (147 billing days)</td></tr>
+    <tr><td>Bills</td><td>7,677</td></tr>
+    <tr><td>Item lines</td><td>21,732 (1,345 distinct items)</td></tr>
+    <tr><td>Columns</td><td>33: date, party, voucher type and number, quantity, value and 25 ledger columns</td></tr>
+  </tbody>
+</table>
+</div>
+<table class="data keep">
+  <thead><tr><th>Voucher type</th><th class="r">Bills</th><th>Number series</th></tr></thead>
+  <tbody>
+    <tr><td>Service Bill</td><td class="r">4,465</td><td class="nw">KL07BB0126000001 – 4465</td></tr>
+    <tr><td>Local Sales</td><td class="r">1,850</td><td class="nw">HASBC26270001 – 1851</td></tr>
+    <tr><td>Spare Sale Invoice</td><td class="r">681</td><td class="nw">KL07BB0126C00001 – 681</td></tr>
+    <tr><td>AMC Service Bill</td><td class="r">572</td><td class="nw">KL07BB0126R00001 – 572</td></tr>
+    <tr><td>Branch Transfer Out Spare</td><td class="r">106</td><td class="nw">HABO26270001 – 107</td></tr>
+    <tr><td>Extended Warranty Sales</td><td class="r">3</td><td class="nw">KL07BB0126E00001 – 3</td></tr>
+    <tr class="total"><td>Total</td><td class="r">7,677</td><td></td></tr>
+  </tbody>
+</table>
+<div class="callout teal"><span class="t">File format note</span><p>The file is an Excel 2007+ (.xlsx) workbook saved under an .xls name. Excel opens it, but some tools reject it until it is renamed.</p></div>
+
+<div class="keep">
+<h2><span class="n">03 |</span> Reconciliation results</h2>
+<p>Every total rebuilt from the rows matches the register's Grand Total row.</p>
+<table class="data keep">
+  <thead><tr><th>Check</th><th class="r">Rebuilt from rows (₹)</th><th class="r">Tally Grand Total (₹)</th><th class="c">Result</th></tr></thead>
+  <tbody>
+    <tr><td>Gross total, incl. GST</td><td class="r">1,02,52,514.46</td><td class="r">1,02,52,514.46</td><td class="c"><span class="pill ok">Match</span></td></tr>
+    <tr><td>Item value (sum of item lines)</td><td class="r">57,12,868.26</td><td class="r">57,12,868.26</td><td class="c"><span class="pill ok">Match</span></td></tr>
+    <tr><td>Sales – spare parts</td><td class="r">34,55,328.85</td><td class="r">34,55,328.85</td><td class="c"><span class="pill ok">Match</span></td></tr>
+    <tr><td>Sales – accessories</td><td class="r">19,84,079.64</td><td class="r">19,84,079.64</td><td class="c"><span class="pill ok">Match</span></td></tr>
+    <tr><td>CGST and SGST (each)</td><td class="r">7,68,334.93</td><td class="r">7,68,334.93</td><td class="c"><span class="pill ok">Match</span></td></tr>
+    <tr><td>Discounts (spares + labour)</td><td class="r">11,65,311.01</td><td class="r">11,65,311.01</td><td class="c"><span class="pill ok">Match</span></td></tr>
+    <tr><td>Other 19 income ledgers</td><td class="r">each summed</td><td class="r">each column</td><td class="c"><span class="pill ok">All match</span></td></tr>
+  </tbody>
+</table>
+</div>
+<h3>Two corrections were needed, because the export drops minus signs</h3>
+<div class="cards">
+  <div class="card"><h4><span class="n">1</span>21 service bills with a negative total</h4><p>On these the discount exceeded the bill. Tally's Grand Total treats them as negative, but the rows show them as positive. Taken at face value they overstate gross by <b>₹14,057.44</b> (2 × ₹7,028.72). We detect them from each bill's ledger arithmetic and flip their sign.</p></div>
+  <div class="card"><h4><span class="n">2</span>Round-off amounts</h4><p>As shown they add up to ₹1,864.77, against a net of ₹27.11 in the Grand Total, because negative round-offs lose their sign. The effect on revenue is immaterial, but any model must not add this column at face value.</p></div>
+</div>
+<p>IGST is not a column here because all sales are intra-state. The GSTIN column is filled on only 75 bills (B2B customers).</p>
+
+<h2><span class="n">04 |</span> Checklist against the playbook</h2>
+<p>Three checks pass, two pass in part and three wait on files not yet sent (playbook section 06).</p>
+<table class="data">
+  <thead><tr><th style="width:7%">#</th><th style="width:31%">Check</th><th style="width:12%" class="c">Status</th><th>Finding</th></tr></thead>
+  <tbody>
+    <tr><td>01</td><td>Correct company and reporting period</td><td class="c"><span class="pill part">Partial</span></td><td>Company is right. The header says 1 Apr, but every number series starts at 1 on 10 Apr. Accounts to confirm no bills were raised 1–9 Apr, or say where they are.</td></tr>
+    <tr><td>02</td><td>Sales totals reconciled to TallyPrime</td><td class="c"><span class="pill ok">Pass</span></td><td>Ties to the register's Grand Total to the paisa. Still to do: tie to the sales ledgers in Tally's P&amp;L and to GSTR-1 for the same months.</td></tr>
+    <tr><td>03</td><td>Returns, credit notes, discounts and taxes treated consistently</td><td class="c"><span class="pill part">Partial</span></td><td>Discounts and CGST/SGST are present. No sales returns or credit notes appear, and the export drops minus signs (section 03).</td></tr>
+    <tr><td>04</td><td>Item-wise details included</td><td class="c"><span class="pill ok">Pass</span></td><td>21,732 item lines with name, part number, quantity and value.</td></tr>
+    <tr><td>05</td><td>Stock closing quantities and values reconciled</td><td class="c"><span class="pill wait">Pending</span></td><td>No stock summary was sent.</td></tr>
+    <tr><td>06</td><td>Company code in every export and folder</td><td class="c"><span class="pill wait">Pending</span></td><td>File uses "HD_ATL", not an agreed PC code.</td></tr>
+    <tr><td>07</td><td>No records deleted or manually changed</td><td class="c"><span class="pill ok">Pass</span></td><td>No duplicate numbers. Two numbers are missing: Local Sales HASBC26270623 and Branch Transfer HABO26270049. Accounts to confirm these were cancelled.</td></tr>
+    <tr><td>08</td><td>All periods and report types supplied</td><td class="c"><span class="pill wait">Pending</span></td><td>1 of 6 files received (section 05).</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="n">05 |</span> Files still needed from Accounts</h2>
+<p>Five of the six playbook files for this unit are outstanding. Without them there is no year-on-year comparison and no inventory view. <code>PCxx</code> stands for the company code still to be agreed.</p>
+<table class="data">
+  <thead><tr><th style="width:6%" class="c">✓</th><th style="width:44%">File (playbook name)</th><th>Content</th></tr></thead>
+  <tbody>
+    <tr><td class="c"><span class="box done">✓</span></td><td><code>PCxx_SalesRegister_FY2026-27_Apr-Sep.xlsx</code></td><td>Received as the HD_ATL file; rename once the code is agreed</td></tr>
+    <tr><td class="c"><span class="box"></span></td><td><code>PCxx_SalesRegister_FY2025-26.xlsx</code></td><td>1 Apr 2025 – 31 Mar 2026, same report and layout as the pilot. Enables the April–September year-on-year comparison.</td></tr>
+    <tr><td class="c"><span class="box"></span></td><td><code>PCxx_StockSummary_2026-03-31.xlsx</code></td><td>Item-wise closing quantity and value, stock group, UOM, godown</td></tr>
+    <tr><td class="c"><span class="box"></span></td><td><code>PCxx_StockSummary_2026-09-30.xlsx</code></td><td>Same layout</td></tr>
+    <tr><td class="c"><span class="box"></span></td><td><code>PCxx_StockMovement_FY2025-26.xlsx</code></td><td>Inventory vouchers: date, voucher reference, item, inward and outward quantity, rate, value, godown</td></tr>
+    <tr><td class="c"><span class="box"></span></td><td><code>PCxx_StockMovement_FY2026-27_Apr-Sep.xlsx</code></td><td>Same layout</td></tr>
+    <tr><td class="c"><span class="box"></span></td><td>Monthly month-end stock snapshots</td><td>April 2025 – September 2026 (preferred, not required)</td></tr>
+  </tbody>
+</table>
+<div class="callout keep"><span class="t">Open questions for Accounts</span>
+  <ol class="qs">
+    <li>Which company code does HD Attingal get?</li>
+    <li>Were any bills raised 1–9 April 2026, perhaps in another company or series?</li>
+    <li>Were HASBC26270623 and HABO26270049 cancelled?</li>
+    <li>Are sales returns and credit notes kept in a separate register? If so, please export it for both periods.</li>
+  </ol>
+</div>
+
+<h2><span class="n">06 |</span> Export notes for the other companies</h2>
+<p>The pilot shows what to ask for up front, so later exports need no rework.</p>
+<div class="cards three">
+  <div class="card"><h4><span class="n">1</span>Keep the pilot's layout</h4><p>Use the register's item-wise view (bill row, then item rows) with every ledger as its own column. That is what lets totals tie column by column.</p></div>
+  <div class="card"><h4><span class="n">2</span>Keep minus signs</h4><p>If Tally's Excel export drops signs, also send the register as XML or with separate debit and credit columns, so negative bills and round-offs keep their sign.</p></div>
+  <div class="card"><h4><span class="n">3</span>Save as a real .xls or .xlsx</h4><p>Avoid exporting an .xlsx under an .xls name.</p></div>
+  <div class="card"><h4><span class="n">4</span>Separate customer from vehicle</h4><p>"Particulars" combines the customer's name with the vehicle number, and some phone numbers too. The dashboard needs neither, so export the party ledger cleanly or masked and share the files with fewer people.</p></div>
+  <div class="card"><h4><span class="n">5</span>Include the Grand Total row</h4><p>It is the reconciliation anchor for check 02.</p></div>
+  <div class="card"><h4><span class="n">6</span>One period per file, whole months</h4><p>Name each file by company code and period exactly as in playbook section 05.</p></div>
+</div>
+
+<div class="keep">
+<h2><span class="n">07 |</span> Next steps</h2>
+<div class="path">
+  <div class="done">1. Pilot export<small>Received 12 Oct</small></div>
+  <div class="now">2. Reconcile<small>This note</small></div>
+  <div>3. Build Power BI model<small>Dashboard live</small></div>
+  <div>4. Roll out<small>All companies</small></div>
+  <div>5. Management sign-off<small>3 Nov HOD meeting</small></div>
+</div>
+<table class="data keep">
+  <thead><tr><th>Step</th><th style="width:24%">Owner</th><th style="width:17%" class="nw">Due</th></tr></thead>
+  <tbody>
+    <tr><td>Agree company codes for all units</td><td>Finance Head</td><td class="nw">16 Oct 2026</td></tr>
+    <tr><td>Answer the four open questions</td><td>Accounts</td><td class="nw">16 Oct 2026</td></tr>
+    <tr><td>Send the five outstanding HD Attingal files</td><td>Accounts</td><td class="nw">23 Oct 2026</td></tr>
+    <tr><td>Tie the pilot to the Tally P&amp;L sales ledgers and GSTR-1 (check 02)</td><td>Accounts, with BPro</td><td class="nw">23 Oct 2026</td></tr>
+    <tr><td>Add year-on-year and stock views; issue as the standard review template (A2), alongside AMZES (A10)</td><td>BPro</td><td class="nw">3 Nov 2026</td></tr>
+    <tr><td>Roll the export out to the other companies</td><td>Accounts, all units</td><td class="nw">After sign-off, 3 Nov</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="signoff">
+  <div class="sig"><div class="line"></div><b>Dr. Babu B.</b><span>BPro Consulting &amp; Technologies · Prepared by</span></div>
+  <div class="sig"><div class="line"></div><b>Name, signature and date</b><span>Finance Head / Accounts, Marikar (Motors) Ltd · Acknowledged by</span></div>
+  <div class="verify">
+    <a class="qr" href="__VERIFY__">__QR__</a>
+    <div>
+      <span class="t">Verify this document</span>
+      <p><span class="id">__DOCID__</span></p>
+      <p>Issued 13 Oct 2026. Scan to confirm it is registered and check a digital copy's SHA-256 fingerprint. An altered copy will not match.</p>
+    </div>
+  </div>
+</div>
+<div class="end">— End of note —</div>
+
+</td></tr></tbody>
+</table>
+</body>
+</html>
