@@ -57,6 +57,7 @@ main { padding-block: 24px 40px; display: flex; flex-direction: column; gap: 20p
 .pv.top::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 12px; background: #131c38; }
 .pv.side::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 22%; background: #131c38; }
 .pv.light::after, .pv.dark::after, .pv.system::after { content: ""; position: absolute; left: 14px; right: 14px; top: 20px; height: 8px; border-radius: 4px; background: #5b4f9e; opacity: .6; }
+.tbl { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th { text-align: left; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); }
 td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
@@ -86,6 +87,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
 .reqcard { margin-top: 12px; border: 1px solid var(--line); border-left: 4px solid var(--violet); border-radius: 12px; padding: 14px 16px; background: var(--sub); } .reqcard[hidden] { display: none; }
 .reqhead { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; } .reqhead b { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .reqcard dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0 0 12px; font-size: 14px; } .reqcard dt { color: var(--muted); font-size: 12.5px; } .reqcard dd { margin: 0; }
+.reqcard dl { overflow-wrap: anywhere; }
 .reqcard .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; } label.inline { display: inline-flex; gap: 8px; align-items: center; margin: 0; } label.inline select { width: auto; }
 .token { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
 .token input { flex: 1 1 260px; }
@@ -122,7 +124,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   <section class="panel" id="people" hidden>
     <h2>People</h2>
     <p class="muted">Who can sign in to the hub. Passwords are never stored: each account keeps only a salted fingerprint. Changes made here are queued below and go live when you publish them.</p>
-    <table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th></th></tr></thead><tbody></tbody></table>
+    <div class="tbl"><table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th></th></tr></thead><tbody></tbody></table></div>
 
     <h3>Access and reset requests</h3>
     <p class="muted">Requests from the sign-in page arrive by e-mail with a code starting <code>MGQ1.</code> Paste the e-mail (or just the code) here to act on it.</p>
