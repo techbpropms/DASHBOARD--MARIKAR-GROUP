@@ -73,6 +73,7 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | `scripts/letterhead/` | Builds the letterhead PDF of the reconciliation note (logo, document ID, QR codes) |
 | `scripts/build_data.py` | Builds a company from its register export and rebuilds the group files |
 | `server/` | Mail relay for access and reset requests (the one place the mailbox password lives) |
+| `docs/manual/` | The user manual: `manual.html` (source), annotated screenshots, `build.js` + `toc.py` (two-pass PDF build with contents page numbers), `manual.pdf` (document UM-MGHUB-2026-01) |
 | `TEMPLATE.md` | The standard monthly review layout (HOD action A2) |
 
 ### Adding or updating a company

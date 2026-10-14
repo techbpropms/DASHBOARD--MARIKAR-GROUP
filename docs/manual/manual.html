@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Marikar Group Performance Hub — User Manual</title>
+<style>
+/* Print styling for the user manual. Built to PDF by build.js (A4, headers and footers added by the renderer). */
+@page { size: A4; }
+:root { --navy: #131c38; --navy2: #1f2b55; --violet: #5b4f9e; --amber: #d49a3a; --copper: #b8612b; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1; --paper: #f7f2ea; --surface: #fffcf7; --ok: #2d7550; --bad: #a63a2a; --sticky: #fff3b8; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { counter-reset: ch fig; font: 10.2pt/1.5 Inter, "Plus Jakarta Sans", system-ui, sans-serif; color: var(--ink); }
+h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.01em; line-height: 1.15; break-after: avoid; }
+h1 { font-size: 26pt; margin: 0 0 6mm; color: var(--navy); counter-increment: ch; }
+h1::before { content: counter(ch) ". "; color: var(--amber); }
+h2 { font-size: 15pt; margin: 8mm 0 2.5mm; color: var(--navy2); }
+h3 { font-size: 11.5pt; margin: 5mm 0 1.5mm; color: var(--violet); }
+p { margin: 0 0 2.6mm; }
+ul, ol { margin: 0 0 3mm; padding-left: 5.5mm; } li { margin-bottom: 1.1mm; }
+a { color: var(--violet); text-decoration: none; }
+code, .mono { font-family: ui-monospace, "DejaVu Sans Mono", Menlo, monospace; font-size: 9.2pt; background: #f1ebe2; padding: 0 3px; border-radius: 3px; }
+table { width: 100%; border-collapse: collapse; font-size: 9.3pt; margin: 2mm 0 4mm; break-inside: auto; }
+th { text-align: left; font-size: 8.3pt; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--navy); padding: 1.6mm 2mm; }
+td { padding: 1.6mm 2mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr { break-inside: avoid; }
+.chapter { break-before: page; }
+.lead { font-size: 12pt; color: var(--muted); margin-bottom: 5mm; }
+.hl { background: linear-gradient(transparent 55%, #ffe08a 55%); font-weight: 600; }  /* highlighter */
+.pt { display: inline-flex; align-items: center; justify-content: center; line-height: 1; width: 5.2mm; height: 5.2mm; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 800; font-size: 8pt; vertical-align: middle; margin: 0 .4mm; }  /* pointer number */
+.kbd { font: 600 8.6pt Inter, sans-serif; border: 1px solid #c9bfae; border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: #fff; }
+
+/* callouts */
+.note { position: relative; border-radius: 3mm; padding: 3.2mm 4mm 3.2mm 12mm; margin: 3.5mm 0; break-inside: avoid; font-size: 9.8pt; }
+.note::before { position: absolute; left: 3.6mm; top: 3.2mm; width: 6mm; height: 6mm; content: ""; background-repeat: no-repeat; background-size: contain; }
+.note b.t { display: block; font-size: 8.2pt; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .8mm; }
+.sticky { background: var(--sticky); box-shadow: 2px 3px 0 rgba(120,90,10,.15); transform: rotate(-.3deg); }
+.sticky::after { content: ""; position: absolute; top: -2.2mm; left: 46%; width: 16mm; height: 4.2mm; background: rgba(255,255,255,.55); border: 1px solid rgba(0,0,0,.08); transform: rotate(-2deg); }
+.sticky::before { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23b8612b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v11l-5 5H4z"/><path d="M15 20v-5h5"/></svg>'); }
+.sticky b.t { color: var(--copper); }
+.lens { background: #efecf9; border-left: 1.2mm solid var(--violet); }
+.lens::before { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235b4f9e" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>'); }
+.lens b.t { color: var(--violet); }
+.tip { background: #f3f0ea; border: 1px solid var(--line); }
+.tip::before { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%236b6157" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v11H9l-5 4z"/></svg>'); }
+.tip b.t { color: var(--muted); }
+.caution { background: #fbe9e4; border-left: 1.2mm solid var(--bad); }
+.caution::before { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23a63a2a" stroke-width="2.2" stroke-linecap="round"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></svg>'); }
+.caution b.t { color: var(--bad); }
+.badge-note { background: #e9f3ec; border-left: 1.2mm solid var(--ok); }
+.badge-note::before { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%232d7550" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8 14l-2 7 6-3 6 3-2-7"/></svg>'); }
+.badge-note b.t { color: var(--ok); }
+
+/* figures */
+figure { margin: 3mm 0 5mm; break-inside: avoid; counter-increment: fig; text-align: center; }
+figcaption { text-align: left; }
+figure img { display: block; max-width: 100%; max-height: 165mm; width: auto; margin: 0 auto; border: 1px solid var(--line); border-radius: 2.5mm; box-shadow: 0 2mm 6mm rgba(30,20,10,.08); }
+figure.narrow img { max-width: 62%; max-height: 120mm; }
+figure.phone img { max-width: 36%; max-height: 150mm; }
+figure.two { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; } figure.two img { width: 100%; }
+figure.two figcaption { grid-column: 1 / -1; }
+figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 1.6mm; }
+figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; color: var(--navy); }
+.legend { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2mm 6mm; font-size: 9.4pt; margin: 2mm 0 4mm; }
+.legend div { display: flex; gap: 2.5mm; align-items: flex-start; }
+.legend .sw { flex: none; width: 7mm; height: 7mm; border-radius: 2mm; display: grid; place-items: center; }
+
+/* cover */
+.cover { height: 263mm; display: flex; flex-direction: column; color: #fff; background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 100%); border-radius: 4mm; padding: 14mm; position: relative; overflow: hidden; }
+.cover::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2.6mm; background: linear-gradient(90deg, var(--violet) 0 72%, var(--amber) 72% 100%); }
+.cover .mark { display: flex; align-items: center; gap: 6mm; }
+.cover .tile { background: #fff; border-radius: 4mm; padding: 3mm 4mm; } .cover .tile img { height: 30mm; display: block; }
+.cover .mark b { font-size: 16pt; display: block; } .cover .mark span { font-size: 9pt; letter-spacing: .16em; text-transform: uppercase; opacity: .75; }
+.cover .title { margin-top: auto; }
+.cover .eyebrow { font-size: 9pt; letter-spacing: .14em; text-transform: uppercase; color: #f1c27a; font-weight: 700; }
+.cover h1 { color: #fff; font-size: 34pt; margin: 3mm 0 4mm; counter-increment: none; } .cover h1::before { content: none; }
+.cover h1 em { font-style: normal; color: #f1c27a; }
+.cover .sub { font-size: 12pt; opacity: .88; max-width: 120mm; }
+.cover .meta { margin-top: 10mm; display: flex; justify-content: space-between; align-items: flex-end; gap: 8mm; }
+.cover .meta dl { display: grid; grid-template-columns: max-content 1fr; gap: 1mm 5mm; font-size: 9.4pt; margin: 0; } .cover dt { opacity: .7; } .cover dd { margin: 0; font-weight: 600; }
+.cover .qr { background: #fff; border-radius: 3mm; padding: 2.5mm; width: 32mm; } .cover .qr svg { width: 100%; display: block; }
+.cover .qrcap { font-size: 7.6pt; opacity: .8; margin-top: 1.2mm; text-align: center; width: 32mm; }
+.cover .credit { margin-top: 8mm; padding-top: 4mm; border-top: 1px solid rgba(255,255,255,.2); display: flex; align-items: center; gap: 5mm; font-size: 9pt; }
+.cover .credit img { height: 12mm; background: #fff; border-radius: 2mm; padding: 1mm 2mm; }
+
+/* contents */
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: tocn; }
+.toc li { display: flex; align-items: baseline; gap: 2mm; padding: 1.8mm 0; border-bottom: 1px dotted var(--line); font-size: 10.6pt; }
+.toc li::before { counter-increment: tocn; content: counter(tocn); width: 7mm; font-weight: 800; color: var(--amber); }
+.toc li .d { flex: 1; border-bottom: 1px dotted #c9bfae; height: .8em; margin: 0 1mm; }
+.toc li .pg { font-weight: 700; min-width: 8mm; text-align: right; }
+.toc li.sub { padding-left: 9mm; font-size: 9.6pt; border-bottom: 0; padding-top: .4mm; padding-bottom: .4mm; } .toc li.sub::before { content: ""; counter-increment: none; width: 0; }
+
+/* gamification */
+.levels { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4mm; margin: 3mm 0 5mm; }
+.level { border: 1px solid var(--line); border-radius: 3mm; padding: 4mm; background: var(--surface); break-inside: avoid; }
+.level h3 { margin: 0 0 1.5mm; display: flex; align-items: center; gap: 2.5mm; }
+.level .medal { width: 9mm; height: 9mm; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 9pt; }
+.bronze { background: #a66a2c; } .silver { background: #8a8f98; } .gold { background: #c9a227; } .plat { background: #5b4f9e; }
+.level ul { list-style: none; padding: 0; margin: 0; } .level li::before { content: "☐ "; color: var(--muted); }
+.quiz ol { counter-reset: qn; list-style: none; padding: 0; } .quiz li { counter-increment: qn; margin-bottom: 2.4mm; padding-left: 8mm; position: relative; break-inside: avoid; }
+.quiz li::before { content: "Q" counter(qn); position: absolute; left: 0; top: 0; font-weight: 800; color: var(--violet); }
+.quiz .opts { color: var(--muted); font-size: 9.4pt; }
+.faq dt { font-weight: 700; margin-top: 3mm; break-after: avoid; } .faq dd { margin: .6mm 0 0; }
+.version td:first-child { white-space: nowrap; font-family: ui-monospace, monospace; font-size: 8.8pt; }
+.glossary dt { font-weight: 700; display: inline; } .glossary dd { display: inline; margin: 0; } .glossary div { margin-bottom: 1.6mm; }
+.credits { display: flex; gap: 6mm; align-items: center; border: 1px solid var(--line); border-radius: 3mm; padding: 5mm; background: var(--surface); margin-top: 6mm; }
+.credits img { height: 18mm; }
+.back { height: 263mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 100%); border-radius: 4mm; gap: 6mm; }
+.back .tile { background: #fff; border-radius: 4mm; padding: 4mm 5mm; } .back .tile img { height: 28mm; display: block; }
+.back p { max-width: 110mm; opacity: .9; }
+.chips { display: flex; flex-wrap: wrap; gap: 2mm; margin: 2mm 0 3mm; } .chip { border: 1px solid var(--line); border-radius: 99px; padding: .6mm 3mm; font-size: 9pt; background: var(--surface); }
+.steps { counter-reset: st; list-style: none; padding: 0; } .steps li { counter-increment: st; position: relative; padding-left: 9mm; margin-bottom: 2.2mm; }
+.steps li::before { content: counter(st); position: absolute; left: 0; top: .1mm; width: 6.4mm; height: 6.4mm; border-radius: 50%; background: var(--amber); color: #1d1408; font-weight: 800; font-size: 8.6pt; display: grid; place-items: center; }
+</style>
+</head>
+<body>
+
+<!-- ======================= COVER ======================= -->
+<section class="cover">
+  <div class="mark"><div class="tile"><img src="../../assets/img/marikar-group.png" alt="Marikar Group"></div><div><b>Marikar Group</b><span>Performance hub</span></div></div>
+  <div class="title">
+    <div class="eyebrow">User manual · version __VERSION__</div>
+    <h1>Every division, <em>one clear view.</em></h1>
+    <p class="sub">How to sign in, find your way around, read the division and sales dashboards, build verified reports, track HOD actions and manage people on the Marikar Group performance hub.</p>
+    <div class="meta">
+      <dl><dt>Document</dt><dd>__DOCID__</dd><dt>Issued</dt><dd>__DATE__</dd><dt>For</dt><dd>Marikar Group leadership, HODs and authorised users</dd><dt>Hub address</dt><dd>mmlpbi.bpropms.in</dd></dl>
+      <div><div class="qr">__QR__</div><div class="qrcap">Scan to verify this document<br>__VERIFY_SHORT__</div></div>
+    </div>
+  </div>
+  <div class="credit"><img src="../../assets/img/bpro.png" alt="BPro"><div><b>D&amp;D by Dr.Babu.B</b> · BPro Consulting &amp; Technologies<br>www.drbabu.in | www.bpropms.com</div></div>
+</section>
+
+<!-- ======================= CONTENTS ======================= -->
+<section class="chapter toc">
+  <h2 style="margin-top:0;font-size:22pt;color:var(--navy)">Contents</h2>
+  <ol>
+    <li><span>How to read this manual</span><span class="d"></span><span class="pg" data-h="How to read this manual"></span></li>
+    <li><span>Background of the programme</span><span class="d"></span><span class="pg" data-h="Background of the programme"></span></li>
+    <li><span>Getting started: address, sign-in, access requests</span><span class="d"></span><span class="pg" data-h="Getting started"></span></li>
+    <li><span>Finding your way: menu, themes, phone</span><span class="d"></span><span class="pg" data-h="Finding your way around"></span></li>
+    <li><span>The hub landing page</span><span class="d"></span><span class="pg" data-h="The hub landing page"></span></li>
+    <li><span>Division dashboards and division groups</span><span class="d"></span><span class="pg" data-h="Division dashboards"></span></li>
+    <li><span>Sales &amp; inventory dashboard: the four lenses</span><span class="d"></span><span class="pg" data-h="Sales and inventory dashboard"></span></li>
+    <li><span>Report builder (PDF and Excel)</span><span class="d"></span><span class="pg" data-h="Report builder"></span></li>
+    <li><span>HOD action tracker</span><span class="d"></span><span class="pg" data-h="HOD action tracker"></span></li>
+    <li><span>Reconciliation note and document verification</span><span class="d"></span><span class="pg" data-h="Reconciliation note and document verification"></span></li>
+    <li><span>Settings: appearance and People (super admin)</span><span class="d"></span><span class="pg" data-h="Settings"></span></li>
+    <li><span>Hub Explorer: levels, badges and the quiz</span><span class="d"></span><span class="pg" data-h="Hub Explorer"></span></li>
+    <li><span>Frequently asked questions</span><span class="d"></span><span class="pg" data-h="Frequently asked questions"></span></li>
+    <li><span>Rarely asked questions</span><span class="d"></span><span class="pg" data-h="Rarely asked questions"></span></li>
+    <li><span>Troubleshooting</span><span class="d"></span><span class="pg" data-h="Troubleshooting"></span></li>
+    <li><span>Version history</span><span class="d"></span><span class="pg" data-h="Version history"></span></li>
+    <li><span>Glossary</span><span class="d"></span><span class="pg" data-h="Glossary"></span></li>
+    <li><span>Support and credits</span><span class="d"></span><span class="pg" data-h="Support and credits"></span></li>
+  </ol>
+</section>
+
+<!-- ======================= 1 HOW TO READ ======================= -->
+<section class="chapter">
+  <h1>How to read this manual</h1>
+  <p class="lead">Each chapter covers one part of the hub, with a screenshot of the real screen. Numbered pointers on the screenshots match the numbers in the text.</p>
+  <div class="legend">
+    <div><span class="sw" style="background:var(--navy);color:#fff;font-weight:800">1</span><div><b>Pointer</b> — a numbered marker on a screenshot. In the text it looks like <span class="pt">1</span>.</div></div>
+    <div><span class="sw" style="background:#ffe08a"></span><div><b>Highlighter</b> — <span class="hl">a term worth remembering</span>.</div></div>
+    <div><span class="sw" style="background:var(--sticky);border:1px solid #e3cf7a"></span><div><b>Sticky note</b> — a practical tip from the people who built the hub.</div></div>
+    <div><span class="sw" style="background:#efecf9;border-left:1.5mm solid var(--violet)"></span><div><b>Lens</b> — a closer look at how a figure is calculated or where it comes from.</div></div>
+    <div><span class="sw" style="background:#f3f0ea;border:1px solid var(--line)"></span><div><b>Tooltip</b> — what you see when you hover or tap a figure on screen.</div></div>
+    <div><span class="sw" style="background:#fbe9e4;border-left:1.5mm solid var(--bad)"></span><div><b>Caution</b> — something that can go wrong, and how to avoid it.</div></div>
+    <div><span class="sw" style="background:#e9f3ec;border-left:1.5mm solid var(--ok)"></span><div><b>Badge</b> — a Hub Explorer achievement (chapter 12).</div></div>
+    <div><span class="sw" style="background:#fff;border:1px solid #c9bfae;font-size:8pt"><span class="kbd">F5</span></span><div><b>Key</b> — a keyboard key or button label.</div></div>
+  </div>
+  <div class="note sticky"><b class="t">Sticky note</b>If you only read one chapter, read chapter 7, "the four lenses". It explains every number on the sales and inventory dashboard and where it comes from.</div>
+</section>
+
+<!-- ======================= 2 BACKGROUND ======================= -->
+<section class="chapter">
+  <h1>Background of the programme</h1>
+  <p class="lead">The Marikar Group performance hub is the leadership team's single place for the half-year review: every division, every company, one clear view.</p>
+  <h2>Marikar Group</h2>
+  <p>Marikar Group has served Kerala and Tamil Nadu since 1910. Today it sells and services Honda two-wheelers (Honda Kerala, AMZES in Tamil Nadu, BigWing premium motorcycles), Royal Enfield motorcycles, Nissan cars, Royal Enfield parts through CSPW, and Canon office automation, alongside its corporate and HR functions. Each division reports to the group's HOD meetings.</p>
+  <h2>Why the hub exists</h2>
+  <p>At the 9 October 2026 HOD meeting the H1 FY 2026–27 review was presented from separate decks and spreadsheets, each in its own format. Figures were hard to compare, prior-year numbers were missing from some decks, and sales data lived inside TallyPrime where only Accounts could see it. The hub was commissioned to:</p>
+  <ul>
+    <li><span class="hl">Bring every division on to one screen</span>, in one format, with the same comparisons: H1 against the same months last year, and against the full year to 31 March.</li>
+    <li><span class="hl">Reconcile sales and inventory figures to the source</span>. Every number on the sales dashboard is traced back to a TallyPrime register and its Grand Total, to the paisa.</li>
+    <li><span class="hl">Make the 31 HOD actions visible</span> with owners, due dates and a league table, so follow-through is measured, not assumed.</li>
+    <li><span class="hl">Issue reports people can trust</span>: every PDF and Excel download carries a document ID and a QR code that anyone can check.</li>
+  </ul>
+  <h2>Principles</h2>
+  <div class="chips"><span class="chip">Data → insight → action</span><span class="chip">One version of the truth</span><span class="chip">Every figure reconciled to its source</span><span class="chip">Measure what matters, every month</span><span class="chip">Decide on evidence, not opinion</span><span class="chip">From TallyPrime to the boardroom</span><span class="chip">Trends beat snapshots</span><span class="chip">Spot it early, fix it early</span></div>
+  <h2>Who built it</h2>
+  <p>The hub was designed and developed by <b>Dr. Babu B.</b> of <b>BPro Consulting &amp; Technologies</b> (www.drbabu.in | www.bpropms.com), the group's analytics partner, working with the divisions and Accounts. It is published at <b>mmlpbi.bpropms.in</b>, works in any modern browser, and installs on a phone as an app.</p>
+  <div class="note lens"><b class="t">Lens</b>The hub holds only aggregated figures. Customer names, phone numbers and vehicle numbers from the Tally registers never leave Accounts; the dashboards are built from monthly, daily and item-level totals.</div>
+</section>
+
+<!-- ======================= 3 GETTING STARTED ======================= -->
+<section class="chapter">
+  <h1>Getting started</h1>
+  <p class="lead">Open <b>https://mmlpbi.bpropms.in</b> on a computer, tablet or phone. You will see the sign-in page.</p>
+  <h2>Signing in</h2>
+  <figure><img src="img/01-signin.jpg" alt="Sign-in page"><figcaption>The sign-in page. The left panel shows a rotating thought on data; the right card is where you sign in.</figcaption></figure>
+  <ol class="steps">
+    <li>Make sure the <span class="pt">1</span> <b>Sign in</b> tab is selected.</li>
+    <li>Type your <span class="pt">2</span> <b>User ID</b>. This is your work e-mail address; capital letters do not matter.</li>
+    <li>Type your <span class="pt">3</span> <b>Password</b>. Use <b>Show</b> to check it. If Caps Lock is on, the page warns you.</li>
+    <li>Tick <span class="pt">4</span> <b>Keep me signed in for 7 days</b> on your own device only. Otherwise the session ends after 12 hours or when you close the browser.</li>
+    <li>Click <span class="pt">5</span> <b>Sign in</b>. You arrive at the hub, or at the page you were trying to open.</li>
+  </ol>
+  <p>Forgot your password? Use <span class="pt">6</span>. Need to check a document without signing in? Use <span class="pt">7</span> <b>Verify a document</b>. The <span class="pt">8</span> <b>Thought for the day</b> rotates every few seconds; the dots pick one.</p>
+  <div class="note caution"><b class="t">Caution</b>After several wrong attempts the page waits longer before each new try. That is deliberate. If you are stuck, use "Forgot password?" rather than guessing.</div>
+
+  <h2>Requesting access</h2>
+  <p>New to the hub? Choose the <b>Request access</b> tab and fill in the form. The administrator reviews every request and e-mails you a user ID and a temporary password, usually within one working day.</p>
+  <figure><img src="img/02-request.jpg" alt="Request access form"><figcaption>Request access: <span class="pt">1</span> full name, <span class="pt">2</span> work e-mail (it becomes your user ID), <span class="pt">3</span> company or division, <span class="pt">4</span> the confirmation tick, <span class="pt">5</span> Send request.</figcaption></figure>
+  <figure class="narrow"><img src="img/03-request-done.jpg" alt="Request ready to send"><figcaption>After you send: a <span class="pt">1</span> reference to quote, <span class="pt">2</span> a button that opens your mail app with the request filled in for the administrator, and <span class="pt">3</span> a copy option if your mail app does not open.</figcaption></figure>
+  <div class="note sticky"><b class="t">Sticky note</b>Keep the reference (it looks like <code>AR-20261014-7618</code>). If you need to chase a request, quote it.</div>
+
+  <h2>Forgot your password</h2>
+  <figure class="narrow"><img src="img/04-forgot.jpg" alt="Reset your password"><figcaption>Enter your <span class="pt">1</span> user ID and <span class="pt">2</span> request a reset. The administrator issues a new temporary password to that e-mail address.</figcaption></figure>
+  <h2>Roles</h2>
+  <table><tr><th>Role</th><th>Can</th></tr>
+    <tr><td><b>Viewer</b></td><td>Open every dashboard, tracker, note and report; download PDF and Excel reports; verify documents; choose their own theme and menu layout.</td></tr>
+    <tr><td><b>Admin</b></td><td>Everything a viewer can; reserved for future editing rights.</td></tr>
+    <tr><td><b>Super admin</b></td><td>Everything above, plus Settings → People: add, reset and remove accounts and act on access requests.</td></tr></table>
+  <h2>Installing the hub as an app</h2>
+  <p>On a phone, open the hub in Chrome (Android) or Safari (iPhone) and choose <b>Add to Home screen</b>; on a computer, Chrome and Edge show an install icon in the address bar. The app opens full-screen, keeps working offline with the last data it saw, and shows an <b>Update available</b> message when a new version is published. Tap <b>Update</b> to switch.</p>
+</section>
+
+<!-- ======================= 4 FINDING YOUR WAY ======================= -->
+<section class="chapter">
+  <h1>Finding your way around</h1>
+  <p class="lead">Every page carries the same bar: the menu, a theme switch, your name and Sign out.</p>
+  <figure><img src="img/06-menu-divisions.jpg" alt="Menu bar with the Divisions submenu open"><figcaption><span class="pt">1</span> Main menu · <span class="pt">2</span> the Divisions submenu, with the division groups · <span class="pt">3</span> theme switch · <span class="pt">4</span> who is signed in · <span class="pt">5</span> Sign out.</figcaption></figure>
+  <h2>The menu</h2>
+  <table><tr><th>Main item</th><th>Submenu</th><th>Opens</th></tr>
+    <tr><td><b>Hub</b></td><td>—</td><td>The landing page: headline figures, review tools, baseline and insights.</td></tr>
+    <tr><td><b>Divisions</b></td><td>All divisions · <b>Automotive</b> · Parts &amp; distribution · Office automation · People</td><td>The division dashboards. Each <span class="hl">division group</span> is a consolidation page showing its divisions together; under it sit the divisions themselves.</td></tr>
+    <tr><td><b>Sales &amp; inventory</b></td><td>Dashboard · Report builder · Reconciliation note</td><td>The TallyPrime-based sales and inventory views.</td></tr>
+    <tr><td><b>HOD action tracker</b></td><td>—</td><td>The 31 actions, league standings and roadmap.</td></tr>
+    <tr><td><b>Verify a document</b></td><td>—</td><td>Public page to check a document's ID or QR code.</td></tr>
+    <tr><td><b>Settings</b></td><td>Appearance · People</td><td>Your theme and menu layout; account management for the super admin.</td></tr></table>
+  <div class="note tip"><b class="t">On screen</b>Hover a main item to open its submenu; on a touch screen tap once to open it and tap the item again to follow it.</div>
+  <h2>Light, dark or system</h2>
+  <figure><img src="img/07-theme-dark.jpg" alt="Dashboard in dark theme"><figcaption>The <span class="pt">1</span> theme switch: System follows your device, Light and Dark force a theme. The choice is remembered on that browser.</figcaption></figure>
+  <h2>Top bar or sidebar</h2>
+  <figure><img src="img/24-sidebar.jpg" alt="Sidebar layout"><figcaption>In <span class="pt">1</span> sidebar mode the full menu stays open on the left and remembers which sections you expanded. <span class="pt">2</span> switches back to the top bar. Change it any time in Settings → Appearance.</figcaption></figure>
+  <h2>On a phone</h2>
+  <figure class="phone"><img src="img/26-phone-drawer.jpg" alt="Phone drawer menu"><figcaption>On phones the menu is a drawer behind the <span class="pt">1</span> ☰ button; <span class="pt">2</span> the same items as on a computer. Tap outside the drawer, or press <span class="kbd">Esc</span> on a keyboard, to close it.</figcaption></figure>
+  <div class="note badge-note"><b class="t">Badge</b>Switch the theme and the menu position once each and you have earned the <b>Navigator</b> badge (chapter 12).</div>
+</section>
+
+<!-- ======================= 5 HUB LANDING ======================= -->
+<section class="chapter">
+  <h1>The hub landing page</h1>
+  <p class="lead">The hub page is the half-year review at a glance: what happened, what to watch, and a door to every tool.</p>
+  <figure><img src="img/05-hub.jpg" alt="Hub landing page"><figcaption>The hub: <span class="pt">1</span> the menu bar, <span class="pt">2</span> the headline figures from the HOD meeting.</figcaption></figure>
+  <figure><img src="img/05b-hub-tools.jpg" alt="Review tools"><figcaption>"Open a review tool": every tool is one click away. The same links are in the menu.</figcaption></figure>
+  <p>Below the tools the page gathers the <b>FY 2025–26 baseline</b> (revenue by line of business, the financial position), the <b>Honda two-wheeler units' H1</b> panel drawn from the sales dashboard, and <b>Insights for the H1 review</b>, each ending with a question for the owner. These are typed figures from the HOD meeting and the provisional accounts; they are refreshed after each meeting.</p>
+  <div class="note lens"><b class="t">Lens</b>The Honda units panel on this page reconciles to the sales dashboard: ₹4.31 Cr gross billing, 25,596 service jobs, average bill ₹1,462, stock ₹27.8 L → ₹40.5 L. If the dashboard changes, this panel is updated with it.</div>
+</section>
+
+<!-- ======================= 6 DIVISIONS ======================= -->
+<section class="chapter">
+  <h1>Division dashboards</h1>
+  <p class="lead">One view per division, built from the decks and reports each division uploaded for the 9 October meeting, with H1 FY 2026–27 against the same months of FY 2025–26 and the full year to 31 March 2026.</p>
+  <h2>The overview</h2>
+  <figure><img src="img/08-divisions.jpg" alt="Division overview"><figcaption><span class="pt">1</span> chips for every division and group · <span class="pt">2</span> a division card with its headline figure · <span class="pt">3</span> its status.</figcaption></figure>
+  <p>Each card shows the division's headline figure and a status pill: <b>Strong</b>, <b>Mixed</b>, <b>Needs attention</b>, <b>Ahead of last year</b> or <b>Plan presented</b>. Click a card or a chip to open the division.</p>
+  <h2>Division groups</h2>
+  <p>A <span class="hl">division group</span> consolidates several divisions on one screen. There are four: <b>Automotive</b> (group vehicle sales, Honda Kerala, AMZES, BigWing, Royal Enfield, Nissan), <b>Parts &amp; distribution</b> (CSPW), <b>Office automation</b> (Canon / OAIP) and <b>People</b> (HR). Pick a group from the Divisions menu or the gold chips.</p>
+  <figure><img src="img/09-group-auto.jpg" alt="Automotive group"><figcaption>The Automotive group: <span class="pt">1</span> the group chip, <span class="pt">2</span> the group heading with its scope, <span class="pt">3</span> the six divisions it consolidates.</figcaption></figure>
+  <h2>Reading a division page</h2>
+  <figure><img src="img/10-division-honda.jpg" alt="Honda Kerala division page"><figcaption>Honda Kerala: <span class="pt">1</span> KPI tiles with the prior-year figure and the change · <span class="pt">2</span> monthly charts · <span class="pt">3</span> breakdown tables with totals · <span class="pt">4</span> highlights, watch points and next actions · <span class="pt">5</span> the files each figure came from, and what is still missing.</figcaption></figure>
+  <div class="note tip"><b class="t">On screen</b>Hover any KPI tile or chart point to see the figure, the prior-year figure and the source file it was read from.</div>
+  <div class="note lens"><b class="t">Lens</b>Nothing on a division page is estimated. Where a deck gives no prior-year figure, the comparison is left blank rather than guessed, and the gap is listed under "Still missing". Ask the division for the figure and it will appear.</div>
+</section>
+
+<!-- ======================= 7 SALES & INVENTORY ======================= -->
+<section class="chapter">
+  <h1>Sales and inventory dashboard</h1>
+  <p class="lead">Built from TallyPrime Service Bill Registers and Stock Summaries, one per company. Five Honda two-wheeler units are loaded: Attingal, Kulasekharam, Marthandam, Nedumangad and Varkala. The page reads top to bottom as four lenses.</p>
+  <figure><img src="img/11-dashboard-top.jpg" alt="Dashboard top"><figcaption><span class="pt">1</span> Company filter · <span class="pt">2</span> financial year · <span class="pt">3</span> headline figures · <span class="pt">4</span> the takeaway sentence, which rewrites itself for whatever you select.</figcaption></figure>
+  <h2>Filters</h2>
+  <p>The <b>company</b> filter shows one unit or all of them; the <b>financial year</b> filter opens on the latest year. Choose "All years" only when every company has both years loaded, otherwise a full year for one company is added to half-years for the others.</p>
+  <h2>Headline figures</h2>
+  <table><tr><th>Figure</th><th>Meaning</th></tr>
+    <tr><td>Gross billing</td><td>Everything invoiced, including GST.</td></tr>
+    <tr><td>Net revenue</td><td>The income ledgers minus discounts, without GST.</td></tr>
+    <tr><td>Service jobs</td><td>Service bills and AMC service bills.</td></tr>
+    <tr><td>Average bill per service job</td><td>Service gross ÷ service jobs.</td></tr>
+    <tr><td>Discounts given</td><td>The discount ledgers, and their share of revenue before discount.</td></tr></table>
+  <h2>Lens 1 · Sales</h2>
+  <figure class="narrow"><img src="img/12-dash-sales.jpg" alt="Gross billing by month"><figcaption>Gross billing by month. A month is short where a register starts or ends mid-month.</figcaption></figure>
+  <figure class="narrow"><img src="img/17-dash-tooltip.jpg" alt="Revenue mix tooltip"><figcaption>Revenue mix by month: hover a bar for the <span class="pt">1</span> tooltip with every stream's value for that month.</figcaption></figure>
+  <p>The sales lens also shows <b>daily billing</b>, <b>where the revenue comes from</b> (every income ledger ranked), totals <b>by voucher type</b> with the average bill, and the <b>top parts and accessories sold</b> with a search box and sortable columns.</p>
+  <div class="note lens"><b class="t">Lens</b>Each register column is grouped by its name: spare parts, accessories, labour and service charges, AMC and warranty, branch transfers, other sales. Every unit names its ledgers differently; the grouping is done by the build script, and the full list is in the README.</div>
+  <h2>Lens 2 · Year on year</h2>
+  <figure class="narrow"><img src="img/13-dash-yoy.jpg" alt="Year on year"><figcaption>Apr–Sep 2026 against Apr–Sep 2025, month by month, for companies that have both years loaded: <span class="pt">1</span> legend, <span class="pt">2</span> the table by company with the change and service jobs.</figcaption></figure>
+  <p>The comparison is like for like: every register starts on 9 or 10 April in both years. Companies whose FY 2025–26 register has not arrived are named under the chart.</p>
+  <h2>Lens 3 · Inventory</h2>
+  <figure class="narrow"><img src="img/14-dash-stock.jpg" alt="Inventory lens"><figcaption>Closing stock at cost on 31 March and 30 September by company, and <span class="pt">1</span> the idle share. Pick one company to see it by stock group instead.</figcaption></figure>
+  <figure><img src="img/15-dash-idle.jpg" alt="Stock held but not sold"><figcaption><span class="pt">1</span> the summary line, then the 40 costliest lines held at 30 September with no sale since April.</figcaption></figure>
+  <div class="note lens"><b class="t">Lens</b><b>Idle stock</b> = a line held at 30 September with no counter, workshop or accessory sale from 1 April. Branch and warranty transfers do not count as sales. Lines are matched to sales by their Tally name, or by the part code when the name was edited.</div>
+  <h2>Lens 4 · Control</h2>
+  <figure class="narrow"><img src="img/16-dash-control.jpg" alt="Control lens"><figcaption>Companies on the dashboard with their register periods, bills and gross, and <span class="pt">1</span> how many of the six requested files each has sent. The data-completeness table below it lists every file and its status.</figcaption></figure>
+  <div class="note sticky"><b class="t">Sticky note</b>Every company's figures reconcile to its register's own Grand Total, and every stock summary to its own. The build refuses a file that does not add up, so a number on this page is a number in Tally.</div>
+</section>
+
+<!-- ======================= 8 REPORT BUILDER ======================= -->
+<section class="chapter">
+  <h1>Report builder</h1>
+  <p class="lead">Turn the dashboard into a PDF or Excel report, with subtotals, grand totals and a verification QR code.</p>
+  <figure><img src="img/18-report.jpg" alt="Report builder"><figcaption>Choose <span class="pt">1</span> companies, <span class="pt">2</span> financial years and <span class="pt">3</span> sections and measures; the preview updates as you go. Then <span class="pt">4</span> Download PDF or <span class="pt">5</span> Download Excel.</figcaption></figure>
+  <ol class="steps">
+    <li>Tick the companies to include, or leave all ticked for a group report.</li>
+    <li>Pick one financial year, or two to add a year-on-year section.</li>
+    <li>Choose the sections (monthly, streams, heads, voucher types, items) and the measures within each: quantity, value, bills, gross, net, GST, discount.</li>
+    <li>Check the preview, then download. Each table carries a subtotal per company and year and a grand total.</li>
+  </ol>
+  <h2>What every download carries</h2>
+  <ul>
+    <li>The Marikar and BPro logos, the report title, the filters used and the date.</li>
+    <li>A <b>document ID</b> of the form <code>MGR-20261014-a1b2c3</code>.</li>
+    <li>A <b>QR code</b>. Scanning it reopens the report builder with the same settings and recomputes the report; if the figures match, the report is confirmed genuine. The Excel file has the same ID and link.</li>
+  </ul>
+  <div class="note caution"><b class="t">Caution</b>A report is a snapshot of the data loaded at the time. If more companies or months are loaded later, the same settings give a different (newer) report and the old one will no longer verify. Keep the date and ID with any figure you quote.</div>
+</section>
+
+<!-- ======================= 9 TRACKER ======================= -->
+<section class="chapter">
+  <h1>HOD action tracker</h1>
+  <p class="lead">The 31 actions agreed at the 9 October 2026 HOD meeting, with owners, due dates and a league table.</p>
+  <figure><img src="img/19-tracker.jpg" alt="HOD action tracker"><figcaption>The tracker: league standings, the roadmap to 31 March, presentation uploads and all actions.</figcaption></figure>
+  <table><tr><th>Section</th><th>What it shows</th></tr>
+    <tr><td><b>League standings</b></td><td>The Action Points League: who has closed how many of their actions, in order.</td></tr>
+    <tr><td><b>Roadmap to 31 March</b></td><td>The actions laid out by month to the year end.</td></tr>
+    <tr><td><b>Presentation uploads</b></td><td>Which divisions have uploaded their decks for the next review.</td></tr>
+    <tr><td><b>All actions</b></td><td>Every action with its ID, owner, due date and status.</td></tr></table>
+  <div class="note tip"><b class="t">Good to know</b>The hub shows a read-only copy of the tracker. Owners mark actions done on the live tracker on claude.ai; the copy here is refreshed with each hub release.</div>
+  <div class="note badge-note"><b class="t">Badge</b>Find your own actions in the tracker and note their due dates: that is the <b>Owner</b> badge.</div>
+</section>
+
+<!-- ======================= 10 NOTE & VERIFY ======================= -->
+<section class="chapter">
+  <h1>Reconciliation note and document verification</h1>
+  <h2>The reconciliation note</h2>
+  <figure><img src="img/20-note.jpg" alt="Reconciliation note"><figcaption>The pilot reconciliation note: how the HD Attingal export reconciled to Tally, the checklist against the data playbook, and the files still needed from Accounts.</figcaption></figure>
+  <p>The note is also issued as a PDF on BPro letterhead, document <code>RN-HDATL-2026-01</code>, with a verification QR code. Read it to understand how a Tally export becomes a dashboard, and what Accounts must export for each company.</p>
+  <h2>Verifying a document</h2>
+  <figure><img src="img/21-verify.jpg" alt="Verify a document"><figcaption>Enter the <span class="pt">1</span> document ID (or scan the QR code), read the <span class="pt">2</span> result and the <span class="pt">3</span> registered details. For a digital copy, drop the file on the page to compare its fingerprint with the register.</figcaption></figure>
+  <p>This page needs no sign-in, so anyone who receives a hub document can check it. IDs starting <code>RN-</code> are fixed documents held in the register; IDs starting <code>MGR-</code> are report downloads, which verify through their own QR code in the report builder.</p>
+  <div class="note lens"><b class="t">Lens</b>A fingerprint is a SHA-256 hash of the file: a 64-character code that changes if even one byte of the file changes. The verify page computes it in your browser; the file is not uploaded anywhere.</div>
+</section>
+
+<!-- ======================= 11 SETTINGS ======================= -->
+<section class="chapter">
+  <h1>Settings</h1>
+  <h2>Appearance</h2>
+  <figure><img src="img/22-settings-appearance.jpg" alt="Appearance settings"><figcaption><span class="pt">1</span> Theme: System, Light or Dark. <span class="pt">2</span> Menu position: top bar or sidebar. Both are saved on that browser only.</figcaption></figure>
+  <h2>People (super admin only)</h2>
+  <figure><img src="img/23-settings-people.jpg" alt="People settings"><figcaption><span class="pt">1</span> the accounts, with Reset password and Remove · <span class="pt">2</span> where a request e-mail or code is pasted · <span class="pt">3</span> Add a person.</figcaption></figure>
+  <h3>Adding a person</h3>
+  <ol class="steps">
+    <li>Enter the full name, the work e-mail (their user ID) and a role, then <b>Create account</b>.</li>
+    <li>Copy the temporary password shown. It appears once and is not stored anywhere.</li>
+    <li>The change is queued under <b>Changes waiting to go live</b>. Click <b>Publish to the site</b>; the site rebuilds in about a minute and the password then works.</li>
+    <li>Send the person their user ID and temporary password by a separate channel.</li>
+  </ol>
+  <h3>Acting on a request</h3>
+  <p>Requests from the sign-in page arrive at <b>mml@bpropms.in</b> with a code starting <code>MGQ1.</code> Paste the e-mail or the code into the box and click <b>Read request</b>. The request appears as a card with every detail and whether an account already exists. <b>Approve</b> creates the account (or issues a new password for a reset) and queues it for publishing; <b>Decline</b> opens a courteous reply.</p>
+  <div class="note lens"><b class="t">Lens</b>Passwords are never stored. Each account keeps only a salted fingerprint of its password (PBKDF2-SHA-256, 210,000 rounds). That is why a forgotten password is replaced, never recovered.</div>
+  <div class="note caution"><b class="t">Caution</b>Publishing writes the account list to the hub's repository and needs a GitHub token that the super admin pastes once per sign-in. It is kept in that browser tab only and cleared on sign-out. Without a token, use <b>Send to BPro instead</b> and the change is applied for you.</div>
+</section>
+
+<!-- ======================= 12 GAMIFICATION ======================= -->
+<section class="chapter">
+  <h1>Hub Explorer</h1>
+  <p class="lead">A light-hearted way to make sure everyone knows the hub. Tick the boxes as you go; the quiz at the end checks what stuck. Answers are at the end of the chapter.</p>
+  <div class="levels">
+    <div class="level"><h3><span class="medal bronze">B</span>Bronze · Visitor</h3><ul><li>Sign in and reach the hub page</li><li>Open your own division's dashboard</li><li>Hover a KPI tile and read its source</li><li>Install the hub on your phone</li></ul></div>
+    <div class="level"><h3><span class="medal silver">S</span>Silver · Navigator</h3><ul><li>Switch between light and dark theme</li><li>Try the sidebar, then go back to the top bar</li><li>Open a division group (Automotive)</li><li>Find your actions in the HOD tracker</li></ul></div>
+    <div class="level"><h3><span class="medal gold">G</span>Gold · Analyst</h3><ul><li>Filter the sales dashboard to one company and one year</li><li>Read the idle-stock list for your unit</li><li>Build and download a PDF report</li><li>Verify that report's QR code</li></ul></div>
+    <div class="level"><h3><span class="medal plat">P</span>Platinum · Owner</h3><ul><li>Bring a missing prior-year figure for your division</li><li>Close an action in the tracker before its due date</li><li>Get your unit's FY 2025–26 register loaded</li><li>Score 9 or more in the quiz below</li></ul></div>
+  </div>
+  <h2>The quiz</h2>
+  <div class="quiz"><ol>
+    <li>What is your user ID on the hub? <span class="opts">a) a number issued by IT · b) your work e-mail address · c) your employee code</span></li>
+    <li>"Net revenue" on the sales dashboard is: <span class="opts">a) gross billing minus GST · b) income ledgers minus discounts, without GST · c) gross billing minus discounts</span></li>
+    <li>A line is "idle stock" when: <span class="opts">a) it has not sold for 30 days · b) it was held at 30 September with no sale since 1 April · c) it was transferred to a branch</span></li>
+    <li>Which of these is a division group? <span class="opts">a) Honda Kerala · b) Automotive · c) CSPW</span></li>
+    <li>Every figure on the sales dashboard reconciles to: <span class="opts">a) the division's deck · b) the register's Grand Total in Tally · c) last year's audited accounts</span></li>
+    <li>What does the QR code on a report do? <span class="opts">a) opens the hub home page · b) rebuilds the report with the same settings and checks the figures · c) downloads the Excel version</span></li>
+    <li>A forgotten password is: <span class="opts">a) e-mailed back to you · b) replaced with a new temporary one by the administrator · c) shown in Settings</span></li>
+    <li>On a phone the menu opens from: <span class="opts">a) the ☰ button · b) a long press on the logo · c) the Settings page</span></li>
+    <li>"All years" on the sales dashboard is best used when: <span class="opts">a) always · b) every company has both years loaded · c) never</span></li>
+    <li>Who built the hub? <span class="opts">a) the IT department · b) Dr. Babu B., BPro Consulting &amp; Technologies · c) TallyPrime</span></li>
+  </ol></div>
+  <div class="note badge-note"><b class="t">Answers</b>1 b · 2 b · 3 b · 4 b · 5 b · 6 b · 7 b · 8 a · 9 b · 10 b. Nine or more: Platinum.</div>
+</section>
+
+<!-- ======================= 13 FAQ ======================= -->
+<section class="chapter faq">
+  <h1>Frequently asked questions</h1>
+  <dl>
+    <dt>I typed the right password and it says they don't match.</dt><dd>Check Caps Lock (the page warns you), and that you are using the e-mail address you registered with. After a password reset the old one stops working as soon as the change is published. If an installed app still refuses, open the site in the browser once, or reload with <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">R</span>.</dd>
+    <dt>Why does my division show "Still missing" items?</dt><dd>The deck for the HOD meeting did not contain that figure. Send it to the administrator and the dashboard is updated; nothing is estimated in the meantime.</dd>
+    <dt>The sales dashboard shows only five companies.</dt><dd>Only the Honda two-wheeler units' Tally exports have been received so far. Other companies appear as their exports arrive; the control lens lists what each company has sent.</dd>
+    <dt>Why is April smaller than the other months?</dt><dd>Every register starts on 9 or 10 April, so April is a short month in both years. The year-on-year comparison is still like for like.</dd>
+    <dt>Can I share a report outside the group?</dt><dd>Reports are for internal circulation. If one must be shared, the recipient can check it is genuine with the QR code, which is the point of the verification.</dd>
+    <dt>Does the hub work offline?</dt><dd>The installed app opens offline with the last data it saw and says so. New data needs a connection.</dd>
+    <dt>Where is my data stored?</dt><dd>Aggregated figures are published with the hub. Raw Tally exports with customer details stay with Accounts and are never uploaded.</dd>
+    <dt>Can I change my own password?</dt><dd>Not yet. Use "Forgot password?" on the sign-in page and the administrator issues a new one. Self-service password changes arrive with the hub's server-based sign-in in a later version.</dd>
+    <dt>The page looks different from the screenshots.</dt><dd>You may be on a different theme or menu layout; both are in Settings → Appearance. New versions also add features; the update message lists them.</dd>
+    <dt>How do I get a colleague access?</dt><dd>Ask them to use <b>Request access</b> on the sign-in page. The administrator approves it within a working day.</dd>
+    <dt>Who do I contact?</dt><dd>mml@bpropms.in for access and sign-in; your division's HOD for figures; BPro (www.bpropms.com) for the hub itself.</dd>
+  </dl>
+</section>
+
+<!-- ======================= 14 RAQ ======================= -->
+<section class="chapter faq">
+  <h1>Rarely asked questions</h1>
+  <p class="lead">Questions nobody asks until they need to.</p>
+  <dl>
+    <dt>Why do the browser tab and the app icon show only the "M", not the whole logo?</dt><dd>At 16 pixels the wordmark is unreadable; the emblem alone stays crisp. The full logo is on every page.</dd>
+    <dt>What happens if two super admins publish account changes at the same time?</dt><dd>The second publish is refused with "the file changed on GitHub meanwhile; try again". Nothing is lost; the second person simply publishes again.</dd>
+    <dt>Can the request code in an access e-mail be forged?</dt><dd>It can be typed by anyone, which is why the super admin reviews every request and the new password is sent to the e-mail address in the request, not to whoever sent it.</dd>
+    <dt>Why does "Thought for the day" change every seven seconds?</dt><dd>Seven quotes, seven seconds each. Hover it to pause, or use the dots. Under a reduced-motion setting it stays still.</dd>
+    <dt>Why is a bill sometimes counted as negative?</dt><dd>In a few bills the discount exceeds the bill, so the true amount is negative, but Tally's export drops the minus sign. The build detects these from each bill's ledger arithmetic; that is what makes the totals match the Grand Total.</dd>
+    <dt>Why does Marthandam's export look different from the others?</dt><dd>Its discounts are exported as negative amounts while the other units export them as positive. The build uses the size of the amount, so both reconcile.</dd>
+    <dt>Can I open the hub from the old github.io address?</dt><dd>Yes; it redirects to mmlpbi.bpropms.in, so QR codes printed before the move keep working.</dd>
+    <dt>Is the hub a Power BI report?</dt><dd>No. It is a purpose-built web application with its own charts, reports and verification, which is why it runs on a phone without any licence.</dd>
+  </dl>
+</section>
+
+<!-- ======================= 15 TROUBLESHOOTING ======================= -->
+<section class="chapter">
+  <h1>Troubleshooting</h1>
+  <table><tr><th>Symptom</th><th>Likely cause</th><th>What to do</th></tr>
+    <tr><td>Sign-in refused right after a new account or reset</td><td>The browser or app still has the previous version cached</td><td>Reload once with <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">R</span> (Mac: <span class="kbd">Cmd</span>+<span class="kbd">Shift</span>+<span class="kbd">R</span>), or tap Update in the app.</td></tr>
+    <tr><td>Charts are empty, cards say "Loading"</td><td>No connection, or a blocked script</td><td>Check the connection; the hub needs d3 and the report libraries from public CDNs. Corporate firewalls that block cdnjs or jsdelivr stop the charts.</td></tr>
+    <tr><td>"Failed to load" on a card</td><td>A data file could not be fetched</td><td>Reload. If it persists, tell mml@bpropms.in which card and the time.</td></tr>
+    <tr><td>The update message keeps reappearing</td><td>An old tab is still open</td><td>Close every tab of the hub, open it once more and tap Update.</td></tr>
+    <tr><td>A report's QR code says the figures do not match</td><td>Data was reloaded since the report was made</td><td>Expected: the report is a snapshot. Build a fresh one.</td></tr>
+    <tr><td>The sidebar covers the page on a small laptop</td><td>Sidebar mode below 900 px becomes a drawer</td><td>Use the ☰ button, or switch to the top bar in Settings.</td></tr>
+    <tr><td>Publishing accounts says the token was not accepted</td><td>Token expired or lacks Contents: write</td><td>Create a new fine-grained token for the repository with Contents read and write, paste it again.</td></tr></table>
+</section>
+
+<!-- ======================= 16 VERSION HISTORY ======================= -->
+<section class="chapter">
+  <h1>Version history</h1>
+  <p class="lead">Each release raises the app version; installed copies show an update message with the notes.</p>
+  <table class="version"><tr><th>Version</th><th>Date</th><th>What changed</th></tr>
+    <tr><td>2026.10.14i</td><td>14 Oct 2026</td><td>Favicon and app icons from the Marikar emblem.</td></tr>
+    <tr><td>2026.10.14h</td><td>14 Oct 2026</td><td>Hub mailbox mml@bpropms.in; mail relay for requests prepared.</td></tr>
+    <tr><td>2026.10.14g</td><td>14 Oct 2026</td><td>Request access and password reset on the sign-in page; requests desk for the super admin.</td></tr>
+    <tr><td>2026.10.14f</td><td>14 Oct 2026</td><td>Menu bar or sidebar on every page, Light/Dark/System theme, division groups, Settings with People.</td></tr>
+    <tr><td>2026.10.14e</td><td>14 Oct 2026</td><td>Sign-in page redesign: thought for the day, principles ticker, animated chart.</td></tr>
+    <tr><td>2026.10.14d</td><td>14 Oct 2026</td><td>Sign-in fix: scripts load fresh when online so account changes apply at once.</td></tr>
+    <tr><td>2026.10.14c</td><td>14 Oct 2026</td><td>Marikar logo prominent on the sign-in page; super admin account.</td></tr>
+    <tr><td>2026.10.14b</td><td>14 Oct 2026</td><td>Five Honda units loaded from Tally; year-on-year and inventory lenses; idle stock list.</td></tr>
+    <tr><td>2026.10.14</td><td>14 Oct 2026</td><td>Landing and sign-in page; hub moves behind sign-in. Custom domain mmlpbi.bpropms.in.</td></tr>
+    <tr><td>2026.10.13</td><td>13 Oct 2026</td><td>Division dashboards for nine divisions; installable app with update message; BPro branding, warm palette and QR verification on every download; reconciliation note PDF on letterhead; financial position panel.</td></tr>
+    <tr><td>2026.10.12</td><td>12 Oct 2026</td><td>HD Attingal pilot dashboard; multi-company data model; hub landing page; report builder with subtotals and grand totals; HOD action tracker copy.</td></tr></table>
+  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.14i.</p>
+</section>
+
+<!-- ======================= 17 GLOSSARY ======================= -->
+<section class="chapter glossary">
+  <h1>Glossary</h1>
+  <div><dt>AMC</dt><dd> — annual maintenance contract; AMC service bills are counted as service jobs.</dd></div>
+  <div><dt>Division group</dt><dd> — a consolidation page showing several divisions together (Automotive, Parts &amp; distribution, Office automation, People).</dd></div>
+  <div><dt>Document ID</dt><dd> — the code printed on every hub document (RN-…, MGR-…, UM-…) that the verify page checks.</dd></div>
+  <div><dt>Fingerprint</dt><dd> — the SHA-256 hash of a file, used to confirm a digital copy is unchanged.</dd></div>
+  <div><dt>FY</dt><dd> — financial year, 1 April to 31 March. FY 2026–27 runs from 1 April 2026.</dd></div>
+  <div><dt>Grand Total</dt><dd> — the last line of a Tally register or stock summary, which every build must match.</dd></div>
+  <div><dt>Gross billing</dt><dd> — everything invoiced including GST.</dd></div>
+  <div><dt>H1</dt><dd> — the first half of the financial year, April to September.</dd></div>
+  <div><dt>HOD</dt><dd> — head of department; the HOD meeting reviews every division.</dd></div>
+  <div><dt>Idle stock</dt><dd> — a line held at the balance date with no sale since the start of the year.</dd></div>
+  <div><dt>Lens</dt><dd> — one of the four sections of the sales dashboard: sales, year on year, inventory, control.</dd></div>
+  <div><dt>Net revenue</dt><dd> — income ledgers minus discounts, without GST.</dd></div>
+  <div><dt>Register</dt><dd> — TallyPrime's Service Bill Register export, one per company per financial year.</dd></div>
+  <div><dt>Stock summary</dt><dd> — TallyPrime's closing stock report at a balance date, by stock group and item.</dd></div>
+  <div><dt>Super admin</dt><dd> — the account that manages people and approves access requests.</dd></div>
+  <div><dt>Voucher type</dt><dd> — Tally's bill category: service bill, AMC service bill, spare sale invoice, local sales, branch transfer.</dd></div>
+</section>
+
+<!-- ======================= 18 SUPPORT ======================= -->
+<section class="chapter">
+  <h1>Support and credits</h1>
+  <table><tr><th>Need</th><th>Contact</th></tr>
+    <tr><td>Access, passwords, sign-in problems</td><td>mml@bpropms.in</td></tr>
+    <tr><td>A figure on your division's page</td><td>Your division HOD, who sends corrections to the administrator</td></tr>
+    <tr><td>Tally exports and the data request</td><td>Accounts, following the reconciliation note's checklist</td></tr>
+    <tr><td>The hub itself: features, faults, this manual</td><td>BPro Consulting &amp; Technologies · www.bpropms.com</td></tr></table>
+  <div class="credits"><img src="../../assets/img/bpro.png" alt="BPro"><div><b>Designed and developed by Dr.Babu.B</b><br>BPro Consulting &amp; Technologies<br><a href="https://www.drbabu.in">www.drbabu.in</a> | <a href="https://www.bpropms.com">www.bpropms.com</a><br><small>Analytics partner to Marikar Group · HRMS, PMS, LMS, Consulting, Process.ai</small></div></div>
+  <p style="margin-top:6mm;font-size:9pt;color:var(--muted)">This manual is issued for Marikar Group users. Internal circulation. Document __DOCID__ · verify at __VERIFY__</p>
+</section>
+
+<!-- ======================= BACK COVER ======================= -->
+<section class="chapter back">
+  <div class="tile"><img src="../../assets/img/marikar-group.png" alt="Marikar Group"></div>
+  <div><div style="font-size:9pt;letter-spacing:.16em;text-transform:uppercase;color:#f1c27a;font-weight:700">Marikar Group performance hub</div><div style="font-size:20pt;font-weight:800;margin-top:2mm">mmlpbi.bpropms.in</div></div>
+  <p>Data → insight → action. Every figure reconciled to its source. Decide on evidence, not opinion.</p>
+  <div style="font-size:9pt;opacity:.8">D&amp;D by Dr.Babu.B · BPro Consulting &amp; Technologies · www.drbabu.in | www.bpropms.com</div>
+</section>
+</body>
+</html>

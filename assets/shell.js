@@ -27,7 +27,10 @@
     side: '<rect x="3" y="4" width="6" height="16" rx="1"/><rect x="12" y="4" width="9" height="16" rx="1"/>',
   };
   const MENU = [
-    { label: 'Hub', href: 'hub.html', icon: 'hub' },
+    { label: 'Hub', href: 'hub.html', icon: 'hub', children: [
+      { label: 'Landing page', href: 'hub.html' },
+      { label: 'User manual (PDF)', href: 'docs/manual/manual.pdf' },
+    ] },
     { label: 'Divisions', href: 'divisions.html', icon: 'div', children: [
       { label: 'All divisions', href: 'divisions.html' },
       ...GROUPS.map((g) => ({ label: g.label, href: 'divisions.html#g=' + g.key, group: true, children: g.divisions.map(([k, n]) => ({ label: n, href: 'divisions.html#' + k })) })),

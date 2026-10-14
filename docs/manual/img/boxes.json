@@ -1,0 +1,508 @@
+{
+ "01-signin": [
+  {
+   "label": "Sign in / Request access",
+   "x": 865,
+   "y": 291,
+   "w": 346,
+   "h": 49
+  },
+  {
+   "label": "User ID",
+   "x": 865,
+   "y": 500,
+   "w": 346,
+   "h": 49
+  },
+  {
+   "label": "Password",
+   "x": 865,
+   "y": 591,
+   "w": 346,
+   "h": 49
+  },
+  {
+   "label": "Keep me signed in",
+   "x": 869,
+   "y": 659,
+   "w": 16,
+   "h": 16
+  },
+  {
+   "label": "Sign in button",
+   "x": 865,
+   "y": 698,
+   "w": 346,
+   "h": 50
+  },
+  {
+   "label": "Forgot password",
+   "x": 1092,
+   "y": 657,
+   "w": 118,
+   "h": 21
+  },
+  {
+   "label": "Verify a document",
+   "x": 865,
+   "y": 863,
+   "w": 346,
+   "h": 94
+  },
+  {
+   "label": "Thought for the day",
+   "x": 48,
+   "y": 503,
+   "w": 576,
+   "h": 209
+  }
+ ],
+ "02-request": [
+  {
+   "label": "Full name",
+   "x": 865,
+   "y": 26,
+   "w": 346,
+   "h": 49
+  },
+  {
+   "label": "Work e-mail",
+   "x": 865,
+   "y": 118,
+   "w": 346,
+   "h": 49
+  },
+  {
+   "label": "Company / division",
+   "x": 865,
+   "y": 209,
+   "w": 167,
+   "h": 49
+  },
+  {
+   "label": "Confirmation",
+   "x": 869,
+   "y": 490,
+   "w": 16,
+   "h": 16
+  },
+  {
+   "label": "Send request",
+   "x": 865,
+   "y": 564,
+   "w": 346,
+   "h": 50
+  }
+ ],
+ "03-request-done": [
+  {
+   "label": "Reference",
+   "x": 176,
+   "y": 620,
+   "w": 134,
+   "h": 15
+  },
+  {
+   "label": "Send by e-mail",
+   "x": 37,
+   "y": 650,
+   "w": 346,
+   "h": 50
+  },
+  {
+   "label": "Copy instead",
+   "x": 37,
+   "y": 710,
+   "w": 346,
+   "h": 52
+  }
+ ],
+ "04-forgot": [
+  {
+   "label": "User ID",
+   "x": 37,
+   "y": 628,
+   "w": 346,
+   "h": 49
+  },
+  {
+   "label": "Request a reset",
+   "x": 37,
+   "y": 694,
+   "w": 346,
+   "h": 50
+  }
+ ],
+ "05-hub": [
+  {
+   "label": "Menu bar",
+   "x": 0,
+   "y": 0,
+   "w": 1366,
+   "h": 56
+  },
+  {
+   "label": "Headline figures",
+   "x": 123,
+   "y": 534,
+   "w": 920,
+   "h": 111
+  }
+ ],
+ "06-menu-divisions": [
+  {
+   "label": "Main menu",
+   "x": 188,
+   "y": 10,
+   "w": 839,
+   "h": 37
+  },
+  {
+   "label": "Divisions submenu with groups",
+   "x": 263,
+   "y": 52,
+   "w": 283,
+   "h": 491
+  },
+  {
+   "label": "Theme switch",
+   "x": 1038,
+   "y": 10,
+   "w": 104,
+   "h": 36
+  },
+  {
+   "label": "Signed-in user",
+   "x": 1150,
+   "y": 12,
+   "w": 110,
+   "h": 32
+  },
+  {
+   "label": "Sign out",
+   "x": 1268,
+   "y": 11,
+   "w": 74,
+   "h": 33
+  }
+ ],
+ "07-theme-dark": [
+  {
+   "label": "Theme switch",
+   "x": 1038,
+   "y": 10,
+   "w": 104,
+   "h": 36
+  }
+ ],
+ "08-divisions": [
+  {
+   "label": "Division and group chips",
+   "x": 48,
+   "y": 288,
+   "w": 1270,
+   "h": 74
+  },
+  {
+   "label": "A division card",
+   "x": 48,
+   "y": 394,
+   "w": 306,
+   "h": 204
+  },
+  {
+   "label": "Status",
+   "x": 205,
+   "y": 429,
+   "w": 128,
+   "h": 23
+  }
+ ],
+ "09-group-auto": [
+  {
+   "label": "Group chip",
+   "x": 162,
+   "y": 288,
+   "w": 102,
+   "h": 33
+  },
+  {
+   "label": "Group heading",
+   "x": 48,
+   "y": 394,
+   "w": 1270,
+   "h": 106
+  },
+  {
+   "label": "The group's divisions",
+   "x": 48,
+   "y": 532,
+   "w": 1270,
+   "h": 399
+  }
+ ],
+ "10-division-honda": [
+  {
+   "label": "KPI tiles",
+   "x": 48,
+   "y": 662,
+   "w": 1270,
+   "h": 257
+  },
+  {
+   "label": "Monthly charts",
+   "x": 48,
+   "y": 943,
+   "w": 1270,
+   "h": 792
+  },
+  {
+   "label": "Breakdown tables",
+   "x": 48,
+   "y": 1759,
+   "w": 1270,
+   "h": 449
+  },
+  {
+   "label": "Highlights, watch points, actions",
+   "x": 48,
+   "y": 2231,
+   "w": 1270,
+   "h": 350
+  },
+  {
+   "label": "Sources and gaps",
+   "x": 48,
+   "y": 2605,
+   "w": 1270,
+   "h": 326
+  }
+ ],
+ "11-dashboard-top": [
+  {
+   "label": "Company filter",
+   "x": 123,
+   "y": 288,
+   "w": 245,
+   "h": 35
+  },
+  {
+   "label": "Financial year",
+   "x": 485,
+   "y": 288,
+   "w": 192,
+   "h": 35
+  },
+  {
+   "label": "Headline figures",
+   "x": 48,
+   "y": 355,
+   "w": 1270,
+   "h": 143
+  },
+  {
+   "label": "Takeaway sentence",
+   "x": 157,
+   "y": 192,
+   "w": 960,
+   "h": 44
+  }
+ ],
+ "12-dash-sales": [
+  {
+   "label": "Hover a bar for the exact figure",
+   "x": 21,
+   "y": -69,
+   "w": 585,
+   "h": 266
+  }
+ ],
+ "13-dash-yoy": [
+  {
+   "label": "Legend",
+   "x": 21,
+   "y": -662,
+   "w": 585,
+   "h": 19
+  },
+  {
+   "label": "Table by company",
+   "x": 21,
+   "y": -367,
+   "w": 585,
+   "h": 64
+  }
+ ],
+ "14-dash-stock": [
+  {
+   "label": "Closing stock and idle share",
+   "x": 21,
+   "y": 394,
+   "w": 585,
+   "h": 223
+  }
+ ],
+ "15-dash-idle": [
+  {
+   "label": "Summary line",
+   "x": 21,
+   "y": -482,
+   "w": 1228,
+   "h": 19
+  }
+ ],
+ "16-dash-control": [
+  {
+   "label": "Files received per company",
+   "x": 21,
+   "y": -2967,
+   "w": 585,
+   "h": 317
+  }
+ ],
+ "17-dash-tooltip": [
+  {
+   "label": "Tooltip",
+   "x": 144,
+   "y": 190,
+   "w": 257,
+   "h": 144
+  }
+ ],
+ "18-report": [
+  {
+   "label": "Companies",
+   "x": 124,
+   "y": 362,
+   "w": 361,
+   "h": 372
+  },
+  {
+   "label": "Financial years",
+   "x": 503,
+   "y": 362,
+   "w": 361,
+   "h": 372
+  },
+  {
+   "label": "Sections and measures",
+   "x": 881,
+   "y": 362,
+   "w": 361,
+   "h": 372
+  },
+  {
+   "label": "Download PDF",
+   "x": 370,
+   "y": 749,
+   "w": 130,
+   "h": 40
+  },
+  {
+   "label": "Download Excel",
+   "x": 221,
+   "y": 749,
+   "w": 139,
+   "h": 40
+  }
+ ],
+ "19-tracker": [],
+ "20-note": [],
+ "21-verify": [
+  {
+   "label": "Document ID",
+   "x": 316,
+   "y": 394,
+   "w": 650,
+   "h": 40
+  },
+  {
+   "label": "Result",
+   "x": 293,
+   "y": 477,
+   "w": 780,
+   "h": 104
+  },
+  {
+   "label": "Registered details",
+   "x": 293,
+   "y": 601,
+   "w": 780,
+   "h": 422
+  }
+ ],
+ "22-settings-appearance": [
+  {
+   "label": "Theme",
+   "x": 23,
+   "y": 124,
+   "w": 834,
+   "h": 162
+  },
+  {
+   "label": "Menu position",
+   "x": 23,
+   "y": 334,
+   "w": 834,
+   "h": 143
+  }
+ ],
+ "23-settings-people": [
+  {
+   "label": "Accounts",
+   "x": 23,
+   "y": -395,
+   "w": 834,
+   "h": 85
+  },
+  {
+   "label": "Paste a request",
+   "x": 23,
+   "y": -229,
+   "w": 703,
+   "h": 80
+  },
+  {
+   "label": "Add a person",
+   "x": 23,
+   "y": -101,
+   "w": 834,
+   "h": 119
+  }
+ ],
+ "24-sidebar": [
+  {
+   "label": "Sidebar menu",
+   "x": 0,
+   "y": 56,
+   "w": 264,
+   "h": 764
+  },
+  {
+   "label": "Switch back to top bar",
+   "x": 10,
+   "y": 855,
+   "w": 243,
+   "h": 39
+  }
+ ],
+ "25-phone-signin": [],
+ "26-phone-drawer": [
+  {
+   "label": "Menu button",
+   "x": 12,
+   "y": 9,
+   "w": 38,
+   "h": 38
+  },
+  {
+   "label": "Drawer",
+   "x": 0,
+   "y": 56,
+   "w": 264,
+   "h": 788
+  }
+ ],
+ "27-phone-dashboard": [],
+ "05b-hub-tools": []
+}

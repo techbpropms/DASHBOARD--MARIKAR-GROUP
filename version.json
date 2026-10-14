@@ -1,8 +1,8 @@
 {
-  "version": "2026.10.14h",
-  "title": "Hub mailbox",
+  "version": "2026.10.14j",
+  "title": "User manual",
   "notes": [
-    "Access and reset requests now go to mml@bpropms.in",
-    "Write to mml@bpropms.in for help with sign-in"
+    "The user manual (PDF, 39 pages, with screenshots) is on the hub page and under Hub in the menu",
+    "Document UM-MGHUB-2026-01, verifiable like every hub document"
   ]
 }
