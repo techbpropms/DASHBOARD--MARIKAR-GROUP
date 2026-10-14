@@ -43,7 +43,7 @@
       const code = Requests.encode(req);
       const lines = kind === 'reset'
         ? [`Password reset request ${req.ref}`, '', `User ID: ${req.email}`, `Name: ${req.name || '-'}`, '', 'Request code (paste into Settings > People):', code]
-        : [`Access request ${req.ref}`, '', `Name: ${req.name}`, `E-mail: ${req.email}`, `Company / division: ${req.unit || '-'}`, `Designation: ${req.title || '-'}`, `Phone: ${req.phone || '-'}`, `Reason: ${req.reason || '-'}`, '', 'Request code (paste into Settings > People):', code];
+        : [`Access request ${req.ref}`, '', `Name: ${req.name}`, `E-mail: ${req.email}`, `Company / division / function: ${req.unit || '-'}`, `Access needed for: ${req.scope || '-'}`, `Designation: ${req.title || '-'}`, `Phone: ${req.phone || '-'}`, `Reason: ${req.reason || '-'}`, '', 'Request code (paste into Settings > People):', code];
       const subject = kind === 'reset' ? `Marikar hub: password reset ${req.ref}` : `Marikar hub: access request ${req.ref} (${req.name})`;
       return { req, code, text: lines.join('\n'), mailto: `mailto:${REQUESTS.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}` };
     },

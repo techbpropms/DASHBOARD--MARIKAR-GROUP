@@ -1,8 +1,8 @@
 {
-  "version": "2026.10.14h",
-  "title": "Hub mailbox",
+  "version": "2026.10.14k",
+  "title": "Request access: functions and scope",
   "notes": [
-    "Access and reset requests now go to mml@bpropms.in",
-    "Write to mml@bpropms.in for help with sign-in"
+    "Request access now lists corporate functions (Finance, Admin, HR, IT, Audit, Marketing) as well as every division",
+    "A new 'Access needed for' choice: my division, several, or all divisions"
   ]
 }
