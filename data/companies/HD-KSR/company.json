@@ -1,0 +1,48 @@
+{
+  "code": "HD-KSR",
+  "name": "HD Kulasekharam",
+  "register_from": "2025-04-09",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2025-26",
+    "2026-27"
+  ],
+  "bills": 13035,
+  "gross": 11846921.26,
+  "registers": [
+    {
+      "register_from": "2025-04-09",
+      "register_to": "2026-03-31",
+      "bills": 8526,
+      "gross": 7783549.26,
+      "distinct_items": 1218
+    },
+    {
+      "register_from": "2026-04-09",
+      "register_to": "2026-09-30",
+      "bills": 4509,
+      "gross": 4063372.0,
+      "distinct_items": 725
+    }
+  ],
+  "stock": [
+    {
+      "as_at": "2026-03-31",
+      "value": 645126.01,
+      "lines": 862,
+      "sales_months": 12
+    },
+    {
+      "as_at": "2026-09-30",
+      "value": 697537.97,
+      "lines": 932,
+      "sales_months": 6
+    }
+  ],
+  "received": [
+    "Sales register FY 2025-26",
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026",
+    "Stock summary As at 31 Mar 2026"
+  ]
+}

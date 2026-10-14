@@ -10,6 +10,8 @@ window.dash = (() => {
     items: 'data/items.csv',
     companies: 'data/companies.csv',
     completeness: 'data/completeness.csv',
+    stock: 'data/stock.csv',
+    stock_items: 'data/stock_items.csv',
   };
   const DEFAULT_PARAMS = { company: null, fy: null };
   let params = { ...DEFAULT_PARAMS };

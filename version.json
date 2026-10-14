@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.14",
-  "title": "Sign-in page",
+  "version": "2026.10.14b",
+  "title": "Five Honda units and the inventory lens",
   "notes": [
-    "New landing page with sign-in; the hub now opens after you sign in",
-    "Signed-in name and a Sign out button on every page",
-    "Document verification stays open to anyone with a QR code"
+    "Attingal, Kulasekharam, Marthandam, Nedumangad and Varkala now on the sales dashboard",
+    "Year-on-year view (Kulasekharam first) and closing stock at 31 March and 30 September",
+    "New list of stock held but not sold since April"
   ]
 }

@@ -1,0 +1,39 @@
+{
+  "code": "HD-VKL",
+  "name": "HD Varkala",
+  "register_from": "2026-04-10",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2026-27"
+  ],
+  "bills": 5140,
+  "gross": 7519925.66,
+  "registers": [
+    {
+      "register_from": "2026-04-10",
+      "register_to": "2026-09-30",
+      "bills": 5140,
+      "gross": 7519925.66,
+      "distinct_items": 748
+    }
+  ],
+  "stock": [
+    {
+      "as_at": "2026-03-31",
+      "value": 420853.67,
+      "lines": 507,
+      "sales_months": 0
+    },
+    {
+      "as_at": "2026-09-30",
+      "value": 692708.66,
+      "lines": 750,
+      "sales_months": 6
+    }
+  ],
+  "received": [
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026",
+    "Stock summary As at 31 Mar 2026"
+  ]
+}

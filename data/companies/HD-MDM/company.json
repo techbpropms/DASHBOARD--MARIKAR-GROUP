@@ -1,0 +1,39 @@
+{
+  "code": "HD-MDM",
+  "name": "HD Marthandam",
+  "register_from": "2026-04-09",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2026-27"
+  ],
+  "bills": 10435,
+  "gross": 9972827.36,
+  "registers": [
+    {
+      "register_from": "2026-04-09",
+      "register_to": "2026-09-30",
+      "bills": 10435,
+      "gross": 9972827.36,
+      "distinct_items": 1455
+    }
+  ],
+  "stock": [
+    {
+      "as_at": "2026-03-31",
+      "value": 897097.64,
+      "lines": 1318,
+      "sales_months": 0
+    },
+    {
+      "as_at": "2026-09-30",
+      "value": 1065806.8,
+      "lines": 1258,
+      "sales_months": 6
+    }
+  ],
+  "received": [
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026",
+    "Stock summary As at 31 Mar 2026"
+  ]
+}
