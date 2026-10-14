@@ -1,7 +1,7 @@
 // Service worker for the installable hub. Pages and data are fetched fresh when online (network first, cached copy
 // offline); styles, scripts and images come from the cache. Bump VERSION with each release: the pages then show an
 // "update available" message, and the new version takes over when the reader taps Update.
-const VERSION = '2026.10.14b';
+const VERSION = '2026.10.14c';
 const CACHE = 'marikar-hub-' + VERSION;
 const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html',
   'assets/theme.css', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
