@@ -7,22 +7,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="icon" href="assets/img/marikar-group.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="stylesheet" href="assets/brand.css">
 <style>
 /* Layout: the hub's navy masthead, a parameter panel, then the report preview with subtotals and grand totals. */
 :root {
-  --bg: #f5f6f8; --surface: #ffffff; --ink: #101828; --muted: #586174; --line: #e2e5eb;
-  --mast: #0f1b33; --mast-2: #16244a; --violet: #2e3192; --gray: #75787b; --gold: #a87b2a;
-  --accent-text: #2e3192; --sub: #f2f4f8; --ok: #17694d; --warn: #92560a;
+  --bg: #f7f2ea; --surface: #fffcf7; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1;
+  --mast: #131c38; --mast-2: #1f2b55; --violet: #5b4f9e; --gray: #d49a3a; --gold: #b8612b;
+  --accent-text: #5b4f9e; --sub: #f4eee4; --ok: #2d7550; --ok-soft: #e6f0e6; --bad: #a63a2a; --bad-soft: #f9e6df; --warn: #92560a;
   --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
-  --accent-text: #b9bcf5; --sub: #1b2338; --ok: #6cc9a0; --warn: #e2ab5a; color-scheme: dark; } }
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52;
+  --accent-text: #c9bff5; --sub: #29231d; --ok: #6cc9a0; --ok-soft: #16302a; --bad: #ef8a7e; --bad-soft: #3a2220; --warn: #e2ab5a; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
-  --accent-text: #b9bcf5; --sub: #1b2338; --ok: #6cc9a0; --warn: #e2ab5a; color-scheme: dark; }
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52;
+  --accent-text: #c9bff5; --sub: #29231d; --ok: #6cc9a0; --ok-soft: #16302a; --bad: #ef8a7e; --bad-soft: #3a2220; --warn: #e2ab5a; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14.5px; line-height: 1.5; }
 a { color: var(--accent-text); }
@@ -47,6 +51,7 @@ main { padding-block: 24px 40px; display: flex; flex-direction: column; gap: 22p
 fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 14px; margin: 0; min-width: 0; }
 legend { font-weight: 700; font-size: 13px; padding: 0 6px; }
 .opts { display: flex; flex-direction: column; gap: 6px; }
+input[type="checkbox"] { accent-color: var(--violet); }
 .opts label { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
 .opts .inline { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-left: 26px; color: var(--muted); font-size: 12.5px; }
 .opts .inline label { font-size: 12.5px; gap: 5px; }
@@ -68,6 +73,14 @@ td.n, th.n { text-align: right; white-space: nowrap; }
 tr.sub td { background: var(--sub); font-weight: 600; }
 tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom: 0; }
 .empty { color: var(--muted); font-size: 13.5px; padding: 18px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; }
+.verify { display: flex; gap: 14px; align-items: flex-start; border-radius: 14px; padding: 16px 18px; border: 1px solid; }
+.verify[hidden] { display: none; }
+.verify p { margin: 0; max-width: 90ch; }
+.verify.ok { background: var(--ok-soft); border-color: var(--ok); color: var(--ink); }
+.verify.bad { background: var(--bad-soft); border-color: var(--bad); color: var(--ink); }
+.verify .v-icon { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; }
+.verify.ok .v-icon { background: var(--ok); } .verify.bad .v-icon { background: var(--bad); }
+.verify-note { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
 .credit { text-align: center; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
 .credit a { font-weight: 600; }
 @media (max-width: 560px) { .logo img { height: 54px; } .brand { align-items: flex-start; } }
@@ -89,6 +102,7 @@ tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom:
 </header>
 
 <main class="wrap">
+  <div id="verify" class="verify" role="status" hidden></div>
   <section class="panel" id="params">
     <h2>Report parameters</h2>
     <p class="sub-note">Every table has a subtotal per company and year, and a grand total. Amounts are in rupees.</p>
@@ -135,6 +149,7 @@ tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom:
       <button class="btn" id="btn-pdf" type="button">Download PDF</button>
       <span class="status" id="status" role="status"></span>
     </div>
+    <p class="verify-note">Every PDF and Excel file carries the Marikar and BPro logos, a document ID and a QR code. Scanning the code opens this page, rebuilds the report from the hub’s data and confirms the document is authentic.</p>
   </section>
 
   <section class="panel" id="preview" aria-live="polite">
@@ -142,13 +157,15 @@ tr.total td { font-weight: 800; border-top: 2px solid var(--ink); border-bottom:
     <div id="out"><div class="empty">Choose your parameters and press Preview.</div></div>
   </section>
 
-  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
+  <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<script src="assets/vendor/qrcode.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="assets/report.js"></script>
+<script src="assets/pwa.js" defer></script>
 </body>
 </html>

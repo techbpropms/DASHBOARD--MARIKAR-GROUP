@@ -1,0 +1,176 @@
+// Division dashboards: reads data/divisions.json (figures transcribed from each division's 9 Oct 2026 deck) and
+// draws an overview of all divisions, or one division's KPIs, monthly charts, breakdown tables and notes.
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monLabel = (m) => MONTHS[+m.slice(5, 7) - 1];
+  const isNum = (v) => typeof v === 'number' && isFinite(v);
+  const css = (name) => getComputedStyle(document.querySelector('.hd')).getPropertyValue(name).trim();
+
+  // Amounts keep the unit the deck used; rupee amounts collapse to lakh / crore for reading.
+  function fmt(v, unit = '') {
+    if (!isNum(v)) return '—';
+    const u = unit.toLowerCase();
+    const rs = (x) => (Math.abs(x) >= 1e7 ? `₹${(x / 1e7).toFixed(2)} Cr` : Math.abs(x) >= 1e5 ? `₹${(x / 1e5).toFixed(1)} L` : '₹' + Math.round(x).toLocaleString('en-IN'));
+    if (u.includes('crore')) return `₹${v.toLocaleString('en-IN', { maximumFractionDigits: 2 })} Cr`;
+    if (u.includes('lakh')) return Math.abs(v) >= 100 ? `₹${(v / 100).toFixed(2)} Cr` : `₹${v.toLocaleString('en-IN', { maximumFractionDigits: 1 })} L`;
+    if (u === '₹' || u === 'rs' || u === 'inr' || u === 'rupees') return rs(v);
+    if (u === '%' || u.startsWith('%') || u.includes('percent')) return `${v.toLocaleString('en-IN', { maximumFractionDigits: 1 })}%`;
+    if (u.includes('/10') || u.includes('rating') || u.includes('score')) return v.toLocaleString('en-IN', { maximumFractionDigits: 1 });
+    return v.toLocaleString('en-IN', { maximumFractionDigits: Number.isInteger(v) ? 0 : 1 });
+  }
+  const unitHint = (unit) => (!unit || /₹|lakh|crore|%|rs|inr|rupee/i.test(unit) ? '' : ` (${unit})`);
+  function change(cur, prev, unit) {
+    if (!isNum(cur) || !isNum(prev) || prev === 0) return null;
+    if (/%/.test(unit || '')) { const d = cur - prev; return { up: d >= 0, text: `${d >= 0 ? '▲' : '▼'} ${Math.abs(d).toFixed(1)} pts` }; }
+    const r = cur / prev - 1; return { up: r >= 0, text: `${r >= 0 ? '▲' : '▼'} ${Math.abs(r * 100).toFixed(1)}%` };
+  }
+
+  // ---------- tooltip ----------
+  const tip = $('tip');
+  const showTip = (ev, title, rows) => {
+    tip.replaceChildren(el('div', 't', title), ...rows.map(([c, k, v]) => { const r = el('div', 'r'); if (c) { const i = el('i'); i.style.cssText = `width:9px;height:9px;border-radius:2px;background:${c};display:inline-block`; r.append(i); } r.append(`${k}: `, el('b', null, v)); return r; }));
+    tip.style.display = 'block'; tip.style.position = 'fixed';
+    const w = tip.offsetWidth; tip.style.left = Math.min(ev.clientX + 14, innerWidth - w - 8) + 'px'; tip.style.top = (ev.clientY + 14) + 'px';
+  };
+  const hideTip = () => { tip.style.display = 'none'; };
+
+  // ---------- charts ----------
+  function monthlyChart(box, s) {
+    const months = Object.keys(s.months).sort();
+    const rows = months.map((m) => ({ m, ...s.months[m] }));
+    const hasPrior = rows.some((r) => isNum(r.prior_year)), hasTarget = rows.some((r) => isNum(r.target));
+    const W = Math.max(320, box.clientWidth || 520), H = 240, mt = 18, mb = 26;
+    const vals = rows.flatMap((r) => [r.actual, r.prior_year, r.target]).filter(isNum);
+    const y = d3.scaleLinear().domain([Math.min(0, d3.min(vals)), d3.max(vals) * 1.12 || 1]).nice().range([H - mb, mt]);
+    const ml = 12 + Math.max(...y.ticks(4).map((t) => fmt(t, s.unit).length)) * 6.6;
+    const x = d3.scaleBand().domain(months).range([ml, W - 8]).padding(0.28);
+    const xi = d3.scaleBand().domain(hasPrior ? ['prior_year', 'actual'] : ['actual']).range([0, x.bandwidth()]).padding(0.12);
+    const c1 = css('--hd-s1'), c2 = css('--hd-s2'), ink = css('--color-fg') || '#2a241f', grid = css('--cds-chart-grid');
+    const svg = d3.select(box).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('width', '100%').attr('role', 'img')
+      .attr('aria-label', `${s.metric} by month`);
+    svg.append('g').selectAll('line').data(y.ticks(4)).join('line').attr('x1', ml).attr('x2', W - 8).attr('y1', y).attr('y2', y).attr('stroke', grid);
+    svg.append('g').selectAll('text').data(y.ticks(4)).join('text').attr('x', ml - 6).attr('y', (t) => y(t) + 4).attr('text-anchor', 'end').text((t) => fmt(t, s.unit));
+    svg.append('g').selectAll('text').data(months).join('text').attr('x', (m) => x(m) + x.bandwidth() / 2).attr('y', H - 8).attr('text-anchor', 'middle').text(monLabel);
+    const bars = rows.flatMap((r) => xi.domain().filter((k) => isNum(r[k])).map((k) => ({ r, k, v: r[k] })));
+    svg.append('g').selectAll('rect').data(bars).join('rect')
+      .attr('x', (b) => x(b.r.m) + xi(b.k)).attr('width', xi.bandwidth())
+      .attr('y', (b) => Math.min(y(b.v), y(0))).attr('height', (b) => Math.max(1, Math.abs(y(0) - y(b.v))))
+      .attr('rx', 3).attr('fill', (b) => (b.k === 'actual' ? c1 : c2))
+      .on('mousemove', (ev, b) => showTip(ev, `${monLabel(b.r.m)} ${b.r.m.slice(0, 4)}`, [
+        [c1, 'FY 2026–27', fmt(b.r.actual, s.unit)], ...(hasPrior ? [[c2, 'FY 2025–26', fmt(b.r.prior_year, s.unit)]] : []),
+        ...(isNum(b.r.target) ? [[null, 'Target', fmt(b.r.target, s.unit)]] : [])]))
+      .on('mouseleave', hideTip);
+    if (hasTarget) {
+      svg.append('g').selectAll('line').data(rows.filter((r) => isNum(r.target))).join('line')
+        .attr('x1', (r) => x(r.m) - 3).attr('x2', (r) => x(r.m) + x.bandwidth() + 3).attr('y1', (r) => y(r.target)).attr('y2', (r) => y(r.target))
+        .attr('stroke', ink).attr('stroke-width', 2).attr('stroke-dasharray', '4 3');
+    }
+    // label the latest actual only
+    const last = rows.filter((r) => isNum(r.actual)).pop();
+    if (last) svg.append('text').attr('class', 'vlab').attr('text-anchor', 'middle').attr('x', x(last.m) + xi('actual') + xi.bandwidth() / 2).attr('y', y(Math.max(0, last.actual)) - 5).text(fmt(last.actual, s.unit));
+    const lg = el('div', 'hd-legend');
+    const item = (c, t, dash) => { const sp = el('span'); const i = el('i'); if (dash) i.style.cssText = `height:0;border-top:2px dashed ${c};width:14px;border-radius:0`; else i.style.background = c; sp.append(i, t); return sp; };
+    lg.append(item(c1, 'FY 2026–27'));
+    if (hasPrior) lg.append(item(c2, 'FY 2025–26'));
+    if (hasTarget) lg.append(item(ink, 'Target', true));
+    box.before(lg);
+  }
+
+  // ---------- division view ----------
+  let DATA = null;
+  function kpiTile(k) {
+    const t = el('div', 'hd-kpi');
+    const main = isNum(k.h1_fy27) ? k.h1_fy27 : k.fy26_full;
+    t.append(el('span', 'lbl', k.name + unitHint(k.unit) + (!isNum(k.h1_fy27) && isNum(k.fy26_full) ? ' · FY 2025–26' : '')), el('span', 'val', fmt(main, k.unit)));
+    if (isNum(k.h1_fy27)) {
+      const sub = el('span', 'sub');
+      if (isNum(k.h1_fy26)) { const c = change(k.h1_fy27, k.h1_fy26, k.unit); sub.append(`H1 last year ${fmt(k.h1_fy26, k.unit)} `); if (c) sub.append(el('span', 'chg ' + (c.up !== !!k.lower_better ? 'up' : 'down'), c.text)); }
+      else if (isNum(k.fy26_full)) sub.append(`FY 2025–26 full year ${fmt(k.fy26_full, k.unit)}`);
+      if (sub.childNodes.length) t.append(sub);
+    }
+    if (isNum(k.fy27_target) && isNum(k.h1_fy27) && k.fy27_target > 0) {
+      const p = k.h1_fy27 / k.fy27_target;
+      const bar = el('div', 'dv-bar'); const i = el('i'); i.style.width = Math.min(100, p * 100) + '%'; bar.append(i);
+      t.append(bar, el('span', 'sub', `${(p * 100).toFixed(0)}% of the FY 2026–27 target, ${fmt(k.fy27_target, k.unit)}`));
+    }
+    if (k.note) t.append(el('span', 'sub', k.note));
+    t.title = 'Source: ' + (k.source || '—') + (k.detail ? '\n' + k.detail : '');
+    return t;
+  }
+  function table(b) {
+    const card = el('div', 'hd-card'); card.append(el('h2', null, b.title));
+    if (b.note) card.append(el('p', 'note', b.note));
+    const wrap = el('div', 'dv-tbl'), tb = el('table'), th = tb.createTHead().insertRow(), body = tb.createTBody();
+    if (b.text) { // a list without figures, such as a plan's milestones
+      b.rows.forEach((r) => { body.insertRow().insertCell().textContent = r.label; });
+      wrap.append(tb); card.append(wrap, el('p', 'note', 'Source: ' + (b.source || '—'))); th.remove(); return card;
+    }
+    const hasPrior = b.rows.some((r) => isNum(r.prior));
+    ['', b.value_label || 'FY 2026–27', ...(hasPrior ? [b.prior_label || 'FY 2025–26', 'Change'] : [])].forEach((h, i) => { const c = el('th', i ? 'n' : '', h); th.append(c); });
+    const add = (r, cls) => {
+      const tr = body.insertRow(); if (cls) tr.className = cls;
+      tr.insertCell().textContent = r.label;
+      const v = tr.insertCell(); v.className = 'n'; v.textContent = fmt(r.value, b.unit);
+      if (hasPrior) { const p = tr.insertCell(); p.className = 'n'; p.textContent = fmt(r.prior, b.unit); const c = tr.insertCell(); c.className = 'n'; const ch = change(r.value, r.prior, b.unit); c.textContent = ch ? ch.text : '—'; }
+    };
+    b.rows.forEach((r) => add(r, r.total_row ? 'total' : ''));
+    if (b.total && b.rows.length > 1) {
+      const sum = (f) => (b.rows.every((r) => !isNum(r[f])) ? null : d3.sum(b.rows, (r) => (isNum(r[f]) ? r[f] : 0)));
+      add({ label: 'Total', value: sum('value'), prior: sum('prior') }, 'total');
+    }
+    wrap.append(tb); card.append(wrap, el('p', 'note', 'Source: ' + (b.source || '—')));
+    return card;
+  }
+  function list(id, items) { $(id).replaceChildren(...(items || []).map((t) => el('li', null, t))); }
+
+  function showDivision(d) {
+    $('overview').hidden = true; $('division').hidden = false;
+    $('d-eyebrow').textContent = d.what || '';
+    $('d-name').textContent = d.name;
+    $('d-tagline').textContent = d.tagline || '';
+    const st = $('d-status'); st.className = 'dv-status ' + (d.status || 'plan'); st.textContent = d.status_label || '';
+    $('d-kpis').replaceChildren(...(d.kpis || []).map(kpiTile)); $('d-kpis').hidden = !(d.kpis || []).length;
+    $('d-charts').replaceChildren();
+    // lay out every card first, so each chart is drawn at its final width
+    const boxes = (d.monthly || []).map((s) => {
+      const card = el('div', 'hd-card'); card.append(el('h2', null, s.metric + unitHint(s.unit)));
+      if (s.note) card.append(el('p', 'note', s.note));
+      const box = el('div', 'dv-chart'); card.append(box, el('p', 'note', 'Source: ' + (s.source || '—')));
+      $('d-charts').append(card); return [box, s];
+    });
+    boxes.forEach(([box, s]) => monthlyChart(box, s));
+    $('d-tables').replaceChildren(...(d.breakdowns || []).map(table));
+    list('d-high', d.highlights); list('d-conc', d.concerns); list('d-act', d.actions); list('d-gaps', d.gaps);
+    $('d-files').replaceChildren(...(d.files || []).map((f) => { const li = el('li', null, f.title + ' '); if (f.period) li.append(el('small', null, `(${f.period})`)); return li; }));
+  }
+  function showOverview() {
+    $('division').hidden = true; $('overview').hidden = false;
+    $('overview').replaceChildren(...DATA.divisions.map((d) => {
+      const c = el('button', 'dv-card'); c.type = 'button';
+      const row = el('div', 'row'); row.append(el('span', 'nm', d.name), el('span', 'dv-status ' + (d.status || 'plan'), d.status_label || ''));
+      c.append(row, el('span', 'what', d.what || ''));
+      if (d.headline) c.append(el('span', 'big', isNum(d.headline.value) ? fmt(d.headline.value, d.headline.unit) : d.headline.text || '—'), el('span', 'cap', d.headline.caption || ''));
+      c.addEventListener('click', () => { location.hash = d.key; });
+      return c;
+    }));
+  }
+  function route() {
+    const key = decodeURIComponent(location.hash.slice(1));
+    const d = DATA.divisions.find((x) => x.key === key);
+    document.querySelectorAll('.dv-chip').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.key === (d ? d.key : ''))));
+    hideTip();
+    if (d) showDivision(d); else showOverview();
+  }
+
+  fetch('data/divisions.json').then((r) => r.json()).then((data) => {
+    DATA = data;
+    if (data.takeaway) $('takeaway').textContent = data.takeaway;
+    const chip = (key, label) => { const b = el('button', 'dv-chip', label); b.type = 'button'; b.dataset.key = key; b.setAttribute('role', 'tab'); b.addEventListener('click', () => { location.hash = key; if (!key) history.replaceState(null, '', location.pathname); route(); }); return b; };
+    $('chips').replaceChildren(chip('', 'All divisions'), ...data.divisions.map((d) => chip(d.key, d.name)));
+    addEventListener('hashchange', route);
+    let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(route, 200); });
+    route();
+  }).catch(() => { $('overview').replaceChildren(el('p', 'note', 'The division data could not be loaded. Serve the folder over http (see README).')); });
+})();

@@ -1,0 +1,2649 @@
+{
+ "as_of": "9 October 2026 HOD meeting",
+ "takeaway": "H1 (April–September 2026) against the same months of FY 2025–26 and the full year to 31 March 2026, from the decks and reports each division uploaded for the 9 October 2026 HOD meeting. Hover a figure for its source.",
+ "divisions": [
+  {
+   "key": "GROUP",
+   "name": "Group vehicle sales",
+   "what": "All automobile brands",
+   "status": "strong",
+   "status_label": "Ahead of last year",
+   "tagline": "Vehicles retailed by every automobile brand of the group, from the sales summary shared at the HOD meeting. Q1 and Q2 are actuals; Q3 and Q4 are the plan.",
+   "headline": {
+    "value": 8791,
+    "unit": "units",
+    "caption": "vehicles retailed in H1, against 6,413 in H1 last year"
+   },
+   "kpis": [
+    {
+     "name": "Honda (Red Wing: Trivandrum + Nagercoil)",
+     "unit": "units",
+     "h1_fy27": 7121,
+     "h1_fy26": 5109,
+     "fy26_full": 11937,
+     "fy27_target": 14521,
+     "note": null,
+     "detail": "H1 values are sums of stated Q1+Q2 actuals (FY27 Q1 3297, Q2 3824; FY26 Q1 2368, Q2 2741). fy27_target = FY26-27 figure (Q1-Q2 actual + Q3-Q4 plan), growth +22%. Red Wing appears to be Honda TVM + Honda NGL combined.",
+     "source": "WhatsApp Image 2026-10-09",
+     "lower_better": null
+    },
+    {
+     "name": "Royal Enfield",
+     "unit": "units",
+     "h1_fy27": 1099,
+     "h1_fy26": 928,
+     "fy26_full": 1994,
+     "fy27_target": 2459,
+     "note": null,
+     "detail": "H1 values are sums of stated Q1+Q2 actuals (FY27 Q1 501, Q2 598; FY26 Q1 397, Q2 531). fy27_target = FY26-27 figure (Q1-Q2 actual + Q3-Q4 plan), growth +23%.",
+     "source": "WhatsApp Image 2026-10-09",
+     "lower_better": null
+    },
+    {
+     "name": "Nissan Trivandrum",
+     "unit": "units",
+     "h1_fy27": 343,
+     "h1_fy26": 219,
+     "fy26_full": 503,
+     "fy27_target": 903,
+     "note": null,
+     "detail": "H1 values are sums of stated Q1+Q2 actuals (FY27 Q1 158, Q2 185; FY26 Q1 96, Q2 123). fy27_target = FY26-27 figure (Q1-Q2 actual + Q3-Q4 plan), growth +80%.",
+     "source": "WhatsApp Image 2026-10-09",
+     "lower_better": null
+    },
+    {
+     "name": "BigWing Nagercoil",
+     "unit": "units",
+     "h1_fy27": 228,
+     "h1_fy26": 157,
+     "fy26_full": 384,
+     "fy27_target": 563,
+     "note": null,
+     "detail": "H1 values are sums of stated Q1+Q2 actuals (FY27 Q1 106, Q2 122; FY26 Q1 79, Q2 78). fy27_target = FY26-27 figure (Q1-Q2 actual + Q3-Q4 plan), growth +47%.",
+     "source": "WhatsApp Image 2026-10-09",
+     "lower_better": null
+    },
+    {
+     "name": "All brands, full year",
+     "unit": "units",
+     "h1_fy27": null,
+     "h1_fy26": null,
+     "fy26_full": 14818,
+     "fy27_target": 18525,
+     "note": "FY 2026–27 plan 18,525 (+25%). The brand plans in the same image add up to 18,446.",
+     "detail": "Stated 'Total sales 14,818 actual -> 18,525 plan'; plan tile '+25%'. Brand FY27 figures (Red Wing+Big Wing+RE+Nissan) sum to 18,446, not 18,525 - discrepancy in image. 14,818 = Red Wing+Big Wing+RE+Nissan FY26.",
+     "source": "WhatsApp Image 2026-10-09",
+     "lower_better": null
+    }
+   ],
+   "monthly": [],
+   "breakdowns": [
+    {
+     "title": "H1 retail by brand",
+     "unit": "units",
+     "total": true,
+     "rows": [
+      {
+       "label": "Honda Trivandrum",
+       "value": 4293,
+       "prior": 3110
+      },
+      {
+       "label": "Honda Nagercoil",
+       "value": 2828,
+       "prior": 1999
+      },
+      {
+       "label": "BigWing Nagercoil",
+       "value": 228,
+       "prior": 157
+      },
+      {
+       "label": "Royal Enfield",
+       "value": 1099,
+       "prior": 928
+      },
+      {
+       "label": "Nissan Trivandrum",
+       "value": 343,
+       "prior": 219
+      }
+     ],
+     "source": "WhatsApp Image 2026-10-09 (Q1 + Q2 actuals)",
+     "value_label": "H1 FY 2026–27",
+     "prior_label": "H1 FY 2025–26"
+    },
+    {
+     "title": "Full year: FY 2026–27 plan against FY 2025–26 actual",
+     "unit": "units",
+     "total": true,
+     "rows": [
+      {
+       "label": "Honda Trivandrum",
+       "value": 8593,
+       "prior": 7051
+      },
+      {
+       "label": "Honda Nagercoil",
+       "value": 5928,
+       "prior": 4886
+      },
+      {
+       "label": "BigWing Nagercoil",
+       "value": 563,
+       "prior": 384
+      },
+      {
+       "label": "Royal Enfield",
+       "value": 2459,
+       "prior": 1994
+      },
+      {
+       "label": "Nissan Trivandrum",
+       "value": 903,
+       "prior": 503
+      }
+     ],
+     "source": "WhatsApp Image 2026-10-09",
+     "value_label": "FY 2026–27 plan",
+     "prior_label": "FY 2025–26 actual",
+     "note": "Each brand's FY 2026–27 figure is its Q1–Q2 actual plus the Q3–Q4 plan."
+    },
+    {
+     "title": "Honda Trivandrum by quarter",
+     "unit": "units",
+     "total": true,
+     "rows": [
+      {
+       "label": "Q1",
+       "value": 1904,
+       "prior": 1359
+      },
+      {
+       "label": "Q2",
+       "value": 2389,
+       "prior": 1751
+      },
+      {
+       "label": "Q3",
+       "value": 1850,
+       "prior": 1839
+      },
+      {
+       "label": "Q4",
+       "value": 2450,
+       "prior": 2102
+      }
+     ],
+     "source": "WhatsApp Image 2026-10-09 (FY27 Q1-Q2 actual, Q3-Q4 plan; prior = FY26 actual)",
+     "note": "Q1–Q2 actual, Q3–Q4 plan.",
+     "value_label": "FY 2026–27",
+     "prior_label": "FY 2025–26"
+    }
+   ],
+   "highlights": [
+    "H1 FY27 actuals ahead of H1 FY26 across all brands; Red Wing H1 7,121 vs 5,109 units (Q1+Q2 sums).",
+    "Nissan Trivandrum +80% and Big Wing +47% planned growth for FY27."
+   ],
+   "concerns": [
+    "Q3 plan figures for Honda TVM (1,850) and Red Wing (3,350) are below their Q2 FY27 actuals (2,389 / 3,824) and below Q3 FY26 actuals - plan may be conservative or mis-entered.",
+    "Total plan 18,525 does not equal sum of brand figures (18,446); Honda NGL FY26 shown as both 4,806 and 4,886."
+   ],
+   "actions": [],
+   "gaps": [
+    "Source is a WhatsApp photo read via OCR; values should be confirmed against original dashboard.",
+    "No revenue/value figures, only unit counts; no monthly data."
+   ],
+   "files": [
+    {
+     "title": "WhatsApp Image 2026-10-09",
+     "period": "FY 2025-26 actual (quarterly) vs FY 2026-27 (Q1-Q2 actual, Q3-Q4 plan)"
+    }
+   ]
+  },
+  {
+   "key": "CSPW",
+   "name": "CSPW",
+   "what": "Royal Enfield parts distribution & warehouse",
+   "status": "strong",
+   "status_label": "Strong",
+   "tagline": "Royal Enfield spare parts, oil and accessories distribution: offtake from Royal Enfield, retail to the network, and stock.",
+   "headline": {
+    "value": 1420.0,
+    "unit": "₹ lakh",
+    "caption": "H1 offtake, 104% of the ₹13.70 Cr H1 target"
+   },
+   "kpis": [
+    {
+     "name": "Offtake (parts, oil, essentials)",
+     "unit": "₹ lakh",
+     "h1_fy27": 1420.0,
+     "h1_fy26": 1174.79,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 target ₹1,370.00 lakh, 104% achieved. Deck states both '+18.3% YoY' (overview) and '+20.9% YoY over H1 FY25-26 (₹1,174.79 Lacs)'; ₹1,174.79 L equals total H1 FY26 offtake in the xlsx (₹1,174.80 L incl. GMA).",
+     "source": "H1 Performance @ CSPW, overview/offtake breakdown slides",
+     "lower_better": null
+    },
+    {
+     "name": "Retail revenue",
+     "unit": "₹ lakh",
+     "h1_fy27": 1411.53,
+     "h1_fy26": 1268.66,
+     "fy26_full": 2699.18,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 FY27 target ₹1,500 lakh, 94.1% achieved, +11.3% YoY. FY26 retail target not separately stated (offtake target used). FY26 MSD retail ₹2,685.47 L.",
+     "source": "H1 Performance @ CSPW, overview & retail trend; Performance CSPW - 2025-26",
+     "lower_better": null
+    },
+    {
+     "name": "Offtake: gear & accessories (GMA)",
+     "unit": "₹ lakh",
+     "h1_fy27": 12.68,
+     "h1_fy26": 9.0,
+     "fy26_full": 18.26,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 target ₹9.73 lakh, 130.3% achieved, +40.9% YoY. Deck's prior ₹9.00 L differs from xlsx H1 FY26 GMA offtake ₹8.07 L; fy26_full from xlsx.",
+     "source": "H1 Performance @ CSPW, offtake breakdown; Performance CSPW - 2025-26, Over All Performance sheet",
+     "lower_better": null
+    },
+    {
+     "name": "Closing stock (30 Sep)",
+     "unit": "₹ lakh",
+     "h1_fy27": 212.12,
+     "h1_fy26": 202.81,
+     "fy26_full": 153.75,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 FY27 = as on 30.09.2026; h1_fy26 = 30.09.2025; fy26_full = 31.03.2026. Stock as on 31.05.2026 was ₹215.44 lakh (₹2,15,44,499.40). Management norm: below ₹2 crore.",
+     "source": "H1 Performance @ CSPW, inventory; Performance CSPW - 2025-26; PPT HOD Meeting, slide 11",
+     "lower_better": null
+    },
+    {
+     "name": "Stock holding",
+     "unit": "days",
+     "h1_fy27": 27,
+     "h1_fy26": 29,
+     "fy26_full": 21,
+     "fy27_target": null,
+     "note": "Norm: 21 days.",
+     "detail": "fy27_target = '21 days' norm stated in xlsx. 33 days as on 31.05.2026 (HOD deck).",
+     "source": "H1 Performance @ CSPW, inventory; Performance CSPW - 2025-26; PPT HOD Meeting, slide 11",
+     "lower_better": true
+    },
+    {
+     "name": "Slow-moving (C) stock",
+     "unit": "₹ lakh",
+     "h1_fy27": 63.05,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "29.7% of stock, ~100 days of stock; 8.05% of sales (₹113.63 L). As on 31.05.2026: ₹59.20 L, 124 days.",
+     "source": "H1 Performance @ CSPW, ABC/FSN; PPT HOD Meeting, slide 11",
+     "lower_better": true
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Retail sales",
+     "unit": "₹ lakh",
+     "months": {
+      "2026-04": {
+       "actual": 114.07,
+       "prior_year": 180.16,
+       "target": 250
+      },
+      "2026-05": {
+       "actual": 200.97,
+       "prior_year": 202.51,
+       "target": 250
+      },
+      "2026-06": {
+       "actual": 286.42,
+       "prior_year": 175.85,
+       "target": 250
+      },
+      "2026-07": {
+       "actual": 275.01,
+       "prior_year": 223.79,
+       "target": 250
+      },
+      "2026-08": {
+       "actual": 203.16,
+       "prior_year": 257.32,
+       "target": 250
+      },
+      "2026-09": {
+       "actual": 331.9,
+       "prior_year": 229.03,
+       "target": 250
+      }
+     },
+     "source": "H1 Performance @ CSPW, retail trend & branch table (actual); PPT HOD Meeting, slide 6 (₹250 L monthly target; achievement % in H1 deck consistent); Performance CSPW - 2025-26 (prior year Tally retail)",
+     "note": null
+    },
+    {
+     "metric": "Retail: Ernakulam territory",
+     "unit": "₹ lakh",
+     "months": {
+      "2026-04": {
+       "actual": 46.69,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 87.15,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 125.67,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 109.67,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 101.46,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 155.88,
+       "prior_year": null,
+       "target": null
+      }
+     },
+     "source": "H1 Performance @ CSPW, branch table",
+     "note": null
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 retail by territory",
+     "unit": "₹ lakh",
+     "total": false,
+     "rows": [
+      {
+       "label": "EKM (Ernakulam) - tgt 555.00, 113%, +23% YoY",
+       "value": 626.51,
+       "prior": null
+      },
+      {
+       "label": "TVM (Trivandrum) - tgt 450.00, 82%, +2% YoY",
+       "value": 371.25,
+       "prior": null
+      },
+      {
+       "label": "KLM (Kollam) - tgt 390.00, 76%, -3% YoY",
+       "value": 298.31,
+       "prior": null
+      },
+      {
+       "label": "PTA (Pathanamthitta) - tgt 105.00, 110%, +31% YoY",
+       "value": 115.46,
+       "prior": null
+      },
+      {
+       "label": "Grand total - tgt 1,500.00, 94%, +11% YoY",
+       "value": 1411.52,
+       "prior": null,
+       "total_row": true
+      }
+     ],
+     "source": "H1 Performance @ CSPW, branch table (ach % from chart labels; prior-year territory values not stated)",
+     "note": null,
+     "value_label": "H1 FY 2026–27",
+     "prior_label": "H1 FY 2025–26"
+    },
+    {
+     "title": "H1 retail by category",
+     "unit": "₹ lakh",
+     "total": true,
+     "rows": [
+      {
+       "label": "Spares (target ₹1,336.50 L, 91%)",
+       "value": 1214.81,
+       "prior": 1132.74
+      },
+      {
+       "label": "Lube/Oil (target ₹126.30 L, 132%)",
+       "value": 166.37,
+       "prior": 105.13
+      },
+      {
+       "label": "RE Essentials (target ₹22.50 L, 79%)",
+       "value": 17.86,
+       "prior": 19.12
+      },
+      {
+       "label": "RE GMA (target ₹14.70 L, 85%)",
+       "value": 12.49,
+       "prior": 11.69
+      }
+     ],
+     "source": "H1 Performance @ CSPW, retail category table; prior = H1 FY26 Tally retail by category from Performance CSPW - 2025-26 H1 table",
+     "note": null,
+     "value_label": "H1 FY 2026–27",
+     "prior_label": "H1 FY 2025–26"
+    },
+    {
+     "title": "FY 2025–26 retail by sales territory",
+     "unit": "₹ lakh",
+     "total": false,
+     "rows": [
+      {
+       "label": "TVM · territory 1",
+       "value": 411.93,
+       "prior": 318.09
+      },
+      {
+       "label": "TVM · territory 2",
+       "value": 366.51,
+       "prior": 302.81
+      },
+      {
+       "label": "KLM & PTA · territory 1",
+       "value": 354.28,
+       "prior": 270.12
+      },
+      {
+       "label": "KLM & PTA · territory 2",
+       "value": 259.48,
+       "prior": 223.23
+      },
+      {
+       "label": "KLM & PTA · territory 3",
+       "value": 200.25,
+       "prior": 148.06
+      },
+      {
+       "label": "EKM & Idukki · territory 1",
+       "value": 662.66,
+       "prior": 568.44
+      },
+      {
+       "label": "EKM & Idukki · territory 2",
+       "value": 444.1,
+       "prior": 384.72
+      },
+      {
+       "label": "Total (+21.83%)",
+       "value": 2699.21,
+       "prior": 2215.47
+      }
+     ],
+     "source": "Performance CSPW - 2025-26, DSR Performance sheet",
+     "note": null,
+     "value_label": "FY 2025–26",
+     "prior_label": "FY 2024–25"
+    }
+   ],
+   "highlights": [
+    "H1 FY27 offtake (parts+oil+essentials) ₹1,420.00 L = 104% of ₹1,370 L target; Q2 offtake ₹788.6 L (109.5%) after Q1 ₹631.4 L (97.1%).",
+    "H1 retail ₹1,411.53 L, +11.3% YoY vs ₹1,268.66 L; September 2026 retail ₹331.9 L (132.8% of ₹250 L target), Q2 ₹810.07 L (108%).",
+    "Lube retail ₹166.37 L = 132% of target; GMA offtake ₹12.68 L = 130.3%, +40.9% YoY.",
+    "EKM territory ₹626.51 L (44.4% share, 113% of target, +23% YoY); PTA +31% YoY, 110%.",
+    "Inventory down to 27 days (₹212.12 L stock) from 33 days at 31.05.2026.",
+    "FY26 closed at offtake ₹2,653.83 L (110.53% of ₹2,401 L target) and Tally retail ₹2,699.18 L (+20.81% YoY); TOI credited ₹25.56 lakh."
+   ],
+   "concerns": [
+    "H1 retail at 94.1% of ₹1,500 L target; Q1 only 80.2% (April 45.6%, May 80.4%).",
+    "Spares retail 91% of target, RE Essentials 79%, GMA retail 85%.",
+    "TVM (82%, +2% YoY) and KLM (76%, -3% YoY) under target.",
+    "C-Slow Moving stock ₹63.05 L = 29.7% of stock at ~100 days, vs 8.05% of sales.",
+    "Stock ₹212.12 L above stated norm of below ₹2 crore and 21 days.",
+    "Receivables ₹3.79 Cr (07.10.2026) with ₹92.56 L in 30-90 days and ₹6.45 L >90 days incl. ₹3.98 L doubtful."
+   ],
+   "actions": [
+    "Maintain supply allocation to EKM and PTA; turnaround initiatives in TVM & KLM.",
+    "Bundle accessories and lubricants at point-of-sale in all service centres to build on Lube/GMA momentum.",
+    "3-step liquidation of C-Slow Moving stock to recover ₹40+ L and cut CS holding from 100 to 30 days.",
+    "Bring stock below ₹2 Cr and to 21 days (standing xlsx instruction)."
+   ],
+   "gaps": [
+    "Monthly offtake for Jun-Sep 2026 not stated (only Q1/Q2 totals); HOD deck June figures are partial-month.",
+    "Full-year FY27 targets not stated (only H1 offtake ₹1,370 L and H1 retail ₹1,500 L).",
+    "Monthly category retail/offtake for Jul-Sep 2026 not stated.",
+    "Inconsistent YoY for offtake (+18.3% vs +20.9%) and GMA prior (₹9.00 L in deck vs ₹8.07 L in xlsx).",
+    "Prior-year territory values for H1 not stated (only YoY %).",
+    "Outstanding ₹3.79 Cr is described as 'across all divisions' - scope unclear."
+   ],
+   "files": [
+    {
+     "title": "H1  Performance @ CSPW - Admin Marikar.pptx",
+     "period": "H1 FY 2026-27 (Apr-Sep 2026); stock as on 30.09.2026; outstanding as on 07.10.2026"
+    },
+    {
+     "title": "Performance CSPW - 2025-26 - shaheen parvaz.xlsx",
+     "period": "FY 2024-25 and FY 2025-26 (full years, to 31 Mar 2026)"
+    },
+    {
+     "title": "PPT HOD Meeting - shaheen parvaz.pptx",
+     "period": "Q1 FY 2026-27, prepared mid/late June 2026 (June 2026 figures are partial month); stock as on 31.05.2026"
+    }
+   ]
+  },
+  {
+   "key": "HONDA",
+   "name": "Honda Kerala",
+   "what": "Honda two-wheelers: Trivandrum sales & service",
+   "status": "strong",
+   "status_label": "Strong",
+   "tagline": "Marikar Honda in the Trivandrum territory: retail, share of Honda sales, sales-side income, and service across the four Kerala workshops.",
+   "headline": {
+    "value": 4293,
+    "unit": "units",
+    "caption": "H1 retail, +38% on 3,109"
+   },
+   "kpis": [
+    {
+     "name": "Retail",
+     "unit": "units",
+     "h1_fy27": 4293,
+     "h1_fy26": 3109,
+     "fy26_full": 7051,
+     "fy27_target": 8593,
+     "note": "Full year and plan from the group sales summary.",
+     "detail": "Growth 38% stated. Market-share slide shows LY total 3110 (Aug-25 = 732 vs 731). FY26 full year not stated as a total; months Oct-25..Mar-26 appear as '2025 ACH' on projection slide (1839 Q3 + 2102 Q4).",
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slides 2-3",
+     "lower_better": null
+    },
+    {
+     "name": "Share of Honda sales in the territory",
+     "unit": "%",
+     "h1_fy27": 39,
+     "h1_fy26": 32,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "MML 4293 of HMSI 11098 (CY) vs 3110 of 9742 (LY); slide shows +3% (sic) beneath.",
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slide 5",
+     "lower_better": null
+    },
+    {
+     "name": "Share of all two-wheelers",
+     "unit": "%",
+     "h1_fy27": 12,
+     "h1_fy26": 11,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Industry 36734 CY vs 28118 LY units.",
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slide 5",
+     "lower_better": null
+    },
+    {
+     "name": "Sales-side income (finance, insurance, EW, accessories)",
+     "unit": "₹",
+     "h1_fy27": 18479992,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Q1 8641653 + Q2 9838339. Unit assumed rupees (not labelled). No LY comparison given.",
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slide 4",
+     "lower_better": null
+    },
+    {
+     "name": "Service job cards (Kerala)",
+     "unit": "job cards",
+     "h1_fy27": 28741,
+     "h1_fy26": 25363,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Growth 13%. Branch totals on the monthly sheet add to 28751; MASTER consolidation (incl. 2nd NDD sheet) Apr-Sep = 28741.",
+     "source": "Flash Report - Service - September 2026, sheet 'H1 Comparison'",
+     "lower_better": null
+    },
+    {
+     "name": "Service revenue (Kerala)",
+     "unit": "₹",
+     "h1_fy27": 47771735,
+     "h1_fy26": 42867635,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Labour incl VAS + spares; growth 11%.",
+     "source": "Flash Report - Service - September 2026, sheet 'H1 Comparison'",
+     "lower_better": null
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Retail",
+     "unit": "units",
+     "months": {
+      "2026-04": {
+       "actual": 601,
+       "prior_year": 438,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 602,
+       "prior_year": 466,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 701,
+       "prior_year": 455,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 603,
+       "prior_year": 448,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 1011,
+       "prior_year": 731,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 775,
+       "prior_year": 571,
+       "target": null
+      }
+     },
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slides 2-3",
+     "note": null
+    },
+    {
+     "metric": "Share of Honda sales",
+     "unit": "%",
+     "months": {
+      "2026-04": {
+       "actual": 33,
+       "prior_year": 33,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 33,
+       "prior_year": 30,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 35,
+       "prior_year": 32,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 48,
+       "prior_year": 31,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 41,
+       "prior_year": 33,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 45,
+       "prior_year": 32,
+       "target": null
+      }
+     },
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slide 5",
+     "note": null
+    },
+    {
+     "metric": "Service workshop revenue (labour incl. VAS & AMC)",
+     "unit": "₹",
+     "months": {
+      "2026-04": {
+       "actual": 1437407,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 2380849,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 3378618,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 3513202,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 2423782,
+       "prior_year": null,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 3046128,
+       "prior_year": null,
+       "target": null
+      }
+     },
+     "source": "MONTHLY REPORT UPDATED-2026-2027 (13) TVM, sheet MASTER col Y",
+     "note": "The monthly workbook gives this year only."
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 service turnover by workshop",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "HSC Statue TVM",
+       "value": 18626384,
+       "prior": null
+      },
+      {
+       "label": "Attingal",
+       "value": 6004186,
+       "prior": null
+      },
+      {
+       "label": "Nedumangad",
+       "value": 6173169,
+       "prior": null
+      },
+      {
+       "label": "Varkala",
+       "value": 5037217,
+       "prior": null
+      }
+     ],
+     "source": "Flash Report - Service - September 2026, sheet 'April to sept 2026'",
+     "note": "Turnover = labour + parts. The flash report's \"total revenue\" (₹4.78 Cr) counts more heads, so it is higher.",
+     "value_label": null,
+     "prior_label": null
+    },
+    {
+     "title": "H1 sales-side income by head",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "Finance",
+       "value": 4758999,
+       "prior": null
+      },
+      {
+       "label": "Finance addl revenue/incentive",
+       "value": 1990471,
+       "prior": null
+      },
+      {
+       "label": "Insurance",
+       "value": 6623059,
+       "prior": null
+      },
+      {
+       "label": "E-Module charges",
+       "value": 2139400,
+       "prior": null
+      },
+      {
+       "label": "EW",
+       "value": 535148,
+       "prior": null
+      },
+      {
+       "label": "Polimer",
+       "value": 258375,
+       "prior": null
+      },
+      {
+       "label": "Exchange",
+       "value": 738428,
+       "prior": null
+      },
+      {
+       "label": "Accessories",
+       "value": 1230819,
+       "prior": null
+      },
+      {
+       "label": "Insurance renewal",
+       "value": 205293,
+       "prior": null
+      }
+     ],
+     "source": "HONDA SALES TVM - REVIEW MEETING-09.10.2026, slide 4",
+     "note": null,
+     "value_label": null,
+     "prior_label": null
+    }
+   ],
+   "highlights": [
+    "Honda TVM retail H1 FY27 4293 units vs 3109 (+38%); every month up 29-54%, August 1011 units best month.",
+    "MML share of HMSI sales in territory up to 39% from 32%; share of industry 12% vs 11%.",
+    "Dispatch/ASTM 108% and retail/ASTM 110% vs 87%/82% last year - stock flow now ahead of allotment.",
+    "MML grew faster than co-dealers: Q1 +40% vs EVM +30%, CBC +14%; Q2 +36% vs EVM +24%, CBC -1%.",
+    "Honda service H1: TVM division revenue ₹4.78 cr (+11%), job cards 28741 (+13%); TN ₹2.89 cr (+9%), job cards 21278 (+5%).",
+    "Sep 2026 TVM service job cards 5295 vs 4077 (+30%), spares +81%."
+   ],
+   "concerns": [
+    "May 2026: TVM cluster labour 2376555 vs target 2950000 and below monthly expense; breakeven shortfall ₹433445 (NGL ₹32795).",
+    "Honda TN Sep job cards flat/down (3605 vs 3627, -1%) per comparison table.",
+    "July retail share of industry only 11% and HMSI July volume dropped to 1256; Jul-26 ASTM vs retail gap -142.",
+    "Retail/dispatch under-allotment months: Jun-26 (-21), Jul-26 (-85), Sep-26 (-81) dispatch vs ASTM."
+   ],
+   "actions": [
+    "Q3 retail plan 2130 (Oct 700, Nov 720, Dec 710) and Q4 2510 (Jan 875, Feb 765, Mar 870), set at 20% growth.",
+    "Oct 2026 service plan: TVM 5410 job cards / ₹1.05 cr revenue (+61%); TN 4000 job cards / ₹63.8 lakh (+43%).",
+    "May review set plan for remaining months: TVM cluster labour ₹30.1 lakh/month, parts ₹34.8 lakh; NGL cluster labour ₹17.1 lakh, parts ₹25.9 lakh."
+   ],
+   "gaps": [
+    "No FY 2025-26 full-year totals stated for retail, service or revenue (retail months available, sum would be derived).",
+    "No FY27 annual targets; monthly targets only for May 2026 service.",
+    "Sales deck is images only; no sales revenue/margin or LY ancillary revenue; no TN (Nagercoil) Honda sales figures in this set.",
+    "Service prior-year monthly series (Apr-Aug 2025) not available, only H1 totals and Sep/Oct 2025.",
+    "Inconsistencies: Sep 2026 TVM total revenue 9698347 vs labour+spares 7057411; TN Sep job cards 3605 vs 4065; flash TVM HSC Sep parts 2144437 vs 2144487 in monthly report."
+   ],
+   "files": [
+    {
+     "title": "HONDA SALES TVM - REVIEW MEETING-09.10.2026",
+     "period": "Apr-Sep 2026 vs Apr-Sep 2025 (Q1+Q2), plus Q3/Q4 FY27 projection"
+    },
+    {
+     "title": "MONTHLY REPORT UPDATED-2026-2027 (13) TVM",
+     "period": "Apr-Sep 2026 (Oct-Mar rows empty); unit sheets are mislabelled 'Monthly report 2025-26' but sit in the 2026-27 workbook and match the Sep 2026 flash report"
+    },
+    {
+     "title": "Flash Report - Service - September 2026",
+     "period": "September 2026, H1 Apr-Sep 2026 vs 2025, October 2026 plan"
+    },
+    {
+     "title": "Review Honda Service May 2026",
+     "period": "May 2026"
+    }
+   ]
+  },
+  {
+   "key": "AMZES",
+   "name": "AMZES",
+   "what": "Honda Tamil Nadu: Nagercoil sales & Kanyakumari service",
+   "status": "strong",
+   "status_label": "Strong",
+   "tagline": "Honda Nagercoil retail and share, sales-side income, and Honda service across the five Kanyakumari workshops. No Nissan figures for AMZES were in the files.",
+   "headline": {
+    "value": 2828,
+    "unit": "units",
+    "caption": "H1 Honda Nagercoil retail, +41% on 1,999"
+   },
+   "kpis": [
+    {
+     "name": "Retail",
+     "unit": "units",
+     "h1_fy27": 2828,
+     "h1_fy26": 1999,
+     "fy26_full": 4886,
+     "fy27_target": 5928,
+     "note": "FY 2026–27 plan from the group sales summary; Honda allotment (ASTM) is 5,626.",
+     "detail": "H1 +41% YoY. fy26_full = Apr25-Mar26 retail from ASTM vs Retail slide. fy27_target = full-year ASTM (manufacturer allotment/target) 5,626; H1 retail = 50% of ASTM.",
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slides 3, 10",
+     "lower_better": null
+    },
+    {
+     "name": "Share of Honda sales",
+     "unit": "%",
+     "h1_fy27": 51,
+     "h1_fy26": 46,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "MML 2,784 vs HMSI 5,508 (CY); 1,924 vs 4,164 (LY). MML count here differs from retail 2,828 - likely registration basis (not stated).",
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slide 8",
+     "lower_better": null
+    },
+    {
+     "name": "Share of all two-wheelers",
+     "unit": "%",
+     "h1_fy27": 13,
+     "h1_fy26": 12,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Industry 21,423 CY vs 16,168 LY",
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slide 8",
+     "lower_better": null
+    },
+    {
+     "name": "Sales-side income (finance, insurance, handling etc.)",
+     "unit": "₹",
+     "h1_fy27": 15733854.81,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 FY27; Q1 ₹75,14,619.47, Q2 ₹82,19,235.34. LY: Q1 ₹45,46,134.42, Q2 ₹50,40,339.37 (H1 LY total not stated). Revenue = finance, payouts, insurance, handling, EW, accessories, exchange, insurance renewal (not vehicle sale value).",
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slides 6-7",
+     "lower_better": null
+    },
+    {
+     "name": "Service job cards (Tamil Nadu)",
+     "unit": "job cards",
+     "h1_fy27": 21278,
+     "h1_fy26": 20265,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "+5%",
+     "source": "Flash Report - Service - September 2026, sheet 'H1 Comparison'",
+     "lower_better": null
+    },
+    {
+     "name": "Service revenue (Tamil Nadu)",
+     "unit": "₹",
+     "h1_fy27": 28927274,
+     "h1_fy26": 26463407,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "+9%; labour incl VAS 9320959 vs 8850380; spares 14266887 vs 12535852.",
+     "source": "Flash Report - Service - September 2026, sheet 'H1 Comparison'",
+     "lower_better": null
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Retail",
+     "unit": "units",
+     "months": {
+      "2026-04": {
+       "actual": 400,
+       "prior_year": 300,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 462,
+       "prior_year": 351,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 531,
+       "prior_year": 358,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 480,
+       "prior_year": 350,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 500,
+       "prior_year": 365,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 455,
+       "prior_year": 275,
+       "target": null
+      }
+     },
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slide 3",
+     "note": null
+    },
+    {
+     "metric": "Sales-side income",
+     "unit": "₹",
+     "months": {
+      "2026-04": {
+       "actual": 1832181.71,
+       "prior_year": 1197501.01,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 2564289.8,
+       "prior_year": 1641196.82,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 3118148.17,
+       "prior_year": 1707436.59,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 2841026.21,
+       "prior_year": 1807163.14,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 2844245.59,
+       "prior_year": 1766978.36,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 2533963.53,
+       "prior_year": 1466197.86,
+       "target": null
+      }
+     },
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slide 6",
+     "note": null
+    },
+    {
+     "metric": "Share of Honda sales",
+     "unit": "%",
+     "months": {
+      "2026-04": {
+       "actual": 54,
+       "prior_year": 45,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 51,
+       "prior_year": 48,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 48,
+       "prior_year": 45,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 49,
+       "prior_year": 44,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 53,
+       "prior_year": 46,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 49,
+       "prior_year": 51,
+       "target": null
+      }
+     },
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slide 8",
+     "note": null
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 retail by outlet",
+     "unit": "units",
+     "total": false,
+     "rows": [
+      {
+       "label": "Head (Nagercoil) +46%",
+       "value": 1171,
+       "prior": 803
+      },
+      {
+       "label": "Marthandam +30%",
+       "value": 913,
+       "prior": 705
+      },
+      {
+       "label": "Kulasekaram +30%",
+       "value": 333,
+       "prior": 256
+      },
+      {
+       "label": "Anjugramam +57%",
+       "value": 278,
+       "prior": 177
+      },
+      {
+       "label": "Aralvaimozhi +129%",
+       "value": 133,
+       "prior": 58
+      },
+      {
+       "label": "Total +41%",
+       "value": 2828,
+       "prior": 1999,
+       "total_row": true
+      }
+     ],
+     "source": "MARIKAR MOTORS LTD - REVIEW MEETING, slide 5",
+     "note": null,
+     "value_label": "H1 2026",
+     "prior_label": "H1 2025"
+    },
+    {
+     "title": "H1 service turnover by workshop",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "Nagercoil",
+       "value": 10093681,
+       "prior": null
+      },
+      {
+       "label": "Marthandam",
+       "value": 6901752,
+       "prior": null
+      },
+      {
+       "label": "KLSKRM",
+       "value": 3025925,
+       "prior": null
+      },
+      {
+       "label": "Anjugramam",
+       "value": 3104096,
+       "prior": null
+      },
+      {
+       "label": "Aralvaimozhi",
+       "value": 200120,
+       "prior": null
+      }
+     ],
+     "source": "Flash Report - Service - September 2026, sheet 'April to sept 2026'",
+     "note": "Turnover = labour + parts. The flash report's \"total revenue\" (₹2.89 Cr) counts more heads, so it is higher.",
+     "value_label": null,
+     "prior_label": null
+    }
+   ],
+   "highlights": [
+    "H1 retail 2,828 units, +41% YoY (1,999); every month up, Sept +65%.",
+    "Revenue (non-vehicle heads) ₹1,57,33,854.81 in H1; avg revenue per vehicle up to ₹5,395 (Q1) and ₹5,728 (Q2).",
+    "Share of HMSI volume 51% vs 46% LY; industry share 13% vs 12%.",
+    "Outpaced co-dealer Harini: MML +38%/+45% vs Harini +10%/+34% in Q1/Q2.",
+    "All five outlets grew; Aralvaimozhi +129%, Anjugramam +57%.",
+    "Kanyakumari Honda service network (5 units, 25 bays, 19 technicians per MASTER) did ~3,200-3,600 job cards a month in H1 FY27; Sep 2026 workshop revenue Rs 17.25 lakh and parts Rs 27.06 lakh - the H1 highs.",
+    "Nagercoil is the anchor unit (Rs 41.53 lakh of Rs 90.59 lakh H1 network workshop revenue, ~46%)."
+   ],
+   "concerns": [
+    "Sept 2026 retail 455 vs ASTM 534 (-79); dispatch 400 vs ASTM 534 (-134).",
+    "H1 retail only 50% and dispatch 48% of annual ASTM 5,626 with heavier H2 ASTM.",
+    "RSA revenue nil all months; exchange and insurance renewal small.",
+    "Month-on-month dip: retail fell from 531 (Jun) to 455 (Sep).",
+    "August 2026 dip across all units (network workshop revenue Rs 13.43 lakh vs 16.59 lakh in July).",
+    "Aralvaimozhi very small (1 bay, ~50-90 job cards/month, labour per job card Rs 105 in Sep)."
+   ],
+   "actions": [
+    "Q3 retail plan 1,585 (Oct 550, Nov 500, Dec 535) and Q4 plan 1,670 (Jan 570, Feb 530, Mar 570)."
+   ],
+   "gaps": [
+    "Only the Nagercoil Honda dealership is covered; Kerala Honda branches not in this file.",
+    "No service (workshop) figures, no spares, no profitability.",
+    "H1 FY26 total revenue and LY revenue-head breakdown not stated.",
+    "No FY27 revenue target; ASTM used as volume target.",
+    "Market-share MML counts (2,784) differ from retail (2,828), basis not stated.",
+    "Slide 11 Q1 tables mislabel months as July-Sept.",
+    "File has no prior-year (H1 FY26) or target figures, so the 'remarkable growth' at AMZES Honda/Nissan cannot be quantified from these files.",
+    "Division attribution inferred (Honda 2W service MIS for Kanyakumari units; company name not on sheet).",
+    "No AMZES Nissan data in any assigned file."
+   ],
+   "files": [
+    {
+     "title": "MARIKAR MOTORS LTD - REVIEW MEETING - Admin Marikar.pptx",
+     "period": "H1 FY 2026-27 vs H1 FY 2025-26 (Apr-Sep), plus FY26 full-year ASTM/dispatch/retail and Q3-Q4 FY27 plan"
+    },
+    {
+     "title": "Flash Report - Service - September 2026",
+     "period": "September 2026, H1 Apr-Sep 2026 vs 2025, October 2026 plan"
+    },
+    {
+     "title": "Detailed Monthly Report  NGL  2026-2027 (4) - Admin Marikar.xlsx",
+     "period": "Apr-Sep 2026 (FY 2026-27 H1); Oct-Mar blank"
+    }
+   ]
+  },
+  {
+   "key": "NISSAN",
+   "name": "Nissan",
+   "what": "Nissan cars: Trivandrum sales",
+   "status": "strong",
+   "status_label": "Strong",
+   "tagline": "Retail and wholesale by model, against target and last year. Magnite has met its target 15 months in a row; the dealership won a Nissan Global Award.",
+   "headline": {
+    "value": 343,
+    "unit": "units",
+    "caption": "H1 retail, +57% on 219; target 367"
+   },
+   "kpis": [
+    {
+     "name": "Retail",
+     "unit": "vehicles",
+     "h1_fy27": 343,
+     "h1_fy26": 219,
+     "fy26_full": 503,
+     "fy27_target": 903,
+     "note": "H1 target 367. FY 2026–27 plan 903 from the group sales summary.",
+     "detail": "FY27 H1 = Magnite 251 + Gravite 67 + Tekton 25. FY26 H1 summed from monthly table (28+42+26+37+48+38). FY26 table total 503 vs target 512 (98%); deck also shows 'March Gravite 19' and 'Grand Total 522' (503+19). No full-year FY27 target stated; only Oct-26 target 93.",
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slides 'Retail Achievement FY25-26 vs FY26-27' and 'Retail FY 26-27'",
+     "lower_better": null
+    },
+    {
+     "name": "Wholesale (billing from Nissan)",
+     "unit": "vehicles",
+     "h1_fy27": 373,
+     "h1_fy26": 209,
+     "fy26_full": 490,
+     "fy27_target": null,
+     "note": null,
+     "detail": "FY27 monthly values shown as sums by model e.g. 40+13=53 (Magnite+Gravite) and from July 3 parts (presumably Magnite+Gravite+Tekton - model mapping not labelled). FY27 H1 target sum 444 (66+65+52+96+98+67). FY26 total 490 vs target 520 (94%); deck also shows 'March Gravite 29' and 'Grand Total 519' (arithmetic as printed).",
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Wholesale Achievement FY25-26 vs FY26-27'",
+     "lower_better": null
+    },
+    {
+     "name": "Magnite",
+     "unit": "vehicles",
+     "h1_fy27": 251,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Avg 42/month. Magnite target met Apr-Aug 2026; 100% Magnite target achievement for 15 consecutive months.",
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slides 'Retail FY 26-27' and 'Achievements in FY 26-27'",
+     "lower_better": null
+    },
+    {
+     "name": "Gravite",
+     "unit": "vehicles",
+     "h1_fy27": 67,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Avg 11/month.",
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Retail FY 26-27'",
+     "lower_better": null
+    },
+    {
+     "name": "Tekton",
+     "unit": "vehicles",
+     "h1_fy27": 25,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": "On sale from July.",
+     "detail": "Launched/sold from July 2026; avg 8/month.",
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Retail FY 26-27'",
+     "lower_better": null
+    },
+    {
+     "name": "Sales-side income",
+     "unit": "₹",
+     "h1_fy27": 2855320,
+     "h1_fy26": null,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": "April–August only.",
+     "detail": "Apr-Aug 2026 only (5 months) - September not in deck. Unit not printed; assumed rupees.",
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Revenue Details FY 26-27'",
+     "lower_better": null
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Retail",
+     "unit": "vehicles",
+     "months": {
+      "2026-04": {
+       "actual": 60,
+       "prior_year": 28,
+       "target": 50
+      },
+      "2026-05": {
+       "actual": 52,
+       "prior_year": 42,
+       "target": 65
+      },
+      "2026-06": {
+       "actual": 46,
+       "prior_year": 26,
+       "target": 35
+      },
+      "2026-07": {
+       "actual": 50,
+       "prior_year": 37,
+       "target": 52
+      },
+      "2026-08": {
+       "actual": 70,
+       "prior_year": 48,
+       "target": 100
+      },
+      "2026-09": {
+       "actual": 65,
+       "prior_year": 38,
+       "target": 65
+      }
+     },
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Retail Achievement FY25-26 vs FY26-27'",
+     "note": null
+    },
+    {
+     "metric": "Wholesale",
+     "unit": "vehicles",
+     "months": {
+      "2026-04": {
+       "actual": 53,
+       "prior_year": 30,
+       "target": 66
+      },
+      "2026-05": {
+       "actual": 58,
+       "prior_year": 35,
+       "target": 65
+      },
+      "2026-06": {
+       "actual": 48,
+       "prior_year": 23,
+       "target": 52
+      },
+      "2026-07": {
+       "actual": 77,
+       "prior_year": 35,
+       "target": 96
+      },
+      "2026-08": {
+       "actual": 70,
+       "prior_year": 44,
+       "target": 98
+      },
+      "2026-09": {
+       "actual": 67,
+       "prior_year": 42,
+       "target": 67
+      }
+     },
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Wholesale Achievement FY25-26 vs FY26-27'",
+     "note": null
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 retail by model",
+     "unit": "vehicles",
+     "total": true,
+     "rows": [
+      {
+       "label": "Magnite",
+       "value": 251,
+       "prior": null
+      },
+      {
+       "label": "Gravite",
+       "value": 67,
+       "prior": null
+      },
+      {
+       "label": "Tekton",
+       "value": 25,
+       "prior": null
+      }
+     ],
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Retail FY 26-27'",
+     "note": null,
+     "value_label": null,
+     "prior_label": null
+    },
+    {
+     "title": "Sales-side income by stream, April–August",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "Finance Payout",
+       "value": 799785,
+       "prior": null
+      },
+      {
+       "label": "Insurance Payout",
+       "value": 489349,
+       "prior": null
+      },
+      {
+       "label": "Accessories Margin",
+       "value": 597936,
+       "prior": null
+      },
+      {
+       "label": "Exchange Commission",
+       "value": 890250,
+       "prior": null
+      },
+      {
+       "label": "Fastag Payout",
+       "value": 78000,
+       "prior": null
+      }
+     ],
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Revenue Details FY 26-27'",
+     "note": null,
+     "value_label": null,
+     "prior_label": null
+    },
+    {
+     "title": "Retail by quarter",
+     "unit": "vehicles",
+     "total": true,
+     "rows": [
+      {
+       "label": "Q1 (Apr-Jun)",
+       "value": 158,
+       "prior": 96
+      },
+      {
+       "label": "Q2 (Jul-Sep)",
+       "value": 185,
+       "prior": 123
+      }
+     ],
+     "source": "MARIKAR NISSAN SALES till SEPTEMBER 2026, slide 'Q1 Performance (2025 vs 2026)'",
+     "note": null,
+     "value_label": "FY 2026–27",
+     "prior_label": "FY 2025–26"
+    }
+   ],
+   "highlights": [
+    "Magnite target achieved every month Apr-Aug 2026; Sep 2026 achieved the combined Magnite+Gravite+Tekton target (65/65 retail, 67/67 wholesale).",
+    "100% Magnite target achievement for 15 consecutive months.",
+    "Nissan Global Award 2026 received.",
+    "H1 FY27 retail 343 vs 219 in H1 FY26 (+57%); April 120% of target.",
+    "Tekton added from July 2026 (25 units by Sep).",
+    "Aug 2026 best sales-revenue month: Rs 8,11,867 (exchange commission Rs 3.5 lakh)."
+   ],
+   "concerns": [
+    "Overall retail below target in May (80%), July (96%) and August (70%: 70 vs 100).",
+    "Wholesale H1 373 vs target 444; Aug 71%, Apr/Jul 80%.",
+    "Gravite retail declining: 15 (Apr) to 8-9 (Aug-Sep).",
+    "Sales manpower shortfall vs NMIPL norm: 8 sales executives, 1 TL, 1 test-drive coordinator required.",
+    "Oct 2026 targets step up sharply: retail 93, wholesale 100 (65+20+15)."
+   ],
+   "actions": [
+    "Inventory funding & infrastructure: in process with ICICI Bank.",
+    "Recruit per NMIPL manpower requirement (TL 1 TVM; 8 SEs - TVM 7, PTA 1; test-drive coordinator 1)."
+   ],
+   "gaps": [
+    "No enquiry, booking, test-drive or conversion data in the deck (the ~2,000 enquiries figure is from the 9 Oct HOD meeting only).",
+    "No service division data (throughput, revenue, workshop) for Nissan.",
+    "Revenue table covers Apr-Aug only; September missing; units not printed.",
+    "No branch-wise split (TVM/KLM/PTA) for sales, though manpower lists Kollam and PTA.",
+    "No full-year FY27 target; only October target given.",
+    "No model split for FY26; FY26 'Grand Total' rows (522 retail / 519 wholesale) mix in March Gravite figures ambiguously."
+   ],
+   "files": [
+    {
+     "title": "MARIKAR NISSAN SALES till SEPTEMBER 2026 - Admin Marikar.pptx",
+     "period": "FY 2025-26 (monthly) and FY 2026-27 Apr-Sep 2026"
+    }
+   ]
+  },
+  {
+   "key": "RE",
+   "name": "Royal Enfield",
+   "what": "Royal Enfield sales & service: Trivandrum, Kollam, Pathanamthitta",
+   "status": "strong",
+   "status_label": "Strong",
+   "tagline": "Enquiries, bookings and retail by branch, accessories and apparel, and workshop revenue. September retail fell on a vehicle supply shortage.",
+   "headline": {
+    "value": 1469,
+    "unit": "units",
+    "caption": "H1 bookings, +39% on 1,057"
+   },
+   "kpis": [
+    {
+     "name": "Bookings",
+     "unit": "motorcycles",
+     "h1_fy27": 1469,
+     "h1_fy26": 1057,
+     "fy26_full": 2457,
+     "fy27_target": 3600,
+     "note": null,
+     "detail": "H1 FY27 = TVM 727 + KLM 463 + PTA 279 = 1469 (Booking slide). The H2 Plan slide's 'Total Booking Achieved - H1' shows MML 1669 - inconsistent with its own branch figures (sum 1469). H1 FY27 target (original projection) 1840 -> 80% achieved. FY26 full-year from FY25-26 review.",
+     "source": "RE Review H1 FY 26-27, slide 'Booking'; Review FY 25-26 (RE, Senior Manager RE), slides 'Booking' and 'Target'",
+     "lower_better": null
+    },
+    {
+     "name": "Retail",
+     "unit": "motorcycles",
+     "h1_fy27": 1099,
+     "h1_fy26": 950,
+     "fy26_full": 1998,
+     "fy27_target": 2785,
+     "note": null,
+     "detail": "H1 FY27 = TVM 556 + KLM 346 + PTA 196. Original H1 retail target 1435 -> 77% achieved. H1 FY26 per the H1 deck is 950; the FY25-26 review's Apr-Sep 2025 months sum to 931 (Sep-25 shown 160 vs 182). +16% YoY per deck.",
+     "source": "RE Review H1 FY 26-27, slide 'Retail'; Review FY 25-26 (RE, Senior Manager RE), slides 'Retail' and 'Target'",
+     "lower_better": null
+    },
+    {
+     "name": "Enquiries",
+     "unit": "enquiries",
+     "h1_fy27": 6052,
+     "h1_fy26": 5103,
+     "fy26_full": 11484,
+     "fy27_target": null,
+     "note": null,
+     "detail": "+19% YoY H1 (computed). FY25-26 review shows slightly different FY26 monthly figures (e.g., Aug-25 984 vs 975).",
+     "source": "RE Review H1 FY 26-27, slide 'Enquiry'; Review FY 25-26 (RE, Senior Manager RE), slide 'Enquiry'",
+     "lower_better": null
+    },
+    {
+     "name": "Accessories (GMA) sales",
+     "unit": "₹",
+     "h1_fy27": 6501297,
+     "h1_fy26": 6798983,
+     "fy26_full": 13466561,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 values computed by summing branch monthly totals from the H1 deck (no group total printed). FY26 full year from FY25-26 review.",
+     "source": "RE Review H1 FY 26-27, slide 'GMA Business'; Review FY 25-26 (RE, Senior Manager RE), slide 'GMA Business'",
+     "lower_better": null
+    },
+    {
+     "name": "Apparel sales",
+     "unit": "₹",
+     "h1_fy27": 1970024,
+     "h1_fy26": 1478928,
+     "fy26_full": 3039687,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 computed by summing branches. Target from FY25-26 review: Rs 3,000 per bike.",
+     "source": "RE Review H1 FY 26-27, slide 'Apparel'; Review FY 25-26 (RE, Senior Manager RE), slide 'Apparel Business'",
+     "lower_better": null
+    },
+    {
+     "name": "Workshop revenue, three branches",
+     "unit": "₹",
+     "h1_fy27": 32733738,
+     "h1_fy26": 31825513,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": "Sum of the branch figures in the service deck.",
+     "source": "REVIEW MEET (RE service)"
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Bookings",
+     "unit": "motorcycles",
+     "months": {
+      "2026-04": {
+       "actual": 257,
+       "prior_year": 151,
+       "target": 290
+      },
+      "2026-05": {
+       "actual": 236,
+       "prior_year": 153,
+       "target": 290
+      },
+      "2026-06": {
+       "actual": 204,
+       "prior_year": 146,
+       "target": 270
+      },
+      "2026-07": {
+       "actual": 233,
+       "prior_year": 169,
+       "target": 300
+      },
+      "2026-08": {
+       "actual": 247,
+       "prior_year": 244,
+       "target": 370
+      },
+      "2026-09": {
+       "actual": 292,
+       "prior_year": 194,
+       "target": 320
+      }
+     },
+     "source": "RE Review H1 FY 26-27, slide 'Booking'; targets from Review FY 25-26 (RE, Senior Manager RE), slide 'Target' (MML RE Booking Projection FY26-27)",
+     "note": null
+    },
+    {
+     "metric": "Retail",
+     "unit": "motorcycles",
+     "months": {
+      "2026-04": {
+       "actual": 157,
+       "prior_year": 110,
+       "target": 235
+      },
+      "2026-05": {
+       "actual": 158,
+       "prior_year": 148,
+       "target": 230
+      },
+      "2026-06": {
+       "actual": 186,
+       "prior_year": 139,
+       "target": 205
+      },
+      "2026-07": {
+       "actual": 155,
+       "prior_year": 128,
+       "target": 205
+      },
+      "2026-08": {
+       "actual": 340,
+       "prior_year": 243,
+       "target": 300
+      },
+      "2026-09": {
+       "actual": 103,
+       "prior_year": 182,
+       "target": 260
+      }
+     },
+     "source": "RE Review H1 FY 26-27, slide 'Retail'; targets from Review FY 25-26 (RE, Senior Manager RE), slide 'Target' (original FY27 retail projection; Q2 later revised in Review June 08-26 (RE) to MML 230/330/265)",
+     "note": null
+    },
+    {
+     "metric": "Enquiries",
+     "unit": "enquiries",
+     "months": {
+      "2026-04": {
+       "actual": 1223,
+       "prior_year": 663,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 1281,
+       "prior_year": 644,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 771,
+       "prior_year": 1122,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 848,
+       "prior_year": 953,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 898,
+       "prior_year": 975,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 1031,
+       "prior_year": 746,
+       "target": null
+      }
+     },
+     "source": "RE Review H1 FY 26-27, slide 'Enquiry'",
+     "note": null
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 retail by branch",
+     "unit": "motorcycles",
+     "total": true,
+     "rows": [
+      {
+       "label": "TVM",
+       "value": 556,
+       "prior": 532
+      },
+      {
+       "label": "KLM",
+       "value": 346,
+       "prior": 249
+      },
+      {
+       "label": "PTA",
+       "value": 196,
+       "prior": 169
+      }
+     ],
+     "source": "RE Review H1 FY 26-27, slide 'Retail'",
+     "note": "The branch figures add up to 1,098; the deck states 1,099 for the group.",
+     "value_label": null,
+     "prior_label": null
+    },
+    {
+     "title": "H1 workshop revenue by branch",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "Trivandrum",
+       "value": 16139883,
+       "prior": 15229670
+      },
+      {
+       "label": "Kollam",
+       "value": 9080622,
+       "prior": 10209847
+      },
+      {
+       "label": "Pathanamthitta",
+       "value": 7513233,
+       "prior": 6385996
+      }
+     ],
+     "source": "REVIEW MEET (RE service), H1 FY27 vs H1 FY26"
+    },
+    {
+     "title": "H1 service job cards by branch",
+     "unit": "job cards",
+     "total": true,
+     "rows": [
+      {
+       "label": "Trivandrum",
+       "value": 6813,
+       "prior": 6396
+      },
+      {
+       "label": "Kollam",
+       "value": 3245,
+       "prior": 4593
+      },
+      {
+       "label": "Pathanamthitta",
+       "value": 2729,
+       "prior": 2435
+      }
+     ],
+     "source": "REVIEW MEET (RE service), H1 FY27 vs H1 FY26"
+    },
+    {
+     "title": "FY 2025–26 retail by branch",
+     "unit": "motorcycles",
+     "total": false,
+     "rows": [
+      {
+       "label": "TVM",
+       "value": 1057,
+       "prior": 921
+      },
+      {
+       "label": "KLM",
+       "value": 567,
+       "prior": 476
+      },
+      {
+       "label": "PTA",
+       "value": 374,
+       "prior": 297
+      },
+      {
+       "label": "MML",
+       "value": 1998,
+       "prior": 1694,
+       "total_row": true
+      }
+     ],
+     "source": "Review FY 25-26 (RE, Senior Manager RE), slide 'Retail' (prior = FY24-25)",
+     "note": null,
+     "value_label": "FY 2025–26",
+     "prior_label": "FY 2024–25"
+    }
+   ],
+   "highlights": [
+    "RESC TVM H1: total JC 6813 vs 6396 (+7%), workshop revenue ₹1.61 cr vs ₹1.52 cr (+5.98%); Sep-26 revenue +50% (3439763 vs 2296181).",
+    "RESC PTA H1: total JC 2729 vs 2435 (+12%), workshop revenue 7513233 vs 6385996 (+17.65%); Sep-26 revenue +56%.",
+    "Other revenue and VAS sharply up at TVM in Sep (other revenue +206%, VAS +132%).",
+    "H1 FY27 bookings 1,469 (+39% YoY vs 1,057); KLM +73%.",
+    "H1 FY27 retail 1,099 (+16% YoY vs 950); August record 340 units.",
+    "H1 enquiries 6,052 vs 5,103 (+19%)."
+   ],
+   "concerns": [
+    "RESC KLM H1: paid JC 2463 vs 3812 (-35.39%), total JC 3245 vs 4593 (-29%), labour revenue -22.13%, workshop revenue 9080622 vs 10209847 (-11.06%).",
+    "KLM Sep-26 JC 596 vs 832 (-28%); VAS -31%.",
+    "September 2026 retail collapsed to 103 (-43% YoY; TVM -63%) and wholesale to 94 due to vehicle supply shortage, despite 292 bookings.",
+    "H1 vs original FY27 projection: bookings 1,469 vs 1,840 (80%); retail 1,099 vs 1,435 (77%).",
+    "Booking cancellations 265 (18%); KLM June 47%, TVM Sep 25%.",
+    "TVM GMA down YoY in 5 of 6 months (Aug -42%); PTA April -80%."
+   ],
+   "actions": [
+    "Oct 2026 plans: TVM 1300 JC / ₹31 lakh total revenue; KLM 850 JC / ₹21 lakh; PTA 620 JC / ₹16 lakh.",
+    "H2 plan: bookings 1,600, retail 1,355 (Oct-Mar).",
+    "Set up call centre for enquiry management.",
+    "Drive EW penetration to 80%; apparel to Rs 3,000/bike; achieve GMA TOI every month.",
+    "Marketing: social media, influencer videos, field marketing, mechanic connect, customer referral programme.",
+    "Replace old AC at KLM and PTA; periodic infrastructure maintenance."
+   ],
+   "gaps": [
+    "No RE sales (retail/market share) data in these files; service only.",
+    "No monthly series Apr-Aug for RE; only H1 totals, Sep and Oct.",
+    "No FY 2025-26 full-year totals or FY27 targets.",
+    "Industry overview slide uses stale Jun-2016/Jun-2017 data - not usable.",
+    "Minor mismatches vs flash report: KLM Sep labour 541486 (deck) vs 555105 (flash); PTA parts 1259947 vs 1259647.",
+    "No RE service data (job cards/throughput, service revenue, workshop KPIs) in any of the three decks - the +39% service revenue and Google 4.2 are only from the HOD meeting."
+   ],
+   "files": [
+    {
+     "title": "REVIEW MEET",
+     "period": "H1 2026-27 (Apr-Sep 2026 vs Apr-Sep 2025), Sep 2026 vs Sep 2025, Oct 2026 plan; also a stale 'Industry overview' slide with Jun-16/Jun-17 data"
+    },
+    {
+     "title": "RE Review H1 FY 26-27 - Admin Marikar.pptx",
+     "period": "H1 FY 2026-27 (Apr-Sep 2026) with Apr-Sep 2025 comparison"
+    },
+    {
+     "title": "Review FY 25-26 - Senior Manager RE.pptx",
+     "period": "FY 2025-26 full year (Apr 2025-Mar 2026) vs FY 2024-25; FY 2026-27 targets"
+    },
+    {
+     "title": "Review June 08-26 - Senior Manager RE.pptx",
+     "period": "Q1 FY 2026-27 (Apr-May actual, June projection) vs Q1 FY26; Q2 targets"
+    }
+   ]
+  },
+  {
+   "key": "BIGWING",
+   "name": "BigWing",
+   "what": "Honda premium motorcycles: Nagercoil sales & service",
+   "status": "mixed",
+   "status_label": "Mixed",
+   "tagline": "Service nearly doubled and retail grew, but BigWing's share of the premium segment slipped below last year.",
+   "headline": {
+    "value": 46.08,
+    "unit": "₹ lakh",
+    "caption": "H1 service workshop revenue, +92% on ₹24.05 L"
+   },
+   "kpis": [
+    {
+     "name": "Service workshop revenue",
+     "unit": "₹",
+     "h1_fy27": 4608062,
+     "h1_fy26": 2404867,
+     "fy26_full": 6015250,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Growth 92% stated on slide. Workshop revenue = labour + parts (+VAS/AMC per sheet definition).",
+     "source": "Review Apr to Sep - Admin Marikar.pptx, slide 3 (FY26 full: slide 2)",
+     "lower_better": null
+    },
+    {
+     "name": "Service job cards",
+     "unit": "job cards",
+     "h1_fy27": 1388,
+     "h1_fy26": 967,
+     "fy26_full": 2067,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Growth 44% stated.",
+     "source": "Review Apr to Sep - Admin Marikar.pptx, slide 3",
+     "lower_better": null
+    },
+    {
+     "name": "Free services",
+     "unit": "nos",
+     "h1_fy27": 491,
+     "h1_fy26": 325,
+     "fy26_full": 713,
+     "fy27_target": null,
+     "note": null,
+     "detail": "Growth 51% stated - likely the '+51%' cited in the 9 Oct meeting (revenue grew 92%).",
+     "source": "Review Apr to Sep - Admin Marikar.pptx, slide 3",
+     "lower_better": null
+    },
+    {
+     "name": "Retail",
+     "unit": "vehicles",
+     "h1_fy27": 228,
+     "h1_fy26": 157,
+     "fy26_full": 384,
+     "fy27_target": 563,
+     "note": "FY 2026–27 plan from the group sales summary.",
+     "detail": "H1 FY26 = sum of stated Apr-Sep 2025 months (computed). FY25 full = 205; FY26 vs FY25 growth stated '+87%'.",
+     "source": "review Oct 2026 - Admin Marikar.pptx, slide 2; review April 2026 - satheesh chandran.pptx, slide 2",
+     "lower_better": null
+    },
+    {
+     "name": "Enquiries",
+     "unit": "nos",
+     "h1_fy27": 1782,
+     "h1_fy26": 1501,
+     "fy26_full": 3056,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 FY26 computed from stated months. Slide 4 source table gives Sep 2026 enquiry as 460 vs 357 on slide 2 (inconsistent).",
+     "source": "review Oct 2026 - Admin Marikar.pptx, slide 2",
+     "lower_better": null
+    },
+    {
+     "name": "Sales-side income (F&I, accessories)",
+     "unit": "₹",
+     "h1_fy27": 1279211,
+     "h1_fy26": 1060406,
+     "fy26_full": null,
+     "fy27_target": null,
+     "note": null,
+     "detail": "H1 FY26 = Q1 4,68,447 + Q2 5,91,959 (stated per quarter, summed). Avg per vehicle fell (e.g. Sep 2026 5,171 vs 8,426).",
+     "source": "review Oct 2026 - Admin Marikar.pptx, slides 9-10",
+     "lower_better": null
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Service workshop revenue",
+     "unit": "₹",
+     "months": {
+      "2026-04": {
+       "actual": 616500,
+       "prior_year": 355225,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 701095,
+       "prior_year": 385610,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 721970,
+       "prior_year": 386062,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 862196,
+       "prior_year": 419723,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 860398,
+       "prior_year": 455743,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 845903,
+       "prior_year": 402504,
+       "target": null
+      }
+     },
+     "source": "Review Apr to Sep - Admin Marikar.pptx, slide 3",
+     "note": null
+    },
+    {
+     "metric": "Retail",
+     "unit": "vehicles",
+     "months": {
+      "2026-04": {
+       "actual": 30,
+       "prior_year": 24,
+       "target": 35
+      },
+      "2026-05": {
+       "actual": 41,
+       "prior_year": 30,
+       "target": 50
+      },
+      "2026-06": {
+       "actual": 35,
+       "prior_year": 25,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 45,
+       "prior_year": 33,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 35,
+       "prior_year": 25,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 42,
+       "prior_year": 20,
+       "target": null
+      }
+     },
+     "source": "review Oct 2026 - Admin Marikar.pptx, slide 2; targets Apr/May plan from REVIEW MEETING PRESENTATION - 08.06.2026 (2) (1) - satheesh chandran.pptx, slides 3-4",
+     "note": null
+    },
+    {
+     "metric": "Share of the RE / Jawa / BigWing segment",
+     "unit": "%",
+     "months": {
+      "2026-04": {
+       "actual": 8,
+       "prior_year": 9,
+       "target": null
+      },
+      "2026-05": {
+       "actual": 16,
+       "prior_year": 10,
+       "target": null
+      },
+      "2026-06": {
+       "actual": 9,
+       "prior_year": 9,
+       "target": null
+      },
+      "2026-07": {
+       "actual": 8,
+       "prior_year": 12,
+       "target": null
+      },
+      "2026-08": {
+       "actual": 5,
+       "prior_year": 10,
+       "target": null
+      },
+      "2026-09": {
+       "actual": 11,
+       "prior_year": 5,
+       "target": null
+      }
+     },
+     "source": "review Oct 2026 - Admin Marikar.pptx, slide 5",
+     "note": "Registrations in the Marthandam and Nagercoil RTOs."
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 registrations by make (two RTOs)",
+     "unit": "vehicles",
+     "total": false,
+     "rows": [
+      {
+       "label": "Royal Enfield",
+       "value": 1826,
+       "prior": 1354
+      },
+      {
+       "label": "Jawa (Classic Legends)",
+       "value": 87,
+       "prior": 75
+      },
+      {
+       "label": "Honda BigWing",
+       "value": 192,
+       "prior": 148
+      },
+      {
+       "label": "Segment total",
+       "value": 2105,
+       "prior": 1577,
+       "total_row": true
+      }
+     ],
+     "source": "review Oct 2026 - Admin Marikar.pptx, slide 5",
+     "note": null,
+     "value_label": null,
+     "prior_label": null
+    },
+    {
+     "title": "H1 sales-side income by head",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "Finance",
+       "value": 416378,
+       "prior": null
+      },
+      {
+       "label": "Addl. payout",
+       "value": 146700,
+       "prior": null
+      },
+      {
+       "label": "Insurance",
+       "value": 53810,
+       "prior": null
+      },
+      {
+       "label": "Handling charges",
+       "value": 201014,
+       "prior": null
+      },
+      {
+       "label": "Extended warranty",
+       "value": 212283,
+       "prior": null
+      },
+      {
+       "label": "RSA",
+       "value": 41303,
+       "prior": null
+      },
+      {
+       "label": "Accessories",
+       "value": 207723,
+       "prior": null
+      }
+     ],
+     "source": "review Oct 2026 - Admin Marikar.pptx, slide 9",
+     "note": null,
+     "value_label": null,
+     "prior_label": null
+    }
+   ],
+   "highlights": [
+    "BigWing NGL service job cards rose steadily from 200 (Apr) to 255 (Sep 2026); MSW workshop appears in Sep 2026 (56 JC).",
+    "Service workshop revenue H1 FY27 Rs 46.08 lakh vs Rs 24.05 lakh (+92%); job cards +44%, free services +51%, labour +122%, parts +92%.",
+    "Q2 alone: workshop revenue Rs 25.68 lakh vs 12.78 lakh (+101%).",
+    "Retail H1 FY27 228 vs 157 LY; every month Apr-Sep up YoY (Sep 42 vs 20).",
+    "FY26 retail 384 vs 205 in FY25 (+87%).",
+    "Digital enquiries now the largest source (220 in Aug 2026); Sep outdoor activity enquiries 257."
+   ],
+   "concerns": [
+    "BigWing Vahan share of RE+Jawa+BW segment in 2 Kanyakumari RTOs is ~9% in H1 FY27, below LY (~9.4%) and FY26 (~10%); Aug 2026 only 5%. RE registrations grew faster (1,826 vs 1,354).",
+    "Revenue per vehicle (F&I) fell: Q2 avg ~5,171-6,333/veh vs 6,938-8,426 LY.",
+    "Enquiries from HMSI to Kanyakumari district very low; RedWing call-centre enquiries still routed to BigWing; Mobility app enquiry duplication; need individual executive logins.",
+    "Conversion fell to 6% in Sep 2026 (outdoor enquiries 257 at 3%).",
+    "Apr/May 2026 retail below plan (30 vs 35, 41 vs 50); window outlet enquiry 61% of plan in April."
+   ],
+   "actions": [
+    "Requests: digital marketing team for reel videos, marketing budget, sales and service facility at Marthandam.",
+    "Oct 2026 service plan: 300 vehicles, labour Rs 2.0 lakh, parts Rs 6.5 lakh, workshop revenue Rs 8.6 lakh (vs 5.36 lakh Oct 2025).",
+    "Monthly activity plans (displays, college/bank displays, social media, leaflets, exchange); June 2026 plan budget Rs 14,200, 174 planned enquiries."
+   ],
+   "gaps": [
+    "No BigWing sales data, no prior-year comparison, no targets; MSW (location code unexplained) only Sep 2026.",
+    "No FY27 targets/budget for service or sales beyond Apr-May retail plan and Oct service plan.",
+    "Market share % in deck is rounded monthly; H1 shares here are computed from unit counts.",
+    "Enquiry for Sep 2026 conflicts (357 on slide 2 vs 460 on slide 4).",
+    "Activity tracker actuals for June not filled.",
+    "FY26 full-year sales-side revenue not given."
+   ],
+   "files": [
+    {
+     "title": "Flash Report - Service - September 2026",
+     "period": "September 2026, H1 Apr-Sep 2026 vs 2025, October 2026 plan"
+    },
+    {
+     "title": "Review Apr to Sep - Admin Marikar.pptx",
+     "period": "FY 2025-26 full year; H1 FY27 vs H1 FY26; Q2 comparison; Oct 2026 plan"
+    },
+    {
+     "title": "review Oct 2026 - Admin Marikar.pptx",
+     "period": "Apr-Sep 2026 vs Apr-Sep 2025 (plus FY26 months)"
+    },
+    {
+     "title": "Review April 2025-2026 - AmzesbigwingService NGL.pptx",
+     "period": "FY 2025-26 full year vs FY 2024-25 (Jul-Mar)"
+    },
+    {
+     "title": "Review July 2026-2027 - AmzesbigwingService NGL.pptx",
+     "period": "FY26 full; FY25 vs FY26; Q1 FY27 vs Q1 FY26"
+    },
+    {
+     "title": "review April 2026 - satheesh chandran.pptx",
+     "period": "FY 2024-25 vs FY 2025-26 full year (April 2026 review)"
+    },
+    {
+     "title": "REVIEW MEETING PRESENTATION - 08.06.2026 (2) (1) - satheesh chandran.pptx",
+     "period": "Apr & May 2026 actual vs plan and LY; Jun 2026 plan"
+    }
+   ]
+  },
+  {
+   "key": "CANON",
+   "name": "Canon / OAIP",
+   "what": "Office automation: copiers, printers, scanners & service",
+   "status": "attention",
+   "status_label": "Needs attention",
+   "tagline": "Sales and service against last year and the full-year target, by product line. Halfway through the year, sales are 44% and service 42% of their targets.",
+   "headline": {
+    "value": 15258453.04,
+    "unit": "₹",
+    "caption": "H1 sales, +19% on ₹1.28 Cr; FY target ₹3.5 Cr"
+   },
+   "kpis": [
+    {
+     "name": "Sales",
+     "unit": "₹",
+     "h1_fy27": 15258453.04,
+     "h1_fy26": 12797803.47,
+     "fy26_full": 29275950.73,
+     "fy27_target": 35000000,
+     "note": "FY 2025–26 from the OAIP 2025–26 report. The Q1 deck gave a ₹3.80 Cr target.",
+     "detail": "Shortfall vs FY27 target ₹1,97,41,546.96; FY24 Apr-Sep ₹2,45,96,316.86, FY25 Apr-Sep ₹1,55,58,726.56",
+     "source": "H2 2026-27 REPORT, detailed sales & target slides",
+     "lower_better": null
+    },
+    {
+     "name": "Service",
+     "unit": "₹",
+     "h1_fy27": 10426058.43,
+     "h1_fy26": 10068474.96,
+     "fy26_full": 21807641.73,
+     "fy27_target": 25000000,
+     "note": "The Q1 deck gave a ₹2.65 Cr target.",
+     "detail": "Shortfall vs FY27 target ₹1,45,73,941.57",
+     "source": "H2 2026-27 REPORT, detailed service & target slides",
+     "lower_better": null
+    },
+    {
+     "name": "Mono copiers",
+     "unit": "units",
+     "h1_fy27": 58,
+     "h1_fy26": 42,
+     "fy26_full": 101,
+     "fy27_target": 120,
+     "note": null,
+     "detail": "Amount H1 ₹38,51,434.00; target ₹80,00,000",
+     "source": "H2 2026-27 REPORT",
+     "lower_better": null
+    },
+    {
+     "name": "Scanners",
+     "unit": "units",
+     "h1_fy27": 233,
+     "h1_fy26": 222,
+     "fy26_full": null,
+     "fy27_target": 400,
+     "note": null,
+     "detail": "Amount H1 ₹50,98,684.72; target ₹1,10,00,000",
+     "source": "H2 2026-27 REPORT",
+     "lower_better": null
+    },
+    {
+     "name": "Printers",
+     "unit": "units",
+     "h1_fy27": 307,
+     "h1_fy26": 231,
+     "fy26_full": null,
+     "fy27_target": 500,
+     "note": null,
+     "detail": "Amount H1 ₹39,69,830.89; target ₹90,00,000",
+     "source": "H2 2026-27 REPORT",
+     "lower_better": null
+    },
+    {
+     "name": "Consumables",
+     "unit": "₹",
+     "h1_fy27": 3706167.86,
+     "h1_fy26": 3451265.44,
+     "fy26_full": null,
+     "fy27_target": 10000000,
+     "note": null,
+     "detail": "",
+     "source": "H2 2026-27 REPORT",
+     "lower_better": null
+    }
+   ],
+   "monthly": [
+    {
+     "metric": "Sales, April–June",
+     "unit": "₹",
+     "months": {
+      "2026-04": {
+       "actual": 1341867.72,
+       "prior_year": 1367569.48,
+       "target": 1967790.0
+      },
+      "2026-05": {
+       "actual": 1436287.66,
+       "prior_year": 1728045.74,
+       "target": 2362790.0
+      },
+      "2026-06": {
+       "actual": 3046033.26,
+       "prior_year": 3576186.21,
+       "target": 2759140.0
+      }
+     },
+     "source": "CANON REPORT APRIL 2026/CANON REPORT MAY 2026/CANON REPORT JUNE 2026, Sales report slide. Note: monthly targets sum to 70,89,720 vs Q1 deck target 70,60,000.",
+     "note": "Monthly figures were reported for Q1 only."
+    },
+    {
+     "metric": "Service, April–June",
+     "unit": "₹",
+     "months": {
+      "2026-04": {
+       "actual": 1310721.17,
+       "prior_year": 1432791.5,
+       "target": 1920000.0
+      },
+      "2026-05": {
+       "actual": 1878313.9,
+       "prior_year": 1437355.7,
+       "target": 2160000.0
+      },
+      "2026-06": {
+       "actual": 1644864.72,
+       "prior_year": 1813597.28,
+       "target": 2170000.0
+      }
+     },
+     "source": "CANON REPORT APRIL 2026/CANON REPORT MAY 2026/CANON REPORT JUNE 2026, Service report slide. Monthly targets sum to 62,50,000 vs Q1 deck target 51,37,000 (inconsistent).",
+     "note": null
+    }
+   ],
+   "breakdowns": [
+    {
+     "title": "H1 sales by category",
+     "unit": "₹",
+     "total": false,
+     "rows": [
+      {
+       "label": "Scanner (233 vs 222 units)",
+       "value": 5098684.72,
+       "prior": 5074166.11
+      },
+      {
+       "label": "Printer (307 vs 231)",
+       "value": 3969830.89,
+       "prior": 3022503.4
+      },
+      {
+       "label": "Photocopier mono (58 vs 42)",
+       "value": 3851434.0,
+       "prior": 2514429.36
+      },
+      {
+       "label": "Photocopier colour (15 vs 14)",
+       "value": 2236454.29,
+       "prior": 1935651.22
+      },
+      {
+       "label": "Accessories/Plotter/Refurbished/Other",
+       "value": 102049.14,
+       "prior": 102553.38
+      },
+      {
+       "label": "BenQ",
+       "value": 0,
+       "prior": 148500.0
+      },
+      {
+       "label": "Pitney Bowes",
+       "value": 0,
+       "prior": 0
+      },
+      {
+       "label": "Total sales",
+       "value": 15258453.04,
+       "prior": 12797803.47,
+       "total_row": true
+      }
+     ],
+     "source": "H2 2026-27 REPORT, detailed sales report",
+     "note": null,
+     "value_label": "H1 2026",
+     "prior_label": "H1 2025"
+    },
+    {
+     "title": "H1 service revenue by head",
+     "unit": "₹",
+     "total": false,
+     "rows": [
+      {
+       "label": "CPIL TG",
+       "value": 4194428.53,
+       "prior": 3919437.85
+      },
+      {
+       "label": "Consumables",
+       "value": 3706167.86,
+       "prior": 3451265.44
+      },
+      {
+       "label": "TG",
+       "value": 1985227.37,
+       "prior": 1684069.89
+      },
+      {
+       "label": "Spares",
+       "value": 352180.72,
+       "prior": 718248.73
+      },
+      {
+       "label": "Service revenue",
+       "value": 188053.95,
+       "prior": 295453.05
+      },
+      {
+       "label": "Total service",
+       "value": 10426058.43,
+       "prior": 10068474.96,
+       "total_row": true
+      }
+     ],
+     "source": "H2 2026-27 REPORT, detailed service report",
+     "note": null,
+     "value_label": "H1 2026",
+     "prior_label": "H1 2025"
+    },
+    {
+     "title": "FY 2025–26 sales by product line",
+     "unit": "₹",
+     "total": true,
+     "rows": [
+      {
+       "label": "Photocopier Mono",
+       "value": 6605998.98,
+       "prior": 4242532.57
+      },
+      {
+       "label": "Photocopier Colour",
+       "value": 5601325.68,
+       "prior": 2043894.26
+      },
+      {
+       "label": "Refurbished/Accessories/Plotter",
+       "value": 277407.61,
+       "prior": 603634.13
+      },
+      {
+       "label": "Federal Bank",
+       "value": 12944600.0,
+       "prior": 27214450.0
+      },
+      {
+       "label": "Keltron",
+       "value": 0.0,
+       "prior": 8729841.95
+      },
+      {
+       "label": "Scanner",
+       "value": 830015.25,
+       "prior": 506816.11
+      },
+      {
+       "label": "Printer",
+       "value": 2776353.21,
+       "prior": 1789051.68
+      },
+      {
+       "label": "BenQ",
+       "value": 240250.0,
+       "prior": 150000
+      },
+      {
+       "label": "Pitney Bowes",
+       "value": 0.0,
+       "prior": 151084.74
+      }
+     ],
+     "source": "OAIP Division Report 2025-26, Detailed Sales slide",
+     "note": null,
+     "value_label": "FY 2025–26",
+     "prior_label": "FY 2024–25"
+    }
+   ],
+   "highlights": [
+    "H1 sales ₹1,52,58,453.04 vs ₹1,27,97,803.47 (Apr-Sep 2025); printers 307 vs 231 units, mono copiers 58 vs 42.",
+    "Service ₹1,04,26,058.43 vs ₹1,00,68,474.96; CPIL TG ₹41.9 L and TG ₹19.9 L both up.",
+    "September 2026 strongest sales month shown: ₹36.98 L.",
+    "FY26 copier units recovered to 101 mono / 40 colour (from 38/7 in FY24).",
+    "TG margin 61% for H1.",
+    "FY 2025-26 total revenue Rs 5,10,83,592.46 (sales 2.93 Cr, service 2.18 Cr); deck claims retail sales +63.95%, retail revenue +94.18%, colour machines +174%, mono +55.71%, service +8.5%.",
+    "Copier business growing: Q1 FY27 mono copiers +16% (27 units, above unit target 25); June 2026 mono sales 9.31 lakh vs 4.33 lakh June 2025."
+   ],
+   "concerns": [
+    "Half-year shortfall: sales ₹1,97,41,546.96 below FY27 target ₹3,50,00,000; service ₹1,45,73,941.57 below ₹2,50,00,000.",
+    "Colour copiers 15 of 40 target; mono 58 of 120.",
+    "CPIL TG margin fell to 12% in Sept (33% H1).",
+    "Service-call revenue ₹1.88 L vs ₹8 L target; spares ₹3.52 L, half of LY.",
+    "BenQ and Pitney Bowes nil sales; ₹1.35 Cr stock incl. demo/lease.",
+    "Several sales and service positions vacant (incl. Sales Manager per org chart).",
+    "Q1 FY27 total revenue Rs 1.07 Cr, down 6% vs Q1 FY26 (1.14 Cr); sales -13%, 82% of Q1 target.",
+    "Scanner decline: Q1 -35% YoY, 50% of target, zero sales in May 2026.",
+    "Colour copiers only 4 units vs 9 target (48%); spares -67%, service labour -53%."
+   ],
+   "actions": [
+    "GeM identified as priority area (HOD meeting 9 Oct 2026) - no GeM figures in decks yet.",
+    "Reconcile OAIP turnover with Accounts (HOD meeting)."
+   ],
+   "gaps": [
+    "Monthly sales/service only for September; no monthly series Apr-Aug except TG/CPIL billing.",
+    "No FY26 full-year revenue (only Apr-Sep comparisons and FY unit trend for copiers).",
+    "No H2 action plan stated despite 'H2' title.",
+    "No profit/margin for sales.",
+    "No GeM figures in any file."
+   ],
+   "files": [
+    {
+     "title": "H2 2026-27 REPORT - Admin Marikar.pptx",
+     "period": "Labelled 'FY 2026-27 (H2)' but all data is April-September 2026 (i.e. H1); stock/TG counts as on 30.09.2026"
+    },
+    {
+     "title": "OAIP Division Report 2025-26",
+     "period": "FY 2025-26 (Apr 2025-Mar 2026), with FY 2023-24 and 2024-25 comparison"
+    },
+    {
+     "title": "Q1 2026-27 (OAIP)",
+     "period": "Q1 FY 2026-27 (Apr-Jun 2026) vs Q1 FY 2025-26"
+    },
+    {
+     "title": "CANON REPORT APRIL 2026",
+     "period": "April 2026 vs April 2025"
+    },
+    {
+     "title": "CANON REPORT MAY 2026",
+     "period": "May 2026 vs May 2025"
+    },
+    {
+     "title": "CANON REPORT JUNE 2026",
+     "period": "June 2026 vs June 2025"
+    }
+   ]
+  },
+  {
+   "key": "HR",
+   "name": "HR",
+   "what": "People & execution",
+   "status": "plan",
+   "status_label": "Plan presented",
+   "tagline": "A 90-day plan to turn HR into a business enabler. The deck has no people figures yet; the first HR dashboard is due by 3 November (A16).",
+   "headline": {
+    "text": "90 days",
+    "caption": "roadmap: visibility, accountability, action"
+   },
+   "kpis": [],
+   "monthly": [],
+   "breakdowns": [
+    {
+     "title": "90-day roadmap",
+     "unit": "milestone",
+     "total": false,
+     "rows": [
+      {
+       "label": "0-30 days: HR data clean-up; organisation/manpower mapping; critical vacancies; policy & process gap assessment",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "31-60 days: KRA/KPI framework; recruitment scorecards; training calendar; HR dashboard v1",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "61-90 days: performance review cycle; competency framework; engagement/R&R initiatives; succession planning for critical roles",
+       "value": null,
+       "prior": null
+      }
+     ],
+     "source": "Marikar Group HR-HOD Meeting Presentation Oct 2026, slide 13",
+     "note": null,
+     "value_label": null,
+     "prior_label": null,
+     "text": true
+    },
+    {
+     "title": "Metrics proposed for the monthly HR dashboard",
+     "unit": "metric",
+     "total": false,
+     "rows": [
+      {
+       "label": "Headcount - actual vs approved",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Vacancies - open + ageing",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Attrition - monthly / YTD",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Absenteeism - trend",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Manpower cost - budget vs actual",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Productivity - key functional KPIs",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Training - plan vs completion",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Discipline - open cases / closure",
+       "value": null,
+       "prior": null
+      },
+      {
+       "label": "Critical talent - succession readiness",
+       "value": null,
+       "prior": null
+      }
+     ],
+     "source": "Marikar Group HR-HOD Meeting Presentation Oct 2026, slide 11",
+     "note": null,
+     "value_label": null,
+     "prior_label": null,
+     "text": true
+    }
+   ],
+   "highlights": [
+    "HR repositioned 'from support function to business enabler' with 5 pillars: Manpower, Performance, Capability, Culture, Governance (HR designs the system, HODs own the outcome).",
+    "Performance architecture: JD/KRAs -> monthly/quarterly KPIs with weightage -> monthly 1:1 and quarterly review -> coaching/recognition/PIP.",
+    "30-60-90 day onboarding plan for critical roles; candidate scorecards; competency-based selection."
+   ],
+   "concerns": [
+    "Deck identifies gaps in manpower deployment, performance management (activity reporting rather than KPIs), manager effectiveness, recruitment speed/quality, training, engagement/retention and HR governance.",
+    "No people data currently presented - HR MIS / single source of people data still to be built."
+   ],
+   "actions": [
+    "Execute 90-day roadmap (visibility -> accountability -> action).",
+    "Seven asks of HODs: own manpower productivity, set KRAs/KPIs, monthly performance reviews, justify manpower requests, ensure training application, recognise/address performance, share people data on time.",
+    "Per HOD meeting context (not stated in the deck): JDs and KPIs for every role, LMS, GPTW readiness, execution efficiency 3/10 -> 8/10 by 31 Mar 2027."
+   ],
+   "gaps": [
+    "HR deck contains no headcount, attrition, vacancy, absenteeism or manpower-cost numbers - all HR KPI values are null.",
+    "Execution-efficiency score (3/10 -> 8/10), LMS and GPTW targets are from meeting context only, not in the file; no dated milestones beyond the 0-30/31-60/61-90 day buckets.",
+    "Only division-level headcount found is OAIP team strength (in CANON breakdowns)."
+   ],
+   "files": [
+    {
+     "title": "Marikar Group HR-HOD Meeting Presentation Oct 2026",
+     "period": "October 2026 (forward-looking plan)"
+    }
+   ]
+  }
+ ]
+}

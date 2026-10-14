@@ -7,43 +7,47 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="icon" href="assets/img/marikar-group.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="stylesheet" href="assets/brand.css">
 </head>
 <body>
 <style>
 /* Layout: a violet masthead with the group mark and the half-year in one line, then highlights by division, the FY 2025-26 baseline, and the doors into each tool. */
 :root {
-  --bg: #f5f6f8;
-  --surface: #ffffff;
-  --ink: #101828;
-  --muted: #586174;
-  --line: #e2e5eb;
-  --mast: #0f1b33;        /* deep navy masthead */
-  --mast-2: #16244a;
-  --violet: #2e3192;      /* Pantone Violet C, per the group's colour guideline: accents only */
-  --violet-deep: #1f2266;
-  --violet-soft: #ebecf7;
-  --accent-text: #2e3192;
-  --gray: #75787b;        /* Pantone Cool Gray 9C */
-  --gold: #a87b2a;
-  --gold-soft: #f4ecdc;
-  --ok: #17694d; --ok-soft: #e3f1ea;
+  --bg: #f7f2ea;
+  --surface: #fffcf7;
+  --ink: #2a241f;
+  --muted: #6b6157;
+  --line: #e8dfd1;
+  --mast: #131c38;        /* deep navy masthead */
+  --mast-2: #1f2b55;
+  --violet: #5b4f9e;      /* BPro violet: accents only */
+  --violet-deep: #3d3375;
+  --violet-soft: #eeeaf6;
+  --accent-text: #5b4f9e;
+  --gray: #d49a3a;        /* warm amber accent */
+  --gold: #b8612b;
+  --gold-soft: #f8e9dc;
+  --ok: #2d7550; --ok-soft: #e6f0e6;
   --warn: #92560a; --warn-soft: #f8eedd;
-  --bad: #a3271d;
-  --note: #f2f4f8; --note-ink: #1d2939;
+  --bad: #a63a2a;
+  --note: #f4eee4; --note-ink: #3a3028;
   --on-violet: #ffffff;
-  --focus: #2e3192;
+  --focus: #5b4f9e;
   --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --violet-deep: #2a2e80; --violet-soft: #20264a; --accent-text: #b9bcf5;
-  --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
-  --bad: #ef8a7e; --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; } }
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --violet-deep: #3f3680; --violet-soft: #2c2640; --accent-text: #c9bff5;
+  --gray: #e0a24a; --gold: #d98a52; --gold-soft: #3a2a1c; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --bad: #ef8a7e; --note: #29231d; --note-ink: #ece3d6; --focus: #c9bff5; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --violet-deep: #2a2e80; --violet-soft: #20264a; --accent-text: #b9bcf5;
-  --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
-  --bad: #ef8a7e; --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; }
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --violet-deep: #3f3680; --violet-soft: #2c2640; --accent-text: #c9bff5;
+  --gray: #e0a24a; --gold: #d98a52; --gold-soft: #3a2a1c; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --bad: #ef8a7e; --note: #29231d; --note-ink: #ece3d6; --focus: #c9bff5; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
@@ -110,6 +114,17 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 .dv .next { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; margin-top: auto; }
 .dv .next b { color: var(--ink); font-weight: 600; }
 
+/* Financial position */
+.fin { margin-top: 18px; }
+.fin .kpis { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .fin .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .fin .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fin-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .fin-body { grid-template-columns: minmax(0, 1fr); } }
+.fin .lg { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.fin .lg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.fin .src { font-size: 12px; color: var(--muted); margin: 14px 0 0; border-top: 1px solid var(--line); padding-top: 10px; }
+.fin .tag { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 8px; background: var(--warn-soft); color: var(--warn); margin-left: 4px; }
 /* Baseline */
 .base { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
 @media (max-width: 860px) { .base { grid-template-columns: minmax(0, 1fr); } }
@@ -233,15 +248,21 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
       <a class="door" href="report.html">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
         <h3>Report builder</h3>
-        <p>Choose companies, years, sections and measures; download one PDF or Excel file with subtotals and grand totals.</p>
+        <p>Choose companies, years, sections and measures; download one branded PDF or Excel file, with subtotals, grand totals and a verification QR code.</p>
         <span class="go">Build a report →</span>
       </a>
-      <div class="door soon" id="division-door">
+      <a class="door" href="verify.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <h3>Verify a document</h3>
+        <p>Every note, PDF and Excel file carries a document ID and QR code. Check that one is genuine and unaltered.</p>
+        <span class="go">Verify →</span>
+      </a>
+      <a class="door" href="divisions.html" id="division-door">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
         <h3>Division dashboards</h3>
-        <p>One page per division comparing H1 with FY 2025–26, built from the decks uploaded for 9 October.</p>
-        <span class="go">Waiting on access to the uploaded decks</span>
-      </div>
+        <p>CSPW, Honda, AMZES, Nissan, Royal Enfield, BigWing, Canon and HR: H1 against FY 2025–26, from the decks uploaded for 9 October.</p>
+        <span class="go">Open the divisions →</span>
+      </a>
     </div>
   </section>
 
@@ -358,6 +379,30 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <div class="sticky">Reconciles to Tally's Grand Total to the paisa. Five more files and the year-on-year view opens.</div>
       </div>
     </div>
+    <div class="panel fin" id="financial-position">
+      <h3>Financial position — FY 2025–26</h3>
+      <p class="sub">Debt, cost of debt and stock at 31 March 2026, against the two years before. Provisional accounts.</p>
+      <div class="kpis">
+        <div class="kpi"><b class="num">₹36.94 Cr</b><span>Total borrowings</span> <span class="d down">+40.6%</span><span class="tag" title="From the auditor's ratio note, as reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num">₹36.46 Cr</b><span>Net worth</span> <span class="d up">+4.0%</span><span class="tag" title="As reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num">1.01x</b><span>Debt to equity, from 0.75x</span><span class="tag" title="Auditor's ratio note (Note 28.30), as reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num down">0.46x</b><span>Debt service coverage, from 1.37x</span><span class="tag" title="Auditor's ratio note (Note 28.30), as reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num">₹3.79 Cr</b><span>Finance costs, from ₹2.34 Cr</span> <span class="d down">+62.2%</span></div>
+        <div class="kpi"><b class="num">₹16.16 Cr</b><span>Inventories, from ₹12.83 Cr</span> <span class="d down">+26.0%</span></div>
+      </div>
+      <div class="fin-body">
+        <div>
+          <svg class="chart" id="debt-chart" viewBox="0 0 520 210" role="img" aria-label="Borrowings and net worth in crore. FY24: borrowings 15.43, net worth 33.56. FY25: 26.27 and 35.07. FY26: 36.94 and 36.46."></svg>
+          <div class="lg"><span><i style="background:var(--gold)"></i>Total borrowings</span><span><i style="background:var(--violet)"></i>Net worth</span></div>
+        </div>
+        <div>
+          <p class="sub" style="margin-top:0">Operating profit is at a four-year high (₹5.01 Cr). The fall in net profit comes from the cost of debt, not from trading.</p>
+          <p class="sub">Borrowings have more than doubled in two years and now match net worth. In FY 2025–26, operating cash covered under half of the year's debt service (0.46x, against at least 1x for comfort).</p>
+          <p class="ask"><b>Ask Accounts:</b> how much of the new borrowing funds stock, and is moving the new term loans to longer tenors planned? A coverage ratio below 1x needs an explanation before any lender or banker reviews the accounts.</p>
+        </div>
+      </div>
+      <p class="src">Sources: finance costs and inventories from the provisional financial statements, year ended 31 March 2026. Borrowings, net worth and both ratios as reported from the auditor's ratio note (Note 28.30) in the IPO-readiness review; marked <span class="tag">confirm</span> until checked against the signed accounts.</p>
+    </div>
   </section>
 
   <section id="insights">
@@ -445,7 +490,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
 <footer>
   <div class="wrap">
     <span>Sources: HOD Review minutes (Ref. MML/HOD/MoM/2026-10/01, v1.1), FY 2025–26 provisional financial statements, HD Attingal TallyPrime register. Internal circulation.</span>
-    <span class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span>
+    <span class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></span>
   </div>
 </footer>
 
@@ -480,7 +525,23 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     });
   });
   add('line', { x1: x(0), x2: x(0), y1: 6, y2: 184, class: 'zero' });
+
+  // Borrowings against net worth, FY24-FY26 (₹ crore): debt has caught up with equity.
+  const d = document.getElementById('debt-chart');
+  const yrs = [['FY24', 15.43, 33.56], ['FY25', 26.27, 35.07], ['FY26', 36.94, 36.46]];
+  const put = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; d.appendChild(e); return e; };
+  const DH = 210, dt = 26, db = 26, dmax = 40, gw = 520 / yrs.length, b = 58;
+  const yv = (v) => DH - db - (DH - dt - db) * v / dmax;
+  yrs.forEach(([label, debt, nw], i) => {
+    const cx = gw * i + gw / 2;
+    [[debt, 'var(--gold)', -b - 2], [nw, 'var(--violet)', 2]].forEach(([v, col, dx]) => {
+      put('rect', { x: cx + dx, y: yv(v), width: b, height: DH - db - yv(v), rx: 5, fill: col });
+      put('text', { x: cx + dx + b / 2, y: yv(v) - 6, 'text-anchor': 'middle', class: 'v' }, v.toFixed(2));
+    });
+    put('text', { x: cx, y: DH - 7, 'text-anchor': 'middle' }, label);
+  });
 })();
 </script>
+<script src="assets/pwa.js" defer></script>
 </body>
 </html>

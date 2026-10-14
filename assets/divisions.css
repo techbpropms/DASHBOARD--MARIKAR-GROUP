@@ -1,0 +1,59 @@
+/* Division dashboards: chip switcher, overview cards, one division at a time. Tokens come from theme.css and dashboard.css. */
+.dv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.dv-chip { font: inherit; font-size: var(--cds-font-size-caption); font-weight: 600; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.dv-chip:hover { border-color: var(--hd-s1); }
+.dv-chip[aria-selected="true"] { background: var(--hd-mast-2); border-color: var(--hd-mast-2); color: #fff; }
+
+.dv-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--cds-gap-md); }
+.dv-card { text-align: left; font: inherit; color: inherit; background: var(--color-panel); border: 1px solid var(--color-border-line); border-top: 3px solid var(--hd-gold); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: 6px; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+.dv-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(30, 20, 10, .08); }
+.dv-card .nm { font-weight: 700; font-size: var(--cds-font-size-heading); }
+.dv-card .what { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dv-card .big { font-family: var(--font-anthropic-serif); font-size: 1.7rem; line-height: 1.1; margin-top: 6px; }
+.dv-card .cap { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.dv-card .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+.dv-status { flex: none; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.dv-status.strong { background: color-mix(in srgb, var(--hd-ok) 14%, transparent); color: var(--hd-ok); }
+.dv-status.mixed { background: color-mix(in srgb, var(--hd-warn) 16%, transparent); color: var(--hd-warn); }
+.dv-status.attention { background: color-mix(in srgb, var(--hd-crit) 14%, transparent); color: var(--hd-crit); }
+.dv-status.plan { background: color-mix(in srgb, var(--hd-s1) 14%, transparent); color: var(--hd-s1); }
+
+.dv-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--cds-gap-md); border-left: 4px solid var(--hd-gold); padding-left: var(--cds-pad-md); }
+.dv-head h2 { margin: 2px 0 4px; font-size: 1.5rem; font-weight: 800; }
+.dv-head p { margin: 0; color: var(--color-fg-muted); max-width: 70ch; }
+.dv-eyebrow { font-size: var(--cds-font-size-caption); letter-spacing: .1em; text-transform: uppercase; color: var(--hd-gold); font-weight: 700; }
+#division { display: flex; flex-direction: column; gap: var(--cds-gap-lg); }
+#division[hidden] { display: none; }
+
+.dv-kpis .hd-kpi .val { font-size: 1.6rem; }
+.dv-kpis .chg { font-weight: 700; }
+.dv-kpis .chg.up { color: var(--hd-ok); } .dv-kpis .chg.down { color: var(--hd-crit); }
+.dv-bar { height: 6px; border-radius: 3px; background: var(--cds-chart-muted); overflow: hidden; margin-top: 6px; }
+.dv-bar i { display: block; height: 100%; background: var(--hd-s1); border-radius: 3px; }
+
+.dv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--cds-gap-md); }
+.dv-grid:empty { display: none; }
+.dv-chart { position: relative; min-height: 240px; }
+.dv-chart svg text { fill: var(--color-fg-muted); font-size: 12px; font-family: var(--font-anthropic-sans); }
+.dv-chart svg .vlab { fill: var(--color-fg); font-size: 11px; }
+
+.dv-tbl { overflow-x: auto; }
+.dv-tbl table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.dv-tbl th { text-align: left; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--color-fg-muted); padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); }
+.dv-tbl td { padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); }
+.dv-tbl .n { text-align: right; white-space: nowrap; }
+.dv-tbl tr.total td { font-weight: 700; border-top: 2px solid var(--color-fg); border-bottom: 0; }
+
+.dv-notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--cds-gap-md); }
+.dv-notes ul, .dv-src ul { margin: 0; padding-left: 18px; font-size: var(--cds-font-size-caption); display: flex; flex-direction: column; gap: 6px; }
+.dv-notes ul:empty::before, .dv-src ul:empty::before { content: "None reported."; color: var(--color-fg-muted); margin-left: -18px; }
+.dv-src-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--cds-gap-md); }
+.dv-src h3 { font-size: var(--cds-font-size-caption); text-transform: uppercase; letter-spacing: .06em; color: var(--color-fg-muted); margin: 6px 0; }
+.dv-src li small { color: var(--color-fg-muted); }
+
+@media print {
+  .dash-nav, .dv-chips, .dv-overview { display: none !important; }
+  .hd-card, .hd-kpi { break-inside: avoid; }
+}
+.dv-overview[hidden], .dv-kpis[hidden] { display: none; }

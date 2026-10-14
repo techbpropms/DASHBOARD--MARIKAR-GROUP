@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marikar Division Dashboards</title>
+<link rel="icon" href="assets/img/marikar-group.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/theme.css">
+<link rel="stylesheet" href="assets/dashboard.css">
+<link rel="stylesheet" href="assets/divisions.css">
+</head>
+<body>
+<nav class="dash-nav"><a href="index.html">← Marikar Group performance hub</a><a href="dashboard.html">Sales &amp; inventory dashboard</a><a href="tracker.html">HOD action tracker</a></nav>
+<div id="dash-root">
+<div class="hd">
+  <header class="hd-head">
+    <div class="hd-logo"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
+    <div class="hd-head-text">
+      <div class="eyebrow">Marikar Group · H1 FY 2026–27 division review</div>
+      <h1>Division dashboards</h1>
+      <p id="takeaway">H1 (April–September 2026) against the same months of FY 2025–26 and the full year to 31 March 2026, from the decks and reports each division uploaded for the 9 October HOD meeting.</p>
+    </div>
+  </header>
+
+  <div class="dv-chips" id="chips" role="tablist" aria-label="Division"></div>
+
+  <section id="overview" class="dv-overview" aria-label="All divisions"></section>
+
+  <section id="division" hidden>
+    <header class="dv-head">
+      <div>
+        <div class="dv-eyebrow" id="d-eyebrow"></div>
+        <h2 id="d-name"></h2>
+        <p id="d-tagline"></p>
+      </div>
+      <span class="dv-status" id="d-status"></span>
+    </header>
+    <div class="hd-kpis dv-kpis" id="d-kpis"></div>
+    <div class="dv-grid" id="d-charts"></div>
+    <div class="dv-grid" id="d-tables"></div>
+    <div class="dv-notes">
+      <div class="hd-card"><h2>Highlights</h2><ul id="d-high"></ul></div>
+      <div class="hd-card"><h2>Watch points</h2><ul id="d-conc"></ul></div>
+      <div class="hd-card"><h2>Next actions</h2><ul id="d-act"></ul></div>
+    </div>
+    <div class="hd-card dv-src">
+      <h2>Sources and gaps</h2>
+      <p class="note">Every figure is as stated in the division's own deck or report; nothing is estimated. Where a deck gives no prior-year figure the comparison is left blank.</p>
+      <div class="dv-src-cols"><div><h3>Files read</h3><ul id="d-files"></ul></div><div><h3>Still missing</h3><ul id="d-gaps"></ul></div></div>
+    </div>
+  </section>
+
+  <footer class="hd-credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
+</div>
+</div>
+<div class="hd-tip" id="tip"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="assets/divisions.js"></script>
+<script src="assets/pwa.js" defer></script>
+</body>
+</html>

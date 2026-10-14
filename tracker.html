@@ -7,50 +7,54 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="icon" href="assets/img/marikar-group.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="stylesheet" href="assets/brand.css">
 </head>
 <body>
 <style>
 /* Layout: a navy masthead with the season's numbers, then the league standings beside the review timeline, then the full action list. */
 :root {
-  --bg: #f5f6f8;
-  --surface: #ffffff;
-  --ink: #101828;
-  --muted: #586174;
-  --line: #e2e5eb;
-  --navy: #16244a;
+  --bg: #f7f2ea;
+  --surface: #fffcf7;
+  --ink: #2a241f;
+  --muted: #6b6157;
+  --line: #e8dfd1;
+  --navy: #1f2b55;
   --navy-ink: #ffffff;
-  --mast: #0f1b33;
-  --violet: #2e3192;      /* Pantone Violet C: accents only */
-  --gray: #75787b;        /* Pantone Cool Gray 9C */
-  --gold: #a87b2a;
-  --gold-soft: #f4ecdc;
-  --high: #a3271d;
-  --high-soft: #fbe9e7;
+  --mast: #131c38;
+  --violet: #5b4f9e;      /* BPro violet: accents only */
+  --gray: #d49a3a;        /* warm amber accent */
+  --gold: #b8612b;
+  --gold-soft: #f8e9dc;
+  --high: #a63a2a;
+  --high-soft: #f9e6df;
   --med: #92560a;
   --med-soft: #f8eedd;
-  --ok: #17694d;
-  --ok-soft: #e3f1ea;
+  --ok: #2d7550;
+  --ok-soft: #e6f0e6;
   --late: #7a5200;
   --late-soft: #f6ecd6;
-  --due: #2e3192;
-  --due-soft: #ebecf7;
-  --note: #f2f4f8;
-  --note-ink: #1d2939;
-  --focus: #2e3192;
+  --due: #5b4f9e;
+  --due-soft: #eeeaf6;
+  --note: #f4eee4;
+  --note-ink: #3a3028;
+  --focus: #5b4f9e;
   --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --navy: #2a3a66; --navy-ink: #ffffff; --mast: #0a1226; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a;
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --navy: #2d3566; --navy-ink: #ffffff; --mast: #0e1530; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52; --gold-soft: #3a2a1c;
   --high: #ef8a7e; --high-soft: #3a2220; --med: #e2ab5a; --med-soft: #352a18;
-  --ok: #6cc9a0; --ok-soft: #16302a; --late: #e2bd6c; --late-soft: #352c18; --due: #b9bcf5; --due-soft: #20264a;
-  --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; } }
+  --ok: #6cc9a0; --ok-soft: #16302a; --late: #e2bd6c; --late-soft: #352c18; --due: #c9bff5; --due-soft: #2c2640;
+  --note: #29231d; --note-ink: #ece3d6; --focus: #c9bff5; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --navy: #2a3a66; --navy-ink: #ffffff; --mast: #0a1226; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855; --gold-soft: #33291a;
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --navy: #2d3566; --navy-ink: #ffffff; --mast: #0e1530; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52; --gold-soft: #3a2a1c;
   --high: #ef8a7e; --high-soft: #3a2220; --med: #e2ab5a; --med-soft: #352a18;
-  --ok: #6cc9a0; --ok-soft: #16302a; --late: #e2bd6c; --late-soft: #352c18; --due: #b9bcf5; --due-soft: #20264a;
-  --note: #1b2338; --note-ink: #dde3ee; --focus: #b9bcf5; color-scheme: dark; }
+  --ok: #6cc9a0; --ok-soft: #16302a; --late: #e2bd6c; --late-soft: #352c18; --due: #c9bff5; --due-soft: #2c2640;
+  --note: #29231d; --note-ink: #ece3d6; --focus: #c9bff5; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.5; margin: 0; }
@@ -249,7 +253,7 @@ td.num { white-space: nowrap; }
   </section>
 
   <p class="foot">Target dates and points are as proposed in the minutes (v1.1, 10 Oct 2026). Anyone with edit or contributor access can mark an action done; everyone else sees a read-only view.</p>
-  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
+  <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
 </main>
 
 <script>
@@ -535,5 +539,6 @@ td.num { white-space: nowrap; }
   })();
 })();
 </script>
+<script src="assets/pwa.js" defer></script>
 </body>
 </html>

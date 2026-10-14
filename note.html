@@ -7,25 +7,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="icon" href="assets/img/marikar-group.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="stylesheet" href="assets/brand.css">
 <style>
 /* Layout: the hub's navy masthead, then one reading column for the note. */
 :root {
-  --bg: #f5f6f8; --surface: #ffffff; --ink: #101828; --muted: #586174; --line: #e2e5eb;
-  --mast: #0f1b33; --mast-2: #16244a; --violet: #2e3192; --gray: #75787b; --gold: #a87b2a;
-  --accent-text: #2e3192; --ok: #17694d; --ok-soft: #e3f1ea; --warn: #92560a; --warn-soft: #f8eedd;
-  --part: #7a5200; --part-soft: #f6ecd6; --code: #eef0f4;
+  --bg: #f7f2ea; --surface: #fffcf7; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1;
+  --mast: #131c38; --mast-2: #1f2b55; --violet: #5b4f9e; --gray: #d49a3a; --gold: #b8612b;
+  --accent-text: #5b4f9e; --ok: #2d7550; --ok-soft: #e6f0e6; --warn: #92560a; --warn-soft: #f8eedd;
+  --part: #7a5200; --part-soft: #f6ecd6; --code: #f1ebe1;
   --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
-  --accent-text: #b9bcf5; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
-  --part: #e2bd6c; --part-soft: #352c18; --code: #1f2840; color-scheme: dark; } }
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52;
+  --accent-text: #c9bff5; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --part: #e2bd6c; --part-soft: #352c18; --code: #2c261f; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0d1220; --surface: #151c2e; --ink: #e9ecf3; --muted: #9aa3b5; --line: #263049;
-  --mast: #0a1226; --mast-2: #111c3a; --violet: #4a4fc0; --gray: #9a9da1; --gold: #d2a855;
-  --accent-text: #b9bcf5; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
-  --part: #e2bd6c; --part-soft: #352c18; --code: #1f2840; color-scheme: dark; }
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52;
+  --accent-text: #c9bff5; --ok: #6cc9a0; --ok-soft: #16302a; --warn: #e2ab5a; --warn-soft: #352a18;
+  --part: #e2bd6c; --part-soft: #352c18; --code: #2c261f; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
 a { color: var(--accent-text); }
@@ -118,8 +122,9 @@ li.done > span:last-child { color: var(--muted); }
 <div class="tbl"><table><thead><tr><th class="">Step</th><th class="">Owner</th><th class="">Due</th></tr></thead><tbody><tr><td class="">Agree company codes for all units</td><td class="">Finance Head</td><td class="">16 Oct 2026</td></tr><tr><td class="">Answer the four open questions</td><td class="">Accounts</td><td class="">16 Oct 2026</td></tr><tr><td class="">Send the five outstanding HD Attingal files</td><td class="">Accounts</td><td class="">23 Oct 2026</td></tr><tr><td class="">Tie the pilot to the Tally P&amp;L sales ledgers and GSTR-1 (check 02)</td><td class="">Accounts, with BPro</td><td class="">23 Oct 2026</td></tr><tr><td class="">Add YoY and stock views to the pilot dashboard; issue it as the A2 template, alongside AMZES (A10)</td><td class="">BPro</td><td class="">3 Nov 2026</td></tr><tr><td class="">Roll the export out to the other companies</td><td class="">Accounts, all units</td><td class="">after sign-off on 3 Nov</td></tr></tbody></table></div>
 <p>The pilot dashboard already shows Apr–Sep 2026 sales for HD Attingal, and the files in this note are what complete it.</p>
   </article>
-  <p class="live">The editable version of this note lives on claude.ai, where Accounts and BPro comment on it: <a href="https://claude.ai/code/artifact/bd142289-1c36-41f8-8980-c8092bb7b324" target="_blank" rel="noopener">open the live note</a> (for people it has been shared with). Source text: <a href="docs/reconciliation-note.md">docs/reconciliation-note.md</a>. A print-ready copy on BPro letterhead: <a href="docs/HD_Attingal_Reconciliation_Note_BPro.pdf">download the PDF</a>.</p>
-  <footer class="credit">D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></footer>
+  <p class="live">The editable version of this note lives on claude.ai, where Accounts and BPro comment on it: <a href="https://claude.ai/code/artifact/bd142289-1c36-41f8-8980-c8092bb7b324" target="_blank" rel="noopener">open the live note</a> (for people it has been shared with). Source text: <a href="docs/reconciliation-note.md">docs/reconciliation-note.md</a>. A print-ready copy on BPro letterhead: <a href="docs/HD_Attingal_Reconciliation_Note_BPro.pdf">download the PDF</a> (document RN-HDATL-2026-01, <a href="verify.html?d=RN-HDATL-2026-01">verify it</a>).</p>
+  <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
 </main>
+<script src="assets/pwa.js" defer></script>
 </body>
 </html>
