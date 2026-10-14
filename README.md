@@ -1,8 +1,8 @@
 # Dashboard — Marikar Group
 
-The Marikar Group performance hub. It has seven pages, and installs on a phone as an app:
+The Marikar Group performance hub. It opens on a sign-in page (`index.html`); after sign-in, the hub (`hub.html`) and its pages open. It installs on a phone as an app:
 
-- **Landing page** (`index.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
+- **Hub landing page** (`hub.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
 - **Division dashboards** (`divisions.html`): one view per division (group vehicle sales, CSPW, Honda Kerala, AMZES, Nissan, Royal Enfield, BigWing, Canon / OAIP, HR) with H1 FY 2026–27 against H1 FY 2025–26, the full year to 31 March 2026 and the FY 2026–27 target: KPI tiles, monthly charts, breakdown tables with totals, highlights, watch points, next actions, and the files each figure came from. Data: `data/divisions.json`, transcribed from the decks and reports uploaded for the 9 October 2026 HOD meeting.
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
 - **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
@@ -10,8 +10,11 @@ The Marikar Group performance hub. It has seven pages, and installs on a phone a
 - **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai. A print-ready PDF on BPro letterhead, with a verification QR code, is in `docs/HD_Attingal_Reconciliation_Note_BPro.pdf` (document RN-HDATL-2026-01).
 - **Document verification** (`verify.html`): enter a document ID or scan a document's QR code to confirm it was issued from the hub, and check a digital copy's SHA-256 fingerprint against the register.
 
-**Loaded so far:** HD Attingal (Marikar Motors Ltd, Honda two-wheelers), 10 Apr – 30 Sep 2026, the
-pilot company. Other companies appear in the company list as their exports are built.
+**Loaded so far:** the five Honda two-wheeler service units of Marikar Motors Ltd: HD Attingal (`HD-ATL`),
+HD Kulasekharam (`HD-KSR`), HD Marthandam (`HD-MDM`), HD Nedumangad (`HD-NDD`) and HD Varkala (`HD-VKL`).
+Each has its FY 2026–27 register (April to September) and stock summaries at 31 March and 30 September 2026.
+HD Kulasekharam also has its FY 2025–26 register. Other companies appear in the company list as their
+exports are built. The page opens on the latest year; pick "All years" to add the years together.
 
 It shows:
 
@@ -22,11 +25,13 @@ It shows:
   - every income ledger, ranked
   - totals by voucher type
   - top 150 items per company
-- **Year on year and inventory lens:** these fill in once the FY 2025–26 register and the stock reports arrive. Until then they list the files still missing.
+- **Year on year:** April–September 2026 against the same months of 2025, by month and by company, for each company whose FY 2025–26 register is in. It names the companies still waiting.
+- **Inventory lens:** closing stock at cost on 31 March and 30 September, by company (or by stock group for one company), and how much of the September stock had no sale since April
+- **Stock held but not sold:** the 40 costliest of those idle lines. Branch and warranty transfers do not count as sales. Item age needs the stock movement reports, which have not arrived yet.
 - **Control lens:** the companies loaded, and which of the six requested files each company has sent
 - **A company selector:** the whole page shows the group or a single company
 
-HD Attingal's totals reconcile to its register's own Grand Total (gross ₹1,02,52,514; item value ₹57,12,868).
+Every register reconciles to its own Grand Total, and every stock summary to its own; the build stops if one does not.
 
 ### Run it
 
@@ -43,7 +48,8 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | Landing page (self-contained apart from the logo) |
+| `index.html`, `assets/auth.js`, `scripts/add-user.js` | Landing and sign-in page, session check, and the tool that adds accounts |
+| `hub.html` | Hub landing page (self-contained apart from the logo) |
 | `dashboard.html` | Dashboard page shell and markup |
 | `report.html`, `assets/report.js` | Report builder: Excel via ExcelJS (jsDelivr), PDF via jsPDF + AutoTable (cdnjs); also checks report QR codes |
 | `divisions.html`, `assets/divisions.js`, `assets/divisions.css` | Division dashboards, drawn from `data/divisions.json` |
@@ -70,17 +76,22 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 
 ### Adding or updating a company
 
-Export the Service Bill Register from TallyPrime, item-wise (playbook section 04), then:
+Export from TallyPrime the Service Bill Register, item-wise (playbook section 04), one per financial
+year, and the Stock Summary at each balance date. Then pass all of one company's files in one run:
 
 ```sh
 pip install openpyxl
-python3 scripts/build_data.py path/to/register.xls --company PC01 --name "Company name"
+python3 scripts/build_data.py exports/HDKSR/*.xls --company HD-KSR --name "HD Kulasekharam"
 ```
 
-Use the company code agreed with Finance. HD Attingal uses `HD-ATL` until its code is agreed. When
-another requested file arrives (for example a stock summary), add a line to `data/received.csv`
-with the file's name exactly as the completeness table shows it. Then run
-`python3 scripts/build_data.py --merge-only`.
+The script tells registers from stock summaries by their contents, so file names do not matter. It
+finds each register's columns by name, because every unit's ledgers are named and ordered differently.
+Each run rewrites that company's folder, so always include all its files. Registers and stock summaries
+mark themselves received in the completeness table. For any other requested file that arrives (the
+stock movement reports), add a line to `data/received.csv` with the file's name exactly as the
+completeness table shows it, then run `python3 scripts/build_data.py --merge-only`.
+
+Use the company codes agreed with Finance; the `HD-` codes above stand until they are agreed.
 
 Tally's `.xls` export is actually an `.xlsx` file; the script handles that.
 
@@ -89,9 +100,12 @@ numbers and vehicle numbers, so `*.xls` / `*.xlsx` are git-ignored. Keep them ou
 
 ### Notes on the numbers
 
-- **Short months:** HD Attingal's register starts on 10 April, so April is short.
+- **Short months:** every register starts on 9 or 10 April, in both years, so April is short but the year-on-year comparison is like for like.
 - **"Net revenue"** = the income ledgers minus the two discount ledgers, without GST.
 - **Sign fix:** in 21 HD Attingal bills the discount was bigger than the bill, so the amount should be negative, but the export shows it as positive. The script finds such bills from each bill's ledger arithmetic and counts them as negative, which is what makes the totals match the Grand Total.
+- **Discount signs:** HD Marthandam's export shows discounts as negative amounts, while the others show them as positive. The script uses the amount's size, so both work.
+- **Revenue groups:** each register column is put in a group by its name: spare parts, accessories, labour and service charges (including consumables and fitment labour), AMC and warranty, branch transfers (spares to branches and warranty transfers out), or other sales (scrap, polymer, miscellaneous receipts).
+- **Idle stock** = a line held at 30 September with no counter, workshop or accessory sale from 1 April. Lines are matched to sales by their full Tally name, or by the code in brackets when the name was edited. For 31 March it is measured against the whole of FY 2025–26, so it shows only for companies whose FY 2025–26 register is in.
 - **An item's "channel"** is where it mostly sold: in a service job (service or AMC service bill), over the counter (local sales or spare sale invoices), or as a branch transfer.
 
 ### Landing page figures
@@ -149,7 +163,7 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
 
   ```sh
   cd scripts/letterhead
-  node build.js note.html /tmp/note.html RN-HDATL-2026-01 https://techbpropms.github.io/DASHBOARD--MARIKAR-GROUP/
+  node build.js note.html /tmp/note.html RN-HDATL-2026-01 https://mmlpbi.bpropms.in/
   node render.js /tmp/note.html /tmp/note.pdf
   python3 finish.py /tmp/note.pdf ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf RN-HDATL-2026-01
   sha256sum ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf
@@ -164,3 +178,32 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
 The hub installs on a phone ("Add to Home Screen" / "Install app"). It works offline with the last data it saw, and checks for a new version when reopened and every 30 minutes. When one is published, a banner says "Update available" with the release notes from `version.json`; **Update** switches to it.
 
 To publish an update: change `VERSION` in `sw.js` and `version` (plus `title` and `notes`) in `version.json` to the same new value, and push. Phones pick it up on their next check. This is an in-app message; notifications to a closed app would need a push server, which a static site does not have.
+
+### Web address
+
+The hub is published by GitHub Pages from `main` (root folder). Its own address is
+**https://mmlpbi.bpropms.in**; the old `https://techbpropms.github.io/DASHBOARD--MARIKAR-GROUP/`
+redirects there once the domain is live, so QR codes already printed keep working.
+
+To connect it:
+
+1. In the DNS panel for bpropms.in, add a **CNAME** record: name `mmlpbi`, target `techbpropms.github.io`
+   (no path). Leave the `@` and `www` records alone.
+2. In this repository, go to **Settings → Pages → Custom domain**, enter `mmlpbi.bpropms.in` and save.
+   GitHub adds a `CNAME` file to `main`. Do not add that file before the DNS record exists, or the site
+   redirects to an address that does not answer yet.
+3. When the DNS check passes, tick **Enforce HTTPS** (the certificate can take up to an hour).
+4. Recommended: verify `bpropms.in` under the account's **Settings → Pages → Verified domains** (a TXT record),
+   so no one else can claim the subdomain on GitHub.
+
+Downloads build their verification links from the address the page is open on, so nothing else needs
+changing. A new address means fresh browser storage: everyone signs in once more, and phone users reinstall
+the app from the new address.
+
+### Sign-in
+
+`index.html` is the landing and sign-in page. Every hub page except `verify.html` checks for a session (`assets/auth.js`) and sends visitors without one to sign in, then back to the page they asked for. Sessions last 12 hours, or 7 days with "Keep me signed in".
+
+- **Accounts** live in `assets/auth.js` as salted PBKDF2-SHA-256 fingerprints (210,000 rounds); passwords are never stored. Add one with `node scripts/add-user.js <user-id> "<Full name>" [role]`, which prints a temporary password once. To remove an account, delete its line.
+- **What it protects, honestly:** it is a front door for a static site. It keeps casual visitors out and gives the hub a proper entrance, but the data files (`data/*.csv`, `data/*.json`) can still be fetched by anyone who knows their address while the repository and site are public. For real protection, serve the hub from the VPS behind a server-side login (for example Caddy `basic_auth` or forward-auth), or keep the repository private; the sign-in page can then hand over to that login.
+- **Document verification** (`verify.html`) stays public, so anyone holding a document can check it. Report QR codes open the report builder, which asks staff to sign in first.

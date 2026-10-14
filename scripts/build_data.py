@@ -1,16 +1,20 @@
-"""Turn TallyPrime "Service Bill Register" exports into the CSVs the group dashboard reads.
+"""Turn TallyPrime exports into the CSVs the group dashboard reads.
 
 Usage:
-    python3 scripts/build_data.py <register.xls|.xlsx> --company HD-ATL --name "HD Attingal" [--out data]
+    python3 scripts/build_data.py <file> [<file> ...] --company HD-ATL --name "HD Attingal" [--out data]
     python3 scripts/build_data.py --merge-only [--out data]
 
-Each run summarises one company's register into <out>/companies/<CODE>/ and then rebuilds the
-group files in <out>/ (every row carries a `company` column), plus:
+Pass every file one company sent in a single run: its Service Bill Registers (one per financial year)
+and its Stock Summaries. Each file is recognised by its contents, so names do not matter. The run
+rewrites <out>/companies/<CODE>/ and then the group files in <out>/ (every row carries a `company`
+column), plus:
   companies.csv     one row per company: name, register period, bills, gross
   completeness.csv  the six files the BPro data request asks of every company, received or pending
 
-Files received other than the FY 2026-27 sales register are recorded by hand in <out>/received.csv
-(company,file) - see README.
+Every register must add up to its own Grand Total and every stock summary to its own, or the run
+stops. Registers name and order their ledger columns differently, so columns are matched by name.
+Files received that the script does not read (stock movement reports) are recorded by hand in
+<out>/received.csv (company,file) - see README.
 
 Tally's ".xls" export is really an .xlsx file, so it is opened by content, not extension.
 Only aggregates are written; customer names, phones and vehicle numbers never leave the register.
@@ -25,10 +29,9 @@ import os
 import re
 
 SERVICE = {'Service Bill', 'AMC Service Bill'}
-LABOUR_COLS = [13, 14, 17, 18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30]
-GROUP = {9: 'Spare parts', 23: 'Accessories', 31: 'AMC & warranty', 32: 'AMC & warranty', 24: 'Branch transfers'}
-GROUP.update({i: 'Labour & service charges' for i in LABOUR_COLS})
-DISCOUNT_COLS = [15, 16]
+TRANSFER = {'Branch Transfer Out Spare', 'Branch Transfer Out Warranty'}
+STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers', 'Other sales']
+META = {'DATE', 'PARTICULARS', 'VOUCHER TYPE', 'VOUCHER NO.', 'VOUCHER REF. NO.', 'GSTIN/UIN', 'QUANTITY', 'VALUE', 'GROSS TOTAL'}
 
 # The data request playbook (sections 02-03): six files per company.
 REQUIRED = [
@@ -47,11 +50,17 @@ FILES = {
     'voucher_types': ['fy', 'voucher_type', 'invoices', 'gross', 'taxable'],
     'daily': ['fy', 'date', 'invoices', 'service_jobs', 'gross'],
     'items': ['fy', 'part_no', 'item', 'qty', 'value', 'lines', 'main_channel'],
+    'stock': ['as_at', 'category', 'items', 'qty', 'value', 'idle_items', 'idle_value'],
+    'stock_items': ['as_at', 'part_no', 'item', 'category', 'qty', 'value', 'sold_qty', 'sold_months', 'cover_months'],
 }
 
 
 def num(v):
     return v if isinstance(v, (int, float)) else 0
+
+
+def clean(h):
+    return re.sub(r'\s+', ' ', str(h or '').replace('_x000D_', ' ').replace('\xa0', ' ')).strip()
 
 
 def fy_of(d):
@@ -60,13 +69,63 @@ def fy_of(d):
     return f'{y}-{(y + 1) % 100:02d}'
 
 
-def summarise(path):
+def base_type(t):
+    """'Service Bill - New' and 'Service Bill' are the same kind of voucher."""
+    return re.sub(r'\s*-\s*New$', '', t or '')
+
+
+def classify(h):
+    """Which part of the bill a register column holds. Registers list their ledgers in different orders
+    and spellings, so columns are found by name, never by position."""
+    u = clean(h).upper()
+    if u in META:
+        return 'meta'
+    if u in ('CGST', 'SGST', 'IGST'):
+        return 'gst'
+    if u == 'ROUND OFF':
+        return 'round'
+    if 'DISCOUNT' in u:
+        return 'discount'
+    if 'TRANSFER' in u:
+        return 'Branch transfers'
+    if 'SALES' in u.replace('SALE ', 'SALES ') and 'SPARE' in u:
+        return 'Spare parts'
+    if 'ACCESSOR' in u and 'FITMENT' not in u:
+        return 'Accessories'
+    if u in ('AMC SALE',) or 'EXTENDED WARRANTY' in u or u.startswith('EW SALE'):
+        return 'AMC & warranty'
+    if 'SCRAP' in u or 'POLIMER' in u or 'POLYMER' in u or 'MISCELLANEOUS' in u:
+        return 'Other sales'
+    return 'Labour & service charges'
+
+
+def sheet_rows(path):
     import openpyxl
     ws = openpyxl.load_workbook(open(path, 'rb'), read_only=True, data_only=True).worksheets[0]
-    rows = list(ws.iter_rows(values_only=True))
+    return ws.title, list(ws.iter_rows(values_only=True))
+
+
+def split_item(text):
+    mm = re.match(r'^(.*)\[([^\]]+)\]\s*$', text)
+    return (mm.group(1).strip(), mm.group(2).strip()) if mm else (text.strip(), '')
+
+
+def summarise(path, rows):
     hdr_at = next(i for i, r in enumerate(rows) if r and r[0] == 'Date' and r[1] == 'Particulars')
-    hdr = [re.sub(r'\s+', ' ', (h or '').replace('_x000D_', '')).strip() for h in rows[hdr_at]]
-    body = [r for r in rows[hdr_at + 1:] if r[1] != 'Grand Total']
+    hdr = [clean(h) for h in rows[hdr_at]]
+    col = {h.upper(): i for i, h in enumerate(hdr) if h}
+    kind = {i: classify(h) for i, h in enumerate(hdr) if h}
+    income = {i: k for i, k in kind.items() if k in STREAMS}
+    disc_cols = [i for i, k in kind.items() if k == 'discount']
+    gst_cols = [i for i, k in kind.items() if k == 'gst']
+    i_round, i_gross, i_type = col.get('ROUND OFF'), col['GROSS TOTAL'], col['VOUCHER TYPE']
+    i_qty, i_val = col['QUANTITY'], col['VALUE']
+    body, stated = [], None
+    for r in rows[hdr_at + 1:]:
+        if r[1] == 'Grand Total':
+            stated = num(r[i_gross])
+        else:
+            body.append(r)
 
     mon = collections.defaultdict(lambda: collections.defaultdict(float))
     stream = collections.defaultdict(float)
@@ -74,46 +133,52 @@ def summarise(path):
     vt = collections.defaultdict(lambda: [0, 0.0, 0.0])
     day = collections.defaultdict(lambda: [0, 0, 0.0])
     items = collections.defaultdict(lambda: [0, 0.0, 0, collections.Counter()])
-    cur, cur_fy = None, None
+    sold = collections.defaultdict(lambda: collections.defaultdict(float))  # part no -> month -> qty
+    cur, cur_fy, cur_m, flipped = None, None, None, 0
     for r in body:
         if r[0] is not None:
-            d, t = r[0], r[2]
+            d, t = r[0], r[i_type]
             m = d.strftime('%Y-%m')
             fy = fy_of(d)
-            plus = sum(num(r[i]) for i in GROUP)
-            disc = sum(num(r[i]) for i in DISCOUNT_COLS)
-            gst = num(r[10]) + num(r[11])
-            g, ro = num(r[8]), num(r[12])
+            plus = sum(num(r[i]) for i in income)
+            # Discount ledgers come as positive amounts in most exports and negative in some: use the size.
+            disc = sum(abs(num(r[i])) for i in disc_cols)
+            gst = sum(num(r[i]) for i in gst_cols)
+            g, ro = num(r[i_gross]), num(r[i_round]) if i_round is not None else 0
             res = g - (plus - disc + gst)
             # The export drops minus signs: a bill whose discount exceeds it shows a positive total.
             if not (abs(res - ro) < 0.02 or abs(res + ro) < 0.02):
-                g = -g
+                g = -g; flipped += 1
             taxable = plus - disc
+            svc = base_type(t) in SERVICE
             M = mon[m]
             M['invoices'] += 1; M['gross'] += g; M['taxable'] += taxable; M['gst'] += gst; M['discount'] += disc
-            if t in SERVICE:
+            if svc:
                 M['service_jobs'] += 1; M['service_gross'] += g
-            for i, grp in GROUP.items():
+            for i, grp in income.items():
                 if num(r[i]):
                     stream[(m, grp)] += num(r[i]); heads[(fy, hdr[i], grp)] += num(r[i])
             stream[(m, 'Discounts')] -= disc
-            for i in DISCOUNT_COLS:
+            for i in disc_cols:
                 if num(r[i]):
-                    heads[(fy, hdr[i], 'Discounts')] -= num(r[i])
+                    heads[(fy, hdr[i], 'Discounts')] -= abs(num(r[i]))
             V = vt[(fy, t)]; V[0] += 1; V[1] += g; V[2] += taxable
-            D = day[d.strftime('%Y-%m-%d')]; D[0] += 1; D[1] += t in SERVICE; D[2] += g
-            cur, cur_fy = t, fy
+            D = day[d.strftime('%Y-%m-%d')]; D[0] += 1; D[1] += svc; D[2] += g
+            cur, cur_fy, cur_m = base_type(t), fy, m
         elif r[1]:
-            mm = re.match(r'^(.*)\[([^\]]+)\]\s*$', r[1])
-            name, pn = (mm.group(1).strip(), mm.group(2).strip()) if mm else (r[1].strip(), '')
+            name, pn = split_item(r[1])
             I = items[(cur_fy, pn, name)]
-            I[0] += num(r[6]); I[1] += num(r[7]); I[2] += 1; I[3][cur] += 1
+            I[0] += num(r[i_qty]); I[1] += num(r[i_val]); I[2] += 1; I[3][cur] += 1
+            if cur not in TRANSFER:
+                sold[clean(r[1])][cur_m] += num(r[i_qty])
+                if pn:
+                    sold['[' + pn + ']'][cur_m] += num(r[i_qty])
 
     def chan(c):
         n = sum(c.values())
-        if c['Service Bill'] + c['AMC Service Bill'] >= n / 2:
+        if sum(c[s] for s in SERVICE) >= n / 2:
             return 'Service'
-        if c['Branch Transfer Out Spare'] >= n / 2:
+        if sum(c[s] for s in TRANSFER) >= n / 2:
             return 'Branch transfer'
         return 'Counter sale'
 
@@ -132,11 +197,73 @@ def summarise(path):
         'items': [[fy, pn or nm, nm, q, round(v, 2), l, chan(c)] for (fy, pn, nm), (q, v, l, c) in top],
     }
     dates = sorted(day)
-    info = {'register_from': dates[0], 'register_to': dates[-1],
-            'fys': sorted({r[0] for r in out['monthly']}),
-            'bills': sum(v[0] for v in vt.values()), 'gross': round(sum(v[1] for v in vt.values()), 2),
-            'item_value': round(sum(v[1] for v in items.values()), 2), 'distinct_items': len(items)}
-    return out, info
+    gross = round(sum(v[1] for v in vt.values()), 2)
+    if stated is None or abs(gross - stated) > 1:
+        raise SystemExit(f'{os.path.basename(path)}: bills add up to {gross:,.2f} but the Grand Total says {stated}')
+    info = {'register_from': dates[0], 'register_to': dates[-1], 'fys': sorted({r[0] for r in out['monthly']}),
+            'bills': sum(v[0] for v in vt.values()), 'gross': gross, 'flipped': flipped,
+            'item_value': round(sum(v[1] for v in items.values()), 2), 'distinct_items': len(items),
+            'columns': {h: kind[i] for i, h in enumerate(hdr) if h and kind[i] != 'meta'}}
+    return out, info, sold
+
+
+def stock_summary(path):
+    """A Tally Stock Summary: bold stock-group rows, each followed by its indented items, then Grand Total.
+    Items are told from groups by Tally's own formatting, since not every item carries a part number."""
+    import openpyxl
+    ws = openpyxl.load_workbook(open(path, 'rb')).worksheets[0]
+    rows = list(ws.iter_rows())
+    at = next(i for i, r in enumerate(rows) if r[0].value == 'Particulars')
+    period = clean(rows[at][1].value)
+    as_at = datetime.datetime.strptime(period.split(' to ')[-1], '%d-%b-%y').date().isoformat()
+    groups, its, stated, g = [], [], None, None
+    for r in rows[at + 3:]:
+        c = r[0]
+        if c.value in (None, ''):
+            continue
+        q, v = num(r[1].value), num(r[3].value)
+        if c.value == 'Grand Total':
+            stated = num(r[3].value) if r[3].value is not None else num(r[2].value)
+            break
+        if c.font.b and not c.alignment.indent:
+            g = clean(c.value).title()
+            groups.append([g, q, v])
+        else:
+            its.append([clean(c.value), g, q, v])
+    total = round(sum(x[3] for x in its), 2)
+    if stated is None or abs(total - stated) > 1:
+        raise SystemExit(f'{os.path.basename(path)}: items add up to {total:,.2f} but the Grand Total says {stated}')
+    for gname, q, v in groups:  # every group row must equal its own items
+        s = sum(x[3] for x in its if x[1] == gname)
+        if abs(s - v) > 1:
+            raise SystemExit(f'{os.path.basename(path)}: group {gname} says {v:,.2f}, its items add up to {s:,.2f}')
+    return as_at, its, total
+
+
+def stock_rows(as_at, its, sold):
+    """Totals per stock group, and the 200 costliest lines held, each with how much of it sold in the
+    register months of the same year up to as_at (counter, workshop and accessory sales; branch transfers
+    excluded). A line held but not sold at all in those months counts as idle."""
+    end, fy = as_at[:7], fy_of(datetime.date.fromisoformat(as_at))
+    months = sorted({m for s in sold.values() for m in s
+                     if m <= end and fy_of(datetime.date(int(m[:4]), int(m[5:7]), 1)) == fy})
+    cats = collections.defaultdict(lambda: [0, 0.0, 0.0, 0, 0.0])
+    detail = []
+    for key, g, q, v in its:
+        name, pn = split_item(key)
+        # Same name as in the register, else the same bracketed code (names are sometimes edited).
+        hist = sold.get(key) or sold.get('[' + pn + ']', {}) if pn else sold.get(key, {})
+        s = sum(hist.get(m, 0) for m in months)
+        C = cats[g or 'Ungrouped']; C[0] += 1; C[1] += q; C[2] += v
+        if months and s <= 0 and v > 0:
+            C[3] += 1; C[4] += v
+        rate = s / len(months) if months else 0
+        detail.append([as_at, pn or name, name, g, q, round(v, 2), s if months else '', len(months) or '',
+                       round(q / rate, 1) if rate > 0 else ''])
+    detail.sort(key=lambda x: -x[5])
+    cat_rows = [[as_at, c, n, q, round(v, 2), n2 if months else '', round(v2, 2) if months else '']
+                for c, (n, q, v, n2, v2) in sorted(cats.items(), key=lambda kv: -kv[1][2])]
+    return cat_rows, detail[:200], len(months)
 
 
 def write_csv(path, cols, rows):
@@ -172,34 +299,89 @@ def merge(out):
     for c in companies:
         for report, period, stem in REQUIRED:
             key = f'{report} {period}'
-            got = key == 'Sales register FY 2026-27 Apr-Sep' or (c['code'], key) in received
+            got = key in c.get('received', []) or (c['code'], key) in received
             comp.append([c['code'], key, report, period, f"{c['code']}_{stem}.xlsx", 'Received' if got else 'Pending'])
     write_csv(os.path.join(out, 'completeness.csv'), ['company', 'file', 'report', 'period', 'filename', 'status'], comp)
     return companies
 
 
+def build(paths, code, name, out):
+    """Summarise every file one company sent (any mix of sales registers and stock summaries)."""
+    regs, stocks = [], []
+    for p in paths:
+        title, rows = sheet_rows(p)
+        if any(r and r[0] == 'Date' and r[1] == 'Particulars' for r in rows[:40]):
+            regs.append((p, rows))
+        elif title == 'Stock Summary' or any(r and r[0] == 'Stock Summary' for r in rows[:15]):
+            stocks.append((p, rows))
+        else:
+            raise SystemExit(f'{os.path.basename(p)}: neither a register (Date | Particulars header) nor a stock summary')
+    if not regs:
+        raise SystemExit('at least one sales register is needed')
+    data = {fid: [] for fid in FILES}
+    sold = collections.defaultdict(lambda: collections.defaultdict(float))
+    infos, received, seen = [], [], set()
+    for p, rows in regs:
+        d, info, s = summarise(p, rows)
+        clash = seen & set(info['fys'])
+        if clash:
+            raise SystemExit(f'{os.path.basename(p)}: FY {", ".join(clash)} is already covered by another register')
+        seen |= set(info['fys'])
+        for fid in d:
+            data[fid] += d[fid]
+        for k, v in s.items():
+            for m, q in v.items():
+                sold[k][m] += q
+        infos.append(info)
+        for fy in info['fys']:
+            received.append('Sales register FY 2026-27 Apr-Sep' if fy == '2026-27' else f'Sales register FY {fy}')
+        print(f"  {os.path.basename(p)}: {info['bills']:,} bills {info['register_from']} to {info['register_to']}, "
+              f"gross {info['gross']:,.2f} = Grand Total ({info['flipped']} unsigned credit bills turned negative)")
+        odd = {h: k for h, k in info['columns'].items() if k in ('Other sales', 'Branch transfers', 'AMC & warranty', 'Accessories')}
+        print('    columns outside parts and labour:', odd)
+    stock_meta = []
+    for p, rows in stocks:
+        as_at, its, total = stock_summary(p)
+        cats, detail, months = stock_rows(as_at, its, sold)
+        data['stock'] += cats
+        data['stock_items'] += detail
+        dt = datetime.date.fromisoformat(as_at)
+        received.append(f"Stock summary As at {dt.day} {dt.strftime('%b %Y')}")
+        stock_meta.append({'as_at': as_at, 'value': total, 'lines': len(its), 'sales_months': months})
+        print(f"  {os.path.basename(p)}: stock at {as_at}, {len(its):,} lines, {total:,.2f} = Grand Total; "
+              f"{months} months of sales to compare against")
+    for fid in ('monthly', 'daily'):
+        data[fid].sort(key=lambda r: r[1])
+    d = os.path.join(out, 'companies', code)
+    os.makedirs(d, exist_ok=True)
+    for fid, cols in FILES.items():
+        write_csv(os.path.join(d, fid + '.csv'), cols, data[fid])
+    first = min(infos, key=lambda i: i['register_from'])
+    last = max(infos, key=lambda i: i['register_to'])
+    meta = {'code': code, 'name': name, 'register_from': first['register_from'], 'register_to': last['register_to'],
+            'fys': sorted(seen), 'bills': sum(i['bills'] for i in infos), 'gross': round(sum(i['gross'] for i in infos), 2),
+            'registers': [{k: i[k] for k in ('register_from', 'register_to', 'bills', 'gross', 'distinct_items')} for i in infos],
+            'stock': sorted(stock_meta, key=lambda x: x['as_at']), 'received': sorted(set(received))}
+    with open(os.path.join(d, 'company.json'), 'w') as f:
+        json.dump(meta, f, indent=2)
+    print(f"{code}: {meta['bills']:,} bills, gross {meta['gross']:,.2f}, FY {', '.join(meta['fys'])}; "
+          f"{len(stock_meta)} stock summar{'y' if len(stock_meta) == 1 else 'ies'}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('register', nargs='?', help='Tally Service Bill Register export (.xls/.xlsx)')
+    ap.add_argument('files', nargs='*', help="all of one company's Tally exports: sales registers and stock summaries")
     ap.add_argument('--company', help='agreed company code, e.g. PC01 (letters, digits, - and _)')
     ap.add_argument('--name', help='company name as shown on the dashboard')
     ap.add_argument('--out', default='data')
     ap.add_argument('--merge-only', action='store_true', help='only rebuild the group files')
     a = ap.parse_args()
     if not a.merge_only:
-        if not (a.register and a.company and a.name):
-            ap.error('register, --company and --name are required unless --merge-only')
+        if not (a.files and a.company and a.name):
+            ap.error('files, --company and --name are required unless --merge-only')
         if not re.fullmatch(r'[A-Za-z0-9_-]{1,32}', a.company):
             ap.error('--company may only use letters, digits, - and _')
-        data, info = summarise(a.register)
-        d = os.path.join(a.out, 'companies', a.company)
-        os.makedirs(d, exist_ok=True)
-        for fid, cols in FILES.items():
-            write_csv(os.path.join(d, fid + '.csv'), cols, data[fid])
-        with open(os.path.join(d, 'company.json'), 'w') as f:
-            json.dump({'code': a.company, 'name': a.name, **info}, f, indent=2)
-        print(f"{a.company}: {info['bills']:,} bills, gross {info['gross']:,.2f}, "
-              f"item value {info['item_value']:,.2f}, {info['register_from']} to {info['register_to']} (FY {', '.join(info['fys'])})")
+        build(a.files, a.company, a.name, a.out)
     companies = merge(a.out)
     print(f"group files rebuilt in {a.out}/ for {len(companies)} compan{'y' if len(companies) == 1 else 'ies'}")
 

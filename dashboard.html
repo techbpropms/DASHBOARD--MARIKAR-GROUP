@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="assets/auth.js"></script>
+<script>MGAuth.guard();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marikar Group Sales</title>
 <link rel="icon" href="assets/img/marikar-group.png">
@@ -14,7 +16,7 @@
 <link rel="stylesheet" href="assets/dashboard.css">
 </head>
 <body>
-<nav class="dash-nav"><a href="index.html">← Marikar Group performance hub</a><a href="report.html">Report builder (PDF / Excel)</a></nav>
+<nav class="dash-nav"><a href="hub.html">← Marikar Group performance hub</a><a href="report.html">Report builder (PDF / Excel)</a></nav>
 <div id="dash-root">
 <div class="hd">
   <header class="hd-head" id="overview">
@@ -60,13 +62,61 @@
   <section class="hd-grid">
     <div class="hd-card" id="yoy-card">
       <h2>Apr–Sep 2026 vs Apr–Sep 2025</h2>
-      <p class="note">The comparison the data request is built around. It needs each company's FY 2025–26 sales register.</p>
-      <div class="hd-wait" id="yoy" data-source="completeness"></div>
+      <p class="note">Same months, same companies: a company is compared only once its FY 2025–26 register is in. Both years' registers start on 9–10 April.</p>
+      <div class="hd-legend" id="lg-yoy" data-source="monthly"></div>
+      <div class="hd-chart" id="ch-yoy" data-source="monthly"></div>
+      <div class="hd-tablebox">
+        <table id="tb-yoy" data-source="monthly" data-row-key="company">
+          <thead><tr>
+            <th>Company</th>
+            <th class="num">Apr–Sep 2025</th>
+            <th class="num">Apr–Sep 2026</th>
+            <th class="num">Change</th>
+            <th class="num hide-sm">Service jobs</th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <p class="note" id="yoy-wait" data-source="completeness"></p>
     </div>
     <div class="hd-card" id="stock-card">
       <h2>Inventory lens</h2>
-      <p class="note">Closing stock value, movement and slow-moving items. Needs the stock summaries (31 Mar and 30 Sep 2026) and stock movement reports.</p>
-      <div class="hd-wait" id="stock" data-source="completeness"></div>
+      <p class="note">Closing stock at cost from each unit's Stock Summary. Idle = held at 30 Sep with no sale since 1 April.</p>
+      <div class="hd-legend" id="lg-stock" data-source="stock"></div>
+      <div class="hd-chart" id="ch-stock" data-source="stock"></div>
+      <div class="hd-tablebox">
+        <table id="tb-stock" data-source="stock" data-row-key="company">
+          <thead><tr>
+            <th id="stock-key">Company</th>
+            <th class="num">31 Mar 2026</th>
+            <th class="num">30 Sep 2026</th>
+            <th class="num">Change</th>
+            <th class="num">Idle 30 Sep</th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="hd-card" id="idle-card">
+    <h2>Stock held but not sold since April</h2>
+    <p class="note">The costliest lines on hand at 30 Sep 2026 with no counter, workshop or accessory sale from April to September. Branch and warranty transfers do not count as sales. Once the stock movement reports arrive, this list will also show each line's age.</p>
+    <p id="idle-sum" class="hd-legend" data-source="stock"></p>
+    <div class="hd-tablebox">
+      <table id="tb-idle" data-source="stock_items" data-row-key="company,part_no">
+        <thead><tr>
+          <th class="hide-sm">Company</th>
+          <th>Item</th>
+          <th class="hide-sm">Part no.</th>
+          <th class="hide-sm">Category</th>
+          <th class="num">Qty</th>
+          <th class="num">Value</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </section>
 
@@ -166,11 +216,12 @@
   <footer class="hd-credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
 </div>
 
-<p class="dash-footer">Source: TallyPrime Service Bill Register exports, one per company (HD Attingal: 10 Apr – 30 Sep 2026). Amounts in INR. Each company's figures reconcile to its register's Grand Total.</p>
+<p class="dash-footer">Source: TallyPrime Service Bill Registers (one per company per year) and Stock Summaries for the Honda two-wheeler units. Amounts in INR; stock at cost. Every register and stock summary reconciles to its own Grand Total.</p>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="assets/dash-shim.js"></script>
 <script src="assets/dashboard.js"></script>
 <script src="assets/pwa.js" defer></script>
+<script>MGAuth.chip();</script>
 </body>
 </html>

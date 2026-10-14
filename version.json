@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.13",
-  "title": "Division dashboards and verified downloads",
+  "version": "2026.10.14b",
+  "title": "Five Honda units and the inventory lens",
   "notes": [
-    "Division dashboards for all eight divisions, H1 against FY 2025–26",
-    "BPro logo, warmer colours and QR verification on every PDF and Excel download",
-    "Verify any note or report from its QR code"
+    "Attingal, Kulasekharam, Marthandam, Nedumangad and Varkala now on the sales dashboard",
+    "Year-on-year view (Kulasekharam first) and closing stock at 31 March and 30 September",
+    "New list of stock held but not sold since April"
   ]
 }

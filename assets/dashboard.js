@@ -89,8 +89,8 @@ const pct = d3.format('.1%');
 const monName = (m) => d3.utcFormat('%b')(new Date(m + '-01'));
 const dayFmt = (d) => d3.utcFormat('%-d %b %Y')(new Date(d));
 // Series colours come from the group palette (dashboard.css), so light and dark both follow it.
-const SER = ['var(--hd-s1)', 'var(--hd-s2)', 'var(--hd-s3)', 'var(--hd-s4)', 'var(--hd-s5)'];
-const STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers'];
+const SER = ['var(--hd-s1)', 'var(--hd-s2)', 'var(--hd-s3)', 'var(--hd-s4)', 'var(--hd-s5)', 'var(--hd-s6)'];
+const STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers', 'Other sales'];
 
 // The company filter lives in the page: every dataset carries a `company` column.
 const picked = () => dash.params().company || null;
@@ -321,25 +321,126 @@ function drawHeads() {
   el.style.minHeight = H + 'px';
 }
 
-function drawWaiting(elId, files, what) {
-  const el = document.getElementById(elId), d = dash.data('completeness');
-  el.replaceChildren();
-  if (d.status === 'error' || d.status === 'connect') return fail(el);
-  if (d.status !== 'ok') return;
-  const need = rowsOf('completeness').filter(r => files.includes(r.file));
-  const missing = need.filter(r => r.status !== 'Received');
-  const comps = new Set(need.map(r => r.company)), ready = [...comps].filter(c => !missing.some(r => r.company === c));
-  const big = document.createElement('div'); big.className = 'big';
-  big.textContent = `${ready.length} of ${comps.size} ${comps.size === 1 ? 'company' : 'companies'} ready`;
-  el.appendChild(big);
-  const p = document.createElement('div');
-  p.textContent = missing.length ? `${what} will appear here once these arrive:` : `All files are in; ${what.toLowerCase()} is the next build step.`;
-  el.appendChild(p);
-  if (missing.length) {
-    const ul = document.createElement('ul');
-    missing.forEach(r => { const li = document.createElement('li'); li.textContent = r.filename; ul.appendChild(li); });
-    el.appendChild(ul);
+// Paired bars: for each key, one bar per series (e.g. last year and this year), values from series[i].v(key).
+function pairedBars(el, keys, series, label) {
+  const H = 240, { svg, W } = newSvg(el, H);
+  if (!keys.length) return;
+  const y = d3.scaleLinear([0, d3.max(keys, k => d3.max(series, s => s.v(k))) * 1.12 || 1], [H - 24, 8]).nice();
+  const ml = measure(svg, y.ticks(4).map(inr)) + 10;
+  const x = d3.scaleBand(keys, [ml, W]).padding(0.25), xi = d3.scaleBand(series.map((s, i) => i), [0, x.bandwidth()]).padding(0.08);
+  yAxis(svg, y, W, ml, inr);
+  const tip = tipFor(el);
+  keys.forEach(k => series.forEach((s, i) => {
+    const v = s.v(k);
+    svg.append('rect').attr('x', x(k) + xi(i)).attr('width', xi.bandwidth()).attr('y', y(Math.max(0, v))).attr('height', Math.abs(y(0) - y(v)))
+      .attr('rx', 3).attr('fill', s.c)
+      .on('mousemove', ev => tip.show(ev, label(k), series.map(t => [t.c, t.n, inrFull(t.v(k))]))).on('mouseleave', () => tip.hide());
+  }));
+  const short = (t) => t.length > 14 ? t.slice(0, 13) + '…' : t;
+  svg.selectAll('text.xl').data(keys).join('text').attr('class', 'xl').attr('text-anchor', 'middle')
+    .attr('x', k => x(k) + x.bandwidth() / 2).attr('y', H - 6).text(k => short(label(k)));
+}
+const chg = (a, b) => (a ? b / a - 1 : null);
+function chgCell(tr, a, b) {
+  const v = chg(a, b), td = cell(tr, v == null ? '—' : (v >= 0 ? '+' : '−') + pct(Math.abs(v)), 'num');
+  if (v != null) td.classList.add(v >= 0 ? 'hd-up' : 'hd-down');
+  return td;
+}
+const nameOf = (code) => { const c = dash.data('companies'); return ((c.status === 'ok' ? c.data : []).find(r => r.company === code) || {}).name || code; };
+
+// Year on year: Apr-Sep of each year, for the companies that have both.
+function drawYoy() {
+  const el = document.getElementById('ch-yoy'), lg = document.getElementById('lg-yoy');
+  const tb = document.querySelector('#tb-yoy tbody'), tf = document.querySelector('#tb-yoy tfoot'), wait = document.getElementById('yoy-wait');
+  tb.replaceChildren(); tf.replaceChildren(); lg.replaceChildren(); wait.textContent = '';
+  if (!gate(el, 'monthly')) return;
+  const PRE = ['2025-04', '2025-09'], CUR = ['2026-04', '2026-09'];
+  const inR = (m, r) => m >= r[0] && m <= r[1];
+  const all = dash.data('monthly').data.filter(r => !picked() || r.company === picked());
+  const by = {};
+  all.forEach(r => {
+    const side = inR(r.month, PRE) ? 0 : inR(r.month, CUR) ? 1 : -1; if (side < 0) return;
+    const o = by[r.company] || (by[r.company] = [{ g: 0, j: 0, m: {} }, { g: 0, j: 0, m: {} }]);
+    o[side].g += num(r.gross); o[side].j += num(r.service_jobs); o[side].m[r.month.slice(5)] = (o[side].m[r.month.slice(5)] || 0) + num(r.gross);
+  });
+  const pairs = Object.keys(by).filter(c => by[c][0].g && by[c][1].g).sort();
+  const cm = dash.data('completeness');
+  const missing = (cm.status === 'ok' ? cm.data : []).filter(r => r.file === 'Sales register FY 2025-26' && r.status !== 'Received' && (!picked() || r.company === picked())).map(r => nameOf(r.company));
+  if (missing.length) wait.textContent = `Waiting for the FY 2025–26 register from ${missing.join(', ')}.`;
+  if (!pairs.length) { el.replaceChildren(); const d = document.createElement('div'); d.className = 'hd-wait'; d.textContent = 'No company has both years loaded yet.'; el.appendChild(d); return; }
+  const months = ['04', '05', '06', '07', '08', '09'];
+  const sumM = (side, mm) => pairs.reduce((a, c) => a + (by[c][side].m[mm] || 0), 0);
+  const ser = [{ n: 'Apr–Sep 2025', c: SER[5], v: k => sumM(0, k) }, { n: 'Apr–Sep 2026', c: SER[0], v: k => sumM(1, k) }];
+  legend(lg, ser.map(s => [s.c, s.n]));
+  lg.append(pairs.length === 1 ? nameOf(pairs[0]) : `${pairs.length} companies`);
+  pairedBars(el, months, ser, k => monName('2026-' + k));
+  const T = [{ g: 0, j: 0 }, { g: 0, j: 0 }];
+  pairs.forEach(c => {
+    const [p, q] = by[c]; T[0].g += p.g; T[1].g += q.g; T[0].j += p.j; T[1].j += q.j;
+    const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(c);
+    cell(tr, nameOf(c)); cell(tr, inr(p.g), 'num'); cell(tr, inr(q.g), 'num'); chgCell(tr, p.g, q.g);
+    const td = cell(tr, `${cnt(p.j)} → ${cnt(q.j)}`, 'num hide-sm nw'); td.title = 'Service jobs, 2025 → 2026';
+    tb.appendChild(tr);
+  });
+  if (pairs.length > 1) {
+    const tr = Object.assign(document.createElement('tr'), { className: 'hd-total' });
+    const th = document.createElement('th'); th.scope = 'row'; th.textContent = 'Total'; tr.appendChild(th);
+    cell(tr, inr(T[0].g), 'num'); cell(tr, inr(T[1].g), 'num'); chgCell(tr, T[0].g, T[1].g); cell(tr, `${cnt(T[0].j)} → ${cnt(T[1].j)}`, 'num hide-sm nw');
+    tf.appendChild(tr);
   }
+}
+
+// Inventory: closing stock at the two balance dates, per company (or per category for one company).
+function drawStock() {
+  const el = document.getElementById('ch-stock'), lg = document.getElementById('lg-stock');
+  const tb = document.querySelector('#tb-stock tbody'), tf = document.querySelector('#tb-stock tfoot');
+  tb.replaceChildren(); tf.replaceChildren(); lg.replaceChildren();
+  if (!gate(el, 'stock')) return;
+  const rows = rowsOf('stock'), dates = [...new Set(rows.map(r => r.as_at))].sort();
+  const [d0, d1] = [dates[0], dates[dates.length - 1]];
+  const keyOf = picked() ? (r => r.category) : (r => r.company);
+  document.getElementById('stock-key').textContent = picked() ? 'Category' : 'Company';
+  const by = {};
+  rows.forEach(r => {
+    const o = by[keyOf(r)] || (by[keyOf(r)] = { a: 0, b: 0, idle: 0, idleKnown: false });
+    if (r.as_at === d0) o.a += num(r.value);
+    if (r.as_at === d1) { o.b += num(r.value); if (r.idle_value !== '') { o.idle += num(r.idle_value); o.idleKnown = true; } }
+  });
+  const keys = Object.keys(by).sort((p, q) => by[q].b - by[p].b);
+  if (!keys.length) { el.replaceChildren(); return; }
+  const dl = (d) => dayFmt(d);
+  const ser = [{ n: dl(d0), c: SER[5], v: k => by[k].a }, { n: dl(d1), c: SER[2], v: k => by[k].b }];
+  legend(lg, ser.map(s => [s.c, s.n]));
+  pairedBars(el, keys, ser, k => picked() ? k : nameOf(k));
+  const T = { a: 0, b: 0, idle: 0 };
+  keys.forEach(k => {
+    const o = by[k]; T.a += o.a; T.b += o.b; T.idle += o.idle;
+    const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(k);
+    cell(tr, picked() ? k : nameOf(k)); cell(tr, inr(o.a), 'num'); cell(tr, inr(o.b), 'num'); chgCell(tr, o.a, o.b);
+    cell(tr, o.idleKnown ? `${inr(o.idle)} · ${pct(o.b ? o.idle / o.b : 0)}` : '—', 'num nw');
+    tb.appendChild(tr);
+  });
+  const tr = Object.assign(document.createElement('tr'), { className: 'hd-total' });
+  const th = document.createElement('th'); th.scope = 'row'; th.textContent = 'Total'; tr.appendChild(th);
+  cell(tr, inr(T.a), 'num'); cell(tr, inr(T.b), 'num'); chgCell(tr, T.a, T.b); cell(tr, `${inr(T.idle)} · ${pct(T.b ? T.idle / T.b : 0)}`, 'num nw');
+  tf.appendChild(tr);
+}
+
+function drawIdle() {
+  const tb = document.querySelector('#tb-idle tbody'), sum = document.getElementById('idle-sum');
+  tb.replaceChildren(); sum.textContent = '';
+  const st = dash.data('stock_items'); if (st.status !== 'ok') return;
+  const rows = rowsOf('stock_items'), last = rows.map(r => r.as_at).sort().pop();
+  const idle = rows.filter(r => r.as_at === last && r.sold_qty !== '' && num(r.sold_qty) <= 0 && num(r.value) > 0).sort((p, q) => num(q.value) - num(p.value));
+  const s = rowsOf('stock').filter(r => r.as_at === last && r.idle_value !== '');
+  const iv = s.reduce((a, r) => a + num(r.idle_value), 0), ii = s.reduce((a, r) => a + num(r.idle_items), 0), tv = s.reduce((a, r) => a + num(r.value), 0);
+  if (s.length) sum.textContent = `${cnt(ii)} lines worth ${inr(iv)} (${pct(tv ? iv / tv : 0)} of stock) had no sale from April to September. The 40 costliest are listed.`;
+  idle.slice(0, 40).forEach(r => {
+    const tr = document.createElement('tr'); tr.dataset.key = [r.company, r.part_no].map(encodeURIComponent).join(',');
+    cell(tr, r.company, 'hide-sm'); cell(tr, r.item); cell(tr, r.part_no, 'part hide-sm'); cell(tr, r.category, 'hide-sm');
+    cell(tr, cnt(num(r.qty)), 'num'); cell(tr, inrFull(num(r.value)), 'num');
+    tb.appendChild(tr);
+  });
 }
 
 // A total row: marked cell by cell against a totals calculation, so each figure is checkable.
@@ -449,9 +550,16 @@ function drawCompleteness() {
   });
 }
 
+// Open on the latest year: adding up a full FY 2025-26 for one company with half-years for the rest misleads.
+let fyDefaulted = false;
 dash.onData(() => {
+  const md = dash.data('monthly');
+  if (!fyDefaulted && md.status === 'ok') {
+    fyDefaulted = true;
+    const fys = [...new Set(md.data.map(r => r.fy))].sort();
+    if (fys.length > 1 && !pickedFy()) { dash.setParams({ fy: fys[fys.length - 1] }); return; }
+  }
   drawFilter(); drawKpis(); drawMonthly(); drawMix();
-  drawWaiting('yoy', ['Sales register FY 2025-26'], 'The year-on-year comparison');
-  drawWaiting('stock', ['Stock summary As at 31 Mar 2026', 'Stock summary As at 30 Sep 2026', 'Stock movement FY 2025-26', 'Stock movement FY 2026-27 Apr-Sep'], 'The inventory lens');
+  drawYoy(); drawStock(); drawIdle();
   drawDaily(); drawHeads(); drawTypes(); drawItems(); drawCompanies(); drawCompleteness();
 });

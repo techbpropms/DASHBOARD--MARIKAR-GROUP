@@ -1,9 +1,9 @@
 // Service worker for the installable hub. Pages and data are fetched fresh when online (network first, cached copy
 // offline); styles, scripts and images come from the cache. Bump VERSION with each release: the pages then show an
 // "update available" message, and the new version takes over when the reader taps Update.
-const VERSION = '2026.10.13';
+const VERSION = '2026.10.14b';
 const CACHE = 'marikar-hub-' + VERSION;
-const CORE = ['./', 'index.html', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html',
+const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html',
   'assets/theme.css', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
   'assets/img/marikar-group.png', 'assets/img/bpro.png', 'assets/img/icon-192.png', 'manifest.webmanifest'];
 
@@ -19,7 +19,7 @@ self.addEventListener('fetch', (e) => {
   if (url.pathname.endsWith('version.json')) return; // always from the network, so updates are noticed
   if (fresh) {
     e.respondWith(fetch(req).then((r) => { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); return r; })
-      .catch(() => caches.match(req).then((r) => r || caches.match('index.html'))));
+      .catch(() => caches.match(req).then((r) => r || caches.match('hub.html'))));
   } else {
     e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((r) => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); } return r; })));
   }

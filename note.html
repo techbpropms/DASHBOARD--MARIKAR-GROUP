@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="assets/auth.js"></script>
+<script>MGAuth.guard();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HD Attingal Reconciliation Note</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,7 +81,7 @@ li.done > span:last-child { color: var(--muted); }
 <body>
 <header class="mast">
   <div class="wrap">
-    <div class="hub-link"><a href="index.html">← Marikar Group performance hub</a></div>
+    <div class="hub-link"><a href="hub.html">← Marikar Group performance hub</a></div>
     <div class="brand">
       <div class="logo"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
       <div>
@@ -126,5 +128,6 @@ li.done > span:last-child { color: var(--muted); }
   <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
 </main>
 <script src="assets/pwa.js" defer></script>
+<script>MGAuth.chip();</script>
 </body>
 </html>
