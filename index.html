@@ -404,7 +404,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     if (s) { $('go-text').textContent = 'Welcome, ' + s.name; location.replace(next); return; }
     tries++;
     $('go').disabled = false; $('go-text').textContent = 'Sign in';
-    fail(tries >= 3 ? 'Still not matching. Use "Forgot password?" below, or write to tech@bpropms.com.' : 'That user ID and password don’t match. Check them and try again.');
+    fail(tries >= 3 ? 'Still not matching. Use "Forgot password?" below, or write to mml@bpropms.in.' : 'That user ID and password don’t match. Check them and try again.');
     $('pw').value = ''; $('pw').focus();
   });
 
@@ -415,7 +415,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     $(pId).textContent = r.sent ? text.sent : text.mail;
     $(refId).textContent = built.req.ref;
     const mail = $(mailId); mail.href = built.mailto; mail.textContent = r.sent ? 'Also send by e-mail' : 'Send by e-mail';
-    $(copyId).onclick = () => navigator.clipboard.writeText(built.text).then(() => { $(copyId).textContent = 'Copied. Paste it into a message to tech@bpropms.com'; }).catch(() => { $(copyId).textContent = 'Select and copy the e-mail text instead'; });
+    $(copyId).onclick = () => navigator.clipboard.writeText(built.text).then(() => { $(copyId).textContent = 'Copied. Paste it into a message to mml@bpropms.in'; }).catch(() => { $(copyId).textContent = 'Select and copy the e-mail text instead'; });
     $(doneId).hidden = false;
     try { localStorage.setItem('mg-last-request', JSON.stringify({ ref: built.req.ref, at: built.req.at, kind: built.req.kind })); } catch (err) { /* ignore */ }
   }

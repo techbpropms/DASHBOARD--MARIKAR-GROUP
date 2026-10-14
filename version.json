@@ -1,9 +1,8 @@
 {
-  "version": "2026.10.14g",
-  "title": "Request access and password reset",
+  "version": "2026.10.14h",
+  "title": "Hub mailbox",
   "notes": [
-    "New people can request access from the sign-in page; the administrator approves it in Settings > People",
-    "Forgot password? sends a reset request to the administrator",
-    "Caps Lock warning and clearer messages on sign-in"
+    "Access and reset requests now go to mml@bpropms.in",
+    "Write to mml@bpropms.in for help with sign-in"
   ]
 }

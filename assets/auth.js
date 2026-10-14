@@ -26,7 +26,7 @@
   // Access and password-reset requests. The hub is a static site, so a request travels as a signed-looking code:
   // by POST to REQUESTS.endpoint when one is configured (any form-to-mail service that accepts JSON), otherwise in
   // an e-mail the requester sends to REQUESTS.to. The super admin pastes the code into Settings > People to act on it.
-  const REQUESTS = { to: 'tech@bpropms.com', endpoint: '' };
+  const REQUESTS = { to: 'mml@bpropms.in', endpoint: '' };
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - str.length % 4) % 4))));
   const ref = (kind) => { const d = new Date(); const ymd = d.toISOString().slice(0, 10).replace(/-/g, ''); const r = Array.from(crypto.getRandomValues(new Uint8Array(2)), (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase(); return `${kind === 'reset' ? 'PR' : 'AR'}-${ymd}-${r}`; };

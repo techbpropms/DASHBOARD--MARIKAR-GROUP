@@ -1,0 +1,19 @@
+{
+  "name": "marikar-hub-mail-relay",
+  "version": "1.0.0",
+  "description": "Mail relay for the Marikar Group performance hub: access and reset requests to the administrator mailbox",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dry": "DRY_RUN=1 node server.js"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^5.3.0",
+    "nodemailer": "^10.1.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}
