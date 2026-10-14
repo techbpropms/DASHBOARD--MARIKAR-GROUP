@@ -209,6 +209,27 @@ that group's divisions together. Groups are defined in `data/divisions.json` (`g
 in `shell.js`. In **Settings → Appearance** each reader picks the theme and whether the menu is a top bar or a
 sidebar; both are saved in that browser only. On phones the menu is a drawer behind the ☰ button.
 
+### Requesting access and resetting a password
+
+The sign-in page has three panes: **Sign in**, **Request access** (name, work e-mail, company or division,
+designation, phone, reason, a confirmation tick, and a hidden honeypot field against bots) and **Forgot
+password?**. The hub is a static site with no server, so a request cannot be stored or acted on automatically.
+Instead the page builds a request with a reference (`AR-…` for access, `PR-…` for reset) and a code starting
+`MGQ1.` that carries the details, then:
+
+- posts it to `MGAuth.requests.config.endpoint` when one is configured in `assets/auth.js` (any form-to-mail
+  service that accepts JSON), so it reaches the administrator without further steps; otherwise
+- opens the requester's mail app with the request addressed to tech@bpropms.com, with a "copy" fallback.
+
+The super admin pastes the e-mail or code into **Settings → People → Access and reset requests**, reviews it,
+picks a role and approves (which creates the account and shows the temporary password once) or declines (which
+opens a reply). Approvals go live with "Publish to the site". Whether an ID exists is never revealed on the
+reset pane; the administrator checks before issuing anything.
+
+Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
+step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
+written so the request transport can be swapped without changing the forms.
+
 ### Sign-in
 
 `index.html` is the landing and sign-in page. Every hub page except `verify.html` checks for a session (`assets/auth.js`) and sends visitors without one to sign in, then back to the page they asked for. Sessions last 12 hours, or 7 days with "Keep me signed in".

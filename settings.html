@@ -82,6 +82,11 @@ input, select { width: 100%; font: inherit; font-size: 14px; padding: 9px 12px; 
 .pending ul { margin: 6px 0 10px; padding-left: 18px; font-size: 13.5px; }
 .pending .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font-weight: 700; }
+.reqbox { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; } .reqbox textarea { flex: 1 1 320px; font: inherit; font-size: 13px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.reqcard { margin-top: 12px; border: 1px solid var(--line); border-left: 4px solid var(--violet); border-radius: 12px; padding: 14px 16px; background: var(--sub); } .reqcard[hidden] { display: none; }
+.reqhead { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; } .reqhead b { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.reqcard dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0 0 12px; font-size: 14px; } .reqcard dt { color: var(--muted); font-size: 12.5px; } .reqcard dd { margin: 0; }
+.reqcard .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; } label.inline { display: inline-flex; gap: 8px; align-items: center; margin: 0; } label.inline select { width: auto; }
 .token { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
 .token input { flex: 1 1 260px; }
 .credit { text-align: center; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
@@ -118,6 +123,23 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     <h2>People</h2>
     <p class="muted">Who can sign in to the hub. Passwords are never stored: each account keeps only a salted fingerprint. Changes made here are queued below and go live when you publish them.</p>
     <table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th></th></tr></thead><tbody></tbody></table>
+
+    <h3>Access and reset requests</h3>
+    <p class="muted">Requests from the sign-in page arrive by e-mail with a code starting <code>MGQ1.</code> Paste the e-mail (or just the code) here to act on it.</p>
+    <div class="reqbox">
+      <textarea id="req-in" rows="3" placeholder="Paste the request e-mail or code here" aria-label="Request code"></textarea>
+      <button class="btn sec" type="button" id="req-parse">Read request</button>
+    </div>
+    <div class="reqcard" id="req-card" hidden>
+      <div class="reqhead"><span class="pill" id="req-kind"></span><b id="req-ref"></b><span class="muted" id="req-when"></span></div>
+      <dl id="req-dl"></dl>
+      <div class="actions">
+        <label class="inline" id="req-role-wrap">Role <select id="req-role"><option value="viewer">Viewer</option><option value="admin">Admin</option><option value="superadmin">Super admin</option></select></label>
+        <button class="btn" type="button" id="req-approve">Approve and create account</button>
+        <button class="btn sec" type="button" id="req-decline">Decline (opens e-mail)</button>
+      </div>
+      <div class="note" id="req-note" hidden></div>
+    </div>
 
     <h3>Add a person</h3>
     <form class="grid" id="add" novalidate>
@@ -231,6 +253,42 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     create(name, id, role, false); $('add').reset();
   });
   $('discard').addEventListener('click', () => { queue.add = []; queue.remove = []; $('add-note').hidden = true; $('pub-note').hidden = true; paintTable(); paintPending(); });
+
+  // ----- requests from the sign-in page (access and password reset)
+  let current = null;
+  const fmtWhen = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); };
+  $('req-parse').addEventListener('click', () => {
+    const r = MGAuth.requests.decode($('req-in').value);
+    $('req-note').hidden = true;
+    if (!r) { $('req-card').hidden = true; say('add-note', 'bad', ['No request code found. It starts with MGQ1. and is at the end of the request e-mail.']); return; }
+    $('add-note').hidden = true;
+    current = r;
+    const reset = r.kind === 'reset', known = accounts.find((a) => a.id === String(r.email).toLowerCase());
+    $('req-kind').textContent = reset ? 'Password reset' : 'Access request'; $('req-kind').className = 'pill ' + (reset ? 'admin' : '');
+    $('req-ref').textContent = r.ref || ''; $('req-when').textContent = r.at ? 'sent ' + fmtWhen(r.at) : '';
+    const dl = $('req-dl'); dl.replaceChildren();
+    const row = (k, v) => { if (!v) return; const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); };
+    row('Name', r.name); row('E-mail', r.email); row('Company / division', r.unit); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
+    row('Account', known ? `exists: ${known.name} (${roleName(known.role)})` : 'none yet');
+    $('req-role-wrap').hidden = reset; $('req-approve').textContent = reset ? (known ? 'Approve: issue a new password' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve and create account');
+    $('req-approve').disabled = reset ? !known : !!known;
+    $('req-card').hidden = false;
+  });
+  $('req-approve').addEventListener('click', () => {
+    if (!current) return;
+    const id = String(current.email).toLowerCase(), known = accounts.find((a) => a.id === id);
+    if (current.kind === 'reset') { if (known) create(known.name, id, known.role, true); }
+    else if (!known) create(current.name, id, $('req-role').value, false);
+    say('req-note', 'ok', [`${current.ref || 'Request'} approved. Give the temporary password shown above to ${current.email}, then publish.`]);
+    $('req-approve').disabled = true;
+  });
+  $('req-decline').addEventListener('click', () => {
+    if (!current) return;
+    const subj = `Marikar hub: ${current.kind === 'reset' ? 'password reset' : 'access request'} ${current.ref || ''}`.trim();
+    const body = `Dear ${current.name || 'colleague'},\n\nThank you for your request (${current.ref || 'no reference'}). We are not able to approve it at this time.\n\nIf you believe this is a mistake, reply to this e-mail with your reporting manager copied.\n\nRegards,\nMarikar Group performance hub administrator`;
+    location.href = `mailto:${encodeURIComponent(current.email)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+    say('req-note', 'warn', [`${current.ref || 'Request'} declined; a reply to ${current.email} opened in your mail app.`]);
+  });
 
   // ----- publishing
   const tokenKey = 'mg-gh-token';
