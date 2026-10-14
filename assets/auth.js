@@ -23,8 +23,43 @@
     }
     return null;
   };
+  // Access and password-reset requests. The hub is a static site, so a request travels as a signed-looking code:
+  // by POST to REQUESTS.endpoint when one is configured (any form-to-mail service that accepts JSON), otherwise in
+  // an e-mail the requester sends to REQUESTS.to. The super admin pastes the code into Settings > People to act on it.
+  const REQUESTS = { to: 'tech@bpropms.com', endpoint: '' };
+  const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - str.length % 4) % 4))));
+  const ref = (kind) => { const d = new Date(); const ymd = d.toISOString().slice(0, 10).replace(/-/g, ''); const r = Array.from(crypto.getRandomValues(new Uint8Array(2)), (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase(); return `${kind === 'reset' ? 'PR' : 'AR'}-${ymd}-${r}`; };
+  const Requests = {
+    config: REQUESTS,
+    encode(req) { return 'MGQ1.' + b64u(JSON.stringify(req)); },
+    decode(text) {
+      const m = String(text || '').match(/MGQ1\.([A-Za-z0-9_-]+)/);
+      if (!m) return null;
+      try { const r = JSON.parse(unb64u(m[1])); return r && r.kind && r.email ? r : null; } catch (e) { return null; }
+    },
+    build(kind, data) {
+      const req = { v: 1, kind, ref: ref(kind), at: new Date().toISOString(), ...data };
+      const code = Requests.encode(req);
+      const lines = kind === 'reset'
+        ? [`Password reset request ${req.ref}`, '', `User ID: ${req.email}`, `Name: ${req.name || '-'}`, '', 'Request code (paste into Settings > People):', code]
+        : [`Access request ${req.ref}`, '', `Name: ${req.name}`, `E-mail: ${req.email}`, `Company / division: ${req.unit || '-'}`, `Designation: ${req.title || '-'}`, `Phone: ${req.phone || '-'}`, `Reason: ${req.reason || '-'}`, '', 'Request code (paste into Settings > People):', code];
+      const subject = kind === 'reset' ? `Marikar hub: password reset ${req.ref}` : `Marikar hub: access request ${req.ref} (${req.name})`;
+      return { req, code, text: lines.join('\n'), mailto: `mailto:${REQUESTS.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}` };
+    },
+    // Sends through the endpoint when there is one; resolves {sent:true} or {sent:false} (then the caller offers e-mail).
+    async send(built) {
+      if (!REQUESTS.endpoint) return { sent: false };
+      try {
+        const r = await fetch(REQUESTS.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ subject: built.text.split('\n')[0], ref: built.req.ref, kind: built.req.kind, name: built.req.name, email: built.req.email, message: built.text, code: built.code }) });
+        return { sent: r.ok };
+      } catch (e) { return { sent: false }; }
+    },
+  };
   const Auth = {
     user: read,
+    requests: Requests,
+    exists: (id) => USERS.some((u) => u.id === String(id || '').trim().toLowerCase()),
     ROUNDS,
     // Accounts without their secrets, for the People page.
     list: () => USERS.map((u) => ({ id: u.id, name: u.name, role: u.role })),

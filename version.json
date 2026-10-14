@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.14f",
-  "title": "Menu, themes and People",
+  "version": "2026.10.14g",
+  "title": "Request access and password reset",
   "notes": [
-    "A menu bar on every page, or a sidebar if you prefer (Settings > Appearance), with division groups",
-    "Light, dark or system theme, chosen from the bar",
-    "Settings > People: the super admin adds, resets and removes accounts"
+    "New people can request access from the sign-in page; the administrator approves it in Settings > People",
+    "Forgot password? sends a reset request to the administrator",
+    "Caps Lock warning and clearer messages on sign-in"
   ]
 }
