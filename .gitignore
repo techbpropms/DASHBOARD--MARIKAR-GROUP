@@ -1,3 +1,7 @@
 *.xls
 *.xlsx
 __pycache__/
+
+# mail relay: dependencies and secrets stay out of the repo
+server/node_modules/
+server/.env

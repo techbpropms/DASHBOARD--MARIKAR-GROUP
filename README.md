@@ -72,6 +72,7 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 | `data/received.csv` | Requested files received besides the FY 2026–27 sales register (`company,file`) |
 | `scripts/letterhead/` | Builds the letterhead PDF of the reconciliation note (logo, document ID, QR codes) |
 | `scripts/build_data.py` | Builds a company from its register export and rebuilds the group files |
+| `server/` | Mail relay for access and reset requests (the one place the mailbox password lives) |
 | `TEMPLATE.md` | The standard monthly review layout (HOD action A2) |
 
 ### Adding or updating a company
@@ -219,12 +220,18 @@ Instead the page builds a request with a reference (`AR-…` for access, `PR-…
 
 - posts it to `MGAuth.requests.config.endpoint` when one is configured in `assets/auth.js` (any form-to-mail
   service that accepts JSON), so it reaches the administrator without further steps; otherwise
-- opens the requester's mail app with the request addressed to tech@bpropms.com, with a "copy" fallback.
+- opens the requester's mail app with the request addressed to mml@bpropms.in, with a "copy" fallback.
 
 The super admin pastes the e-mail or code into **Settings → People → Access and reset requests**, reviews it,
 picks a role and approves (which creates the account and shows the temporary password once) or declines (which
 opens a reply). Approvals go live with "Publish to the site". Whether an ID exists is never revealed on the
 reset pane; the administrator checks before issuing anything.
+
+**Mailbox and relay.** The hub's address is `mml@bpropms.in`. Because a static site cannot send e-mail or hold a
+password, `server/` contains a small Node relay that is the only place the mailbox credentials live: the
+sign-in page posts requests to it, it e-mails them to the administrator and acknowledges the requester
+(see `server/README.md` for running and deploying it on Hostinger). Once it is deployed, set
+`REQUESTS.endpoint` in `assets/auth.js` to its address. Never put the mailbox password in the site's files.
 
 Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
 step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
@@ -235,6 +242,6 @@ written so the request transport can be swapped without changing the forms.
 `index.html` is the landing and sign-in page. Every hub page except `verify.html` checks for a session (`assets/auth.js`) and sends visitors without one to sign in, then back to the page they asked for. Sessions last 12 hours, or 7 days with "Keep me signed in".
 
 - **Accounts** live in `assets/auth.js` as salted PBKDF2-SHA-256 fingerprints (210,000 rounds); passwords are never stored. Add one with `node scripts/add-user.js <user-id> "<Full name>" [role]`, which prints a temporary password once. User IDs may be e-mail addresses (sign-in ignores capitals). The super admin is `tech@bpropms.com`. To remove an account, delete its line.
-- **Settings → People** (super admin only) does the same from the browser: it creates the account's salted fingerprint, shows the temporary password once, and publishes the updated `assets/auth.js` to this repository through the GitHub API using a fine-grained token (Contents: read and write on this repository only) that is kept in the browser tab until sign-out. Without a token, "Send to BPro instead" copies the account lines (never passwords) into an e-mail to tech@bpropms.com.
+- **Settings → People** (super admin only) does the same from the browser: it creates the account's salted fingerprint, shows the temporary password once, and publishes the updated `assets/auth.js` to this repository through the GitHub API using a fine-grained token (Contents: read and write on this repository only) that is kept in the browser tab until sign-out. Without a token, "Send to BPro instead" copies the account lines (never passwords) into an e-mail to mml@bpropms.in.
 - **What it protects, honestly:** it is a front door for a static site. It keeps casual visitors out and gives the hub a proper entrance, but the data files (`data/*.csv`, `data/*.json`) can still be fetched by anyone who knows their address while the repository and site are public. For real protection, serve the hub from the VPS behind a server-side login (for example Caddy `basic_auth` or forward-auth), or keep the repository private; the sign-in page can then hand over to that login.
 - **Document verification** (`verify.html`) stays public, so anyone holding a document can check it. Report QR codes open the report builder, which asks staff to sign in first.

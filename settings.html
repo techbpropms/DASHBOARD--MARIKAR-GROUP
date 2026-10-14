@@ -169,7 +169,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
 
   <section class="panel" id="no-people" hidden>
     <h2>People</h2>
-    <p class="muted">Accounts are managed by the super admin. To get someone access, write to <a href="mailto:tech@bpropms.com?subject=Marikar%20hub%20access">tech@bpropms.com</a>.</p>
+    <p class="muted">Accounts are managed by the super admin. To get someone access, write to <a href="mailto:mml@bpropms.in?subject=Marikar%20hub%20access">mml@bpropms.in</a>.</p>
   </section>
 
   <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
@@ -329,8 +329,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const body = ['Please apply these account changes to assets/auth.js on the Marikar hub:', '',
       ...queue.add.map((a) => `ADD/RESET:\n${line(a)}`), ...queue.remove.map((id) => `REMOVE: ${id}`), '', `Requested by ${user.name} (${user.id}).`].join('\n');
     navigator.clipboard.writeText(body).catch(() => {});
-    location.href = 'mailto:tech@bpropms.com?subject=' + encodeURIComponent('Marikar hub: account changes') + '&body=' + encodeURIComponent(body);
-    say('pub-note', 'ok', ['The request (account lines only; no passwords) was copied and opened in your mail app. Send it to tech@bpropms.com.']);
+    location.href = 'mailto:mml@bpropms.in?subject=' + encodeURIComponent('Marikar hub: account changes') + '&body=' + encodeURIComponent(body);
+    say('pub-note', 'ok', ['The request (account lines only; no passwords) was copied and opened in your mail app. Send it to mml@bpropms.in.']);
   });
   paintTable(); paintPending();
 })();
