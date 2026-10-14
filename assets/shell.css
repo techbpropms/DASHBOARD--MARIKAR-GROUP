@@ -4,10 +4,10 @@
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --mg-bar: #0e1530; --mg-bar-2: #18214a; } }
 :root[data-theme="dark"] { --mg-bar: #0e1530; --mg-bar-2: #18214a; }
 
-body { padding-top: var(--mg-bar-h); }
+body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bottom: env(safe-area-inset-bottom); }
 .dash-nav { display: none !important; }              /* the old one-line page links: the bar replaces them */
 
-.mg-bar { position: fixed; inset: 0 0 auto 0; z-index: 60; height: var(--mg-bar-h); display: flex; align-items: center; gap: 10px; padding: 0 clamp(12px, 2vw, 24px);
+.mg-bar { position: fixed; inset: 0 0 auto 0; z-index: 60; height: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 0 clamp(12px, 2vw, 24px);
   background: linear-gradient(90deg, var(--mg-bar), var(--mg-bar-2)); color: #fff; box-shadow: 0 2px 14px rgba(0,0,0,.25); font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
 .mg-bar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, var(--mg-violet) 0 72%, var(--mg-amber) 72% 100%); }
 .mg-bar svg { width: 20px; height: 20px; }
@@ -22,6 +22,9 @@ body { padding-top: var(--mg-bar-h); }
 /* the bar compresses in steps: shorter labels, then icons only, then the drawer */
 @media (max-width: 1560px) { .mg-brand small, .mg-who .nm small { display: none; } .mg-top-a { padding: 8px 9px; font-size: 13px; } }
 @media (max-width: 1440px) { .mg-who .nm { display: none; } }
+/* with the Install app button in the bar, everything compresses a step earlier */
+@media (max-width: 1720px) { body.mg-has-install .mg-brand small, body.mg-has-install .mg-who .nm { display: none; } body.mg-has-install .mg-top-a { padding: 8px 9px; font-size: 13px; } }
+@media (min-width: 901px) and (max-width: 1480px) { body.mg-has-install .mg-top-a .lbl { display: none; } body.mg-has-install .mg-top-a { padding: 8px 10px; } body.mg-has-install .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } body.mg-has-install .mg-top-a .chev { display: none; } body.mg-has-install .mg-who .nm { display: none; } }
 @media (min-width: 901px) and (max-width: 1280px) { .mg-top-a .lbl { display: none; } .mg-top-a { padding: 8px 10px; } .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } .mg-top-a .chev { display: none; } }
 
 /* ----- top menu */
@@ -61,7 +64,7 @@ body { padding-top: var(--mg-bar-h); }
 .mg-out:hover { filter: brightness(1.08); }
 
 /* ----- sidebar / drawer */
-.mg-sidenav { position: fixed; top: var(--mg-bar-h); bottom: 0; left: 0; width: var(--mg-side-w); z-index: 55; overflow-y: auto; display: flex; flex-direction: column;
+.mg-sidenav { position: fixed; top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); bottom: 0; left: 0; width: var(--mg-side-w); z-index: 55; overflow-y: auto; display: flex; flex-direction: column;
   background: var(--color-panel, var(--surface, #fffcf7)); color: var(--color-fg, var(--ink, #2a241f)); border-right: 1px solid var(--color-border-line, var(--line, #e8dfd1));
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif; transform: translateX(-100%); transition: transform .22s ease; }
 .mg-sidenav > ul { list-style: none; margin: 0; padding: 12px 10px; flex: 1; }

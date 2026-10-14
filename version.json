@@ -1,8 +1,9 @@
 {
-  "version": "2026.10.14k",
-  "title": "Request access: functions and scope",
+  "version": "2026.10.14l",
+  "title": "Install the app",
   "notes": [
-    "Request access now lists corporate functions (Finance, Admin, HR, IT, Audit, Marketing) as well as every division",
-    "A new 'Access needed for' choice: my division, several, or all divisions"
+    "An Install the app invitation on every visit until the hub is installed, with one-tap install on Android, Chrome and Edge",
+    "Step-by-step Add to Home Screen on iPhone and iPad",
+    "Install app button in the bar; shortcuts and screenshots in the install dialog"
   ]
 }

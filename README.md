@@ -238,6 +238,15 @@ Instant approvals, e-mailed reset links and first-sign-in password changes need 
 step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
 written so the request transport can be swapped without changing the forms.
 
+### Installing as an app
+
+`manifest.webmanifest` (icons, shortcuts, screenshots) and `sw.js` make the hub installable. `assets/pwa.js` invites
+every visitor to install it: on Android, Chrome and Edge it keeps the browser's install event and opens the native
+dialog from an "Install the app" card and an "Install app" button in the bar; on iPhone and iPad it shows the
+Share → Add to Home Screen steps. The card returns on each new visit until the app is installed ("Not now" hides it
+for the session). The same script shows the "Update available" message with the notes from `version.json`.
+Pages carry the iOS web-app metas and the bar respects the phone's safe areas.
+
 ### Sign-in
 
 `index.html` is the landing and sign-in page. Every hub page except `verify.html` checks for a session (`assets/auth.js`) and sends visitors without one to sign in, then back to the page they asked for. Sessions last 12 hours, or 7 days with "Keep me signed in".
