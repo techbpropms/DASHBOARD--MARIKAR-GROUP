@@ -4,7 +4,7 @@
 // Add an account with: node scripts/add-user.js <user-id> "<Full name>" <role>
 (() => {
   const USERS = [
-    { id: 'admin', name: 'Administrator', role: 'admin', salt: '400fc28e35765fd12da757d05204f43c', hash: '47abb3c1964694cd8c71bcb8d6c462a81246a155a929bf397844e2aee6157f93' },
+    { id: 'tech@bpropms.com', name: 'BPro Tech (Super admin)', role: 'superadmin', salt: 'c9bffb8adcb0509aa306eec81fee55e8', hash: 'cce07b1663cff6fb7c61087e2f55f25978a730644b0f5375d45bc84768c2a774' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
