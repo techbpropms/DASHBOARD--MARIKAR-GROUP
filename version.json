@@ -1,8 +1,9 @@
 {
-  "version": "2026.10.14d",
-  "title": "Sign-in fix",
+  "version": "2026.10.14e",
+  "title": "A fresh sign-in page",
   "notes": [
-    "Sign-in and other scripts now always load fresh when online, so account changes apply at once",
-    "Super admin sign-in: tech@bpropms.com"
+    "Rotating thoughts on data and analytics, and a scrolling ticker of the hub's principles",
+    "A chart that draws itself behind the headline; greeting by time of day",
+    "Faster first load and no keyboard pop-up on phones"
   ]
 }
