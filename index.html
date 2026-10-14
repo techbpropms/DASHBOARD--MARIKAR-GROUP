@@ -11,6 +11,8 @@
 <meta name="theme-color" content="#131c38">
 <link rel="apple-touch-icon" href="assets/img/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="assets/img/marikar-group.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/brand.css">
 <script src="assets/auth.js"></script>
@@ -43,7 +45,9 @@ a { color: var(--link); }
     radial-gradient(1200px 500px at -10% 110%, rgba(212,154,58,.22), transparent 60%),
     radial-gradient(900px 600px at 110% -10%, rgba(91,79,158,.45), transparent 60%),
     linear-gradient(160deg, var(--mast) 0%, var(--mast-2) 100%);
-  padding: clamp(28px, 5vw, 64px); display: flex; flex-direction: column; gap: 34px; }
+  padding: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; gap: 24px; }
+@media (min-width: 901px) { .brand { position: sticky; top: 0; height: 100vh; height: 100dvh; } }
+.mid { margin: auto 0; display: flex; flex-direction: column; gap: 22px; min-height: 0; }
 .brand::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, var(--violet) 0 72%, var(--amber) 72% 100%); }
 .brand::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
   background-image: radial-gradient(circle, rgba(255,255,255,.16) 1px, transparent 1.4px); background-size: 22px 22px;
@@ -55,21 +59,78 @@ a { color: var(--link); }
 .mark b { display: block; font-size: 24px; font-weight: 800; letter-spacing: .01em; line-height: 1.15; }
 .mark span { display: block; margin-top: 4px; font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; opacity: .78; }
 @media (max-width: 520px) { .mark { gap: 16px; } .mark .tile { padding: 9px 12px; } .mark .tile img { height: 92px; } .mark b { font-size: 20px; } }
-.hero { margin-top: auto; max-width: 34rem; }
+.hero { max-width: 36rem; }
 .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
   background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 5px 12px; }
-.eyebrow i { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px rgba(212,154,58,.25); }
-.hero h1 { font-size: clamp(32px, 4.4vw, 52px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; margin: 18px 0 14px; text-wrap: balance; }
-.hero h1 em { font-style: normal; color: #f1c27a; }
-.hero p { margin: 0; font-size: 16.5px; color: rgba(255,255,255,.84); max-width: 32rem; }
-.features { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 36rem; }
-@media (max-width: 520px) { .features { grid-template-columns: minmax(0, 1fr); } }
-.features li { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 12px 14px; }
-.features svg { flex: none; width: 22px; height: 22px; color: #f1c27a; margin-top: 1px; }
-.features b { display: block; font-size: 14px; }
-.features small { display: block; font-size: 12.5px; color: rgba(255,255,255,.7); line-height: 1.4; }
+.eyebrow i { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px rgba(212,154,58,.25); animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(212,154,58,0); } }
+.hero h1 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; margin: 14px 0 12px; text-wrap: balance; }
+.hero h1 em { font-style: normal; background: linear-gradient(90deg, #f6d28f, #e39a4f); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { margin: 0; font-size: 16px; color: rgba(255,255,255,.82); max-width: 32rem; }
+
+/* Rotating quote */
+.quote { position: relative; margin: 0; max-width: 36rem; padding: 18px 22px 16px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.04)); border: 1px solid rgba(255,255,255,.14);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 18px 40px rgba(0,0,0,.18); overflow: hidden; }
+.quote::before { content: "\201C"; position: absolute; top: -18px; right: 14px; font: 800 120px/1 Georgia, serif; color: rgba(241,194,122,.16); pointer-events: none; }
+.quote .tag { display: inline-flex; gap: 6px; align-items: center; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #f1c27a; }
+.quote .stage { display: grid; margin-top: 10px; }
+.quote .q { grid-area: 1 / 1; opacity: 0; transform: translateY(8px); transition: opacity .6s ease, transform .6s ease; visibility: hidden; }
+.quote .q.on { opacity: 1; transform: none; visibility: visible; }
+.quote blockquote { margin: 0; font-size: clamp(17px, 1.55vw, 20px); line-height: 1.45; font-weight: 600; letter-spacing: -.005em; text-wrap: pretty; }
+.quote figcaption { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.7); }
+.quote figcaption b { color: #fff; font-weight: 700; }
+.quote .nav { display: flex; align-items: center; gap: 6px; margin-top: 14px; }
+.quote .nav button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(255,255,255,.28); cursor: pointer; transition: width .3s, background .3s; }
+.quote .nav button[aria-current="true"] { width: 22px; background: #f1c27a; }
+.quote .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: linear-gradient(90deg, var(--violet), var(--amber)); transform-origin: left; transform: scaleX(0); }
+.quote .bar.run { animation: fill var(--q-ms, 7000ms) linear forwards; }
+.quote:hover .bar.run, .quote:focus-within .bar.run { animation-play-state: paused; }
+@keyframes fill { to { transform: scaleX(1); } }
+
+/* Feature chips */
+.features { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; max-width: 38rem; }
+.features li { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.13); border-radius: 999px; padding: 7px 13px 7px 10px; }
+.features svg { flex: none; width: 16px; height: 16px; color: #f1c27a; }
+
+/* Data ticker along the bottom edge */
+.ticker { flex: none; margin: 0 calc(-1 * clamp(24px, 4vw, 48px)) calc(-1 * clamp(24px, 4vw, 48px)); border-top: 1px solid rgba(255,255,255,.12);
+  background: rgba(8,12,28,.35); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.ticker .track { display: flex; width: max-content; animation: tick 60s linear infinite; }
+.ticker:hover .track { animation-play-state: paused; }
+.ticker ul { display: flex; list-style: none; margin: 0; padding: 0; }
+.ticker li { display: inline-flex; align-items: center; gap: 14px; padding: 13px 0 13px 14px; white-space: nowrap; font-size: 13px; font-weight: 600; letter-spacing: .02em; color: rgba(255,255,255,.86); }
+.ticker li b { color: #f1c27a; font-weight: 800; }
+.ticker li::after { content: ""; width: 6px; height: 6px; transform: rotate(45deg); background: var(--amber); opacity: .8; margin-left: 4px; }
+@keyframes tick { to { transform: translateX(-50%); } }
+
+/* Background chart: a line drawing itself over faint bars */
+.viz { position: absolute; right: -2%; bottom: 74px; width: min(78%, 640px); height: auto; z-index: 0 !important; opacity: .55; pointer-events: none; }
+.viz .ln { stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: draw 2.8s .3s ease-out forwards; }
+.viz .ar { opacity: 0; animation: fadein 1.2s 1.8s ease forwards; }
+.viz .bars rect { transform-box: fill-box; transform-origin: bottom; transform: scaleY(0); animation: grow .9s ease-out forwards; }
+.viz .dot { opacity: 0; animation: fadein .4s 3s forwards, blink 2.6s 3.4s ease-in-out infinite; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fadein { to { opacity: 1; } }
+@keyframes grow { to { transform: scaleY(1); } }
+@keyframes blink { 50% { opacity: .35; } }
+
 .since { font-size: 12.5px; color: rgba(255,255,255,.6); }
-@media (max-width: 900px) { .brand { gap: 24px; } .hero { margin-top: 8px; } .features { display: none; } }
+@media (max-width: 900px) {
+  .brand { gap: 20px; padding-bottom: 0; }
+  .mid { margin: 0; gap: 18px; }
+  .hero p { font-size: 15px; }
+  .features { display: none; }
+  .viz { width: 92%; bottom: 60px; opacity: .35; }
+  .ticker { margin-bottom: 0; }
+}
+@media (min-width: 901px) and (max-height: 820px) { .features { display: none; } }
+@media (min-width: 901px) and (max-height: 700px) { .hero p { display: none; } .quote blockquote { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker .track { animation: none; } .ticker { overflow-x: auto; }
+  .viz .ln { stroke-dashoffset: 0; animation: none; } .viz .ar, .viz .dot { opacity: 1; animation: none; } .viz .bars rect { transform: none; animation: none; }
+  .quote .q { transition: none; } .quote .bar { display: none; } .eyebrow i { animation: none; }
+}
 
 /* Sign-in */
 .side { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 48px) 28px; gap: 28px; }
@@ -80,6 +141,7 @@ a { color: var(--link); }
 .card-logo img { height: 104px; width: auto; display: block; }
 .card-logo span { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
 @media (max-width: 900px) { .card-logo { display: none; } }
+.card .hello { margin: 0 0 2px; font-size: 13px; font-weight: 700; color: var(--copper); letter-spacing: .02em; }
 .card h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -.01em; }
 .card .lead { margin: 6px 0 24px; color: var(--muted); font-size: 14px; }
 label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
@@ -117,22 +179,57 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
 <body>
 <div class="shell">
   <section class="brand" aria-label="Marikar Group performance hub">
+    <svg class="viz" viewBox="0 0 600 300" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="vz-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1c27a" stop-opacity=".45"/><stop offset="1" stop-color="#f1c27a" stop-opacity="0"/></linearGradient>
+        <linearGradient id="vz-l" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9d92e6"/><stop offset="1" stop-color="#f1c27a"/></linearGradient>
+      </defs>
+      <g class="bars" fill="rgba(255,255,255,.07)">
+        <rect x="18" y="200" width="34" height="100" rx="5" style="animation-delay:.05s"/><rect x="66" y="178" width="34" height="122" rx="5" style="animation-delay:.12s"/>
+        <rect x="114" y="190" width="34" height="110" rx="5" style="animation-delay:.19s"/><rect x="162" y="156" width="34" height="144" rx="5" style="animation-delay:.26s"/>
+        <rect x="210" y="166" width="34" height="134" rx="5" style="animation-delay:.33s"/><rect x="258" y="134" width="34" height="166" rx="5" style="animation-delay:.40s"/>
+        <rect x="306" y="146" width="34" height="154" rx="5" style="animation-delay:.47s"/><rect x="354" y="112" width="34" height="188" rx="5" style="animation-delay:.54s"/>
+        <rect x="402" y="120" width="34" height="180" rx="5" style="animation-delay:.61s"/><rect x="450" y="88" width="34" height="212" rx="5" style="animation-delay:.68s"/>
+        <rect x="498" y="70" width="34" height="230" rx="5" style="animation-delay:.75s"/><rect x="546" y="46" width="34" height="254" rx="5" style="animation-delay:.82s"/>
+      </g>
+      <path class="ar" fill="url(#vz-a)" d="M35 190 L83 170 L131 178 L179 140 L227 150 L275 118 L323 128 L371 96 L419 104 L467 70 L515 56 L563 30 L563 300 L35 300 Z"/>
+      <path class="ln" fill="none" stroke="url(#vz-l)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" d="M35 190 L83 170 L131 178 L179 140 L227 150 L275 118 L323 128 L371 96 L419 104 L467 70 L515 56 L563 30"/>
+      <circle class="dot" cx="563" cy="30" r="7" fill="#f1c27a"/>
+    </svg>
     <div class="mark">
-      <div class="tile"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
+      <div class="tile"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910" width="82" height="120" fetchpriority="high"></div>
       <div><b>Marikar Group</b><span>Performance hub</span></div>
     </div>
+    <div class="mid">
     <div class="hero">
       <span class="eyebrow"><i></i>H1 FY 2026–27 review</span>
-      <h1>Every division, <em>one clear view.</em></h1>
-      <p>The leadership team's home for division dashboards, sales and inventory, the HOD action tracker and verified reports.</p>
+      <h1>Data that drives <em>every decision.</em></h1>
+      <p>Division dashboards, sales and inventory from TallyPrime, the HOD action tracker and verified reports, in one place for the leadership team.</p>
     </div>
+    <figure class="quote" id="quote" aria-roledescription="carousel" aria-label="Thoughts on data and analytics">
+      <span class="tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Thought for the day</span>
+      <div class="stage">
+          <div class="q on" id="q0"><blockquote>“It is a capital mistake to theorise before one has data.”</blockquote><figcaption>— <b>Sherlock Holmes</b>, in Arthur Conan Doyle’s <i>A Scandal in Bohemia</i></figcaption></div>
+          <div class="q" id="q1"><blockquote>“Information is the oil of the 21st century, and analytics is the combustion engine.”</blockquote><figcaption>— <b>Peter Sondergaard</b>, Gartner</figcaption></div>
+          <div class="q" id="q2"><blockquote>“The goal is to turn data into information, and information into insight.”</blockquote><figcaption>— <b>Carly Fiorina</b></figcaption></div>
+          <div class="q" id="q3"><blockquote>“Without big data, you are blind and deaf and in the middle of a freeway.”</blockquote><figcaption>— <b>Geoffrey Moore</b></figcaption></div>
+          <div class="q" id="q4"><blockquote>“Errors using inadequate data are much less than those using no data at all.”</blockquote><figcaption>— <b>Charles Babbage</b></figcaption></div>
+          <div class="q" id="q5"><blockquote>“In God we trust. All others must bring data.”</blockquote><figcaption>— <b>W. Edwards Deming</b>, attributed</figcaption></div>
+          <div class="q" id="q6"><blockquote>“The world cannot be understood without numbers. But the world cannot be understood with numbers alone.”</blockquote><figcaption>— <b>Hans Rosling</b>, <i>Factfulness</i></figcaption></div>
+      </div>
+      <div class="nav" role="group" aria-label="Choose a quote"><button type="button" aria-label="Quote 1 of 7" aria-controls="q0" aria-current="true"></button><button type="button" aria-label="Quote 2 of 7" aria-controls="q1"></button><button type="button" aria-label="Quote 3 of 7" aria-controls="q2"></button><button type="button" aria-label="Quote 4 of 7" aria-controls="q3"></button><button type="button" aria-label="Quote 5 of 7" aria-controls="q4"></button><button type="button" aria-label="Quote 6 of 7" aria-controls="q5"></button><button type="button" aria-label="Quote 7 of 7" aria-controls="q6"></button></div>
+      <span class="bar" aria-hidden="true"></span>
+    </figure>
     <ul class="features">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span><b>Division dashboards</b><small>H1 against last year and target, for every division</small></span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span><b>Sales &amp; inventory</b><small>From TallyPrime, reconciled to the paisa</small></span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg><span><b>HOD action tracker</b><small>Owners, due dates and the action league</small></span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span><b>Verified reports</b><small>PDF and Excel with a QR code anyone can check</small></span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Division dashboards</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>Sales &amp; inventory</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>HOD action tracker</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Verified reports</li>
     </ul>
-    <div class="since">Marikar Group · Kerala and Tamil Nadu · since 1910</div>
+    </div>
+    <div class="ticker" aria-label="Our analytics principles">
+      <div class="track"><ul><li><b>Data</b> → insight → action</li><li>One version of the truth</li><li>Every figure reconciled to its source</li><li>Measure what matters, every month</li><li>Decide on evidence, not opinion</li><li>From TallyPrime to the boardroom</li><li>Trends beat snapshots</li><li>Spot it early, fix it early</li><li>Five divisions, one clear view</li></ul><ul aria-hidden="true"><li><b>Data</b> → insight → action</li><li>One version of the truth</li><li>Every figure reconciled to its source</li><li>Measure what matters, every month</li><li>Decide on evidence, not opinion</li><li>From TallyPrime to the boardroom</li><li>Trends beat snapshots</li><li>Spot it early, fix it early</li><li>Five divisions, one clear view</li></ul></div>
+    </div>
   </section>
 
   <main class="side">
@@ -141,6 +238,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
         <div class="tile"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910" width="71" height="104"></div>
         <span>Marikar Group performance hub</span>
       </div>
+      <p class="hello" id="hello">Welcome</p>
       <h2>Sign in</h2>
       <p class="lead">Use the user ID and password issued to you by BPro.</p>
       <div class="alert" id="alert" role="alert"></div>
@@ -207,7 +305,25 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     fail('That user ID and password don’t match. Check them and try again.');
     $('pw').value = ''; $('pw').focus();
   });
-  $('uid').focus();
+  // Focus the user ID only where a keyboard is likely; on phones it would pop the keyboard over the page.
+  if (matchMedia('(hover: hover) and (min-width: 901px)').matches) $('uid').focus();
+  const h = new Date().getHours();
+  $('hello').textContent = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+
+  // Quotes: one at a time. The progress bar under the quote times each one (7 s) and moves on when it fills;
+  // it pauses while the quote is hovered or focused. Reduced-motion readers change quotes with the dots only.
+  const qs = [...document.querySelectorAll('#quote .q')], dots = [...document.querySelectorAll('#quote .nav button')], bar = document.querySelector('#quote .bar');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let at = 0;
+  const show = (i) => {
+    at = (i + qs.length) % qs.length;
+    qs.forEach((q, k) => { q.classList.toggle('on', k === at); q.setAttribute('aria-hidden', String(k !== at)); });
+    dots.forEach((d, k) => d.setAttribute('aria-current', String(k === at)));
+    bar.classList.remove('run'); void bar.offsetWidth; if (!still) bar.classList.add('run');
+  };
+  bar.addEventListener('animationend', () => show(at + 1));
+  dots.forEach((d, k) => d.addEventListener('click', () => show(k)));
+  show(Math.floor(Math.random() * qs.length));
 })();
 </script>
 <script src="assets/pwa.js" defer></script>
