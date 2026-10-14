@@ -1,9 +1,7 @@
 {
-  "version": "2026.10.14l",
-  "title": "Install the app",
+  "version": "2026.10.14m",
+  "title": "User manual v1.1",
   "notes": [
-    "An Install the app invitation on every visit until the hub is installed, with one-tap install on Android, Chrome and Edge",
-    "Step-by-step Add to Home Screen on iPhone and iPad",
-    "Install app button in the bar; shortcuts and screenshots in the install dialog"
+    "The manual now covers the request-access form, the access scope and the install-the-app invitation"
   ]
 }

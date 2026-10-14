@@ -61,35 +61,42 @@
   {
    "label": "Full name",
    "x": 865,
-   "y": 26,
+   "y": 28,
    "w": 346,
    "h": 49
   },
   {
    "label": "Work e-mail",
    "x": 865,
-   "y": 118,
+   "y": 120,
    "w": 346,
    "h": 49
   },
   {
-   "label": "Company / division",
+   "label": "Company / division / function",
    "x": 865,
-   "y": 209,
+   "y": 232,
    "w": 167,
    "h": 49
   },
   {
+   "label": "Access needed for",
+   "x": 865,
+   "y": 323,
+   "w": 346,
+   "h": 47
+  },
+  {
    "label": "Confirmation",
    "x": 869,
-   "y": 490,
+   "y": 602,
    "w": 16,
    "h": 16
   },
   {
    "label": "Send request",
    "x": 865,
-   "y": 564,
+   "y": 676,
    "w": 346,
    "h": 50
   }
@@ -121,14 +128,14 @@
   {
    "label": "User ID",
    "x": 37,
-   "y": 628,
+   "y": 443,
    "w": 346,
    "h": 49
   },
   {
    "label": "Request a reset",
    "x": 37,
-   "y": 694,
+   "y": 509,
    "w": 346,
    "h": 50
   }
@@ -451,21 +458,28 @@
   {
    "label": "Accounts",
    "x": 23,
-   "y": -395,
+   "y": 109,
    "w": 834,
    "h": 85
   },
   {
    "label": "Paste a request",
    "x": 23,
-   "y": -229,
+   "y": 275,
    "w": 703,
    "h": 80
   },
   {
+   "label": "The request, ready to approve or decline",
+   "x": 23,
+   "y": 367,
+   "w": 834,
+   "h": 300
+  },
+  {
    "label": "Add a person",
    "x": 23,
-   "y": -101,
+   "y": 714,
    "w": 834,
    "h": 119
   }
@@ -504,5 +518,39 @@
   }
  ],
  "27-phone-dashboard": [],
- "05b-hub-tools": []
+ "05b-hub-tools": [],
+ "28-install-bar": [
+  {
+   "label": "Install app button",
+   "x": 1015,
+   "y": 11,
+   "w": 87,
+   "h": 33
+  },
+  {
+   "label": "Install card",
+   "x": 403,
+   "y": 662,
+   "w": 560,
+   "h": 142
+  }
+ ],
+ "29-install-phone": [
+  {
+   "label": "Install the app card",
+   "x": 12,
+   "y": 666,
+   "w": 366,
+   "h": 162
+  }
+ ],
+ "30-install-iphone": [
+  {
+   "label": "Add to Home Screen steps",
+   "x": 12,
+   "y": 579,
+   "w": 366,
+   "h": 249
+  }
+ ]
 }
