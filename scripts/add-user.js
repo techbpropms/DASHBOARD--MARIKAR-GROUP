@@ -2,7 +2,7 @@
 // PBKDF2 fingerprint is written to the file.   node scripts/add-user.js <user-id> "<Full name>" [role]
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const [id, name, role = 'viewer'] = process.argv.slice(2);
-if (!id || !name || !/^[a-z0-9._-]+$/.test(id)) { console.error('usage: node scripts/add-user.js <user-id: a-z 0-9 . _ -> "<Full name>" [role]'); process.exit(1); }
+if (!id || !name || !/^[a-z0-9._@-]+$/.test(id)) { console.error('usage: node scripts/add-user.js <user-id: a-z 0-9 . _ @ -> "<Full name>" [role]'); process.exit(1); }
 const file = path.join(__dirname, '..', 'assets', 'auth.js');
 let src = fs.readFileSync(file, 'utf8');
 if (src.includes(`id: '${id}'`)) { console.error(`User ${id} already exists.`); process.exit(1); }
