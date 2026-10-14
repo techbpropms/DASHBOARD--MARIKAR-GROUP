@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.14e",
-  "title": "A fresh sign-in page",
+  "version": "2026.10.14f",
+  "title": "Menu, themes and People",
   "notes": [
-    "Rotating thoughts on data and analytics, and a scrolling ticker of the hub's principles",
-    "A chart that draws itself behind the headline; greeting by time of day",
-    "Faster first load and no keyboard pop-up on phones"
+    "A menu bar on every page, or a sidebar if you prefer (Settings > Appearance), with division groups",
+    "Light, dark or system theme, chosen from the bar",
+    "Settings > People: the super admin adds, resets and removes accounts"
   ]
 }
