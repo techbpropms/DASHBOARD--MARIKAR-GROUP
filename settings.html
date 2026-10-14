@@ -270,7 +270,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     $('req-ref').textContent = r.ref || ''; $('req-when').textContent = r.at ? 'sent ' + fmtWhen(r.at) : '';
     const dl = $('req-dl'); dl.replaceChildren();
     const row = (k, v) => { if (!v) return; const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); };
-    row('Name', r.name); row('E-mail', r.email); row('Company / division', r.unit); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
+    row('Name', r.name); row('E-mail', r.email); row('Company / division / function', r.unit); row('Access needed for', r.scope); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
     row('Account', known ? `exists: ${known.name} (${roleName(known.role)})` : 'none yet');
     $('req-role-wrap').hidden = reset; $('req-approve').textContent = reset ? (known ? 'Approve: issue a new password' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve and create account');
     $('req-approve').disabled = reset ? !known : !!known;

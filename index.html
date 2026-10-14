@@ -168,6 +168,8 @@ a.btn { display: inline-flex; text-decoration: none; }
 label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
 .field { position: relative; margin-bottom: 16px; }
 .field input { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; transition: border-color .15s, box-shadow .15s; }
+.field select { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.field select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 18%, transparent); }
 .field input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 18%, transparent); }
 .field .eye { position: absolute; right: 6px; bottom: 6px; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--link); background: transparent; border: 0; border-radius: 8px; padding: 7px 10px; cursor: pointer; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 4px 0 20px; font-size: 13.5px; flex-wrap: wrap; }
@@ -298,9 +300,27 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
           <div class="field"><label for="r-name">Full name</label><input id="r-name" name="name" autocomplete="name" required maxlength="80"></div>
           <div class="field"><label for="r-email">Work e-mail <small class="opt">(becomes your user ID)</small></label><input id="r-email" name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" required maxlength="120"></div>
           <div class="two">
-            <div class="field"><label for="r-unit">Company / division</label><input id="r-unit" name="unit" autocomplete="organization" required maxlength="80" list="units"><datalist id="units"><option>Marikar Group (corporate)</option><option>Honda Kerala</option><option>Honda Tamil Nadu (AMZES)</option><option>BigWing</option><option>Royal Enfield</option><option>Nissan</option><option>CSPW</option><option>Canon / OAIP</option><option>HR</option><option>Finance / Accounts</option></datalist></div>
+            <div class="field"><label for="r-unit">Company / division / function</label><input id="r-unit" name="unit" autocomplete="organization" required maxlength="80" list="units" placeholder="Choose or type"><datalist id="units">
+              <option value="Marikar Group — Management / Corporate">Management / Corporate</option>
+              <option value="Finance & Accounts">Finance</option>
+              <option value="Admin">Administration</option>
+              <option value="HR">Human resources</option>
+              <option value="IT">Information technology</option>
+              <option value="Internal audit">Audit</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Honda Kerala">Honda two-wheelers, Kerala</option>
+              <option value="Honda Tamil Nadu (AMZES)">Honda two-wheelers, Tamil Nadu</option>
+              <option value="BigWing">Honda premium motorcycles</option>
+              <option value="Royal Enfield">Royal Enfield sales & service</option>
+              <option value="Nissan">Nissan cars</option>
+              <option value="CSPW">Royal Enfield parts distribution</option>
+              <option value="Canon / OAIP">Office automation</option>
+              <option value="All divisions">Group-wide</option>
+              <option value="Other">Other (type it in)</option>
+            </datalist></div>
             <div class="field"><label for="r-title">Designation</label><input id="r-title" name="title" autocomplete="organization-title" maxlength="80"></div>
           </div>
+          <div class="field"><label for="r-scope">Access needed for</label><select id="r-scope" name="scope"><option value="My division">My division only</option><option value="Several divisions">Several divisions</option><option value="All divisions">All divisions (group-wide)</option></select></div>
           <div class="field"><label for="r-phone">Mobile <small class="opt">(optional)</small></label><input id="r-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></div>
           <div class="field"><label for="r-reason">What do you need the hub for? <small class="opt">(optional)</small></label><textarea id="r-reason" name="reason" rows="2" maxlength="300"></textarea></div>
           <div class="hp" aria-hidden="true"><label for="r-web">Website</label><input id="r-web" name="website" tabindex="-1" autocomplete="off"></div>
@@ -422,7 +442,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
   $('request').addEventListener('submit', async (e) => {
     e.preventDefault(); clear('req-alert');
     if ($('r-web').value) { fail('Could not send the request.', 'req-alert'); return; }   // honeypot: bots fill the hidden field
-    const f = { name: $('r-name').value.trim(), email: $('r-email').value.trim().toLowerCase(), unit: $('r-unit').value.trim(), title: $('r-title').value.trim(), phone: $('r-phone').value.trim(), reason: $('r-reason').value.trim() };
+    const f = { name: $('r-name').value.trim(), email: $('r-email').value.trim().toLowerCase(), unit: $('r-unit').value.trim(), title: $('r-title').value.trim(), phone: $('r-phone').value.trim(), reason: $('r-reason').value.trim(), scope: $('r-scope').value };
     const bad = [];
     mark($('r-name'), f.name.length < 2); if (f.name.length < 2) bad.push('your full name');
     mark($('r-email'), !EMAIL.test(f.email)); if (!EMAIL.test(f.email)) bad.push('a valid work e-mail');

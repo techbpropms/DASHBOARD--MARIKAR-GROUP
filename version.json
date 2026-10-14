@@ -1,8 +1,8 @@
 {
-  "version": "2026.10.14j",
-  "title": "User manual",
+  "version": "2026.10.14k",
+  "title": "Request access: functions and scope",
   "notes": [
-    "The user manual (PDF, 39 pages, with screenshots) is on the hub page and under Hub in the menu",
-    "Document UM-MGHUB-2026-01, verifiable like every hub document"
+    "Request access now lists corporate functions (Finance, Admin, HR, IT, Audit, Marketing) as well as every division",
+    "A new 'Access needed for' choice: my division, several, or all divisions"
   ]
 }
