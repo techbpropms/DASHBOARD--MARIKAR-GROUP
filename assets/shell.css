@@ -22,6 +22,8 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
 /* the bar compresses in steps: shorter labels, then icons only, then the drawer */
 @media (max-width: 1560px) { .mg-brand small, .mg-who .nm small { display: none; } .mg-top-a { padding: 8px 9px; font-size: 13px; } }
 @media (max-width: 1440px) { .mg-who .nm { display: none; } }
+/* with the Install app button in the bar, labels give way to icons a step earlier */
+@media (min-width: 901px) and (max-width: 1480px) { body.mg-has-install .mg-top-a .lbl { display: none; } body.mg-has-install .mg-top-a { padding: 8px 10px; } body.mg-has-install .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } body.mg-has-install .mg-top-a .chev { display: none; } body.mg-has-install .mg-who .nm { display: none; } }
 @media (min-width: 901px) and (max-width: 1280px) { .mg-top-a .lbl { display: none; } .mg-top-a { padding: 8px 10px; } .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } .mg-top-a .chev { display: none; } }
 
 /* ----- top menu */

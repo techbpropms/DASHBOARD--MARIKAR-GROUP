@@ -51,7 +51,7 @@
     const ev = deferred; deferred = null;
     try { ev.prompt(); const r = await ev.userChoice; if (r && r.outcome === 'accepted') pref('mg-installed', '1'); } catch (e) { /* the browser declined to show it */ }
     const c = document.getElementById('hub-install'); if (c) c.remove();
-    const bb = document.getElementById('hub-install-btn'); if (bb) bb.remove();
+    const bb = document.getElementById('hub-install-btn'); if (bb) bb.remove(); document.body.classList.remove('mg-has-install');
   }
   // "Install app" in the bar, when the browser can install right now
   function barButton() {
@@ -59,7 +59,7 @@
     const right = document.querySelector('.mg-right'); if (!right) return;
     const b = el('button', 'font:inherit;font-size:12.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 11px;cursor:pointer;white-space:nowrap', 'Install app');
     b.id = 'hub-install-btn'; b.type = 'button'; b.title = 'Install the hub as an app'; b.onclick = () => install(b);
-    right.prepend(b);
+    right.prepend(b); document.body.classList.add('mg-has-install');   // the bar compresses earlier to make room
   }
   addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; barButton(); card('native'); });
   addEventListener('appinstalled', () => { pref('mg-installed', '1'); const c = document.getElementById('hub-install'); if (c) c.remove(); const bb = document.getElementById('hub-install-btn'); if (bb) bb.remove(); });
