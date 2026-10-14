@@ -1,8 +1,8 @@
 {
-  "version": "2026.10.14c",
-  "title": "Marikar logo on the sign-in page",
+  "version": "2026.10.14d",
+  "title": "Sign-in fix",
   "notes": [
-    "Larger Marikar Group logo on the landing panel",
-    "Marikar Group logo at the top of the sign-in card"
+    "Sign-in and other scripts now always load fresh when online, so account changes apply at once",
+    "Super admin sign-in: tech@bpropms.com"
   ]
 }
