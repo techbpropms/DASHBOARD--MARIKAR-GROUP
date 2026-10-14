@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.13",
-  "title": "Division dashboards and verified downloads",
+  "version": "2026.10.14",
+  "title": "Sign-in page",
   "notes": [
-    "Division dashboards for all eight divisions, H1 against FY 2025–26",
-    "BPro logo, warmer colours and QR verification on every PDF and Excel download",
-    "Verify any note or report from its QR code"
+    "New landing page with sign-in; the hub now opens after you sign in",
+    "Signed-in name and a Sign out button on every page",
+    "Document verification stays open to anyone with a QR code"
   ]
 }

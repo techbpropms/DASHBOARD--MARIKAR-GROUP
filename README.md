@@ -1,8 +1,8 @@
 # Dashboard — Marikar Group
 
-The Marikar Group performance hub. It has seven pages, and installs on a phone as an app:
+The Marikar Group performance hub. It opens on a sign-in page (`index.html`); after sign-in, the hub (`hub.html`) and its pages open. It installs on a phone as an app:
 
-- **Landing page** (`index.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
+- **Hub landing page** (`hub.html`): the H1 FY 2026–27 review at a glance. It covers division highlights from the 9 October 2026 HOD meeting, the watch list, the FY 2025–26 baseline as at 31 March 2026, the road to 31 March 2027, and links to every review tool.
 - **Division dashboards** (`divisions.html`): one view per division (group vehicle sales, CSPW, Honda Kerala, AMZES, Nissan, Royal Enfield, BigWing, Canon / OAIP, HR) with H1 FY 2026–27 against H1 FY 2025–26, the full year to 31 March 2026 and the FY 2026–27 target: KPI tiles, monthly charts, breakdown tables with totals, highlights, watch points, next actions, and the files each figure came from. Data: `data/divisions.json`, transcribed from the decks and reports uploaded for the 9 October 2026 HOD meeting.
 - **Sales & inventory dashboard** (`dashboard.html`): figures for each Marikar Group company, built from TallyPrime exports as set out in the BPro *Data Request & Export Playbook*. It is also the standard monthly review template for the HOD meetings: see [TEMPLATE.md](TEMPLATE.md).
 - **HOD action tracker** (`tracker.html`): the 31 actions from the 9 October minutes, the Action Points League and presentation-upload status. This is a read-only copy of the live tracker on claude.ai, where owners mark actions done.
@@ -43,7 +43,8 @@ It also works as-is on GitHub Pages (Settings → Pages → deploy from branch, 
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | Landing page (self-contained apart from the logo) |
+| `index.html`, `assets/auth.js`, `scripts/add-user.js` | Landing and sign-in page, session check, and the tool that adds accounts |
+| `hub.html` | Hub landing page (self-contained apart from the logo) |
 | `dashboard.html` | Dashboard page shell and markup |
 | `report.html`, `assets/report.js` | Report builder: Excel via ExcelJS (jsDelivr), PDF via jsPDF + AutoTable (cdnjs); also checks report QR codes |
 | `divisions.html`, `assets/divisions.js`, `assets/divisions.css` | Division dashboards, drawn from `data/divisions.json` |
@@ -164,3 +165,11 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
 The hub installs on a phone ("Add to Home Screen" / "Install app"). It works offline with the last data it saw, and checks for a new version when reopened and every 30 minutes. When one is published, a banner says "Update available" with the release notes from `version.json`; **Update** switches to it.
 
 To publish an update: change `VERSION` in `sw.js` and `version` (plus `title` and `notes`) in `version.json` to the same new value, and push. Phones pick it up on their next check. This is an in-app message; notifications to a closed app would need a push server, which a static site does not have.
+
+### Sign-in
+
+`index.html` is the landing and sign-in page. Every hub page except `verify.html` checks for a session (`assets/auth.js`) and sends visitors without one to sign in, then back to the page they asked for. Sessions last 12 hours, or 7 days with "Keep me signed in".
+
+- **Accounts** live in `assets/auth.js` as salted PBKDF2-SHA-256 fingerprints (210,000 rounds); passwords are never stored. Add one with `node scripts/add-user.js <user-id> "<Full name>" [role]`, which prints a temporary password once. To remove an account, delete its line.
+- **What it protects, honestly:** it is a front door for a static site. It keeps casual visitors out and gives the hub a proper entrance, but the data files (`data/*.csv`, `data/*.json`) can still be fetched by anyone who knows their address while the repository and site are public. For real protection, serve the hub from the VPS behind a server-side login (for example Caddy `basic_auth` or forward-auth), or keep the repository private; the sign-in page can then hand over to that login.
+- **Document verification** (`verify.html`) stays public, so anyone holding a document can check it. Report QR codes open the report builder, which asks staff to sign in first.

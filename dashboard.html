@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="assets/auth.js"></script>
+<script>MGAuth.guard();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Marikar Group Sales</title>
 <link rel="icon" href="assets/img/marikar-group.png">
@@ -14,7 +16,7 @@
 <link rel="stylesheet" href="assets/dashboard.css">
 </head>
 <body>
-<nav class="dash-nav"><a href="index.html">← Marikar Group performance hub</a><a href="report.html">Report builder (PDF / Excel)</a></nav>
+<nav class="dash-nav"><a href="hub.html">← Marikar Group performance hub</a><a href="report.html">Report builder (PDF / Excel)</a></nav>
 <div id="dash-root">
 <div class="hd">
   <header class="hd-head" id="overview">
@@ -172,5 +174,6 @@
 <script src="assets/dash-shim.js"></script>
 <script src="assets/dashboard.js"></script>
 <script src="assets/pwa.js" defer></script>
+<script>MGAuth.chip();</script>
 </body>
 </html>
