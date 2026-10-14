@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="assets/auth.js"></script>
+<script>MGAuth.guard();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Settings</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/img/marikar-group.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="stylesheet" href="assets/shell.css">
+<style>
+/* Settings: appearance for every reader; People (accounts) for the super admin. Accounts live in assets/auth.js on
+   the site, so the People page edits that file and publishes it to the repository (see README, "Sign-in"). */
+:root {
+  --bg: #f7f2ea; --surface: #fffcf7; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1;
+  --mast: #131c38; --mast-2: #1f2b55; --violet: #5b4f9e; --gray: #d49a3a; --gold: #b8612b;
+  --accent-text: #5b4f9e; --sub: #f4eee4; --ok: #2d7550; --ok-soft: #e6f0e6; --bad: #a63a2a; --bad-soft: #f9e6df; --warn: #92560a; --warn-soft: #fbefd9;
+  --f-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52;
+  --accent-text: #c9bff5; --sub: #29231d; --ok: #6cc9a0; --ok-soft: #16302a; --bad: #ef8a7e; --bad-soft: #3a2220; --warn: #e2ab5a; --warn-soft: #3a2e1a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229;
+  --mast: #0e1530; --mast-2: #18214a; --violet: #8a7ed8; --gray: #e0a24a; --gold: #d98a52;
+  --accent-text: #c9bff5; --sub: #29231d; --ok: #6cc9a0; --ok-soft: #16302a; --bad: #ef8a7e; --bad-soft: #3a2220; --warn: #e2ab5a; --warn-soft: #3a2e1a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
+a { color: var(--accent-text); }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 960px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+.mast { background: linear-gradient(180deg, var(--mast) 0%, var(--mast-2) 100%); color: #fff; padding-block: 30px 28px; position: relative; }
+.mast::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: linear-gradient(90deg, var(--violet) 0 72%, var(--gray) 72% 100%); }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.mast h1 { font-size: clamp(24px, 3.6vw, 34px); line-height: 1.15; font-weight: 800; margin: 4px 0 6px; }
+.mast p { margin: 0; opacity: .85; max-width: 62ch; }
+main { padding-block: 24px 40px; display: flex; flex-direction: column; gap: 20px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; min-width: 0; scroll-margin-top: 70px; }
+.panel h2 { font-size: 18px; font-weight: 800; margin: 0 0 4px; }
+.panel h3 { font-size: 14px; font-weight: 800; margin: 18px 0 8px; }
+.muted { color: var(--muted); font-size: 13.5px; margin: 0 0 12px; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.choice { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font: inherit; color: inherit; text-align: left; background: var(--sub); border: 2px solid var(--line); border-radius: 14px; padding: 14px; cursor: pointer; }
+.choice:hover { border-color: var(--violet); }
+.choice[aria-pressed="true"] { border-color: var(--violet); box-shadow: 0 0 0 3px color-mix(in srgb, var(--violet) 18%, transparent); }
+.choice b { font-size: 14px; } .choice small { color: var(--muted); font-size: 12.5px; }
+.choice .pv { width: 100%; height: 54px; border-radius: 8px; border: 1px solid var(--line); position: relative; overflow: hidden; }
+.pv.light { background: #f7f2ea; } .pv.dark { background: #16130f; } .pv.system { background: linear-gradient(100deg, #f7f2ea 50%, #16130f 50%); }
+.pv.top::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 12px; background: #131c38; }
+.pv.side::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 22%; background: #131c38; }
+.pv.light::after, .pv.dark::after, .pv.system::after { content: ""; position: absolute; left: 14px; right: 14px; top: 20px; height: 8px; border-radius: 4px; background: #5b4f9e; opacity: .6; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+td.act { white-space: nowrap; text-align: right; }
+.pill { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 9px; background: var(--sub); border: 1px solid var(--line); }
+.pill.superadmin { color: var(--gold); } .pill.admin { color: var(--accent-text); }
+form.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: end; }
+label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 5px; }
+input, select { width: 100%; font: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+.btn { font: inherit; font-weight: 700; font-size: 13.5px; border-radius: 10px; padding: 9px 16px; cursor: pointer; border: 1px solid var(--mast-2); background: var(--mast-2); color: #fff; white-space: nowrap; }
+.btn.sec { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn.sm { padding: 5px 10px; font-size: 12.5px; }
+.btn.danger { color: var(--bad); border-color: var(--bad); background: transparent; }
+.btn[disabled] { opacity: .6; cursor: progress; }
+.note { border-radius: 12px; padding: 12px 14px; font-size: 13.5px; border: 1px solid; margin-top: 12px; }
+.note[hidden] { display: none; }
+.note.ok { background: var(--ok-soft); border-color: var(--ok); } .note.bad { background: var(--bad-soft); border-color: var(--bad); } .note.warn { background: var(--warn-soft); border-color: var(--warn); }
+.note p { margin: 0 0 6px; } .note p:last-child { margin: 0; }
+.pw { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.pw code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 17px; font-weight: 700; letter-spacing: .04em; background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; padding: 6px 12px; }
+.pending { margin-top: 16px; border: 1px solid var(--warn); background: var(--warn-soft); border-radius: 12px; padding: 14px; }
+.pending[hidden] { display: none; }
+.pending ul { margin: 6px 0 10px; padding-left: 18px; font-size: 13.5px; }
+.pending .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font-weight: 700; }
+.token { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.token input { flex: 1 1 260px; }
+.credit { text-align: center; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<header class="mast">
+  <div class="wrap">
+    <div class="eyebrow">Marikar Group · Performance hub</div>
+    <h1>Settings</h1>
+    <p>How the hub looks for you, and (for the super admin) who can sign in.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel" id="appearance">
+    <h2>Appearance</h2>
+    <p class="muted">Saved in this browser only. Each person chooses their own.</p>
+    <h3>Theme</h3>
+    <div class="choices" id="theme-choices">
+      <button type="button" class="choice" data-t="system"><span class="pv system"></span><b>System</b><small>Follows your device's light or dark setting</small></button>
+      <button type="button" class="choice" data-t="light"><span class="pv light"></span><b>Light</b><small>Warm paper tones</small></button>
+      <button type="button" class="choice" data-t="dark"><span class="pv dark"></span><b>Dark</b><small>Easier on the eyes at night</small></button>
+    </div>
+    <h3>Menu position</h3>
+    <div class="choices" id="nav-choices">
+      <button type="button" class="choice" data-n="top"><span class="pv light top"></span><b>Top bar</b><small>Menus drop down from the bar</small></button>
+      <button type="button" class="choice" data-n="side"><span class="pv light side"></span><b>Sidebar</b><small>The full menu stays open on the left</small></button>
+    </div>
+    <p class="muted" style="margin:10px 0 0">On phones the menu opens from the ☰ button in either case.</p>
+  </section>
+
+  <section class="panel" id="people" hidden>
+    <h2>People</h2>
+    <p class="muted">Who can sign in to the hub. Passwords are never stored: each account keeps only a salted fingerprint. Changes made here are queued below and go live when you publish them.</p>
+    <table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th></th></tr></thead><tbody></tbody></table>
+
+    <h3>Add a person</h3>
+    <form class="grid" id="add" novalidate>
+      <div><label for="p-name">Full name</label><input id="p-name" autocomplete="off" required></div>
+      <div><label for="p-id">User ID (e-mail)</label><input id="p-id" type="email" autocomplete="off" autocapitalize="none" spellcheck="false" required></div>
+      <div><label for="p-role">Role</label><select id="p-role"><option value="viewer">Viewer</option><option value="admin">Admin</option><option value="superadmin">Super admin</option></select></div>
+      <div><button class="btn" type="submit" id="add-go">Create account</button></div>
+    </form>
+    <div class="note" id="add-note" hidden></div>
+
+    <div class="pending" id="pending" hidden>
+      <b>Changes waiting to go live</b>
+      <ul id="pending-list"></ul>
+      <div class="actions">
+        <button class="btn" type="button" id="publish">Publish to the site</button>
+        <button class="btn sec" type="button" id="mail">Send to BPro instead</button>
+        <button class="btn sec" type="button" id="discard">Discard</button>
+      </div>
+      <details id="token-box">
+        <summary>Publishing needs a GitHub token (once per sign-in)</summary>
+        <p class="muted" style="margin:8px 0 4px">Publishing writes <code>assets/auth.js</code> to the repository <b>techbpropms/DASHBOARD--MARIKAR-GROUP</b>; the site updates itself within a minute or two. Create a fine-grained personal access token on GitHub with <b>Contents: read and write</b> on that repository only, paste it here, and it is kept in this browser tab until you sign out. If you would rather not, use "Send to BPro instead".</p>
+        <div class="token"><input id="gh-token" type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub token"><button class="btn sec" type="button" id="token-save">Keep for this sign-in</button></div>
+      </details>
+      <div class="note" id="pub-note" hidden></div>
+    </div>
+  </section>
+
+  <section class="panel" id="no-people" hidden>
+    <h2>People</h2>
+    <p class="muted">Accounts are managed by the super admin. To get someone access, write to <a href="mailto:tech@bpropms.com?subject=Marikar%20hub%20access">tech@bpropms.com</a>.</p>
+  </section>
+
+  <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const user = MGAuth.user(); if (!user) return;
+
+  // ----- appearance
+  const paintTheme = () => { const t = MGAuth.theme(); document.querySelectorAll('#theme-choices .choice').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.t === t))); };
+  document.querySelectorAll('#theme-choices .choice').forEach((b) => b.addEventListener('click', () => { MGAuth.theme(b.dataset.t); paintTheme(); document.querySelectorAll('.mg-theme button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.t === b.dataset.t))); }));
+  paintTheme();
+  const paintNav = () => { const n = MGShell.nav(); document.querySelectorAll('#nav-choices .choice').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.n === n))); };
+  document.querySelectorAll('#nav-choices .choice').forEach((b) => b.addEventListener('click', () => { if (MGShell.nav() !== b.dataset.n) { MGShell.nav(b.dataset.n); location.reload(); } }));
+  if (window.MGShell) paintNav(); else document.addEventListener('DOMContentLoaded', paintNav);
+
+  // ----- people (super admin only)
+  if (user.role !== 'superadmin') { $('no-people').hidden = false; return; }
+  $('people').hidden = false;
+  const REPO = { owner: 'techbpropms', repo: 'DASHBOARD--MARIKAR-GROUP', path: 'assets/auth.js', branch: 'main' };
+  const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const A = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  const pick = (n) => Array.from(crypto.getRandomValues(new Uint8Array(n)), (b) => A[b % A.length]).join('');
+  const line = (u) => `    { id: '${u.id}', name: ${JSON.stringify(u.name)}, role: '${u.role}', salt: '${u.salt}', hash: '${u.hash}' },`;
+  const lineRe = (id) => new RegExp(`\\n[ \\t]*\\{ id: '${id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}',[^\\n]*`);
+  // The queue: account lines to add and ids to remove, applied to the live auth.js at publish time.
+  const queue = { add: [], remove: [] };
+  let accounts = MGAuth.list();
+
+  const roleName = (r) => r === 'superadmin' ? 'Super admin' : r === 'admin' ? 'Admin' : 'Viewer';
+  function paintTable() {
+    const tb = document.querySelector('#people-table tbody'); tb.replaceChildren();
+    const rows = accounts.filter((a) => !queue.remove.includes(a.id)).concat(queue.add.filter((a) => !accounts.some((x) => x.id === a.id)).map((a) => ({ ...a, pending: true })));
+    rows.forEach((a) => {
+      const tr = document.createElement('tr');
+      const td = (t) => { const c = document.createElement('td'); c.textContent = t; tr.appendChild(c); return c; };
+      td(a.name + (a.pending ? ' (new)' : '')); td(a.id);
+      const r = td(''); const p = document.createElement('span'); p.className = 'pill ' + a.role; p.textContent = roleName(a.role); r.appendChild(p);
+      const act = td(''); act.className = 'act';
+      if (!a.pending) {
+        const reset = document.createElement('button'); reset.type = 'button'; reset.className = 'btn sm sec'; reset.textContent = 'Reset password';
+        reset.addEventListener('click', () => create(a.name, a.id, a.role, true));
+        act.append(reset, ' ');
+        if (a.id !== user.id) {
+          const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn sm danger'; rm.textContent = 'Remove';
+          rm.addEventListener('click', () => { if (confirm(`Remove ${a.name} (${a.id})? They will not be able to sign in once published.`)) { queue.remove.push(a.id); paintTable(); paintPending(); } });
+          act.append(rm);
+        }
+      }
+      tb.appendChild(tr);
+    });
+  }
+  function paintPending() {
+    const ul = $('pending-list'); ul.replaceChildren();
+    queue.add.forEach((a) => { const li = document.createElement('li'); li.textContent = `${accounts.some((x) => x.id === a.id) ? 'Reset password for' : 'Add'} ${a.name} (${a.id}, ${roleName(a.role)})`; ul.appendChild(li); });
+    queue.remove.forEach((id) => { const li = document.createElement('li'); li.textContent = `Remove ${id}`; ul.appendChild(li); });
+    $('pending').hidden = !(queue.add.length || queue.remove.length);
+  }
+  function say(id, cls, lines) { const n = $(id); n.className = 'note ' + cls; n.replaceChildren(...lines.map((t) => { const p = document.createElement('p'); if (typeof t === 'string') p.textContent = t; else p.append(...t); return p; })); n.hidden = false; }
+
+  async function create(name, id, role, reset) {
+    const pw = `MG-${pick(4)}-${pick(4)}-${pick(4)}`;
+    const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
+    const hash = await MGAuth.derive(pw, salt);
+    queue.add = queue.add.filter((a) => a.id !== id); queue.remove = queue.remove.filter((x) => x !== id);
+    queue.add.push({ id, name, role, salt, hash });
+    const code = document.createElement('code'); code.textContent = pw;
+    const copy = document.createElement('button'); copy.type = 'button'; copy.className = 'btn sm sec'; copy.textContent = 'Copy';
+    copy.addEventListener('click', () => navigator.clipboard.writeText(pw).then(() => { copy.textContent = 'Copied'; }));
+    const wrap = document.createElement('span'); wrap.className = 'pw'; wrap.append(code, copy);
+    say('add-note', 'ok', [`${reset ? 'New password for' : 'Account ready for'} ${name} (${id}). Give them this temporary password now; it is shown only once and is not stored anywhere:`, [wrap], 'It starts working once you publish the change below.']);
+    paintTable(); paintPending();
+  }
+  $('add').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('p-name').value.trim(), id = $('p-id').value.trim().toLowerCase(), role = $('p-role').value;
+    if (!name || !/^[a-z0-9._@+-]+$/.test(id)) { say('add-note', 'bad', ['Enter the person\'s name and an e-mail style user ID (letters, digits, . _ @ + -).']); return; }
+    if (accounts.some((a) => a.id === id) && !queue.remove.includes(id)) { say('add-note', 'bad', [`${id} already has an account. Use "Reset password" in the list to issue a new password.`]); return; }
+    create(name, id, role, false); $('add').reset();
+  });
+  $('discard').addEventListener('click', () => { queue.add = []; queue.remove = []; $('add-note').hidden = true; $('pub-note').hidden = true; paintTable(); paintPending(); });
+
+  // ----- publishing
+  const tokenKey = 'mg-gh-token';
+  const token = () => { try { return sessionStorage.getItem(tokenKey) || ''; } catch (e) { return ''; } };
+  $('token-save').addEventListener('click', () => { const t = $('gh-token').value.trim(); try { if (t) sessionStorage.setItem(tokenKey, t); else sessionStorage.removeItem(tokenKey); } catch (e) { /* blocked */ } $('gh-token').value = ''; say('pub-note', t ? 'ok' : 'warn', [t ? 'Token kept for this sign-in. Click "Publish to the site".' : 'Token cleared.']); });
+  const apply = (src) => {
+    let s = src;
+    queue.remove.forEach((id) => { s = s.replace(lineRe(id), ''); });
+    queue.add.forEach((a) => { s = s.replace(lineRe(a.id), ''); s = s.replace(/\n(\s*\];\s*\n\s*const ROUNDS)/, `\n${line(a)}\n$1`); });
+    if (!queue.add.every((a) => s.includes(`id: '${a.id}'`))) throw new Error('could not place the account line; the file layout has changed');
+    return s;
+  };
+  $('publish').addEventListener('click', async () => {
+    if (!token()) { $('token-box').open = true; say('pub-note', 'warn', ['Paste a GitHub token first (or use "Send to BPro instead").']); return; }
+    const b = $('publish'); b.disabled = true; b.textContent = 'Publishing…';
+    try {
+      const api = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${REPO.path}`;
+      const H = { Authorization: 'Bearer ' + token(), Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+      const cur = await fetch(`${api}?ref=${REPO.branch}`, { headers: H });
+      if (!cur.ok) throw new Error(cur.status === 401 ? 'GitHub did not accept the token' : cur.status === 404 ? 'the token cannot see the repository' : `GitHub answered ${cur.status}`);
+      const meta = await cur.json();
+      const src = new TextDecoder().decode(Uint8Array.from(atob(meta.content.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
+      const out = apply(src);
+      const bytes = new TextEncoder().encode(out); let bin = ''; bytes.forEach((x) => { bin += String.fromCharCode(x); });
+      const what = queue.add.map((a) => (accounts.some((x) => x.id === a.id) ? 'reset ' : 'add ') + a.id).concat(queue.remove.map((id) => 'remove ' + id)).join(', ');
+      const put = await fetch(api, { method: 'PUT', headers: H, body: JSON.stringify({ message: `Accounts: ${what}\n\nPublished from the hub's People page by ${user.id}.`, content: btoa(bin), sha: meta.sha, branch: REPO.branch }) });
+      if (!put.ok) throw new Error(put.status === 409 ? 'the file changed on GitHub meanwhile; try again' : `GitHub refused the update (${put.status})`);
+      accounts = accounts.filter((a) => !queue.remove.includes(a.id)).concat(queue.add.filter((a) => !accounts.some((x) => x.id === a.id)).map(({ id, name, role }) => ({ id, name, role })));
+      queue.add = []; queue.remove = [];
+      paintTable(); paintPending();
+      say('pub-note', 'ok', ['Published. The site rebuilds in about a minute; new passwords work after that. Installed phone apps pick it up on their next open.']);
+      $('pending').hidden = false; setTimeout(() => { if (!queue.add.length && !queue.remove.length) $('pending').hidden = true; }, 8000);
+    } catch (err) {
+      say('pub-note', 'bad', [`Not published: ${err.message}.`, 'Nothing was changed. You can try again or use "Send to BPro instead".']);
+    } finally { b.disabled = false; b.textContent = 'Publish to the site'; }
+  });
+  $('mail').addEventListener('click', () => {
+    const body = ['Please apply these account changes to assets/auth.js on the Marikar hub:', '',
+      ...queue.add.map((a) => `ADD/RESET:\n${line(a)}`), ...queue.remove.map((id) => `REMOVE: ${id}`), '', `Requested by ${user.name} (${user.id}).`].join('\n');
+    navigator.clipboard.writeText(body).catch(() => {});
+    location.href = 'mailto:tech@bpropms.com?subject=' + encodeURIComponent('Marikar hub: account changes') + '&body=' + encodeURIComponent(body);
+    say('pub-note', 'ok', ['The request (account lines only; no passwords) was copied and opened in your mail app. Send it to tech@bpropms.com.']);
+  });
+  paintTable(); paintPending();
+})();
+</script>
+<script src="assets/shell.js"></script>
+<script src="assets/pwa.js" defer></script>
+</body>
+</html>

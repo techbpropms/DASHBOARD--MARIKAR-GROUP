@@ -145,9 +145,14 @@
     list('d-high', d.highlights); list('d-conc', d.concerns); list('d-act', d.actions); list('d-gaps', d.gaps);
     $('d-files').replaceChildren(...(d.files || []).map((f) => { const li = el('li', null, f.title + ' '); if (f.period) li.append(el('small', null, `(${f.period})`)); return li; }));
   }
-  function showOverview() {
+  // The overview: every division, or one group's divisions (a consolidation: data/divisions.json "groups").
+  function showOverview(group) {
     $('division').hidden = true; $('overview').hidden = false;
-    $('overview').replaceChildren(...DATA.divisions.map((d) => {
+    const divs = group ? group.divisions.map((k) => DATA.divisions.find((x) => x.key === k)).filter(Boolean) : DATA.divisions;
+    const head = $('overview-head');
+    if (group) { head.hidden = false; $('g-name').textContent = group.name; $('g-what').textContent = group.what || ''; $('g-count').textContent = `${divs.length} division${divs.length === 1 ? '' : 's'}`; }
+    else head.hidden = true;
+    $('overview').replaceChildren(...divs.map((d) => {
       const c = el('button', 'dv-card'); c.type = 'button';
       const row = el('div', 'row'); row.append(el('span', 'nm', d.name), el('span', 'dv-status ' + (d.status || 'plan'), d.status_label || ''));
       c.append(row, el('span', 'what', d.what || ''));
@@ -159,16 +164,18 @@
   function route() {
     const key = decodeURIComponent(location.hash.slice(1));
     const d = DATA.divisions.find((x) => x.key === key);
-    document.querySelectorAll('.dv-chip').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.key === (d ? d.key : ''))));
+    const g = key.startsWith('g=') ? (DATA.groups || []).find((x) => x.key === key.slice(2)) : null;
+    document.querySelectorAll('.dv-chip').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.key === (d ? d.key : g ? 'g=' + g.key : ''))));
     hideTip();
-    if (d) showDivision(d); else showOverview();
+    if (d) showDivision(d); else showOverview(g);
   }
 
   fetch('data/divisions.json').then((r) => r.json()).then((data) => {
     DATA = data;
     if (data.takeaway) $('takeaway').textContent = data.takeaway;
     const chip = (key, label) => { const b = el('button', 'dv-chip', label); b.type = 'button'; b.dataset.key = key; b.setAttribute('role', 'tab'); b.addEventListener('click', () => { location.hash = key; if (!key) history.replaceState(null, '', location.pathname); route(); }); return b; };
-    $('chips').replaceChildren(chip('', 'All divisions'), ...data.divisions.map((d) => chip(d.key, d.name)));
+    const gchips = (data.groups || []).map((g) => { const b = chip('g=' + g.key, g.name); b.classList.add('grp'); return b; });
+    $('chips').replaceChildren(chip('', 'All divisions'), ...gchips, ...data.divisions.map((d) => chip(d.key, d.name)));
     addEventListener('hashchange', route);
     let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(route, 200); });
     route();

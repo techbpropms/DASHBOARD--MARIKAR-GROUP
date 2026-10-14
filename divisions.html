@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="assets/theme.css">
 <link rel="stylesheet" href="assets/dashboard.css">
 <link rel="stylesheet" href="assets/divisions.css">
+<link rel="stylesheet" href="assets/shell.css">
 </head>
 <body>
 <nav class="dash-nav"><a href="hub.html">← Marikar Group performance hub</a><a href="dashboard.html">Sales &amp; inventory dashboard</a><a href="tracker.html">HOD action tracker</a></nav>
@@ -31,7 +32,11 @@
 
   <div class="dv-chips" id="chips" role="tablist" aria-label="Division"></div>
 
-  <section id="overview" class="dv-overview" aria-label="All divisions"></section>
+  <header class="dv-head dv-ghead" id="overview-head" hidden>
+    <div><div class="dv-eyebrow">Division group</div><h2 id="g-name"></h2><p id="g-what"></p></div>
+    <span class="dv-status plan" id="g-count"></span>
+  </header>
+  <section id="overview" class="dv-overview" aria-label="Divisions"></section>
 
   <section id="division" hidden>
     <header class="dv-head">
@@ -64,6 +69,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="assets/divisions.js"></script>
 <script src="assets/pwa.js" defer></script>
-<script>MGAuth.chip();</script>
+<script src="assets/shell.js"></script>
 </body>
 </html>

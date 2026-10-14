@@ -3,6 +3,9 @@
 .dv-chip { font: inherit; font-size: var(--cds-font-size-caption); font-weight: 600; border: 1px solid var(--color-border-line); background: var(--color-panel); color: var(--color-fg); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
 .dv-chip:hover { border-color: var(--hd-s1); }
 .dv-chip[aria-selected="true"] { background: var(--hd-mast-2); border-color: var(--hd-mast-2); color: #fff; }
+.dv-chip.grp { border-color: color-mix(in srgb, var(--hd-gold) 55%, transparent); color: var(--hd-gold); }
+.dv-chip.grp[aria-selected="true"] { background: var(--hd-gold); border-color: var(--hd-gold); color: #fff; }
+.dv-ghead[hidden] { display: none; }
 
 .dv-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--cds-gap-md); }
 .dv-card { text-align: left; font: inherit; color: inherit; background: var(--color-panel); border: 1px solid var(--color-border-line); border-top: 3px solid var(--hd-gold); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: 6px; cursor: pointer; transition: transform .15s, box-shadow .15s; }

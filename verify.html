@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="assets/auth.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Document Verification</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +12,7 @@
 <meta name="theme-color" content="#131c38">
 <link rel="apple-touch-icon" href="assets/img/icon-192.png">
 <link rel="stylesheet" href="assets/brand.css">
+<link rel="stylesheet" href="assets/shell.css">
 <style>
 /* Verifies documents issued from the hub: fixed documents against data/verify/registry.json, and report
    downloads by handing their QR link to the report builder, which rebuilds and checks them. */
@@ -159,6 +161,7 @@ input[type="text"] { font: inherit; font-size: 14px; padding: 8px 12px; border: 
   if (d) verify(d);
 })();
 </script>
+<script src="assets/shell.js"></script>
 <script src="assets/pwa.js" defer></script>
 </body>
 </html>

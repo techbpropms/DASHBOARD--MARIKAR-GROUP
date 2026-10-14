@@ -1,4 +1,4 @@
-/* Design tokens used by dashboard.css / dashboard.js. Light by default, dark via prefers-color-scheme. */
+/* Design tokens used by dashboard.css / dashboard.js. Light by default, dark via prefers-color-scheme or data-theme="dark" on <html> (the theme switch in the bar). */
 :root {
   --font-anthropic-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-anthropic-serif: Georgia, "Times New Roman", serif;
@@ -35,7 +35,7 @@
   --dash-gutter: clamp(16px, 4vw, 48px);
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --color-bg: #16130f;
     --color-panel: #1f1b17;
     --color-fg: #f1ebe2;
@@ -54,6 +54,24 @@
     --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .5);
   }
 }
+:root[data-theme="dark"] {
+    --color-bg: #16130f;
+    --color-panel: #1f1b17;
+    --color-fg: #f1ebe2;
+    --color-fg-muted: #b2a698;
+    --color-border-line: #3a3229;
+    --color-ok: #5cc28e;
+    --color-warn: #e0a24a;
+    --color-bad: #ef6f5e;
+    --cds-chart-grid: #2c2620;
+    --cds-chart-axis: #5e5448;
+    --cds-chart-muted: #3a3229;
+    --cds-chart-status-critical: #ef6f5e;
+    --cds-surface-popover: #29231d;
+    --cds-border: #423930;
+    --cds-text-secondary: #b2a698;
+    --cds-shadow-popover: 0 4px 16px rgba(0, 0, 0, .5);
+  }
 
 * { box-sizing: border-box; }
 body {
