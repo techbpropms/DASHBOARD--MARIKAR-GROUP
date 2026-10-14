@@ -9,12 +9,12 @@
     "sha256": "0ee2786414f4bd19c34c99d53b72a491faf03a31cdf9378ed8192fe57d9b1126"
   },
   "UM-MGHUB-2026-01": {
-    "title": "Marikar Group Performance Hub — User Manual v1.0",
+    "title": "Marikar Group Performance Hub — User Manual v1.1",
     "issued": "2026-10-14",
     "issuer": "Dr. Babu B., BPro Consulting & Technologies",
     "recipient": "Marikar Group leadership, HODs and authorised users",
-    "pages": 39,
+    "pages": 41,
     "file": "docs/manual/manual.pdf",
-    "sha256": "67acafbb4817e73d8361cb8348d25bbb405d97c7a07d42ba12423bced199ad49"
+    "sha256": "eaa47488982454dbda670a2b67c97ddc1fad98694b5ae0a3f80ae3d8f8bd46be"
   }
 }
