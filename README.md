@@ -163,7 +163,7 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
 
   ```sh
   cd scripts/letterhead
-  node build.js note.html /tmp/note.html RN-HDATL-2026-01 https://techbpropms.github.io/DASHBOARD--MARIKAR-GROUP/
+  node build.js note.html /tmp/note.html RN-HDATL-2026-01 https://mmlpbi.bpropms.in/
   node render.js /tmp/note.html /tmp/note.pdf
   python3 finish.py /tmp/note.pdf ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf RN-HDATL-2026-01
   sha256sum ../../docs/HD_Attingal_Reconciliation_Note_BPro.pdf
@@ -178,6 +178,27 @@ To refresh the snapshot, export the tracker's `actions`, `uploads` and `upload_m
 The hub installs on a phone ("Add to Home Screen" / "Install app"). It works offline with the last data it saw, and checks for a new version when reopened and every 30 minutes. When one is published, a banner says "Update available" with the release notes from `version.json`; **Update** switches to it.
 
 To publish an update: change `VERSION` in `sw.js` and `version` (plus `title` and `notes`) in `version.json` to the same new value, and push. Phones pick it up on their next check. This is an in-app message; notifications to a closed app would need a push server, which a static site does not have.
+
+### Web address
+
+The hub is published by GitHub Pages from `main` (root folder). Its own address is
+**https://mmlpbi.bpropms.in**; the old `https://techbpropms.github.io/DASHBOARD--MARIKAR-GROUP/`
+redirects there once the domain is live, so QR codes already printed keep working.
+
+To connect it:
+
+1. In the DNS panel for bpropms.in, add a **CNAME** record: name `mmlpbi`, target `techbpropms.github.io`
+   (no path). Leave the `@` and `www` records alone.
+2. In this repository, go to **Settings → Pages → Custom domain**, enter `mmlpbi.bpropms.in` and save.
+   GitHub adds a `CNAME` file to `main`. Do not add that file before the DNS record exists, or the site
+   redirects to an address that does not answer yet.
+3. When the DNS check passes, tick **Enforce HTTPS** (the certificate can take up to an hour).
+4. Recommended: verify `bpropms.in` under the account's **Settings → Pages → Verified domains** (a TXT record),
+   so no one else can claim the subdomain on GitHub.
+
+Downloads build their verification links from the address the page is open on, so nothing else needs
+changing. A new address means fresh browser storage: everyone signs in once more, and phone users reinstall
+the app from the new address.
 
 ### Sign-in
 
