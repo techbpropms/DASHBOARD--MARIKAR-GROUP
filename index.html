@@ -114,6 +114,17 @@ main { padding-block: 36px 24px; display: flex; flex-direction: column; gap: 48p
 .dv .next { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; margin-top: auto; }
 .dv .next b { color: var(--ink); font-weight: 600; }
 
+/* Financial position */
+.fin { margin-top: 18px; }
+.fin .kpis { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (max-width: 1000px) { .fin .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .fin .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fin-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .fin-body { grid-template-columns: minmax(0, 1fr); } }
+.fin .lg { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.fin .lg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.fin .src { font-size: 12px; color: var(--muted); margin: 14px 0 0; border-top: 1px solid var(--line); padding-top: 10px; }
+.fin .tag { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 8px; background: var(--warn-soft); color: var(--warn); margin-left: 4px; }
 /* Baseline */
 .base { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
 @media (max-width: 860px) { .base { grid-template-columns: minmax(0, 1fr); } }
@@ -368,6 +379,30 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
         <div class="sticky">Reconciles to Tally's Grand Total to the paisa. Five more files and the year-on-year view opens.</div>
       </div>
     </div>
+    <div class="panel fin" id="financial-position">
+      <h3>Financial position — FY 2025–26</h3>
+      <p class="sub">Debt, cost of debt and stock at 31 March 2026, against the two years before. Provisional accounts.</p>
+      <div class="kpis">
+        <div class="kpi"><b class="num">₹36.94 Cr</b><span>Total borrowings</span> <span class="d down">+40.6%</span><span class="tag" title="From the auditor's ratio note, as reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num">₹36.46 Cr</b><span>Net worth</span> <span class="d up">+4.0%</span><span class="tag" title="As reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num">1.01x</b><span>Debt to equity, from 0.75x</span><span class="tag" title="Auditor's ratio note (Note 28.30), as reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num down">0.46x</b><span>Debt service coverage, from 1.37x</span><span class="tag" title="Auditor's ratio note (Note 28.30), as reported in the IPO-readiness review">confirm</span></div>
+        <div class="kpi"><b class="num">₹3.79 Cr</b><span>Finance costs, from ₹2.34 Cr</span> <span class="d down">+62.2%</span></div>
+        <div class="kpi"><b class="num">₹16.16 Cr</b><span>Inventories, from ₹12.83 Cr</span> <span class="d down">+26.0%</span></div>
+      </div>
+      <div class="fin-body">
+        <div>
+          <svg class="chart" id="debt-chart" viewBox="0 0 520 210" role="img" aria-label="Borrowings and net worth in crore. FY24: borrowings 15.43, net worth 33.56. FY25: 26.27 and 35.07. FY26: 36.94 and 36.46."></svg>
+          <div class="lg"><span><i style="background:var(--gold)"></i>Total borrowings</span><span><i style="background:var(--violet)"></i>Net worth</span></div>
+        </div>
+        <div>
+          <p class="sub" style="margin-top:0">Operating profit is at a four-year high (₹5.01 Cr). The fall in net profit comes from the cost of debt, not from trading.</p>
+          <p class="sub">Borrowings have more than doubled in two years and now match net worth. In FY 2025–26, operating cash covered under half of the year's debt service (0.46x, against at least 1x for comfort).</p>
+          <p class="ask"><b>Ask Accounts:</b> how much of the new borrowing funds stock, and is moving the new term loans to longer tenors planned? A coverage ratio below 1x needs an explanation before any lender or banker reviews the accounts.</p>
+        </div>
+      </div>
+      <p class="src">Sources: finance costs and inventories from the provisional financial statements, year ended 31 March 2026. Borrowings, net worth and both ratios as reported from the auditor's ratio note (Note 28.30) in the IPO-readiness review; marked <span class="tag">confirm</span> until checked against the signed accounts.</p>
+    </div>
   </section>
 
   <section id="insights">
@@ -490,6 +525,21 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
     });
   });
   add('line', { x1: x(0), x2: x(0), y1: 6, y2: 184, class: 'zero' });
+
+  // Borrowings against net worth, FY24-FY26 (₹ crore): debt has caught up with equity.
+  const d = document.getElementById('debt-chart');
+  const yrs = [['FY24', 15.43, 33.56], ['FY25', 26.27, 35.07], ['FY26', 36.94, 36.46]];
+  const put = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; d.appendChild(e); return e; };
+  const DH = 210, dt = 26, db = 26, dmax = 40, gw = 520 / yrs.length, b = 58;
+  const yv = (v) => DH - db - (DH - dt - db) * v / dmax;
+  yrs.forEach(([label, debt, nw], i) => {
+    const cx = gw * i + gw / 2;
+    [[debt, 'var(--gold)', -b - 2], [nw, 'var(--violet)', 2]].forEach(([v, col, dx]) => {
+      put('rect', { x: cx + dx, y: yv(v), width: b, height: DH - db - yv(v), rx: 5, fill: col });
+      put('text', { x: cx + dx + b / 2, y: yv(v) - 6, 'text-anchor': 'middle', class: 'v' }, v.toFixed(2));
+    });
+    put('text', { x: cx, y: DH - 7, 'text-anchor': 'middle' }, label);
+  });
 })();
 </script>
 <script src="assets/pwa.js" defer></script>
