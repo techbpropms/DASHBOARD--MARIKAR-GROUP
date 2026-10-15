@@ -1,38 +1,7 @@
 {
-  "updated": "2026-10-15T08:37:29+00:00",
+  "updated": "2026-10-15T08:40:09+00:00",
   "reminded_at": "",
-  "pending": [
-    {
-      "ref": "AR-20261015-E012",
-      "kind": "access",
-      "name": "AMUL VERGHESE",
-      "email": "amul.verghese@marikar.in",
-      "unit": "Marikar Group — Management / Corporate",
-      "scope": "All divisions",
-      "title": "HEAD LEGAL",
-      "reason": "Overview of group business, identifying trend change early and plan countermeasures, financials P&L of divisions and individual units, pland growth engines and trim down, manpower assessment, support HODs when required",
-      "at": "2026-10-15T04:53:42.475Z",
-      "received": "2026-10-15T04:57:09+00:00",
-      "from": "amul.verghese@marikar.in",
-      "mid": "<CAL=ioo1wYr6xf7tAizkR-X=gLByMt5AcN69aNfw62h7qz_hPLA@mail.gmail.com>",
-      "acked": "2026-10-15T08:37:29+00:00"
-    },
-    {
-      "ref": "AR-20261015-B4C7",
-      "kind": "access",
-      "name": "GOPAKUMAR.H",
-      "email": "gopakumar@marikarengineers.com",
-      "unit": "IT",
-      "scope": "My division",
-      "title": "Manager-IT",
-      "reason": "Fine tune the existing IT gap areas. New ideas and IT related projects implementations",
-      "at": "2026-10-15T08:09:59.252Z",
-      "received": "2026-10-15T08:10:36+00:00",
-      "from": "gopakumar@marikarengineers.com",
-      "mid": "<PN2P287MB0838FCA35217292869B8F3FBC99C2@PN2P287MB0838.INDP287.PROD.OUTLOOK.COM>",
-      "acked": "2026-10-15T08:37:29+00:00"
-    }
-  ],
+  "pending": [],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
@@ -60,6 +29,18 @@
     "AR-20261015-08FF": {
       "status": "approved",
       "at": "2026-10-15T08:35:30+00:00",
+      "by": "babukadavoor@gmail.com",
+      "role": "viewer"
+    },
+    "AR-20261015-E012": {
+      "status": "approved",
+      "at": "2026-10-15T08:40:09+00:00",
+      "by": "babukadavoor@gmail.com",
+      "role": "viewer"
+    },
+    "AR-20261015-B4C7": {
+      "status": "approved",
+      "at": "2026-10-15T08:40:09+00:00",
       "by": "babukadavoor@gmail.com",
       "role": "viewer"
     }

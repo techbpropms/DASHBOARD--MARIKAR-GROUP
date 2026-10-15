@@ -9,6 +9,8 @@
     { id: 'hrmanager@marikarmotors.com', name: "Abhilash A G", role: 'viewer', salt: '8a9cf8823db12db859a1a088baad8da2', hash: '5cec829ac472f73487ca14241da9141075cacf77069d1a13ba4742071cdd92dd' },
     { id: 'manikuttan@marikar.in', name: "Manikuttan P", role: 'viewer', salt: 'b72fd5e5f9c3f0478fd45ea6faf2b509', hash: '2fe6c1a680e9a28fa549f975ae3b490542a0a9b952c23bf5eff34e6abea50ea5' },
     { id: 'mi.accounts@marikarindustries.in', name: "Vinod S", role: 'viewer', salt: 'd9a6091944d9be3ecdb53e9bd6a65f60', hash: 'bcd9d7c27007cf94848c720875a2bda2c72b59dfd0130d3a0313e09f93074a89' },
+    { id: 'amul.verghese@marikar.in', name: "AMUL VERGHESE", role: 'viewer', salt: 'c15129c39c0b574e179e36d83379be76', hash: '16faf51cf5cfad08ac8da0ad997e874fdc6a3658d3b76d3067156fa4b97684e7' },
+    { id: 'gopakumar@marikarengineers.com', name: "GOPAKUMAR.H", role: 'viewer', salt: 'a3439ecb723114baaae4c26af37c3c26', hash: '1b0810c71fb20c30d1eae2d728809994414585682ecfa27e4851aa7b67e5eced' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   // Per-browser preferences (theme, menu position). Applied here, in <head>, so pages never flash the wrong theme.
