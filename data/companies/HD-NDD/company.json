@@ -1,14 +1,22 @@
 {
   "code": "HD-NDD",
   "name": "HD Nedumangad",
-  "register_from": "2026-04-10",
+  "register_from": "2025-04-09",
   "register_to": "2026-09-30",
   "fys": [
+    "2025-26",
     "2026-27"
   ],
-  "bills": 8308,
-  "gross": 11277504.11,
+  "bills": 21993,
+  "gross": 30658183.11,
   "registers": [
+    {
+      "register_from": "2025-04-09",
+      "register_to": "2026-03-31",
+      "bills": 13685,
+      "gross": 19380679.0,
+      "distinct_items": 1830
+    },
     {
       "register_from": "2026-04-10",
       "register_to": "2026-09-30",
@@ -22,7 +30,7 @@
       "as_at": "2026-03-31",
       "value": 307712.12,
       "lines": 212,
-      "sales_months": 0
+      "sales_months": 12
     },
     {
       "as_at": "2026-09-30",
@@ -32,6 +40,7 @@
     }
   ],
   "received": [
+    "Sales register FY 2025-26",
     "Sales register FY 2026-27 Apr-Sep",
     "Stock summary As at 30 Sep 2026",
     "Stock summary As at 31 Mar 2026"
