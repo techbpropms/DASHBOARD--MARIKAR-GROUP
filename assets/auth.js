@@ -5,6 +5,7 @@
 (() => {
   const USERS = [
     { id: 'tech@bpropms.com', name: 'BPro Tech', role: 'superadmin', salt: 'c9bffb8adcb0509aa306eec81fee55e8', hash: 'cce07b1663cff6fb7c61087e2f55f25978a730644b0f5375d45bc84768c2a774' },
+    { id: 'gm@marikarautomobiles.in', name: "Shaheen Parvaz", role: 'viewer', salt: '21c5e1e10a13ae5a192093aa81b322ec', hash: '3d97c6a8780652da7340f27d926024aca7c099a4c19113da8963d11657118505' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   // Per-browser preferences (theme, menu position). Applied here, in <head>, so pages never flash the wrong theme.
