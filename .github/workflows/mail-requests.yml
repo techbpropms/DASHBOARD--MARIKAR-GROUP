@@ -25,7 +25,7 @@ jobs:
           MAIL_HOST: ${{ vars.MAIL_HOST }}
           SMTP_HOST: ${{ vars.SMTP_HOST }}
           # Extra approver addresses: the APPROVERS variable, else the hub owner's address.
-          APPROVERS: ${{ vars.APPROVERS || 'drbabukollam@gmail.com' }}
+          APPROVERS: ${{ vars.APPROVERS || 'drbabukollam@gmail.com,babukadavoor@gmail.com' }}
         run: |
           for v in MAIL_USER MAIL_HOST SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
           python3 scripts/read_requests.py
