@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
+    inputs:
+      reset:
+        description: 'Issue a new temporary password to this account now (user ID), ignoring the one-a-day guard'
+        required: false
+        default: ''
 permissions:
   contents: write
 concurrency:
@@ -26,6 +31,7 @@ jobs:
           SMTP_HOST: ${{ vars.SMTP_HOST }}
           # Extra approver addresses: the APPROVERS variable, else the hub owner's address.
           APPROVERS: ${{ vars.APPROVERS || 'drbabukollam@gmail.com,babukadavoor@gmail.com' }}
+          RESET_NOW: ${{ github.event.inputs.reset }}
         run: |
           for v in MAIL_USER MAIL_HOST SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
           python3 scripts/read_requests.py
