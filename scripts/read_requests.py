@@ -48,7 +48,8 @@ STORE = os.path.join(ROOT, 'data', 'requests', 'inbox.json')
 AUTH = os.path.join(ROOT, 'assets', 'auth.js')
 CODE = re.compile(r'MGQ1\.([A-Za-z0-9_-]{20,})')
 REF = re.compile(r'\b([AP]R-\d{8}-[0-9A-F]{4})\b')
-COMMAND = re.compile(r'^\s*(approve|approved|decline|declined|reject|rejected)\b\s*(viewer|admin|superadmin)?\s*[.!]?\s*$', re.I)
+COMMAND = re.compile(r'^\W*(approve|approved|ok|okay|yes|decline|declined|reject|rejected)\b(?P<rest>.*)$', re.I)
+ROLE = re.compile(r'\b(viewer|admin|superadmin|super admin)\b', re.I)
 KEEP = ('ref', 'kind', 'name', 'email', 'unit', 'scope', 'title', 'reason', 'at')
 ROUNDS = 210000
 ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
@@ -145,14 +146,37 @@ def text_of(msg):
     return '\n'.join(plain) if plain else strip_html('\n'.join(rich))
 
 
-def first_line(text):
-    """The first line the sender typed: quoted lines and the usual reply headers are skipped."""
+def typed_lines(text, n=5):
+    """The first few lines the sender typed: quoted lines and the usual reply or forward headers are skipped, and
+    reading stops at the start of a quoted or forwarded message."""
+    out = []
     for ln in text.splitlines():
         s = ln.strip()
-        if not s or s.startswith('>') or re.match(r'^(On .* wrote:|-{2,}|_{2,}|From:|Sent:|To:|Cc:|Date:|Subject:|Forwarded message|Begin forwarded)', s, re.I):
-            continue
-        return s
-    return ''
+        if re.match(r'^(On .* wrote:?)$', s, re.I) or s.startswith('>'):
+            break                      # the quoted original follows
+        if not s or re.match(r'^(-{2,}.*Forwarded message.*|Begin forwarded message.*|-{5,}|_{5,}|(From|Sent|To|Cc|Date|Subject):.*)$', s, re.I):
+            continue                   # forwarding headers: the forwarded reply's own text comes after them
+        out.append(s)
+        if len(out) >= n:
+            break
+    return out
+
+
+def first_line(text):
+    lines = typed_lines(text, 1)
+    return lines[0] if lines else ''
+
+
+def command_in(text):
+    """The first typed line that starts with a command word, with the role it names (default viewer)."""
+    for s in typed_lines(text):
+        m = COMMAND.match(s)
+        if m:
+            verb = m.group(1).lower()
+            role = (ROLE.search(m.group('rest')) or ROLE.search(s))
+            role = role.group(1).lower().replace(' ', '') if role else 'viewer'
+            return ('approve' if verb in ('approve', 'approved', 'ok', 'okay', 'yes') else 'decline'), role
+    return None
 
 
 def authenticated(msg):
@@ -178,13 +202,12 @@ def parse(msg):
             seen.add(r['ref'])
             r.update({'received': received, 'from': sender, 'mid': str(msg.get('Message-ID', '')).strip()})
             reqs.append(r)
-    cmd = COMMAND.match(first_line(text))
+    cmd = command_in(text)
     command = None
     if cmd:
-        verb = cmd.group(1).lower()
         m = REF.search(subject) or REF.search(text)
         if m:
-            command = {'ref': m.group(1), 'action': 'approve' if verb.startswith('approve') else 'decline', 'role': (cmd.group(2) or 'viewer').lower(),
+            command = {'ref': m.group(1), 'action': cmd[0], 'role': cmd[1],
                        'from': sender, 'in_reply_to': str(msg.get('In-Reply-To', '')).strip(), 'authenticated': authenticated(msg), 'received': received}
     return reqs, command
 
@@ -307,6 +330,9 @@ def main():
         reqs, cmd = parse(msg)
         if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers:
             from_approvers += 1
+            # what the approver's e-mail looked like to the clerk (first typed line only, shortened)
+            print(f"  approver e-mail: ref {'found' if REF.search(str(msg.get('Subject', ''))) or REF.search(text_of(msg)) else 'missing'}, "
+                  f"first line {first_line(text_of(msg))[:40]!r}, command {'yes' if cmd else 'no'}")
         if reqs or cmd:
             hub_mails += 1
         if cmd and ours:
