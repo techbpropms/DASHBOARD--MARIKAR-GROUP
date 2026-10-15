@@ -149,7 +149,7 @@ def first_line(text):
     """The first line the sender typed: quoted lines and the usual reply headers are skipped."""
     for ln in text.splitlines():
         s = ln.strip()
-        if not s or s.startswith('>') or re.match(r'^(On .* wrote:|-{2,}|From:|Sent:|To:|Subject:)', s):
+        if not s or s.startswith('>') or re.match(r'^(On .* wrote:|-{2,}|_{2,}|From:|Sent:|To:|Cc:|Date:|Subject:|Forwarded message|Begin forwarded)', s, re.I):
             continue
         return s
     return ''
@@ -209,12 +209,17 @@ def from_mailbox(host, user, password, days):
     since = (dt.date.today() - dt.timedelta(days=days)).strftime('%d-%b-%Y')
     box = imaplib.IMAP4_SSL(host)
     box.login(user, password)
-    for folder, ours in [('INBOX', False)] + [(f, True) for f in sent_folders(box)]:
+    sent = sent_folders(box)
+    print(f"folders read: INBOX and {', '.join(sent) if sent else 'no Sent folder found'}")
+    for folder, ours in [('INBOX', False)] + [(f, True) for f in sent]:
         ok, _ = box.select(f'"{folder}"' if ' ' in folder else folder, readonly=True)
         if ok != 'OK':
+            print(f"  {folder}: could not open")
             continue
         ok, data = box.search(None, 'SINCE', since, 'SUBJECT', '"Marikar hub"')
-        for i in (data[0].split() if ok == 'OK' else []):
+        ids = data[0].split() if ok == 'OK' else []
+        print(f"  {folder}: {len(ids)} hub e-mail(s)")
+        for i in ids:
             ok, parts = box.fetch(i, '(BODY.PEEK[])')
             raw = next((p[1] for p in parts if isinstance(p, tuple)), None) if ok == 'OK' else None
             if raw:
