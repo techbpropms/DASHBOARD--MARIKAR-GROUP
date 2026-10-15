@@ -189,36 +189,41 @@ def parse(msg):
     return reqs, command
 
 
-def sent_folders(box):
-    """The mailbox's Sent folder(s): a reply the administrator sends from the mailbox lands there, not in INBOX."""
+def folders(box):
+    """Every selectable folder as (name, is_sent). A reply the administrator sends from the mailbox lands in Sent,
+    a forwarded approval may be filed under spam or junk, so the clerk reads them all (Trash excepted)."""
     ok, rows = box.list()
-    found = []
+    out = []
     for row in (rows if ok == 'OK' else []):
         line = row.decode('utf-8', 'replace') if isinstance(row, bytes) else str(row)
         m = re.match(r'\((?P<flags>[^)]*)\) "?(?P<delim>[^" ]*)"? "?(?P<name>.+?)"?$', line)
         if not m:
             continue
-        name = m.group('name').strip('"')
-        if '\\Sent' in m.group('flags') or re.search(r'(^|[./])sent( items| mail)?$', name, re.I):
-            found.append(name)
-    return found
+        name, flags = m.group('name').strip('"'), m.group('flags')
+        if '\\Noselect' in flags or '\\Trash' in flags or re.search(r'(^|[./])(trash|deleted( items| messages)?)$', name, re.I):
+            continue
+        is_sent = '\\Sent' in flags or bool(re.search(r'(^|[./])sent( items| mail)?$', name, re.I))
+        out.append((name, is_sent))
+    out.sort(key=lambda f: (f[0].upper() != 'INBOX', f[0]))
+    return out
 
 
 def from_mailbox(host, user, password, days):
-    """Yields (message, sent_by_us) for every hub e-mail in INBOX and in the Sent folder(s)."""
+    """Yields (message, sent_by_us) for every e-mail of the last `days` days in every folder; the caller decides
+    which ones concern the hub (a request code, or a command naming a request)."""
     since = (dt.date.today() - dt.timedelta(days=days)).strftime('%d-%b-%Y')
     box = imaplib.IMAP4_SSL(host)
     box.login(user, password)
-    sent = sent_folders(box)
-    print(f"folders read: INBOX and {', '.join(sent) if sent else 'no Sent folder found'}")
-    for folder, ours in [('INBOX', False)] + [(f, True) for f in sent]:
-        ok, _ = box.select(f'"{folder}"' if ' ' in folder else folder, readonly=True)
+    all_folders = folders(box)
+    print('folders read: ' + ', '.join(f"{n}{' (sent)' if s_ else ''}" for n, s_ in all_folders))
+    for folder, ours in all_folders:
+        ok, _ = box.select(f'"{folder}"', readonly=True)
         if ok != 'OK':
             print(f"  {folder}: could not open")
             continue
-        ok, data = box.search(None, 'SINCE', since, 'SUBJECT', '"Marikar hub"')
+        ok, data = box.search(None, 'SINCE', since)
         ids = data[0].split() if ok == 'OK' else []
-        print(f"  {folder}: {len(ids)} hub e-mail(s)")
+        print(f"  {folder}: {len(ids)} e-mail(s) since {since}")
         for i in ids:
             ok, parts = box.fetch(i, '(BODY.PEEK[])')
             raw = next((p[1] for p in parts if isinstance(p, tuple)), None) if ok == 'OK' else None
@@ -297,8 +302,13 @@ def main():
     known = {p['ref'] for p in pending} | set(handled)
     mids = {p.get('mid') for p in pending if p.get('mid')}
     commands, added, changed = [], [], False
+    from_approvers = hub_mails = 0
     for msg, ours in messages:
         reqs, cmd = parse(msg)
+        if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers:
+            from_approvers += 1
+        if reqs or cmd:
+            hub_mails += 1
         if cmd and ours:
             # sent from the mailbox itself: the administrator signed in to it, which is proof enough
             cmd['from'] = MAIL_USER.lower(); cmd['authenticated'] = True
@@ -377,7 +387,7 @@ def main():
 
     pending = [p for p in pending if p['ref'] not in handled]
     pending.sort(key=lambda p: p.get('received') or p.get('at') or '')
-    print(f"{len(messages)} e-mail(s) read, {len(added)} new request(s), {len(commands)} reply command(s), {mailer.sent} e-mail(s) sent, {len(pending)} waiting, {len(handled)} handled")
+    print(f"{len(messages)} e-mail(s) read ({hub_mails} about the hub, {from_approvers} from approver addresses), {len(added)} new request(s), {len(commands)} reply command(s), {mailer.sent} e-mail(s) sent, {len(pending)} waiting, {len(handled)} handled")
     for r in added:
         print(f"  + {r['ref']} {r['kind']} {r['email']}")
     if not changed:
