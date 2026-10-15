@@ -13,7 +13,9 @@ The Marikar Group performance hub. It opens on a sign-in page (`index.html`); af
 **Loaded so far:** the five Honda two-wheeler service units of Marikar Motors Ltd: HD Attingal (`HD-ATL`),
 HD Kulasekharam (`HD-KSR`), HD Marthandam (`HD-MDM`), HD Nedumangad (`HD-NDD`) and HD Varkala (`HD-VKL`).
 Each has its FY 2026–27 register (April to September) and stock summaries at 31 March and 30 September 2026.
-HD Kulasekharam also has its FY 2025–26 register. Other companies appear in the company list as their
+HD Kulasekharam, HD Nedumangad and HD Varkala also have their FY 2025–26 registers, so the year-on-year
+lens covers those three; Attingal and Marthandam join it when their FY 2025–26 registers arrive.
+Other companies appear in the company list as their
 exports are built. The page opens on the latest year; pick "All years" to add the years together.
 
 It shows:
