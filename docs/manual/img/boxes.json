@@ -61,42 +61,42 @@
   {
    "label": "Full name",
    "x": 865,
-   "y": 28,
+   "y": 521,
    "w": 346,
    "h": 49
   },
   {
    "label": "Work e-mail",
    "x": 865,
-   "y": 120,
+   "y": 613,
    "w": 346,
    "h": 49
   },
   {
    "label": "Company / division / function",
    "x": 865,
-   "y": 232,
+   "y": 725,
    "w": 167,
    "h": 49
   },
   {
-   "label": "Access needed for",
-   "x": 865,
-   "y": 323,
-   "w": 346,
-   "h": 47
+   "label": "Access needed for: tick divisions",
+   "x": 867,
+   "y": 790,
+   "w": 342,
+   "h": 306
   },
   {
    "label": "Confirmation",
    "x": 869,
-   "y": 602,
+   "y": 1328,
    "w": 16,
    "h": 16
   },
   {
    "label": "Send request",
    "x": 865,
-   "y": 676,
+   "y": 1402,
    "w": 346,
    "h": 50
   }
@@ -456,46 +456,53 @@
  ],
  "23-settings-people": [
   {
-   "label": "Accounts",
+   "label": "Accounts, with role and divisions",
    "x": 23,
    "y": 109,
    "w": 834,
-   "h": 287
+   "h": 563
+  },
+  {
+   "label": "Division editor",
+   "x": 23,
+   "y": 682,
+   "w": 834,
+   "h": 191
   },
   {
    "label": "Requests waiting in the mailbox",
    "x": 23,
-   "y": 443,
+   "y": 987,
    "w": 834,
-   "h": 231
+   "h": 97
   },
   {
-   "label": "Open",
-   "x": 789,
-   "y": 492,
-   "w": 55,
-   "h": 31
-  },
-  {
-   "label": "Paste a request by hand",
+   "label": "The request, with role and divisions",
    "x": 23,
-   "y": 786,
-   "w": 703,
-   "h": 80
-  },
-  {
-   "label": "The request, ready to approve or decline",
-   "x": 23,
-   "y": 878,
+   "y": 1289,
    "w": 834,
-   "h": 300
+   "h": 466
+  },
+  {
+   "label": "Approve by e-mail",
+   "x": 43,
+   "y": 1699,
+   "w": 155,
+   "h": 41
   },
   {
    "label": "Add a person",
    "x": 23,
-   "y": 1225,
+   "y": 1803,
    "w": 834,
-   "h": 119
+   "h": 289
+  },
+  {
+   "label": "Changes waiting to go live",
+   "x": 23,
+   "y": 2108,
+   "w": 834,
+   "h": 162
   }
  ],
  "24-sidebar": [
@@ -565,6 +572,63 @@
    "y": 579,
    "w": 366,
    "h": 249
+  }
+ ],
+ "31-refresh": [
+  {
+   "label": "Refresh",
+   "x": 996,
+   "y": 11,
+   "w": 34,
+   "h": 34
+  },
+  {
+   "label": "Theme switch",
+   "x": 1038,
+   "y": 10,
+   "w": 104,
+   "h": 36
+  }
+ ],
+ "32-changes": [
+  {
+   "label": "Account changes log",
+   "x": 23,
+   "y": 88,
+   "w": 834,
+   "h": 347
+  }
+ ],
+ "33-signins": [
+  {
+   "label": "Report status",
+   "x": 23,
+   "y": 55,
+   "w": 834,
+   "h": 42
+  },
+  {
+   "label": "Sign-ins on this device",
+   "x": 23,
+   "y": 199,
+   "w": 834,
+   "h": 76
+  }
+ ],
+ "34-scoped-menu": [
+  {
+   "label": "Only this account's divisions",
+   "x": 239,
+   "y": 52,
+   "w": 239,
+   "h": 156
+  },
+  {
+   "label": "Sales & inventory (Honda divisions)",
+   "x": 366,
+   "y": 10,
+   "w": 178,
+   "h": 37
   }
  ]
 }

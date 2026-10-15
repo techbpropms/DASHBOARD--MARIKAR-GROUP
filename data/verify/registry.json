@@ -1,20 +1,20 @@
 {
-  "RN-HDATL-2026-01": {
-    "title": "HD Attingal Pilot Export — Reconciliation Note",
-    "issued": "2026-10-13",
-    "issuer": "Dr. Babu B., BPro Consulting & Technologies",
-    "recipient": "Finance Head / Accounts Department, Marikar (Motors) Ltd",
-    "pages": 5,
-    "file": "docs/HD_Attingal_Reconciliation_Note_BPro.pdf",
-    "sha256": "0ee2786414f4bd19c34c99d53b72a491faf03a31cdf9378ed8192fe57d9b1126"
-  },
-  "UM-MGHUB-2026-01": {
-    "title": "Marikar Group Performance Hub — User Manual v1.3",
-    "issued": "2026-10-15",
-    "issuer": "Dr. Babu B., BPro Consulting & Technologies",
-    "recipient": "Marikar Group leadership, HODs and authorised users",
-    "pages": 42,
-    "file": "docs/manual/manual.pdf",
-    "sha256": "16b004c52acb39348aecb607fc716152702f8cd191e2608832851f8b554cc652"
-  }
+ "RN-HDATL-2026-01": {
+  "title": "HD Attingal Pilot Export — Reconciliation Note",
+  "issued": "2026-10-13",
+  "issuer": "Dr. Babu B., BPro Consulting & Technologies",
+  "recipient": "Finance Head / Accounts Department, Marikar (Motors) Ltd",
+  "pages": 5,
+  "file": "docs/HD_Attingal_Reconciliation_Note_BPro.pdf",
+  "sha256": "0ee2786414f4bd19c34c99d53b72a491faf03a31cdf9378ed8192fe57d9b1126"
+ },
+ "UM-MGHUB-2026-01": {
+  "title": "Marikar Group Performance Hub — User Manual v1.4",
+  "issued": "2026-10-15",
+  "issuer": "Dr. Babu B., BPro Consulting & Technologies",
+  "recipient": "Marikar Group leadership, HODs and authorised users",
+  "pages": 48,
+  "file": "docs/manual/manual.pdf",
+  "sha256": "b81c50fbca1409bf7c9acbaba9a26cc4b10c8841b2cbf137e9f01d3e2000eb21"
+ }
 }
