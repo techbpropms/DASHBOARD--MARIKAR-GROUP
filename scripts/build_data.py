@@ -134,7 +134,7 @@ def summarise(path, rows):
     day = collections.defaultdict(lambda: [0, 0, 0.0])
     items = collections.defaultdict(lambda: [0, 0.0, 0, collections.Counter()])
     sold = collections.defaultdict(lambda: collections.defaultdict(float))  # part no -> month -> qty
-    cur, cur_fy, cur_m, flipped = None, None, None, 0
+    cur, cur_fy, cur_m, flipped, odd = None, None, None, 0, 0
     for r in body:
         if r[0] is not None:
             d, t = r[0], r[i_type]
@@ -146,9 +146,14 @@ def summarise(path, rows):
             gst = sum(num(r[i]) for i in gst_cols)
             g, ro = num(r[i_gross]), num(r[i_round]) if i_round is not None else 0
             res = g - (plus - disc + gst)
-            # The export drops minus signs: a bill whose discount exceeds it shows a positive total.
-            if not (abs(res - ro) < 0.02 or abs(res + ro) < 0.02):
+            fits = lambda x: abs(x - ro) < 0.02 or abs(x + ro) < 0.02
+            # The export drops minus signs: a bill whose discount exceeds it shows a positive total. Flip the sign
+            # only when the negated total reconciles with the bill's own components; a bill that reconciles neither
+            # way (a rare Tally export quirk) keeps the sign Tally gave it, which is what its Grand Total counts.
+            if not fits(res) and fits(-g - (plus - disc + gst)):
                 g = -g; flipped += 1
+            elif not fits(res):
+                odd += 1
             taxable = plus - disc
             svc = base_type(t) in SERVICE
             M = mon[m]
@@ -201,7 +206,7 @@ def summarise(path, rows):
     if stated is None or abs(gross - stated) > 1:
         raise SystemExit(f'{os.path.basename(path)}: bills add up to {gross:,.2f} but the Grand Total says {stated}')
     info = {'register_from': dates[0], 'register_to': dates[-1], 'fys': sorted({r[0] for r in out['monthly']}),
-            'bills': sum(v[0] for v in vt.values()), 'gross': gross, 'flipped': flipped,
+            'bills': sum(v[0] for v in vt.values()), 'gross': gross, 'flipped': flipped, 'odd': odd,
             'item_value': round(sum(v[1] for v in items.values()), 2), 'distinct_items': len(items),
             'columns': {h: kind[i] for i, h in enumerate(hdr) if h and kind[i] != 'meta'}}
     return out, info, sold
@@ -336,7 +341,7 @@ def build(paths, code, name, out):
         for fy in info['fys']:
             received.append('Sales register FY 2026-27 Apr-Sep' if fy == '2026-27' else f'Sales register FY {fy}')
         print(f"  {os.path.basename(p)}: {info['bills']:,} bills {info['register_from']} to {info['register_to']}, "
-              f"gross {info['gross']:,.2f} = Grand Total ({info['flipped']} unsigned credit bills turned negative)")
+              f"gross {info['gross']:,.2f} = Grand Total ({info['flipped']} unsigned credit bills turned negative, {info.get('odd', 0)} kept as exported)")
         odd = {h: k for h, k in info['columns'].items() if k in ('Other sales', 'Branch transfers', 'AMC & warranty', 'Accessories')}
         print('    columns outside parts and labour:', odd)
     stock_meta = []
