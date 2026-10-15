@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15T07:35:41+00:00",
+  "updated": "2026-10-15T07:45:01+00:00",
   "pending": [
     {
       "ref": "AR-20261015-0546",
@@ -13,6 +13,20 @@
       "received": "2026-10-15T03:59:42+00:00",
       "from": "abhidear@gmail.com",
       "mid": "<CAKCNMDna3WeT7MUf-Vt3-evUNQuSSfeDsHUpBnbkJo97UayVcQ@mail.gmail.com>"
+    },
+    {
+      "ref": "AR-20261015-E012",
+      "kind": "access",
+      "name": "AMUL VERGHESE",
+      "email": "amul.verghese@marikar.in",
+      "unit": "Marikar Group — Management / Corporate",
+      "scope": "All divisions",
+      "title": "HEAD LEGAL",
+      "reason": "Overview of group business, identifying trend change early and plan countermeasures, financials P&L of divisions and individual units, pland growth engines and trim down, manpower assessment, support HODs when required",
+      "at": "2026-10-15T04:53:42.475Z",
+      "received": "2026-10-15T04:57:09+00:00",
+      "from": "amul.verghese@marikar.in",
+      "mid": "<CAL=ioo1wYr6xf7tAizkR-X=gLByMt5AcN69aNfw62h7qz_hPLA@mail.gmail.com>"
     },
     {
       "ref": "AR-20261015-7400",
