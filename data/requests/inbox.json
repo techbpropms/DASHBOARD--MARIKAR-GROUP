@@ -1,7 +1,22 @@
 {
-  "updated": "2026-10-15T08:53:10+00:00",
+  "updated": "2026-10-15T10:57:57+00:00",
   "reminded_at": "",
-  "pending": [],
+  "pending": [
+    {
+      "ref": "AR-20261015-58ED",
+      "kind": "access",
+      "name": "Zulfiquar Marikar",
+      "email": "zmarikar@marikargroup.com",
+      "unit": "All",
+      "scope": "All divisions",
+      "title": "MD",
+      "at": "2026-10-15T10:26:24.444Z",
+      "received": "2026-10-15T10:28:22+00:00",
+      "from": "zmarikar@yahoo.com",
+      "mid": "<49FC0527-3E67-4409-84B0-911B29882A1C@yahoo.com>",
+      "acked": "2026-10-15T10:57:57+00:00"
+    }
+  ],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
@@ -55,6 +70,21 @@
       "at": "2026-10-15T08:53:10+00:00",
       "by": "administrator",
       "email": "gm@marikarautomobiles.in"
+    },
+    "PR-20261015-7E46": {
+      "status": "reset",
+      "at": "2026-10-15T10:57:57+00:00",
+      "by": "automatic",
+      "email": "hrmanager@marikarmotors.com"
     }
-  }
+  },
+  "log": [
+    {
+      "at": "2026-10-15T10:57:57+00:00",
+      "action": "reset",
+      "who": "hrmanager@marikarmotors.com",
+      "by": "forgot password",
+      "detail": "PR-20261015-7E46"
+    }
+  ]
 }
