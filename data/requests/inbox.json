@@ -1,23 +1,7 @@
 {
-  "updated": "2026-10-15T12:41:00+00:00",
+  "updated": "2026-10-15T13:03:32+00:00",
   "reminded_at": "",
-  "pending": [
-    {
-      "ref": "AR-20261015-E701",
-      "kind": "access",
-      "name": "Kintin",
-      "email": "kintin@marikar.in",
-      "unit": "Finance & Accounts",
-      "scope": "All divisions",
-      "title": "Manager Accounts",
-      "at": "2026-10-15T12:06:24.061Z",
-      "divisions": "all",
-      "received": "2026-10-15T12:06:35+00:00",
-      "from": "kintin@marikar.in",
-      "mid": "<CAHrR-ZiFOAZXPGOTxQ98=K_gSDK3aQmYkjbjK2EDrsLe3FEf9A@mail.gmail.com>",
-      "acked": "2026-10-15T12:41:00+00:00"
-    }
-  ],
+  "pending": [],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
@@ -83,6 +67,22 @@
       "at": "2026-10-15T11:12:50+00:00",
       "by": "babukadavoor@gmail.com",
       "role": "viewer"
+    },
+    "AR-20261015-E701": {
+      "status": "approved",
+      "at": "2026-10-15T13:03:32+00:00",
+      "by": "babukadavoor@gmail.com",
+      "role": "viewer",
+      "divisions": "all"
+    }
+  },
+  "links": {
+    "kintin@marikar.in": {
+      "hash": "0400e33626d10913126d899a5e11ce85ff87e8910590c283053d9a36f5f18258",
+      "exp": "2026-10-16T13:03:38+00:00",
+      "why": "approved",
+      "ref": "AR-20261015-E701",
+      "at": "2026-10-15T13:03:32+00:00"
     }
   },
   "log": [
@@ -99,6 +99,13 @@
       "who": "zmarikar@marikargroup.com",
       "by": "babukadavoor@gmail.com",
       "detail": "AR-20261015-58ED as viewer"
+    },
+    {
+      "at": "2026-10-15T13:03:32+00:00",
+      "action": "approved",
+      "who": "kintin@marikar.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "AR-20261015-E701 as viewer (all divisions)"
     }
   ]
 }
