@@ -435,6 +435,19 @@ def main():
             if twin['kind'] == 'access' and twin['email'] == req['email'] and twin['ref'] not in handled:
                 settle(twin, handled[req['ref']]['status'], by=cmd['from'], note=f"same address as {req['ref']}")
 
+    # 3b. an administrator's immediate reset (the RESET_NOW input of the workflow): no guard, settled at once
+    forced = os.environ.get('RESET_NOW', '').strip().lower()
+    if forced:
+        acct = accounts.find(forced)
+        if acct:
+            newpw = accounts.add(acct['id'], acct['name'], acct['role'])
+            mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
+            ref = f"PR-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d')}-{secrets.token_hex(2).upper()}"
+            handled[ref] = {'status': 'reset', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True
+            print(f"  reset {ref} for {acct['id']} on the administrator's instruction: new password e-mailed")
+        else:
+            print(f"  reset requested for {forced}: no such account")
+
     # 4. acknowledge every newly listed access request, once
     for req in [p for p in pending if p['kind'] == 'access' and p['ref'] not in handled and not p.get('acked')]:
         mailer.send(req['email'], f"Marikar hub: your access request {req['ref']}", acknowledgement(req))
