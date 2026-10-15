@@ -210,7 +210,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <div class="note caution"><b class="t">Caution</b>After several wrong attempts the page waits longer before each new try. That is deliberate. If you are stuck, use "Forgot password?" rather than guessing.</div>
 
   <h2>Requesting access</h2>
-  <p>New to the hub? Choose the <b>Request access</b> tab and fill in the form. The administrator reviews every request and e-mails you a user ID and a temporary password, usually within one working day.</p>
+  <p>New to the hub? Choose the <b>Request access</b> tab and fill in the form. Your request reaches the administrator's desk within about fifteen minutes; the administrator reviews it and e-mails you a user ID and a temporary password, usually within one working day.</p>
   <figure><img src="img/02-request.jpg" alt="Request access form"><figcaption>Request access: <span class="pt">1</span> full name, <span class="pt">2</span> work e-mail (it becomes your user ID), <span class="pt">3</span> company, division or function, <span class="pt">4</span> the access you need, <span class="pt">5</span> the confirmation tick, <span class="pt">6</span> Send request.</figcaption></figure>
   <p>The <b>company / division / function</b> box suggests the corporate functions (Management / Corporate, Finance &amp; Accounts, Admin, HR, IT, Internal audit, Marketing) as well as every division, plus "All divisions" and "Other"; you can also type your own. <b>Access needed for</b> tells the administrator whether you need your own division, several, or the whole group, so the right role can be set before you sign in for the first time.</p>
   <figure class="narrow"><img src="img/03-request-done.jpg" alt="Request ready to send"><figcaption>After you send: a <span class="pt">1</span> reference to quote, <span class="pt">2</span> a button that opens your mail app with the request filled in for the administrator, and <span class="pt">3</span> a copy option if your mail app does not open.</figcaption></figure>
@@ -362,7 +362,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h2>Appearance</h2>
   <figure><img src="img/22-settings-appearance.jpg" alt="Appearance settings"><figcaption><span class="pt">1</span> Theme: System, Light or Dark. <span class="pt">2</span> Menu position: top bar or sidebar. Both are saved on that browser only.</figcaption></figure>
   <h2>People (super admin only)</h2>
-  <figure><img src="img/23-settings-people.jpg" alt="People settings"><figcaption><span class="pt">1</span> the accounts, with Reset password and Remove · <span class="pt">2</span> where a request e-mail or code is pasted · <span class="pt">3</span> the request read back, with its function, access scope and whether an account exists, ready to approve or decline · <span class="pt">4</span> Add a person.</figcaption></figure>
+  <figure><img src="img/23-settings-people.jpg" alt="People settings"><figcaption><span class="pt">1</span> the accounts, with Reset password and Remove · <span class="pt">2</span> the requests waiting in the hub mailbox, with when it was last read · <span class="pt">3</span> Open fills the request card · <span class="pt">4</span> where a request e-mail or code can still be pasted by hand · <span class="pt">5</span> the request read back, with its function, access scope and whether an account exists, ready to approve or decline · <span class="pt">6</span> Add a person.</figcaption></figure>
   <h3>Adding a person</h3>
   <ol class="steps">
     <li>Enter the full name, the work e-mail (their user ID) and a role, then <b>Create account</b>.</li>
@@ -371,7 +371,15 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <li>Send the person their user ID and temporary password by a separate channel.</li>
   </ol>
   <h3>Acting on a request</h3>
-  <p>Requests from the sign-in page arrive at <b>mml@bpropms.in</b> with a code starting <code>MGQ1.</code> Paste the e-mail or the code into the box and click <b>Read request</b>. The request appears as a card with every detail and whether an account already exists. <b>Approve</b> creates the account (or issues a new password for a reset) and queues it for publishing; <b>Decline</b> opens a courteous reply.</p>
+  <p>Requests from the sign-in page go to the hub mailbox <b>mml@bpropms.in</b>. The hub reads that mailbox every 15 minutes and lists every new request at the top of the People page: who asked, for which division, the scope they need, the reference and the time. Click <b>Open</b> and the request appears as a card with every detail and whether an account already exists. <b>Approve</b> creates the account (or issues a new password for a reset) and queues it for publishing; <b>Decline</b> opens a courteous reply. Either way the request is marked as handled when you publish, and leaves the list.</p>
+  <ol class="steps">
+    <li>Open Settings → People. New requests are listed under <b>Access and reset requests</b>; the line above them says when the mailbox was last read.</li>
+    <li>Click <b>Open</b> on a request, check the details, choose a role, then <b>Approve and create account</b> (or <b>Decline</b>).</li>
+    <li>Copy the temporary password shown, then <b>Publish to the site</b>. Publishing writes the account and takes the request off the list.</li>
+    <li>Send the person their user ID and temporary password by a separate channel.</li>
+  </ol>
+  <div class="note sticky"><b class="t">Sticky note</b>A request e-mailed in the last few minutes may not be listed yet. Paste its e-mail or code into the box and click <b>Read request</b>; it works exactly the same way. Two requests from the same e-mail address (someone pressing Send twice) need one approval and one decline.</div>
+  <div class="note tip"><b class="t">Tip</b>Phone numbers are shown in the request e-mail, not on this page: the list is published with the site, so it carries only what an approval needs. If the line above the list says the mailbox has not been read yet, the mailbox password has not been given to the reader; BPro can set it in a minute.</div>
   <div class="note lens"><b class="t">Lens</b>Passwords are never stored. Each account keeps only a salted fingerprint of its password (PBKDF2-SHA-256, 210,000 rounds). That is why a forgotten password is replaced, never recovered.</div>
   <div class="note caution"><b class="t">Caution</b>Publishing writes the account list to the hub's repository and needs a GitHub token that the super admin pastes once per sign-in. It is kept in that browser tab only and cleared on sign-out. Without a token, use <b>Send to BPro instead</b> and the change is applied for you.</div>
 </section>
@@ -455,6 +463,10 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h1>Version history</h1>
   <p class="lead">Each release raises the app version; installed copies show an update message with the notes.</p>
   <table class="version"><tr><th>Version</th><th>Date</th><th>What changed</th></tr>
+    <tr><td>2026.10.15c</td><td>15 Oct 2026</td><td>Requests appear in Settings → People on their own: the hub mailbox is read every 15 minutes; approving or declining and publishing takes a request off the list.</td></tr>
+    <tr><td>2026.10.15b</td><td>15 Oct 2026</td><td>The request-access and reset forms can post straight to the hub mailbox once a form key is configured.</td></tr>
+    <tr><td>2026.10.15a</td><td>15 Oct 2026</td><td>FY 2025–26 registers for Nedumangad and Varkala: year on year now compares three units against the same months of 2025.</td></tr>
+    <tr><td>2026.10.14m</td><td>14 Oct 2026</td><td>User manual v1.1.</td></tr>
     <tr><td>2026.10.14l</td><td>14 Oct 2026</td><td>Install-the-app invitation on every visit (one tap on Android, Chrome, Edge; steps on iPhone), Install app button, shortcuts and screenshots in the install dialog, iPhone full-screen polish.</td></tr>
     <tr><td>2026.10.14k</td><td>14 Oct 2026</td><td>Request access lists corporate functions (Finance, Admin, HR, IT, Audit, Marketing) and asks what access is needed.</td></tr>
     <tr><td>2026.10.14j</td><td>14 Oct 2026</td><td>This user manual, on the hub page and in the menu.</td></tr>
@@ -469,7 +481,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <tr><td>2026.10.14</td><td>14 Oct 2026</td><td>Landing and sign-in page; hub moves behind sign-in. Custom domain mmlpbi.bpropms.in.</td></tr>
     <tr><td>2026.10.13</td><td>13 Oct 2026</td><td>Division dashboards for nine divisions; installable app with update message; BPro branding, warm palette and QR verification on every download; reconciliation note PDF on letterhead; financial position panel.</td></tr>
     <tr><td>2026.10.12</td><td>12 Oct 2026</td><td>HD Attingal pilot dashboard; multi-company data model; hub landing page; report builder with subtotals and grand totals; HOD action tracker copy.</td></tr></table>
-  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.14l. Changes since v1.0: the request-access fields, the install invitation, and the requests desk figure.</p>
+  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15d. Changes since v1.1: requests listed from the hub mailbox on the People page (new figure and steps), the year-on-year lens covering three units, and the version history.</p>
 </section>
 
 <!-- ======================= 17 GLOSSARY ======================= -->

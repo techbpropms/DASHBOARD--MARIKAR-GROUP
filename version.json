@@ -1,8 +1,7 @@
 {
-  "version": "2026.10.15c",
-  "title": "Requests appear in Settings on their own",
+  "version": "2026.10.15d",
+  "title": "User manual v1.2",
   "notes": [
-    "Settings > People lists the access and reset requests waiting in the hub mailbox, read every 15 minutes",
-    "Approving or declining a request and publishing takes it off the list"
+    "The manual now covers requests listed from the hub mailbox on the People page, and the year-on-year lens with three units"
   ]
 }
