@@ -210,14 +210,14 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <div class="note caution"><b class="t">Caution</b>After several wrong attempts the page waits longer before each new try. That is deliberate. If you are stuck, use "Forgot password?" rather than guessing.</div>
 
   <h2>Requesting access</h2>
-  <p>New to the hub? Choose the <b>Request access</b> tab and fill in the form. Your request reaches the administrator's desk within about fifteen minutes; the administrator reviews it and e-mails you a user ID and a temporary password, usually within one working day.</p>
+  <p>New to the hub? Choose the <b>Request access</b> tab and fill in the form. Within about ten minutes you receive an acknowledgement from <b>mml@bpropms.in</b> with your reference. When the administrator approves the request, a second e-mail from the same address brings your user ID and a temporary password, usually within one working day. Sign in with it and change it from the Settings page.</p>
   <figure><img src="img/02-request.jpg" alt="Request access form"><figcaption>Request access: <span class="pt">1</span> full name, <span class="pt">2</span> work e-mail (it becomes your user ID), <span class="pt">3</span> company, division or function, <span class="pt">4</span> the access you need, <span class="pt">5</span> the confirmation tick, <span class="pt">6</span> Send request.</figcaption></figure>
   <p>The <b>company / division / function</b> box suggests the corporate functions (Management / Corporate, Finance &amp; Accounts, Admin, HR, IT, Internal audit, Marketing) as well as every division, plus "All divisions" and "Other"; you can also type your own. <b>Access needed for</b> tells the administrator whether you need your own division, several, or the whole group, so the right role can be set before you sign in for the first time.</p>
   <figure class="narrow"><img src="img/03-request-done.jpg" alt="Request ready to send"><figcaption>After you send: a <span class="pt">1</span> reference to quote, <span class="pt">2</span> a button that opens your mail app with the request filled in for the administrator, and <span class="pt">3</span> a copy option if your mail app does not open.</figcaption></figure>
   <div class="note sticky"><b class="t">Sticky note</b>Keep the reference (it looks like <code>AR-20261014-7618</code>). If you need to chase a request, quote it.</div>
 
   <h2>Forgot your password</h2>
-  <figure class="narrow"><img src="img/04-forgot.jpg" alt="Reset your password"><figcaption>Enter your <span class="pt">1</span> user ID and <span class="pt">2</span> request a reset. The administrator issues a new temporary password to that e-mail address.</figcaption></figure>
+  <figure class="narrow"><img src="img/04-forgot.jpg" alt="Reset your password"><figcaption>Enter your <span class="pt">1</span> user ID and <span class="pt">2</span> request a reset. Within about ten minutes a new temporary password is e-mailed to that address; nobody else is involved. One reset per address per day.</figcaption></figure>
   <h2>Roles</h2>
   <table><tr><th>Role</th><th>Can</th></tr>
     <tr><td><b>Viewer</b></td><td>Open every dashboard, tracker, note and report; download PDF and Excel reports; verify documents; choose their own theme and menu layout.</td></tr>
@@ -362,7 +362,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h2>Appearance</h2>
   <figure><img src="img/22-settings-appearance.jpg" alt="Appearance settings"><figcaption><span class="pt">1</span> Theme: System, Light or Dark. <span class="pt">2</span> Menu position: top bar or sidebar. Both are saved on that browser only.</figcaption></figure>
   <h2>People (super admin only)</h2>
-  <figure><img src="img/23-settings-people.jpg" alt="People settings"><figcaption><span class="pt">1</span> the accounts, with Reset password and Remove · <span class="pt">2</span> the requests waiting in the hub mailbox, with when it was last read · <span class="pt">3</span> Open fills the request card · <span class="pt">4</span> where a request e-mail or code can still be pasted by hand · <span class="pt">5</span> the request read back, with its function, access scope and whether an account exists, ready to approve or decline · <span class="pt">6</span> Add a person.</figcaption></figure>
+  <figure><img src="img/23-settings-people.jpg" alt="People settings"><figcaption><span class="pt">1</span> the accounts, with Reset password and Remove · <span class="pt">2</span> the requests waiting in the hub mailbox, with when it was last read · <span class="pt">3</span> Open fills the request card · <span class="pt">4</span> where a request e-mail or code can still be pasted by hand · <span class="pt">5</span> the request read back, with <b>Approve by e-mail</b> and <b>Decline by e-mail</b> (and the token route for those who have one) · <span class="pt">6</span> Add a person.</figcaption></figure>
   <h3>Adding a person</h3>
   <ol class="steps">
     <li>Enter the full name, the work e-mail (their user ID) and a role, then <b>Create account</b>.</li>
@@ -371,17 +371,17 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <li>Send the person their user ID and temporary password by a separate channel.</li>
   </ol>
   <h3>Acting on a request</h3>
-  <p>Requests from the sign-in page go to the hub mailbox <b>mml@bpropms.in</b>. The hub reads that mailbox every 15 minutes and lists every new request at the top of the People page: who asked, for which division, the scope they need, the reference and the time. Click <b>Open</b> and the request appears as a card with every detail and whether an account already exists. <b>Approve</b> creates the account (or issues a new password for a reset) and queues it for publishing; <b>Decline</b> opens a courteous reply. Either way the request is marked as handled when you publish, and leaves the list.</p>
+  <p>Requests from the sign-in page go to the hub mailbox <b>mml@bpropms.in</b>. The hub reads that mailbox every ten minutes, acknowledges each new request to the person who sent it, and lists it at the top of the People page: who asked, for which division, the scope they need, the reference and the time. Approval is one e-mail; the hub does the rest.</p>
   <ol class="steps">
-    <li>Open Settings → People. New requests are listed under <b>Access and reset requests</b>; the line above them says when the mailbox was last read.</li>
-    <li>Click <b>Open</b> on a request, check the details, choose a role, then <b>Approve and create account</b> (or <b>Decline</b>).</li>
-    <li>Copy the temporary password shown, then <b>Publish to the site</b>. Publishing writes the account and takes the request off the list.</li>
-    <li>Send the person their user ID and temporary password by a separate channel.</li>
+    <li>Open Settings → People. New requests are listed under <b>Access and reset requests</b>; the line above them says when the mailbox was last read. Click <b>Open</b> to see the full request.</li>
+    <li>Choose a role, then click <b>Approve by e-mail</b>. A reply opens in your mail app addressed to the hub mailbox with the word <code>approve</code> and the reference; send it as it is. <b>Decline by e-mail</b> works the same way.</li>
+    <li>Within about ten minutes the hub creates the account, e-mails the person their user ID and temporary password, and takes the request off the list. Nothing to copy, nothing to publish.</li>
   </ol>
-  <div class="note sticky"><b class="t">Sticky note</b>A request e-mailed in the last few minutes may not be listed yet. Paste its e-mail or code into the box and click <b>Read request</b>; it works exactly the same way. Two requests from the same e-mail address (someone pressing Send twice) need one approval and one decline.</div>
-  <div class="note tip"><b class="t">Tip</b>Phone numbers are shown in the request e-mail, not on this page: the list is published with the site, so it carries only what an approval needs. If the line above the list says the mailbox has not been read yet, the mailbox password has not been given to the reader; BPro can set it in a minute.</div>
-  <div class="note lens"><b class="t">Lens</b>Passwords are never stored. Each account keeps only a salted fingerprint of its password (PBKDF2-SHA-256, 210,000 rounds). That is why a forgotten password is replaced, never recovered.</div>
-  <div class="note caution"><b class="t">Caution</b>Publishing writes the account list to the hub's repository and needs a GitHub token that the super admin pastes once per sign-in. It is kept in that browser tab only and cleared on sign-out. Without a token, use <b>Send to BPro instead</b> and the change is applied for you.</div>
+  <p>You can also approve several at once without opening the page: send an e-mail from your own address to <b>mml@bpropms.in</b> with the subject <code>approve</code> and the references one per line in the body (for example <code>AR-20261015-0546</code>). Add <code>admin</code> after the word approve for an admin account. The hub accepts these e-mails only from the super admin addresses it knows and from the mailbox itself.</p>
+  <div class="note sticky"><b class="t">Sticky note</b>If a request has waited more than a day, the hub sends you one reminder a day listing what is open. Two requests from the same e-mail address (someone pressing Send twice) are settled together.</div>
+  <div class="note tip"><b class="t">Tip</b>Phone numbers are shown in the request e-mail, not on this page: the list is published with the site, so it carries only what an approval needs. Password resets never reach this page: they are settled automatically, and the new password goes only to the account's own address.</div>
+  <div class="note lens"><b class="t">Lens</b>Passwords are never stored. Each account keeps only a salted fingerprint of its password (PBKDF2-SHA-256, 210,000 rounds). A password exists only in the e-mail sent to its owner, which is why a forgotten password is replaced, never recovered.</div>
+  <div class="note caution"><b class="t">Caution</b><b>Approve here (needs token)</b> and <b>Add a person</b> create the account in the browser and need a GitHub token to publish; they remain for the super admin who holds one. Everyone else uses the e-mail route, which needs no token at all.</div>
 </section>
 
 <!-- ======================= 12 GAMIFICATION ======================= -->
@@ -436,6 +436,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <dt>Why do the browser tab and the app icon show only the "M", not the whole logo?</dt><dd>At 16 pixels the wordmark is unreadable; the emblem alone stays crisp. The full logo is on every page.</dd>
     <dt>What happens if two super admins publish account changes at the same time?</dt><dd>The second publish is refused with "the file changed on GitHub meanwhile; try again". Nothing is lost; the second person simply publishes again.</dd>
     <dt>Can the request code in an access e-mail be forged?</dt><dd>It can be typed by anyone, which is why the super admin reviews every request and the new password is sent to the e-mail address in the request, not to whoever sent it.</dd>
+    <dt>What does a requester receive, and when?</dt><dd>An acknowledgement with the reference within about ten minutes of sending the request, then, once approved, an e-mail from mml@bpropms.in with the user ID, a temporary password and the hub's address. Both go to the work e-mail typed in the form.</dd>
+    <dt>Can I approve from my phone?</dt><dd>Yes. Reply "approve" to the request e-mail from the hub mailbox, or send a new e-mail to mml@bpropms.in with the subject "approve" and the references in the body. The hub acts within about ten minutes.</dd>
     <dt>Why does "Thought for the day" change every seven seconds?</dt><dd>Seven quotes, seven seconds each. Hover it to pause, or use the dots. Under a reduced-motion setting it stays still.</dd>
     <dt>Why is a bill sometimes counted as negative?</dt><dd>In a few bills the discount exceeds the bill, so the true amount is negative, but Tally's export drops the minus sign. The build detects these from each bill's ledger arithmetic; that is what makes the totals match the Grand Total.</dd>
     <dt>Why does Marthandam's export look different from the others?</dt><dd>Its discounts are exported as negative amounts while the other units export them as positive. The build uses the size of the amount, so both reconcile.</dd>
@@ -463,6 +465,9 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h1>Version history</h1>
   <p class="lead">Each release raises the app version; installed copies show an update message with the notes.</p>
   <table class="version"><tr><th>Version</th><th>Date</th><th>What changed</th></tr>
+    <tr><td>2026.10.15f</td><td>15 Oct 2026</td><td>Every access request is acknowledged to the requester as soon as it is listed; the administrator is reminded once a day of requests waiting more than a day.</td></tr>
+    <tr><td>2026.10.15e</td><td>15 Oct 2026</td><td>Approvals by e-mail: "approve" or "decline" to the hub mailbox creates the account and e-mails the user ID and password. Password resets automatic. Approve by e-mail / Decline by e-mail on the People page.</td></tr>
+    <tr><td>2026.10.15d</td><td>15 Oct 2026</td><td>User manual v1.2.</td></tr>
     <tr><td>2026.10.15c</td><td>15 Oct 2026</td><td>Requests appear in Settings → People on their own: the hub mailbox is read every 15 minutes; approving or declining and publishing takes a request off the list.</td></tr>
     <tr><td>2026.10.15b</td><td>15 Oct 2026</td><td>The request-access and reset forms can post straight to the hub mailbox once a form key is configured.</td></tr>
     <tr><td>2026.10.15a</td><td>15 Oct 2026</td><td>FY 2025–26 registers for Nedumangad and Varkala: year on year now compares three units against the same months of 2025.</td></tr>
@@ -481,7 +486,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <tr><td>2026.10.14</td><td>14 Oct 2026</td><td>Landing and sign-in page; hub moves behind sign-in. Custom domain mmlpbi.bpropms.in.</td></tr>
     <tr><td>2026.10.13</td><td>13 Oct 2026</td><td>Division dashboards for nine divisions; installable app with update message; BPro branding, warm palette and QR verification on every download; reconciliation note PDF on letterhead; financial position panel.</td></tr>
     <tr><td>2026.10.12</td><td>12 Oct 2026</td><td>HD Attingal pilot dashboard; multi-company data model; hub landing page; report builder with subtotals and grand totals; HOD action tracker copy.</td></tr></table>
-  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15d. Changes since v1.1: requests listed from the hub mailbox on the People page (new figure and steps), the year-on-year lens covering three units, and the version history.</p>
+  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15g. Changes since v1.2: approvals by e-mail with no token, automatic password resets, the acknowledgement and reminder e-mails, the People figure and steps, two FAQ entries, and the version history.</p>
 </section>
 
 <!-- ======================= 17 GLOSSARY ======================= -->

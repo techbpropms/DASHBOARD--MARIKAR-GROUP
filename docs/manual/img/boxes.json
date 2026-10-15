@@ -460,40 +460,40 @@
    "x": 23,
    "y": 109,
    "w": 834,
-   "h": 85
+   "h": 287
   },
   {
    "label": "Requests waiting in the mailbox",
    "x": 23,
-   "y": 242,
+   "y": 443,
    "w": 834,
    "h": 231
   },
   {
    "label": "Open",
    "x": 789,
-   "y": 291,
+   "y": 492,
    "w": 55,
    "h": 31
   },
   {
    "label": "Paste a request by hand",
    "x": 23,
-   "y": 541,
+   "y": 786,
    "w": 703,
    "h": 80
   },
   {
    "label": "The request, ready to approve or decline",
    "x": 23,
-   "y": 634,
+   "y": 878,
    "w": 834,
    "h": 300
   },
   {
    "label": "Add a person",
    "x": 23,
-   "y": 981,
+   "y": 1225,
    "w": 834,
    "h": 119
   }
