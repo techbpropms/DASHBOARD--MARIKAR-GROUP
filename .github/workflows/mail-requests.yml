@@ -6,7 +6,8 @@
 name: Mailbox requests
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    # off the round minutes on purpose: GitHub drops schedules at :00, :10 ... under load
+    - cron: '4,14,24,34,44,54 * * * *'
   workflow_dispatch:
     inputs:
       reset:

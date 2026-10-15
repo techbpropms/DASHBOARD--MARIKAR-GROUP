@@ -2,7 +2,7 @@
 // revalidated with the server, cached copy offline), so a change such as a new account in auth.js applies on the next
 // load; images come from the cache. Bump VERSION with each release: the pages then show an
 // "update available" message, and the new version takes over when the reader taps Update.
-const VERSION = '2026.10.15j';
+const VERSION = '2026.10.15k';
 const CACHE = 'marikar-hub-' + VERSION;
 const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html', 'settings.html',
   'assets/theme.css', 'assets/shell.css', 'assets/shell.js', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',

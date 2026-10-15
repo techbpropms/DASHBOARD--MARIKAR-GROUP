@@ -36,7 +36,16 @@
   }
   const read = () => {
     for (const store of [sessionStorage, localStorage]) {
-      try { const s = JSON.parse(store.getItem(KEY) || 'null'); if (s && s.exp > Date.now()) return s; store.removeItem(KEY); } catch (e) { /* storage blocked */ }
+      try {
+        const s = JSON.parse(store.getItem(KEY) || 'null');
+        if (s && s.exp > Date.now()) {
+          // the account behind the session: removed means signed out; role, name and divisions follow the file
+          const u = USERS.find((x) => x.id === s.id);
+          if (!u) { store.removeItem(KEY); continue; }
+          return { ...s, name: u.name, role: u.role, divisions: scopeOf(u) };
+        }
+        store.removeItem(KEY);
+      } catch (e) { /* storage blocked */ }
     }
     return null;
   };

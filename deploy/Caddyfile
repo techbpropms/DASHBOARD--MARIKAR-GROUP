@@ -6,9 +6,9 @@ mmlpbi.bpropms.in {
 	file_server
 
 	# The service worker and the version file must never be cached by the browser or a proxy.
+	header /assets/* Cache-Control "public, max-age=3600"
 	@fresh path /sw.js /version.json /data/* /assets/auth.js
 	header @fresh Cache-Control "no-cache, no-store, must-revalidate"
-	header /assets/* Cache-Control "public, max-age=3600"
 
 	header {
 		Strict-Transport-Security "max-age=31536000"

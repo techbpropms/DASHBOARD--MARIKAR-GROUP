@@ -1,8 +1,9 @@
 {
-  "version": "2026.10.15j",
-  "title": "User manual v1.4",
+  "version": "2026.10.15k",
+  "title": "Audit fixes",
   "notes": [
-    "The manual now covers access by division, the Refresh control, people management by admins, the account-changes log and the sign-in report (48 pages)",
-    "Settings > People: the division editor opens under the table instead of inside the row"
+    "A removed account is signed out at once, and a changed role or set of divisions applies on the next page load",
+    "In an approval reply, divisions count only after the word \"for\"",
+    "The mailbox clerk runs at 4, 14, 24, 34, 44 and 54 minutes past the hour"
   ]
 }
