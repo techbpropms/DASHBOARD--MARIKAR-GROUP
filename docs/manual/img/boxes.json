@@ -328,16 +328,16 @@
   {
    "label": "Legend",
    "x": 21,
-   "y": -662,
+   "y": 99,
    "w": 585,
    "h": 19
   },
   {
    "label": "Table by company",
    "x": 21,
-   "y": -367,
+   "y": 394,
    "w": 585,
-   "h": 64
+   "h": 159
   }
  ],
  "14-dash-stock": [
@@ -463,23 +463,37 @@
    "h": 85
   },
   {
-   "label": "Paste a request",
+   "label": "Requests waiting in the mailbox",
    "x": 23,
-   "y": 275,
+   "y": 242,
+   "w": 834,
+   "h": 231
+  },
+  {
+   "label": "Open",
+   "x": 789,
+   "y": 291,
+   "w": 55,
+   "h": 31
+  },
+  {
+   "label": "Paste a request by hand",
+   "x": 23,
+   "y": 541,
    "w": 703,
    "h": 80
   },
   {
    "label": "The request, ready to approve or decline",
    "x": 23,
-   "y": 367,
+   "y": 634,
    "w": 834,
    "h": 300
   },
   {
    "label": "Add a person",
    "x": 23,
-   "y": 714,
+   "y": 981,
    "w": 834,
    "h": 119
   }
