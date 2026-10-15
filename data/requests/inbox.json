@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15T07:45:01+00:00",
+  "updated": "2026-10-15T08:33:35+00:00",
   "pending": [
     {
       "ref": "AR-20261015-0546",
@@ -53,6 +53,20 @@
       "received": "2026-10-15T07:02:48+00:00",
       "from": "mi.accounts@marikarindustries.in",
       "mid": "<PN0P287MB298536F59BDE7511D1638F5F989C2@PN0P287MB2985.INDP287.PROD.OUTLOOK.COM>"
+    },
+    {
+      "ref": "AR-20261015-B4C7",
+      "kind": "access",
+      "name": "GOPAKUMAR.H",
+      "email": "gopakumar@marikarengineers.com",
+      "unit": "IT",
+      "scope": "My division",
+      "title": "Manager-IT",
+      "reason": "Fine tune the existing IT gap areas. New ideas and IT related projects implementations",
+      "at": "2026-10-15T08:09:59.252Z",
+      "received": "2026-10-15T08:10:36+00:00",
+      "from": "gopakumar@marikarengineers.com",
+      "mid": "<PN2P287MB0838FCA35217292869B8F3FBC99C2@PN2P287MB0838.INDP287.PROD.OUTLOOK.COM>"
     }
   ],
   "handled": {
