@@ -101,22 +101,32 @@
       } catch (e) { return { sent: false }; }
     },
   };
-  // Sign-in log. Every successful sign-in is noted on this device (last 50) and, when SIGNINS.endpoint is set to the
-  // small Google Apps Script in server/signin-log.gs, posted there so Settings can show a report across users.
-  const SIGNINS = { endpoint: '' };
+  // Sign-in log. Every successful sign-in is noted on this device (last 50) and sent as a beacon to SIGNINS.endpoint,
+  // which on the VPS is an nginx location that writes one JSON line per sign-in (deploy/nginx-hub.conf); SIGNINS.report
+  // serves that file, so Settings can show a report across users. Both are relative addresses: they work once the hub
+  // is served from the VPS and are harmlessly ignored while it is served from GitHub Pages.
+  const SIGNINS = { endpoint: 'signin-log', report: 'signins.log' };
   const device = () => { const ua = navigator.userAgent; const os = /Android/i.test(ua) ? 'Android' : /iPhone|iPad/i.test(ua) ? 'iPhone/iPad' : /Windows/i.test(ua) ? 'Windows' : /Mac OS/i.test(ua) ? 'Mac' : /Linux/i.test(ua) ? 'Linux' : 'other'; const br = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : /Firefox\//.test(ua) ? 'Firefox' : 'browser'; return `${br} on ${os}${matchMedia('(display-mode: standalone)').matches ? ' (app)' : ''}`; };
   const noteSignIn = (s) => {
     const row = { at: new Date().toISOString(), id: s.id, name: s.name, role: s.role, device: device() };
     try { const k = 'mg-signins'; const list = JSON.parse(localStorage.getItem(k) || '[]'); list.push(row); localStorage.setItem(k, JSON.stringify(list.slice(-50))); } catch (e) { /* storage blocked */ }
-    if (SIGNINS.endpoint) { try { fetch(SIGNINS.endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(row), keepalive: true }).catch(() => {}); } catch (e) { /* offline */ } }
+    if (SIGNINS.endpoint) { try { const q = new URLSearchParams({ id: row.id, name: row.name, role: row.role, device: row.device }); fetch(`${SIGNINS.endpoint}?${q}`, { mode: 'no-cors', cache: 'no-store', keepalive: true }).catch(() => {}); } catch (e) { /* offline */ } }
   };
   const Auth = {
     user: read,
     signins: {
       config: SIGNINS,
       local: () => { try { return JSON.parse(localStorage.getItem('mg-signins') || '[]'); } catch (e) { return []; } },
-      // The report for the last `days` days from the endpoint: rows of {at, id, name, role, device}, newest first.
-      report: async (days) => { if (!SIGNINS.endpoint) return null; const r = await fetch(`${SIGNINS.endpoint}?report=${days || 30}`, { cache: 'no-store' }); if (!r.ok) throw new Error('report ' + r.status); const j = await r.json(); return (Array.isArray(j) ? j : j.rows || []).sort((a, b) => (b.at || '').localeCompare(a.at || '')); },
+      // The report for the last `days` days: rows of {at, id, name, role, device}, newest first, from the JSON-lines log
+      // the server keeps (one object per line; the server writes the time and the query fields).
+      report: async (days) => {
+        if (!SIGNINS.report) return null;
+        const r = await fetch(SIGNINS.report, { cache: 'no-store' }); if (!r.ok) throw new Error('report ' + r.status);
+        const since = Date.now() - (days || 30) * DAY; const rows = [];
+        const un = (v) => { try { return decodeURIComponent(String(v || '').replace(/\+/g, ' ')); } catch (e) { return String(v || ''); } };   // nginx stores the query fields as sent
+        (await r.text()).split('\n').forEach((line) => { if (!line.trim()) return; try { const o = JSON.parse(line); if (o.at && new Date(o.at).getTime() >= since && o.id) rows.push({ at: new Date(o.at).toISOString(), id: un(o.id).toLowerCase(), name: un(o.name), role: un(o.role), device: un(o.device) }); } catch (e) { /* a torn line */ } });
+        return rows.sort((a, b) => b.at.localeCompare(a.at));
+      },
     },
     requests: Requests,
     exists: (id) => USERS.some((u) => u.id === String(id || '').trim().toLowerCase()),

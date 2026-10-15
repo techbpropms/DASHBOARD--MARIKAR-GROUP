@@ -260,8 +260,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     if (!mine.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 3; td.className = 'muted'; td.textContent = 'No sign-ins recorded on this device yet.'; tr.appendChild(td); tb.appendChild(tr); }
     const note = $('signins-note'), table = $('signins-table');
     if (!manages) { note.textContent = 'Your recent sign-ins on this device. Administrators see the report across users.'; table.hidden = true; return; }
-    if (!MGAuth.signins.config.endpoint) {
-      note.textContent = 'The report across users switches on once the sign-in log service is connected (five minutes: see README, "Sign-in report"). Until then only this device\'s sign-ins are listed below.';
+    if (!MGAuth.signins.config.report) {
+      note.textContent = 'The report across users is not configured on this copy of the hub. Only this device\'s sign-ins are listed below.';
       table.hidden = true; return;
     }
     $('signins-csv').hidden = false; $('signins-days-wrap').hidden = false;
@@ -269,7 +269,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const load = async () => {
       const days = Number($('signins-days').value);
       note.textContent = 'Loading…';
-      try { rows = await MGAuth.signins.report(days); } catch (e) { note.textContent = 'The sign-in log could not be read (' + e.message + ').'; return; }
+      try { rows = await MGAuth.signins.report(days); } catch (e) { note.textContent = 'The sign-in log is kept by the hub\'s own server and is not reachable from this address (' + e.message + '). It fills in once the hub is served from the VPS at mmlpbi.bpropms.in.'; return; }
       const by = new Map();
       rows.forEach((r) => { const k = (r.id || '').toLowerCase(); const e = by.get(k) || { id: k, name: r.name, role: r.role, last: '', device: '', n: 0 }; e.n += 1; if ((r.at || '') > e.last) { e.last = r.at; e.device = r.device; e.name = r.name || e.name; e.role = r.role || e.role; } by.set(k, e); });
       const list = [...by.values()].sort((a, b) => b.last.localeCompare(a.last));

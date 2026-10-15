@@ -1,0 +1,11 @@
+# Keeps the Marikar hub sign-in log bounded (installed as /etc/logrotate.d/hub-signins). The report reads the
+# current file; a rotation starts a fresh one, so size is generous: about 150,000 sign-ins per file.
+/srv/hub/log/signins.log {
+    size 20M
+    rotate 6
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+}
