@@ -58,6 +58,12 @@ HUB_URL = os.environ.get('HUB_URL', 'https://mmlpbi.bpropms.in/')
 NOW = dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')
 
 
+def mask(addr):
+    """An address as the run log shows it (the log of a public repository is public): first letter and domain."""
+    a = str(addr or '')
+    return (a[0] + '…@' + a.split('@', 1)[1]) if '@' in a else a
+
+
 # ----- the account list (assets/auth.js)
 LINE_RE = re.compile(r"\n[ \t]*\{ id: '([^']+)', name: (\"(?:[^\"\\]|\\.)*\"|'[^']*'), role: '([^']+)', salt: '([0-9a-f]+)', hash: '([0-9a-f]+)' \},")
 
@@ -398,16 +404,16 @@ def main():
             # one reset a day per address: a second request within the day is noted, not acted on, so nobody can
             # keep changing someone else's password from the sign-in page
             settle(req, 'throttled', by='automatic', email=acct['id'].lower())
-            print(f"  reset {req['ref']} for {acct['id']}: already reset in the last 24 hours, skipped")
+            print(f"  reset {req['ref']} for {mask(acct['id'])}: already reset in the last 24 hours, skipped")
         elif acct:
             newpw = accounts.add(acct['id'], acct['name'], acct['role'])
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             settle(req, 'reset', by='automatic', email=acct['id'].lower())
-            print(f"  reset {req['ref']} for {acct['id']}: new password e-mailed")
+            print(f"  reset {req['ref']} for {mask(acct['id'])}: new password e-mailed")
         else:
             mailer.send(req['email'], 'Marikar hub: password reset request', f"A password reset was requested for {req['email']}, but no hub account uses this ID. To get access, open {HUB_URL} and choose Request access.\n\nIf you did not ask for this, you can ignore this e-mail.\n\nRegards,\nMarikar Group performance hub")
             settle(req, 'no-account', by='automatic')
-            print(f"  reset {req['ref']}: no account for {req['email']}; told them how to request access")
+            print(f"  reset {req['ref']}: no account for {mask(req['email'])}; told them how to request access")
 
     # 3. approvals and declines by reply
     for cmd in commands:
@@ -417,7 +423,7 @@ def main():
         ok_sender = cmd['from'] in approvers
         ok_proof = (cmd['in_reply_to'] and cmd['in_reply_to'] in mids) or cmd['authenticated']
         if not (ok_sender and ok_proof):
-            print(f"  ignored '{cmd['action']}' for {cmd['ref']} from {cmd['from']}: {'not an approver' if not ok_sender else 'not a verified reply'}")
+            print(f"  ignored '{cmd['action']}' for {cmd['ref']} from {mask(cmd['from'])}: {'not an approver' if not ok_sender else 'not a verified reply'}")
             continue
         if cmd['action'] == 'approve':
             role = cmd['role'] if cmd['role'] in ('viewer', 'admin', 'superadmin') else 'viewer'
@@ -425,11 +431,11 @@ def main():
             newpw = accounts.add(existed['id'] if existed else req['email'], existed['name'] if existed else req.get('name', req['email']), existed['role'] if existed else role)
             mailer.send(req['email'], 'Marikar hub: your access', welcome(req.get('name'), req['email'], newpw, reset=bool(existed)))
             settle(req, 'approved', by=cmd['from'], role=existed['role'] if existed else role)
-            print(f"  approved {req['ref']} ({req['email']}, {existed['role'] if existed else role}) on {cmd['from']}'s reply; password e-mailed")
+            print(f"  approved {req['ref']} ({mask(req['email'])}, {existed['role'] if existed else role}) on {mask(cmd['from'])}'s reply; password e-mailed")
         else:
             mailer.send(req['email'], f"Marikar hub: access request {req['ref']}", f"Dear {(req.get('name') or 'colleague').split(' ')[0]},\n\nThank you for your request ({req['ref']}). We are not able to approve it at this time. If you believe this is a mistake, reply to this e-mail with your reporting manager copied.\n\nRegards,\nMarikar Group performance hub administrator")
             settle(req, 'declined', by=cmd['from'])
-            print(f"  declined {req['ref']} ({req['email']}) on {cmd['from']}'s reply")
+            print(f"  declined {req['ref']} ({mask(req['email'])}) on {mask(cmd['from'])}'s reply")
         # the same person sometimes sends twice: the other copies are settled with this one
         for twin in pending:
             if twin['kind'] == 'access' and twin['email'] == req['email'] and twin['ref'] not in handled:
@@ -444,15 +450,23 @@ def main():
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             ref = f"PR-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d')}-{secrets.token_hex(2).upper()}"
             handled[ref] = {'status': 'reset', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True
-            print(f"  reset {ref} for {acct['id']} on the administrator's instruction: new password e-mailed")
+            print(f"  reset {ref} for {mask(acct['id'])} on the administrator's instruction: new password e-mailed")
         else:
-            print(f"  reset requested for {forced}: no such account")
+            print(f"  reset requested for {mask(forced)}: no such account")
 
-    # 4. acknowledge every newly listed access request, once
+    # 4. acknowledge every newly listed access request, once per request, once per address, at most ten a run:
+    #    the sign-in form accepts any address, so this must never become a way to send mail to strangers in bulk
+    acked_addrs = {p['email'] for p in pending if p.get('acked')}
+    sent_acks = 0
     for req in [p for p in pending if p['kind'] == 'access' and p['ref'] not in handled and not p.get('acked')]:
+        if req['email'] in acked_addrs:
+            req['acked'] = 'same address already acknowledged'; changed = True
+            continue
+        if sent_acks >= 10:
+            break
         mailer.send(req['email'], f"Marikar hub: your access request {req['ref']}", acknowledgement(req))
-        req['acked'] = NOW; changed = True
-        print(f"  acknowledged {req['ref']} to {req['email']}")
+        req['acked'] = NOW; acked_addrs.add(req['email']); sent_acks += 1; changed = True
+        print(f"  acknowledged {req['ref']} to {mask(req['email'])}")
 
     # 5. once a day, remind the approvers of anything that has waited more than a day
     waiting = []
@@ -472,13 +486,13 @@ def main():
         for addr in to:
             mailer.send(addr, f"Marikar hub: {len(waiting)} access request{'s' if len(waiting) > 1 else ''} waiting", reminder(waiting, to))
         reminded_at = NOW; changed = True
-        print(f"  reminded {', '.join(to)} of {len(waiting)} waiting request(s)")
+        print(f"  reminded {', '.join(mask(a) for a in to)} of {len(waiting)} waiting request(s)")
 
     pending = [p for p in pending if p['ref'] not in handled]
     pending.sort(key=lambda p: p.get('received') or p.get('at') or '')
     print(f"{len(messages)} e-mail(s) read ({hub_mails} about the hub, {from_approvers} from approver addresses), {len(added)} new request(s), {len(commands)} reply command(s), {mailer.sent} e-mail(s) sent, {len(pending)} waiting, {len(handled)} handled")
     for r in added:
-        print(f"  + {r['ref']} {r['kind']} {r['email']}")
+        print(f"  + {r['ref']} {r['kind']} {mask(r['email'])}")
     if not changed:
         return
     os.makedirs(os.path.dirname(args.store), exist_ok=True)
