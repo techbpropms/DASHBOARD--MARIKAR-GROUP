@@ -1,7 +1,7 @@
 # Publishes the hub to the Hostinger VPS whenever main changes (merges, and the mailbox clerk's own commits).
 # One-time set-up: the "Set up VPS" workflow (or deploy/vps-setup.sh by hand). Repository secrets: VPS_HOST (IP
-# or host name) and either VPS_PASSWORD (the root password; simplest) or VPS_SSH_KEY (a deploy key for the "hub"
-# user); optional VPS_USER (default root with a password, hub with a key) and VPS_PATH (default /srv/hub/site).
+# or host name) and either VPS_PASSWORD (the root password) or VPS_SSH_KEY (a private key whose public half is on
+# the server for root); optional VPS_USER (default root) and VPS_PATH (default /srv/hub/site).
 name: Deploy to VPS
 on:
   push:
@@ -35,9 +35,9 @@ jobs:
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
           if [ -n "$VPS_SSH_KEY" ]; then
-            printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
-            echo "ssh_cmd=ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
-            echo "user_default=hub" >> "$GITHUB_ENV"
+            printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+            echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
+            echo "user_default=root" >> "$GITHUB_ENV"
           else
             sudo apt-get install -y -qq sshpass >/dev/null
             echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
@@ -51,6 +51,7 @@ jobs:
           VPS_PATH: ${{ secrets.VPS_PATH || '/srv/hub/site' }}
           SSHPASS: ${{ secrets.VPS_PASSWORD }}
         run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
           # Only what the browser needs: no git history, no server code, no build scripts, no raw files.
           rsync -az --delete \
             --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
