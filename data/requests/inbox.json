@@ -1,5 +1,44 @@
 {
-  "updated": "",
-  "pending": [],
+  "updated": "2026-10-15T05:32:03+00:00",
+  "pending": [
+    {
+      "ref": "AR-20261015-0F99",
+      "kind": "access",
+      "name": "Shaheen Parvaz",
+      "email": "gm@marikarautomobiles.in",
+      "unit": "CSPW",
+      "scope": "Several divisions",
+      "title": "General Manager",
+      "reason": "Need for Performance Hub Application:\n\nTo track employee performance.\n\nTo set and monitor goals.\n\nTo measure productivity.\n\nTo give feedback.\n\nTo identify improvement areas.\n\nTo improve overall team performance.",
+      "at": "2026-10-15T03:37:13.629Z",
+      "received": "2026-10-15T03:41:59+00:00",
+      "from": "gm@marikarautomobiles.in"
+    },
+    {
+      "ref": "AR-20261015-3D52",
+      "kind": "access",
+      "name": "Shaheen Parvaz",
+      "email": "gm@marikarautomobiles.in",
+      "unit": "Canon / OAIP",
+      "scope": "Several divisions",
+      "title": "General Manager",
+      "reason": "Need for Performance Hub Application:\n\nTo track employee performance.\n\nTo set and monitor goals.\n\nTo measure productivity.\n\nTo give feedback.\n\nTo identify improvement areas.\n\nTo improve overall team performance.",
+      "at": "2026-10-15T03:42:35.757Z",
+      "received": "2026-10-15T03:45:06+00:00",
+      "from": "gm@marikarautomobiles.in"
+    },
+    {
+      "ref": "AR-20261015-0546",
+      "kind": "access",
+      "name": "Abhilash A G",
+      "email": "hrmanager@marikarmotors.com",
+      "unit": "HR",
+      "scope": "All divisions",
+      "title": "AGM-HR Head",
+      "at": "2026-10-15T03:58:48.407Z",
+      "received": "2026-10-15T03:59:42+00:00",
+      "from": "abhidear@gmail.com"
+    }
+  ],
   "handled": {}
 }
