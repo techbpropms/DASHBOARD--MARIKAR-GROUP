@@ -291,6 +291,23 @@ class Mailer:
         self.sent += 1
 
 
+def acknowledgement(req):
+    first = (req.get('name') or '').split(' ')[0] or 'colleague'
+    return (f'Dear {first},\n\nYour request for access to the Marikar Group performance hub has been received.\n\n'
+            f'Reference: {req["ref"]}\nUser ID:   {req["email"]}\n\n'
+            'The administrator reviews every request. Once it is approved you will receive a separate e-mail from this address with your '
+            'user ID and a temporary password; most requests are answered within one working day. If you need to follow up, quote the reference.\n\n'
+            'Regards,\nMarikar Group performance hub\n(automated message from the hub mailbox; replies are read by the administrator)')
+
+
+def reminder(waiting, approvers_to):
+    lines = [f"  {p['ref']}  {p.get('name') or p['email']}  ({p['email']}; {p.get('unit') or '-'}; {p.get('scope') or '-'})" for p in waiting]
+    return ('The following access requests are waiting for a decision:\n\n' + '\n'.join(lines) +
+            f'\n\nTo approve, send an e-mail to {MAIL_USER} with the subject "approve" and the reference(s) in the body '
+            '(add "admin" after approve for an admin account). To refuse, use "decline" the same way. '
+            f'The list is also on the People page of {HUB_URL}settings.html.\n\nMarikar Group performance hub')
+
+
 def welcome(name, uid, pw, reset=False):
     first = (name or '').split(' ')[0] or 'colleague'
     what = 'Your password has been reset.' if reset else 'Your access to the Marikar Group performance hub has been approved.'
@@ -418,6 +435,32 @@ def main():
             if twin['kind'] == 'access' and twin['email'] == req['email'] and twin['ref'] not in handled:
                 settle(twin, handled[req['ref']]['status'], by=cmd['from'], note=f"same address as {req['ref']}")
 
+    # 4. acknowledge every newly listed access request, once
+    for req in [p for p in pending if p['kind'] == 'access' and p['ref'] not in handled and not p.get('acked')]:
+        mailer.send(req['email'], f"Marikar hub: your access request {req['ref']}", acknowledgement(req))
+        req['acked'] = NOW; changed = True
+        print(f"  acknowledged {req['ref']} to {req['email']}")
+
+    # 5. once a day, remind the approvers of anything that has waited more than a day
+    waiting = []
+    for p in pending:
+        if p['kind'] != 'access' or p['ref'] in handled:
+            continue
+        try:
+            if dt.datetime.fromisoformat(p.get('received') or p['at'].replace('Z', '+00:00')) < dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=24):
+                waiting.append(p)
+        except ValueError:
+            pass
+    last = store.get('reminded_at', '')
+    due = not last or dt.datetime.fromisoformat(last) < dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=24)
+    reminded_at = last
+    if waiting and due:
+        to = sorted(a for a in approvers if a != MAIL_USER.lower() and not a.endswith('@bpropms.com')) or [MAIL_USER]
+        for addr in to:
+            mailer.send(addr, f"Marikar hub: {len(waiting)} access request{'s' if len(waiting) > 1 else ''} waiting", reminder(waiting, to))
+        reminded_at = NOW; changed = True
+        print(f"  reminded {', '.join(to)} of {len(waiting)} waiting request(s)")
+
     pending = [p for p in pending if p['ref'] not in handled]
     pending.sort(key=lambda p: p.get('received') or p.get('at') or '')
     print(f"{len(messages)} e-mail(s) read ({hub_mails} about the hub, {from_approvers} from approver addresses), {len(added)} new request(s), {len(commands)} reply command(s), {mailer.sent} e-mail(s) sent, {len(pending)} waiting, {len(handled)} handled")
@@ -427,7 +470,7 @@ def main():
         return
     os.makedirs(os.path.dirname(args.store), exist_ok=True)
     with open(args.store, 'w', encoding='utf-8') as f:
-        json.dump({'updated': NOW, 'pending': pending, 'handled': handled}, f, ensure_ascii=False, indent=2); f.write('\n')
+        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled}, f, ensure_ascii=False, indent=2); f.write('\n')
     accounts.save()
 
 
