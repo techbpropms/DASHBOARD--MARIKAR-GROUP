@@ -21,6 +21,7 @@
     moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
     auto: '<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    refresh: '<path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/>',
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
     chev: '<path d="M6 9l6 6 6-6"/>',
     top: '<rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="11" width="18" height="9" rx="1"/>',
@@ -44,7 +45,7 @@
     { label: 'Verify a document', href: 'verify.html', icon: 'verify' },
     { label: 'Settings', href: 'settings.html', icon: 'gear', children: [
       { label: 'Appearance', href: 'settings.html#appearance' },
-      { label: 'People', href: 'settings.html#people', role: 'superadmin' },
+      { label: 'People', href: 'settings.html#people', role: ['superadmin', 'admin'] },
     ] },
   ];
 
@@ -80,7 +81,14 @@
       const paint = () => { const cur = MGAuth.theme(); tsw.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.t === cur))); };
       themes.forEach(([k, n, ic]) => { const b = el('button'); b.type = 'button'; b.dataset.t = k; b.title = n + ' theme'; b.setAttribute('aria-label', n + ' theme'); b.append(svg(ic)); b.addEventListener('click', () => { MGAuth.theme(k); paint(); }); tsw.append(b); });
       paint();
-      right.append(tsw);
+      // ----- refresh: checks for a new version of the app, then reloads this page with fresh data
+      const rf = el('button', 'mg-ic mg-refresh'); rf.type = 'button'; rf.title = 'Refresh'; rf.setAttribute('aria-label', 'Refresh'); rf.append(svg(I.refresh));
+      rf.addEventListener('click', () => {
+        rf.classList.add('is-busy'); rf.disabled = true;
+        const go = () => location.reload();
+        if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then((r) => r ? r.update() : null).catch(() => {}).finally(go); else go();
+      });
+      right.append(rf, tsw);
 
       if (user) {
         const who = el('div', 'mg-who');
@@ -94,7 +102,7 @@
       }
 
       // ----- menu items (the same tree feeds the top bar, the sidebar and the phone drawer)
-      const allowed = (it) => !it.role || (user && user.role === it.role);
+      const allowed = (it) => !it.role || (user && [].concat(it.role).includes(user.role));
       const link = (it, cls) => { const a = el('a', cls, it.label); a.href = it.href; if (isHere(it.href)) a.setAttribute('aria-current', 'page'); return a; };
       const buildTop = () => {
         const ul = el('ul');

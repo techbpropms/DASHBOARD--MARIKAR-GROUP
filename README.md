@@ -253,6 +253,11 @@ requester's own mail program ("Send by e-mail") or copy the request text.
   how to request access;
 - **acknowledges** every newly listed access request to the requester (reference, what happens next) and
   **reminds** the approvers once a day of requests that have waited more than a day;
+- applies **account-management lines** e-mailed to the mailbox by a super admin (full rights) or an admin (may not
+  touch super admin accounts or grant that role): `role <user id> <viewer|admin|superadmin>`, `remove <user id>`,
+  `reset <user id>`, `add <user id> <Full name> as <role>`; the person concerned is e-mailed. The People page
+  queues these and opens the e-mail ready to send; every change is kept in the store's `log` and shown under
+  Settings > Account changes;
 - acts on **one-word replies** to a request e-mail from an approver: "approve" (or "approve admin" /
   "approve superadmin") creates the account and e-mails the requester their user ID and temporary
   password; "decline" sends a courteous refusal. Approvers are the super admin accounts in `auth.js`, the
@@ -269,6 +274,16 @@ the request list holds only what an approval needs (phone numbers stay in the e-
 salted fingerprints only; a password exists solely in the e-mail sent to its owner. Nothing in the mailbox
 is deleted or marked. "Approve here (needs token)" on the People page still works for a super admin who
 holds a GitHub token.
+
+**Sign-in report.** Every sign-in is noted on the device it happened on (Settings shows the last 20). For a report
+across users, connect the small logging service in `server/signin-log.gs`: create a Google Sheet, paste the
+script under Extensions > Apps Script, deploy it as a web app (execute as you, access "Anyone"), and put the
+`/exec` URL in `assets/auth.js` as `SIGNINS.endpoint`. The hub then posts one row per sign-in and Settings >
+Sign-in report shows, for admins and super admins, who signed in when and on what, with a CSV download. Anyone
+who knows the URL could add a row or read the report, so treat it as an attendance register rather than evidence.
+
+**Refresh.** The circular arrow in the bar checks for a new version of the app and reloads the page with fresh
+data; it is the first thing to try when a figure looks stale.
 
 Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
 step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
