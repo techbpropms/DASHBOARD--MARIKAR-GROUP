@@ -142,7 +142,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <p class="muted" id="inbox-note">Checking the mailbox list…</p>
       <ul id="inbox-list"></ul>
     </div>
-    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about 10 minutes. <b>Approve by e-mail</b> opens a one-word reply to the mailbox; the hub then creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
+    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about 10 minutes. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
     <div class="reqbox">
       <textarea id="req-in" rows="3" placeholder="Paste the request e-mail or code here" aria-label="Request code"></textarea>
       <button class="btn sec" type="button" id="req-parse">Read request</button>
@@ -330,7 +330,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     $('req-approve').disabled = true; settle('approved');
   });
   // By e-mail: a one-word reply to the hub mailbox, which the mailbox clerk (scripts/read_requests.py) acts on
-  // within about 10 minutes. Send it from an approver's address (a super admin's, or the mailbox itself).
+  // within about 10 minutes. It reads the mailbox's Sent folder too, so a reply made from the mailbox counts.
   const byMail = (word) => {
     if (!current) return;
     const subj = `Re: Marikar hub: access request ${current.ref || ''}${current.name ? ' (' + current.name + ')' : ''}`;

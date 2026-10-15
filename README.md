@@ -254,8 +254,10 @@ requester's own mail program ("Send by e-mail") or copy the request text.
 - acts on **one-word replies** to a request e-mail from an approver: "approve" (or "approve admin" /
   "approve superadmin") creates the account and e-mails the requester their user ID and temporary
   password; "decline" sends a courteous refusal. Approvers are the super admin accounts in `auth.js`, the
-  mailbox itself, and any address in the `APPROVERS` repository variable. A reply counts only if it is a
-  real reply to the request (In-Reply-To) or the mail server recorded a DKIM/SPF pass for the sender.
+  mailbox itself, and any address in the `APPROVERS` repository variable. The clerk reads the mailbox's Sent
+  folder as well as INBOX, so a reply made from the mailbox itself always counts; a reply from another
+  approver address counts if it reaches the mailbox (keep `mml@bpropms.in` as a recipient) and is a real
+  reply (In-Reply-To) or carries a DKIM/SPF pass.
   The People page's "Approve by e-mail" and "Decline by e-mail" buttons open that reply ready to send.
 
 Set-up is one repository secret: GitHub > Settings > Secrets and variables > Actions > New repository
