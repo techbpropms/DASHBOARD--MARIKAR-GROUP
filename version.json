@@ -1,8 +1,7 @@
 {
-  "version": "2026.10.15f",
-  "title": "Requesters hear back at once",
+  "version": "2026.10.15g",
+  "title": "User manual v1.3",
   "notes": [
-    "Every access request now gets an acknowledgement e-mail with its reference as soon as the hub lists it",
-    "The administrator is reminded once a day of requests that have waited more than a day"
+    "The manual now covers approvals by e-mail, automatic password resets and the acknowledgement e-mails"
   ]
 }
