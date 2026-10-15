@@ -1,0 +1,58 @@
+# Publishes the hub to the Hostinger VPS whenever main changes (merges, and the mailbox clerk's own commits).
+# One-time set-up on the server: deploy/vps-setup.sh. Repository secrets: VPS_HOST (IP or host name),
+# VPS_SSH_KEY (the private half of the deploy key the set-up script prints), optional VPS_USER (default
+# "hub") and VPS_PATH (default /srv/hub/site). See deploy/README.md.
+name: Deploy to VPS
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ vars.VPS_DEPLOY != 'off' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the secrets
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ]; then
+            echo "::warning::VPS_HOST and VPS_SSH_KEY are not set; see deploy/README.md. Nothing deployed."
+            echo "skip=1" >> "$GITHUB_ENV"
+          fi
+      - name: Prepare SSH
+        if: env.skip != '1'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+      - name: Copy the site
+        if: env.skip != '1'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER || 'hub' }}
+          VPS_PATH: ${{ secrets.VPS_PATH || '/srv/hub/site' }}
+        run: |
+          # Only what the browser needs: no git history, no server code, no build scripts, no raw files.
+          rsync -az --delete \
+            --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
+            --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
+            ./ "$VPS_USER@$VPS_HOST:$VPS_PATH/"
+          echo "deployed $(git rev-parse --short HEAD) to $VPS_HOST:$VPS_PATH"
+      - name: Check the site answers
+        if: env.skip != '1'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          # The server answers on its own address before DNS moves, and on the hub's name afterwards.
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -k "https://$VPS_HOST/version.json" -H 'Host: mmlpbi.bpropms.in' || true)
+          echo "https://$VPS_HOST/version.json -> $code"
