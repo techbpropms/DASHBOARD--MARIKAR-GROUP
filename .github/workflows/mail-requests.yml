@@ -1,11 +1,12 @@
-# Every 15 minutes: read new access and password-reset requests from the hub mailbox into
-# data/requests/inbox.json, so Settings > People shows them without anyone pasting codes.
-# Needs one repository secret, MAIL_PASSWORD (the mailbox password). The address and server
-# are in scripts/read_requests.py; override with MAIL_USER / MAIL_HOST variables if they change.
+# Every 10 minutes: read the hub mailbox, list new access requests for Settings > People, settle
+# password resets (new password e-mailed to the account's own address), and act on "approve" /
+# "decline" replies from an approver (account created and the password e-mailed to the requester).
+# See scripts/read_requests.py. Needs one repository secret, MAIL_PASSWORD (the mailbox password).
+# Optional repository variables: MAIL_USER, MAIL_HOST, SMTP_HOST, APPROVERS (extra approver addresses).
 name: Mailbox requests
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -17,20 +18,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Read the mailbox
+      - name: Read the mailbox and settle requests
         env:
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_USER: ${{ vars.MAIL_USER }}
           MAIL_HOST: ${{ vars.MAIL_HOST }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          APPROVERS: ${{ vars.APPROVERS }}
         run: |
-          [ -n "$MAIL_USER" ] || unset MAIL_USER
-          [ -n "$MAIL_HOST" ] || unset MAIL_HOST
+          for v in MAIL_USER MAIL_HOST SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
           python3 scripts/read_requests.py
-      - name: Publish new requests
+      - name: Publish
         run: |
-          if git diff --quiet -- data/requests/inbox.json; then echo "nothing new"; exit 0; fi
+          if git diff --quiet -- data/requests/inbox.json assets/auth.js; then echo "nothing new"; exit 0; fi
           git config user.name "Marikar hub mailbox"
           git config user.email "mml@bpropms.in"
-          git add data/requests/inbox.json
-          git commit -m "Requests: new access or reset requests from the mailbox"
+          git add data/requests/inbox.json assets/auth.js
+          git commit -m "Requests: settled from the hub mailbox"
           git push
