@@ -1,5 +1,6 @@
 {
-  "updated": "2026-10-15T08:35:30+00:00",
+  "updated": "2026-10-15T08:37:29+00:00",
+  "reminded_at": "",
   "pending": [
     {
       "ref": "AR-20261015-E012",
@@ -13,7 +14,8 @@
       "at": "2026-10-15T04:53:42.475Z",
       "received": "2026-10-15T04:57:09+00:00",
       "from": "amul.verghese@marikar.in",
-      "mid": "<CAL=ioo1wYr6xf7tAizkR-X=gLByMt5AcN69aNfw62h7qz_hPLA@mail.gmail.com>"
+      "mid": "<CAL=ioo1wYr6xf7tAizkR-X=gLByMt5AcN69aNfw62h7qz_hPLA@mail.gmail.com>",
+      "acked": "2026-10-15T08:37:29+00:00"
     },
     {
       "ref": "AR-20261015-B4C7",
@@ -27,7 +29,8 @@
       "at": "2026-10-15T08:09:59.252Z",
       "received": "2026-10-15T08:10:36+00:00",
       "from": "gopakumar@marikarengineers.com",
-      "mid": "<PN2P287MB0838FCA35217292869B8F3FBC99C2@PN2P287MB0838.INDP287.PROD.OUTLOOK.COM>"
+      "mid": "<PN2P287MB0838FCA35217292869B8F3FBC99C2@PN2P287MB0838.INDP287.PROD.OUTLOOK.COM>",
+      "acked": "2026-10-15T08:37:29+00:00"
     }
   ],
   "handled": {
