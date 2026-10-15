@@ -1,7 +1,7 @@
 # Publishes the hub to the Hostinger VPS whenever main changes (merges, and the mailbox clerk's own commits).
-# One-time set-up on the server: deploy/vps-setup.sh. Repository secrets: VPS_HOST (IP or host name),
-# VPS_SSH_KEY (the private half of the deploy key the set-up script prints), optional VPS_USER (default
-# "hub") and VPS_PATH (default /srv/hub/site). See deploy/README.md.
+# One-time set-up: the "Set up VPS" workflow (or deploy/vps-setup.sh by hand). Repository secrets: VPS_HOST (IP
+# or host name) and either VPS_PASSWORD (the root password; simplest) or VPS_SSH_KEY (a deploy key for the "hub"
+# user); optional VPS_USER (default root with a password, hub with a key) and VPS_PATH (default /srv/hub/site).
 name: Deploy to VPS
 on:
   push:
@@ -20,9 +20,10 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
         run: |
-          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ]; then
-            echo "::warning::VPS_HOST and VPS_SSH_KEY are not set; see deploy/README.md. Nothing deployed."
+          if [ -z "$VPS_HOST" ] || { [ -z "$VPS_SSH_KEY" ] && [ -z "$VPS_PASSWORD" ]; }; then
+            echo "::warning::VPS_HOST and VPS_PASSWORD (or VPS_SSH_KEY) are not set; see deploy/README.md. Nothing deployed."
             echo "skip=1" >> "$GITHUB_ENV"
           fi
       - name: Prepare SSH
@@ -32,21 +33,30 @@ jobs:
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          if [ -n "$VPS_SSH_KEY" ]; then
+            printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+            echo "ssh_cmd=ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
+            echo "user_default=hub" >> "$GITHUB_ENV"
+          else
+            sudo apt-get install -y -qq sshpass >/dev/null
+            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
+            echo "user_default=root" >> "$GITHUB_ENV"
+          fi
       - name: Copy the site
         if: env.skip != '1'
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER || 'hub' }}
+          VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PATH: ${{ secrets.VPS_PATH || '/srv/hub/site' }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
         run: |
           # Only what the browser needs: no git history, no server code, no build scripts, no raw files.
           rsync -az --delete \
             --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
             --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes" \
-            ./ "$VPS_USER@$VPS_HOST:$VPS_PATH/"
+            -e "$ssh_cmd" \
+            ./ "${VPS_USER:-$user_default}@$VPS_HOST:$VPS_PATH/"
           echo "deployed $(git rev-parse --short HEAD) to $VPS_HOST:$VPS_PATH"
       - name: Check the site answers
         if: env.skip != '1'
