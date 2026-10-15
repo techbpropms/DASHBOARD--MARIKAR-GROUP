@@ -14,35 +14,54 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
-          if [ -z "$VPS_HOST" ] || [ -z "$VPS_PASSWORD" ]; then
-            echo "::error::Add the repository secrets VPS_HOST (server IP) and VPS_PASSWORD (root password) first: Settings > Secrets and variables > Actions."; exit 1
+          if [ -z "$VPS_HOST" ] || { [ -z "$VPS_PASSWORD" ] && [ -z "$VPS_SSH_KEY" ]; }; then
+            echo "::error::Add the repository secrets VPS_HOST (server IP) and VPS_PASSWORD (root password) or VPS_SSH_KEY (a private key whose public half is on the server) first: Settings > Secrets and variables > Actions."; exit 1
+          fi
+      - name: Reach the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          methods=$(ssh -o BatchMode=yes -o PreferredAuthentications=none -o StrictHostKeyChecking=yes "root@$VPS_HOST" true 2>&1 | grep -o 'Permission denied ([^)]*)' || true)
+          echo "The server answers for root with: ${methods:-no answer: is VPS_HOST the IP address of the server?}"
+          if [ -n "$VPS_SSH_KEY" ]; then
+            printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+            if ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes "root@$VPS_HOST" true 2>/dev/null; then
+              echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"; echo "Signed in with the key."; exit 0
+            fi
+            echo "::warning::The server did not accept the key in VPS_SSH_KEY (is its public half added to the VPS under Settings > SSH keys?). Trying the password."
+          fi
+          # the password, with any stray line break trimmed off the secret
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          if [ -z "$SSHPASS" ]; then echo "::error::No password to try and the key was refused."; exit 1; fi
+          case "$methods" in *password*) ;; *) echo "::error::Password log-in is switched off for root on this server. In the Hostinger panel open VPS > Settings > SSH access and enable it, or use the key route (VPS_SSH_KEY)."; exit 1;; esac
+          sudo apt-get install -y -qq sshpass >/dev/null
+          if sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password "root@$VPS_HOST" true 2>/dev/null; then
+            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"; echo "Signed in with the password."
+          else
+            echo "::error::The server did not accept the root password in the VPS_PASSWORD secret. Either set the root password again in the Hostinger panel (VPS > Settings > Root password; restart the server if the panel suggests it) and update the secret, or use the key route: add the public key to the VPS under Settings > SSH keys and put the private key in VPS_SSH_KEY."; exit 1
           fi
       - name: Run the set-up script on the server
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           SSHPASS: ${{ secrets.VPS_PASSWORD }}
         run: |
-          sudo apt-get install -y -qq sshpass >/dev/null
-          mkdir -p ~/.ssh && ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          # what the server accepts for root (publickey, password, or both), so a refusal is explained
-          methods=$(ssh -o BatchMode=yes -o PreferredAuthentications=none -o StrictHostKeyChecking=yes "root@$VPS_HOST" true 2>&1 | grep -o 'Permission denied ([^)]*)' || true)
-          echo "The server answers for root with: ${methods:-no answer: is VPS_HOST the IP address of the server?}"
-          case "$methods" in *password*) ;; *) echo "::error::Password log-in is switched off for root on this server. In the Hostinger panel open VPS > Settings > SSH access and enable password authentication (or set a root password there), then run this again."; exit 1;; esac
-          if ! sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password "root@$VPS_HOST" true 2>/dev/null; then
-            echo "::error::The server did not accept the root password in the VPS_PASSWORD secret. Set the root password again in the Hostinger panel (VPS > Settings > Root password), wait a minute, update the secret, and run this again."; exit 1
-          fi
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
           # the script installs Caddy, creates the site folder and firewall rules; it prints no secrets
-          sshpass -e ssh -o StrictHostKeyChecking=yes "root@$VPS_HOST" 'SETUP_VIA_ACTIONS=1 bash -s' < deploy/vps-setup.sh
-        shell: bash
+          $ssh_cmd "root@$VPS_HOST" 'SETUP_VIA_ACTIONS=1 bash -s' < deploy/vps-setup.sh
       - name: Copy the site now
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           SSHPASS: ${{ secrets.VPS_PASSWORD }}
         run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
           rsync -az --delete --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
             --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
-            -e "sshpass -e ssh -o StrictHostKeyChecking=yes" ./ "root@$VPS_HOST:/srv/hub/site/"
+            -e "$ssh_cmd" ./ "root@$VPS_HOST:/srv/hub/site/"
           code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -k "https://$VPS_HOST/version.json" -H 'Host: mmlpbi.bpropms.in' || true)
           echo "The server answers https://$VPS_HOST/version.json with HTTP $code (200 = ready)."
           echo "Next: point the DNS record mmlpbi.bpropms.in (type A) at $VPS_HOST. Caddy fetches the certificate itself."
