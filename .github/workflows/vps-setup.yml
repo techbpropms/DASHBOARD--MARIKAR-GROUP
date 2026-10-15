@@ -1,5 +1,5 @@
-# One-time set-up of the Hostinger VPS from GitHub, so nobody needs a terminal: runs deploy/vps-setup.sh on the
-# server over SSH. Needs two repository secrets: VPS_HOST (the server's IP address) and VPS_PASSWORD (its root
+# Set-up of the hub on the Hostinger VPS from GitHub, so nobody needs a terminal: runs deploy/vps-setup.sh on the
+# server over SSH (the hub joins the server's existing nginx; run it again after the DNS change for the certificate). Needs two repository secrets: VPS_HOST (the server's IP address) and VPS_PASSWORD (its root
 # password, from the Hostinger panel: VPS > SSH access). Run it from the Actions tab: "Set up VPS" > Run workflow.
 # Afterwards "Deploy to VPS" runs on every change with the same two secrets.
 name: Set up VPS
@@ -51,7 +51,7 @@ jobs:
           SSHPASS: ${{ secrets.VPS_PASSWORD }}
         run: |
           export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
-          # the script installs Caddy, creates the site folder and firewall rules; it prints no secrets
+          # the script adds the hub to nginx, copies the site and (after DNS) gets the certificate; it prints no secrets
           $ssh_cmd "root@$VPS_HOST" 'SETUP_VIA_ACTIONS=1 bash -s' < deploy/vps-setup.sh
       - name: Copy the site now
         env:
@@ -62,6 +62,6 @@ jobs:
           rsync -az --delete --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
             --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
             -e "$ssh_cmd" ./ "root@$VPS_HOST:/srv/hub/site/"
-          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -k "https://$VPS_HOST/version.json" -H 'Host: mmlpbi.bpropms.in' || true)
-          echo "The server answers https://$VPS_HOST/version.json with HTTP $code (200 = ready)."
-          echo "Next: point the DNS record mmlpbi.bpropms.in (type A) at $VPS_HOST. Caddy fetches the certificate itself."
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "http://$VPS_HOST/version.json" -H 'Host: mmlpbi.bpropms.in' || true)
+          echo "The server answers http://$VPS_HOST/version.json for mmlpbi.bpropms.in with HTTP $code (200 = ready)."
+          echo "Next: point the DNS record mmlpbi.bpropms.in (type A) at $VPS_HOST, then run this workflow once more for the HTTPS certificate."

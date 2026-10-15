@@ -1,69 +1,64 @@
 #!/usr/bin/env bash
-# One-time set-up of the Marikar hub on a fresh Hostinger VPS (Ubuntu 22.04 or 24.04). Run as root:
+# Set-up of the Marikar hub on the Hostinger VPS, as one more site on the server's nginx (the VPS also serves
+# other BPro products, so nothing else is touched: no other web server, no firewall change). Run as root, by the
+# "Set up VPS" workflow or by hand:
 #   curl -fsSL https://raw.githubusercontent.com/techbpropms/DASHBOARD--MARIKAR-GROUP/main/deploy/vps-setup.sh | bash
-# It installs Caddy (web server with automatic HTTPS), creates the "hub" deploy user with an SSH key that
-# GitHub Actions uses to copy the site, places the Caddyfile, opens ports 80/443, and prints the private key
-# to store as the VPS_SSH_KEY repository secret. Safe to run again.
+# Safe to run again. Pass 1 (before DNS points here): site folder, nginx server block on port 80.
+# Pass 2 (after DNS points here): the HTTPS certificate through certbot, and the redirect to HTTPS.
 set -euo pipefail
 
-SITE_USER=hub
+HOST=mmlpbi.bpropms.in
 SITE_DIR=/srv/hub/site
 REPO_RAW=https://raw.githubusercontent.com/techbpropms/DASHBOARD--MARIKAR-GROUP/main
+CERT_MAIL=mml@bpropms.in
 
 [ "$(id -u)" = 0 ] || { echo "run as root"; exit 1; }
+export DEBIAN_FRONTEND=noninteractive
+
+echo "== leftovers from the first attempt (Caddy must not hold the web ports on this server)"
+if dpkg -l caddy 2>/dev/null | grep -q '^ii'; then
+  systemctl disable --now caddy >/dev/null 2>&1 || true
+  apt-get purge -y -qq caddy >/dev/null 2>&1 || true
+  rm -f /etc/apt/sources.list.d/caddy-stable.list /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+  echo "Caddy removed"
+fi
 
 echo "== packages"
-export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq debian-keyring debian-archive-keyring apt-transport-https curl rsync ufw >/dev/null
-if ! command -v caddy >/dev/null; then
-  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-  curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' > /etc/apt/sources.list.d/caddy-stable.list
-  apt-get update -qq && apt-get install -y -qq caddy >/dev/null
-fi
+apt-get install -y -qq nginx rsync curl python3-certbot-nginx >/dev/null
 
-echo "== deploy user and site folder"
-id -u "$SITE_USER" >/dev/null 2>&1 || useradd --system --create-home --shell /bin/bash "$SITE_USER"
-mkdir -p "$SITE_DIR" && chown -R "$SITE_USER:$SITE_USER" /srv/hub
-KEY=/home/$SITE_USER/.ssh/deploy_ed25519
-if [ -z "${SETUP_VIA_ACTIONS:-}" ] && [ ! -f "$KEY" ]; then
-  sudo -u "$SITE_USER" mkdir -p "/home/$SITE_USER/.ssh"
-  sudo -u "$SITE_USER" ssh-keygen -q -t ed25519 -N '' -C 'marikar-hub-deploy' -f "$KEY"
-  sudo -u "$SITE_USER" sh -c "cat '$KEY.pub' >> /home/$SITE_USER/.ssh/authorized_keys"
-  chmod 700 "/home/$SITE_USER/.ssh" && chmod 600 "/home/$SITE_USER/.ssh/authorized_keys"
-fi
-
-echo "== first copy of the site (so the address answers before the first deployment)"
+echo "== site folder"
+mkdir -p "$SITE_DIR"
 if [ ! -f "$SITE_DIR/index.html" ]; then
   TMP=$(mktemp -d)
   curl -fsSL https://github.com/techbpropms/DASHBOARD--MARIKAR-GROUP/archive/refs/heads/main.tar.gz | tar -xz -C "$TMP"
   rsync -a --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' "$TMP"/*/ "$SITE_DIR"/
-  chown -R "$SITE_USER:$SITE_USER" "$SITE_DIR"; rm -rf "$TMP"
+  rm -rf "$TMP"
+fi
+chown -R root:root "$SITE_DIR"; chmod -R u=rwX,go=rX "$SITE_DIR"
+
+echo "== nginx site"
+CONF=/etc/nginx/sites-available/$HOST
+if [ ! -f "$CONF" ] || ! grep -q 'listen 443' "$CONF"; then
+  # not yet certified: (re)write the plain server block; once certbot has edited it, leave it alone
+  curl -fsSL "$REPO_RAW/deploy/nginx-hub.conf" -o "$CONF"
+fi
+ln -sf "$CONF" /etc/nginx/sites-enabled/$HOST
+nginx -t
+systemctl reload nginx
+echo "nginx serves $HOST from $SITE_DIR"
+
+echo "== certificate"
+MYIP=$(curl -fsS https://api.ipify.org || hostname -I | awk '{print $1}')
+DNSIP=$(getent ahostsv4 "$HOST" 2>/dev/null | awk '{print $1; exit}' || true)
+if [ -d "/etc/letsencrypt/live/$HOST" ]; then
+  echo "certificate already in place; renewal is automatic"
+elif [ "$DNSIP" = "$MYIP" ]; then
+  certbot --nginx -d "$HOST" --non-interactive --agree-tos -m "$CERT_MAIL" --redirect
+  nginx -t && systemctl reload nginx
+  echo "HTTPS certificate issued; https://$HOST is served from this server"
+else
+  echo "DNS for $HOST points at ${DNSIP:-nothing yet}, this server is $MYIP: point the A record here, then run this again for the certificate."
 fi
 
-echo "== caddy"
-curl -fsSL "$REPO_RAW/deploy/Caddyfile" -o /etc/caddy/Caddyfile
-mkdir -p /var/log/caddy && chown caddy:caddy /var/log/caddy
-caddy validate --config /etc/caddy/Caddyfile
-systemctl enable --now caddy
-systemctl reload caddy
-
-echo "== firewall"
-ufw allow OpenSSH >/dev/null; ufw allow 80/tcp >/dev/null; ufw allow 443/tcp >/dev/null
-ufw --force enable >/dev/null
-
-IP=$(curl -fsS https://api.ipify.org || hostname -I | awk '{print $1}')
-if [ -n "${SETUP_VIA_ACTIONS:-}" ]; then
-  echo; echo "Done. Caddy is serving /srv/hub/site on $IP. Next: point the DNS record mmlpbi.bpropms.in (type A) at $IP."; exit 0
-fi
-cat <<MSG
-
-Done. Now, in the GitHub repository (Settings > Secrets and variables > Actions > New repository secret):
-  VPS_HOST     $IP
-  VPS_SSH_KEY  the whole block below, including the BEGIN and END lines
-
-$(cat "$KEY")
-
-Then point DNS for mmlpbi.bpropms.in at $IP (an A record; remove the GitHub Pages CNAME/A records). Caddy
-fetches the certificate itself within a minute of the DNS change. Check: https://mmlpbi.bpropms.in/version.json
-MSG
+echo; echo "Done. Server IP: $MYIP. Check: curl -s http://$MYIP/version.json -H 'Host: $HOST'"

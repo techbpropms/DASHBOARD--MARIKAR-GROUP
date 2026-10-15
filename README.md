@@ -201,8 +201,9 @@ To connect it:
    so no one else can claim the subdomain on GitHub.
 
 **Hostinger VPS.** The same site can be served from the group's Hostinger VPS instead: add the `VPS_HOST`
-and `VPS_PASSWORD` secrets, run the "Set up VPS" workflow once, and point the `mmlpbi` DNS record at the VPS
-(an A record in place of the CNAME). The "Deploy to VPS" workflow then copies `main` there after every change,
+and `VPS_PASSWORD` (or `VPS_SSH_KEY`) secrets, run the "Set up VPS" workflow, point the `mmlpbi` DNS record at
+the VPS (an A record in place of the CNAME) and run it once more for the certificate; the hub is one site on the
+server's existing nginx. The "Deploy to VPS" workflow then copies `main` there after every change,
 including the mailbox clerk's. Steps in `deploy/README.md`.
 
 Downloads build their verification links from the address the page is open on, so nothing else needs
@@ -324,5 +325,5 @@ Pages carry the iOS web-app metas and the bar respects the phone's safe areas.
   Sales & inventory tools (which go with the Honda divisions) show only what the account covers. A page outside the
   scope sends the visitor back to the hub with a note. `node scripts/add-user.js <id> "<Name>" viewer HONDA,AMZES`
   creates a limited account from the command line.
-- **What it protects, honestly:** it is a front door for a static site. It keeps casual visitors out and gives the hub a proper entrance, but the data files (`data/*.csv`, `data/*.json`) can still be fetched by anyone who knows their address while the repository and site are public. For real protection, serve the hub from the VPS behind a server-side login (for example Caddy `basic_auth` or forward-auth), or keep the repository private; the sign-in page can then hand over to that login.
+- **What it protects, honestly:** it is a front door for a static site. It keeps casual visitors out and gives the hub a proper entrance, but the data files (`data/*.csv`, `data/*.json`) can still be fetched by anyone who knows their address while the repository and site are public. For real protection, serve the hub from the VPS behind a server-side login (for example nginx `auth_basic` or `auth_request`), or keep the repository private; the sign-in page can then hand over to that login.
 - **Document verification** (`verify.html`) stays public, so anyone holding a document can check it. Report QR codes open the report builder, which asks staff to sign in first.

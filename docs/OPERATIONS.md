@@ -24,7 +24,7 @@ divisions that are wider than the job, and confirm every admin is still meant to
 - A changed password ends every other session of that account. A removed account is signed out at once.
 - Sessions last 12 hours, or 7 days with "Keep me signed in"; the sign-in page slows down after wrong attempts.
 - Known limit: this is a front door on a static site. Data files are fetchable by anyone who knows their
-  address. A server-side login (Caddy `forward_auth` on the VPS) is the step that closes this.
+  address. A server-side login (nginx `auth_request` on the VPS) is the step that closes this.
 
 ## Secrets: where they live, who rotates them
 
@@ -61,7 +61,7 @@ Gmail approver accounts matters as much: an approver's mailbox is an approval in
 - The clerk e-mails approvers once a day with requests waiting more than a day.
 - Settings → Account changes lists every change the hub made, with who asked. Settings → Sign-in report shows
   who signs in (across users once the log service is connected).
-- The VPS, once in use: `systemctl status caddy` and `/var/log/caddy/hub-access.log`.
+- The VPS, once in use: `systemctl status nginx`, `/var/log/nginx/hub-access.log`, and `certbot certificates` for the certificate; the "VPS diagnostics" workflow shows all of it from GitHub.
 
 ## Backups and recovery
 
