@@ -189,25 +189,45 @@ def parse(msg):
     return reqs, command
 
 
+def sent_folders(box):
+    """The mailbox's Sent folder(s): a reply the administrator sends from the mailbox lands there, not in INBOX."""
+    ok, rows = box.list()
+    found = []
+    for row in (rows if ok == 'OK' else []):
+        line = row.decode('utf-8', 'replace') if isinstance(row, bytes) else str(row)
+        m = re.match(r'\((?P<flags>[^)]*)\) "?(?P<delim>[^" ]*)"? "?(?P<name>.+?)"?$', line)
+        if not m:
+            continue
+        name = m.group('name').strip('"')
+        if '\\Sent' in m.group('flags') or re.search(r'(^|[./])sent( items| mail)?$', name, re.I):
+            found.append(name)
+    return found
+
+
 def from_mailbox(host, user, password, days):
+    """Yields (message, sent_by_us) for every hub e-mail in INBOX and in the Sent folder(s)."""
     since = (dt.date.today() - dt.timedelta(days=days)).strftime('%d-%b-%Y')
     box = imaplib.IMAP4_SSL(host)
     box.login(user, password)
-    box.select('INBOX', readonly=True)
-    ok, data = box.search(None, 'SINCE', since, 'SUBJECT', '"Marikar hub"')
-    for i in (data[0].split() if ok == 'OK' else []):
-        ok, parts = box.fetch(i, '(BODY.PEEK[])')
-        raw = next((p[1] for p in parts if isinstance(p, tuple)), None) if ok == 'OK' else None
-        if raw:
-            yield email.message_from_bytes(raw)
+    for folder, ours in [('INBOX', False)] + [(f, True) for f in sent_folders(box)]:
+        ok, _ = box.select(f'"{folder}"' if ' ' in folder else folder, readonly=True)
+        if ok != 'OK':
+            continue
+        ok, data = box.search(None, 'SINCE', since, 'SUBJECT', '"Marikar hub"')
+        for i in (data[0].split() if ok == 'OK' else []):
+            ok, parts = box.fetch(i, '(BODY.PEEK[])')
+            raw = next((p[1] for p in parts if isinstance(p, tuple)), None) if ok == 'OK' else None
+            if raw:
+                yield email.message_from_bytes(raw), ours
     box.logout()
 
 
 def from_folder(folder):
+    """Saved .eml files; a name starting with "sent-" stands for a message found in the Sent folder."""
     for name in sorted(os.listdir(folder)):
         if name.endswith('.eml'):
             with open(os.path.join(folder, name), 'rb') as f:
-                yield email.message_from_bytes(f.read())
+                yield email.message_from_bytes(f.read()), name.startswith('sent-')
 
 
 # ----- sending mail
@@ -272,8 +292,11 @@ def main():
     known = {p['ref'] for p in pending} | set(handled)
     mids = {p.get('mid') for p in pending if p.get('mid')}
     commands, added, changed = [], [], False
-    for msg in messages:
+    for msg, ours in messages:
         reqs, cmd = parse(msg)
+        if cmd and ours:
+            # sent from the mailbox itself: the administrator signed in to it, which is proof enough
+            cmd['from'] = MAIL_USER.lower(); cmd['authenticated'] = True
         for r in reqs:
             if r['ref'] not in known:
                 known.add(r['ref']); pending.append(r); added.append(r)
