@@ -200,6 +200,11 @@ To connect it:
 4. Recommended: verify `bpropms.in` under the account's **Settings → Pages → Verified domains** (a TXT record),
    so no one else can claim the subdomain on GitHub.
 
+**Hostinger VPS.** The same site can be served from the group's Hostinger VPS instead: run
+`deploy/vps-setup.sh` once on the server, add the `VPS_HOST` and `VPS_SSH_KEY` secrets, and point the
+`mmlpbi` DNS record at the VPS (an A record in place of the CNAME). The "Deploy to VPS" workflow then copies
+`main` there after every change, including the mailbox clerk's. Steps in `deploy/README.md`.
+
 Downloads build their verification links from the address the page is open on, so nothing else needs
 changing. A new address means fresh browser storage: everyone signs in once more, and phone users reinstall
 the app from the new address.
