@@ -251,6 +251,8 @@ requester's own mail program ("Send by e-mail") or copy the request text.
 - settles **password resets** at once: if the ID has an account, a new temporary password is written to
   `assets/auth.js` and e-mailed to that ID (one reset per address per day); otherwise the address is told
   how to request access;
+- **acknowledges** every newly listed access request to the requester (reference, what happens next) and
+  **reminds** the approvers once a day of requests that have waited more than a day;
 - acts on **one-word replies** to a request e-mail from an approver: "approve" (or "approve admin" /
   "approve superadmin") creates the account and e-mails the requester their user ID and temporary
   password; "decline" sends a courteous refusal. Approvers are the super admin accounts in `auth.js`, the
