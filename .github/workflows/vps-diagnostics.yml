@@ -26,7 +26,9 @@ jobs:
           echo; echo "== listening on web ports (80, 443, 8080, 8443)"; ss -ltnp 2>/dev/null | awk 'NR==1 || /:(80|443|8080|8443) /'
           echo; echo "== running services"; systemctl list-units --type=service --state=running --no-pager --no-legend | awk '{print $1}' | sed 's/\.service$//' | tr '\n' ' '; echo
           echo; echo "== web-server and panel packages"; dpkg -l 2>/dev/null | awk '/^ii/ && /(nginx|apache2|httpd|caddy|litespeed|openlitespeed|cyberpanel|hestia|cloudpanel|plesk|cpanel|docker)/ {print $2, $3}'
-          echo; echo "== caddy"; systemctl is-enabled caddy 2>&1; systemctl is-active caddy 2>&1; journalctl -u caddy -n 25 --no-pager 2>/dev/null | tail -25
+          echo; echo "== nginx"; systemctl is-active nginx 2>&1; nginx -t 2>&1 | tail -2; ls /etc/nginx/sites-enabled/ 2>/dev/null | tr '\n' ' '; echo; tail -5 /var/log/nginx/hub-error.log 2>/dev/null
+          echo; echo "== certificate"; certbot certificates 2>/dev/null | grep -E 'Certificate Name|Domains|Expiry' || echo "none yet"
+          echo; echo "== DNS"; getent ahostsv4 mmlpbi.bpropms.in | awk '{print $1; exit}'; curl -fsS https://api.ipify.org; echo
           echo; echo "== site folder"; ls -la /srv/hub/site 2>/dev/null | head -8; test -f /srv/hub/site/version.json && cat /srv/hub/site/version.json
           echo; echo "== firewall"; ufw status 2>/dev/null | head -8
           echo; echo "== disk and memory"; df -h / | tail -1; free -m | awk 'NR<=2'
