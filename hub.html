@@ -559,6 +559,15 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: s
   });
 })();
 </script>
+<script>
+(() => {
+  // Doors to the Sales & inventory tools open only for accounts with a Honda division; division count follows the scope.
+  if (!MGAuth.canSales()) document.querySelectorAll('.door[href="dashboard.html"], .door[href="note.html"], .door[href="report.html"]').forEach((d) => d.remove());
+  const sc = MGAuth.scope();
+  if (sc !== 'all') { const p = document.querySelector('#division-door p'); if (p) p.textContent = `Your divisions: ${MGAuth.divNames(sc)}. H1 against FY 2025–26, from the decks uploaded for 9 October.`; }
+  if (new URLSearchParams(location.search).get('denied')) { const n = document.createElement('p'); n.className = 'mg-denied'; n.setAttribute('role', 'status'); n.style.cssText = 'margin:0 0 14px;padding:10px 14px;border-radius:12px;background:#fff4e0;color:#5a3a00;border:1px solid #e8c98a;font-size:14px'; n.textContent = 'That page is outside the divisions your account covers. Ask the administrator (Settings > People) if you need it.'; const host = document.querySelector('main') || document.body; host.prepend(n); history.replaceState(null, '', location.pathname); }
+})();
+</script>
 <script src="assets/pwa.js" defer></script>
 <script src="assets/shell.js"></script>
 </body>

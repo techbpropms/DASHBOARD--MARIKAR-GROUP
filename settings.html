@@ -69,6 +69,10 @@ td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: mi
 td.act { white-space: nowrap; text-align: right; }
 .pill { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 9px; background: var(--sub); border: 1px solid var(--line); }
 .pill.superadmin { color: var(--gold); } .pill.admin { color: var(--accent-text); }
+details.divpick { display: inline-block; } details.divpick summary { cursor: pointer; list-style: none; font-size: 13px; color: var(--link); text-decoration: underline dotted; } details.divpick summary::-webkit-details-marker { display: none; }
+details.divpick .box, .divbox { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 2px 10px; margin-top: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--sub); font-size: 13px; }
+.divbox label, details.divpick label { display: flex; gap: 6px; align-items: center; cursor: pointer; padding: 2px 0; } .divbox label.all, details.divpick label.all { grid-column: 1 / -1; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-bottom: 2px; } .divbox.is-all label:not(.all), details.divpick .is-all label:not(.all) { opacity: .45; }
+form.grid .wide { grid-column: 1 / -1; }
 form.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: end; }
 label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 5px; }
 input, select { width: 100%; font: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
@@ -135,8 +139,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   <section class="panel" id="people" hidden>
     <h2>People</h2>
     <p class="muted">Who can sign in to the hub. Passwords are never stored: each account keeps only a salted fingerprint. Changes made here are queued below and go live when you publish them.</p>
-    <div class="tbl"><table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th></th></tr></thead><tbody></tbody></table></div>
-    <p class="muted" id="people-hint">Change a role with the drop-down, or use Reset password and Remove. Changes are queued below and go out as one e-mail to the hub mailbox; the hub applies them within about ten minutes and tells the people concerned.</p>
+    <div class="tbl"><table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th>Divisions</th><th></th></tr></thead><tbody></tbody></table></div>
+    <p class="muted" id="people-hint">Change a role with the drop-down, choose which divisions a viewer may open under Divisions (admins and super admins see all), or use Reset password and Remove. Changes are queued below and go out as one e-mail to the hub mailbox; the hub applies them within about ten minutes and tells the people concerned.</p>
 
     <h3>Access and reset requests</h3>
     <div class="inbox" id="inbox">
@@ -153,6 +157,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <dl id="req-dl"></dl>
       <div class="actions">
         <label class="inline" id="req-role-wrap">Role <select id="req-role"><option value="viewer">Viewer</option><option value="admin">Admin</option><option value="superadmin">Super admin</option></select></label>
+        <div class="divbox" id="req-divs" style="flex-basis:100%"></div>
         <button class="btn" type="button" id="req-approve-mail">Approve by e-mail</button>
         <button class="btn sec" type="button" id="req-decline">Decline by e-mail</button>
         <button class="btn sec" type="button" id="req-approve" title="Creates the account here and needs a GitHub token to publish">Approve here (needs token)</button>
@@ -165,6 +170,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <div><label for="p-name">Full name</label><input id="p-name" autocomplete="off" required></div>
       <div><label for="p-id">User ID (e-mail)</label><input id="p-id" type="email" autocomplete="off" autocapitalize="none" spellcheck="false" required></div>
       <div><label for="p-role">Role</label><select id="p-role"><option value="viewer">Viewer</option><option value="admin">Admin</option><option value="superadmin">Super admin</option></select></div>
+      <div class="wide"><label>Divisions <small class="muted">(viewers only; admins see all)</small></label><div class="divbox" id="p-divs"></div></div>
       <div><button class="btn" type="submit" id="add-go">Create account</button></div>
     </form>
     <div class="note" id="add-note" hidden></div>
@@ -266,8 +272,20 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
   const A = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
   const pick = (n) => Array.from(crypto.getRandomValues(new Uint8Array(n)), (b) => A[b % A.length]).join('');
-  const line = (u) => `    { id: '${u.id}', name: ${JSON.stringify(u.name)}, role: '${u.role}', salt: '${u.salt}', hash: '${u.hash}' },`;
+  const divsField = (u) => (u.role === 'viewer' && u.divisions && u.divisions !== 'all') ? `, divisions: [${u.divisions.map((k) => `'${k}'`).join(', ')}]` : '';
+  const line = (u) => `    { id: '${u.id}', name: ${JSON.stringify(u.name)}, role: '${u.role}', salt: '${u.salt}', hash: '${u.hash}'${divsField(u)} },`;
   const lineRe = (id) => new RegExp(`\\n[ \\t]*\\{ id: '${id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}',[^\\n]*`);
+  const divNames = MGAuth.divNames, normDivs = MGAuth.normDivs;
+  // A division picker: "All divisions" plus one box per division. `value` is 'all' or an array of keys.
+  function picker(host, value, onChange) {
+    host.replaceChildren();
+    const all = document.createElement('label'); all.className = 'all'; const ac = document.createElement('input'); ac.type = 'checkbox'; ac.value = 'all'; all.append(ac, ' All divisions'); host.appendChild(all);
+    const boxes = MGAuth.DIVISIONS.map(([k, n]) => { const l = document.createElement('label'); const c = document.createElement('input'); c.type = 'checkbox'; c.value = k; l.append(c, ' ' + n); host.appendChild(l); return c; });
+    const set = (v) => { const isAll = v === 'all'; ac.checked = isAll; boxes.forEach((c) => { c.checked = !isAll && v.includes(c.value); c.disabled = isAll; }); host.classList.toggle('is-all', isAll); };
+    const get = () => ac.checked ? 'all' : boxes.filter((c) => c.checked).map((c) => c.value);
+    host.addEventListener('change', () => { set(get()); if (onChange) onChange(get()); });
+    set(normDivs(value)); return { get, set };
+  }
   // The queue: account commands (role / remove / reset / add) plus requests marked handled. They go out as one e-mail
   // to the hub mailbox, or, for a super admin holding a GitHub token, are written to the site directly.
   const queue = { cmds: [], handled: {} };
@@ -279,7 +297,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
 
   function paintTable() {
     const tb = document.querySelector('#people-table tbody'); tb.replaceChildren();
-    const rows = accounts.filter((a) => !queued('remove', a.id)).concat(queue.cmds.filter((c) => c.action === 'add' && !accounts.some((x) => x.id === c.id)).map((c) => ({ id: c.id, name: c.name, role: c.role, pending: true })));
+    const rows = accounts.filter((a) => !queued('remove', a.id)).concat(queue.cmds.filter((c) => c.action === 'add' && !accounts.some((x) => x.id === c.id)).map((c) => ({ id: c.id, name: c.name, role: c.role, divisions: c.divisions || 'all', pending: true })));
     rows.forEach((a) => {
       const tr = document.createElement('tr');
       const td = (t) => { const c = document.createElement('td'); c.textContent = t; tr.appendChild(c); return c; };
@@ -293,6 +311,15 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
         sel.addEventListener('change', () => { if (sel.value === a.role) { queue.cmds = queue.cmds.filter((c) => !(c.action === 'role' && c.id === a.id)); paintTable(); paintPending(); } else push({ action: 'role', id: a.id, role: sel.value, name: a.name }); });
         r.appendChild(sel);
       } else { const p = document.createElement('span'); p.className = 'pill ' + a.role; p.textContent = roleName(a.role); r.appendChild(p); }
+      const dv = td('');
+      const dc = queued('divisions', a.id); const roleNow = rc ? rc.role : a.role; const divsNow = dc ? dc.divisions : (a.divisions || 'all');
+      if (roleNow !== 'viewer') dv.textContent = 'All divisions';
+      else if (!a.pending && canTouch(a)) {
+        const det = document.createElement('details'); det.className = 'divpick'; const sum = document.createElement('summary'); sum.textContent = divNames(divsNow) + (dc ? ' (queued)' : ''); sum.title = 'Change which divisions ' + a.name + ' may open';
+        const box = document.createElement('div'); box.className = 'box'; det.append(sum, box);
+        picker(box, divsNow, (v) => { if (v !== 'all' && !v.length) return; const same = JSON.stringify(v) === JSON.stringify(a.divisions || 'all'); queue.cmds = queue.cmds.filter((c) => !(c.action === 'divisions' && c.id === a.id)); if (!same) queue.cmds.push({ action: 'divisions', id: a.id, name: a.name, divisions: v }); sum.textContent = divNames(v) + (same ? '' : ' (queued)'); paintPending(); });
+        dv.appendChild(det);
+      } else dv.textContent = divNames(divsNow);
       const act = td(''); act.className = 'act';
       if (!a.pending && canTouch(a)) {
         const reset = document.createElement('button'); reset.type = 'button'; reset.className = 'btn sm sec'; reset.textContent = queued('reset', a.id) ? 'Reset queued' : 'Reset password';
@@ -307,8 +334,9 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       tb.appendChild(tr);
     });
   }
-  const describe = (c) => c.action === 'role' ? `Make ${c.name} (${c.id}) ${roleName(c.role)}` : c.action === 'remove' ? `Remove ${c.name} (${c.id})` : c.action === 'reset' ? `New temporary password for ${c.name} (${c.id}), sent to them by e-mail` : `Add ${c.name} (${c.id}, ${roleName(c.role)}); the hub e-mails them their password`;
-  const commandLine = (c) => c.action === 'role' ? `role ${c.id} ${c.role}` : c.action === 'remove' ? `remove ${c.id}` : c.action === 'reset' ? `reset ${c.id}` : `add ${c.id} ${c.name} as ${c.role}`;
+  const divsArg = (v) => v === 'all' ? 'all' : v.join(',');
+  const describe = (c) => c.action === 'role' ? `Make ${c.name} (${c.id}) ${roleName(c.role)}` : c.action === 'remove' ? `Remove ${c.name} (${c.id})` : c.action === 'reset' ? `New temporary password for ${c.name} (${c.id}), sent to them by e-mail` : c.action === 'divisions' ? `Divisions of ${c.name} (${c.id}): ${divNames(c.divisions)}` : `Add ${c.name} (${c.id}, ${roleName(c.role)}${c.role === 'viewer' && c.divisions !== 'all' ? ', ' + divNames(c.divisions) : ''}); the hub e-mails them their password`;
+  const commandLine = (c) => c.action === 'role' ? `role ${c.id} ${c.role}` : c.action === 'remove' ? `remove ${c.id}` : c.action === 'reset' ? `reset ${c.id}` : c.action === 'divisions' ? `divisions ${c.id} ${divsArg(c.divisions)}` : `add ${c.id} ${c.name} as ${c.role}${c.role === 'viewer' && c.divisions && c.divisions !== 'all' ? ' for ' + divsArg(c.divisions) : ''}`;
   function paintPending() {
     const ul = $('pending-list'); ul.replaceChildren();
     queue.cmds.forEach((c) => { const li = document.createElement('li'); li.textContent = describe(c); ul.appendChild(li); });
@@ -323,10 +351,14 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     if (!name || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(id)) { say('add-note', 'bad', ['Enter the person\'s name and their work e-mail address (it becomes the user ID).']); return; }
     if (role === 'superadmin' && !isSuper) { say('add-note', 'bad', ['Only a super admin can create a super admin.']); return; }
     if (accounts.some((a) => a.id === id)) { say('add-note', 'bad', [`${id} already has an account. Change the role in the list, or use Reset password.`]); return; }
-    push({ action: 'add', id, name, role }); $('add').reset();
+    const divisions = role === 'viewer' ? addDivs.get() : 'all';
+    if (divisions !== 'all' && !divisions.length) { say('add-note', 'bad', ['Tick at least one division, or All divisions.']); return; }
+    push({ action: 'add', id, name, role, divisions }); $('add').reset(); addDivs.set('all');
     say('add-note', 'ok', [`${name} queued. Send the change below; the hub creates the account and e-mails them their user ID and temporary password.`]);
   });
   if (!isSuper) document.querySelector('#p-role option[value="superadmin"]').remove();
+  const addDivs = picker($('p-divs'), 'all');
+  $('p-role').addEventListener('change', () => { $('p-divs').parentElement.hidden = $('p-role').value !== 'viewer'; });
   $('discard').addEventListener('click', () => { queue.cmds = []; queue.handled = {}; $('add-note').hidden = true; $('pub-note').hidden = true; paintInbox(); paintTable(); paintPending(); });
 
   // ----- requests from the sign-in page (access and password reset)
@@ -345,7 +377,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     $('req-ref').textContent = r.ref || ''; $('req-when').textContent = r.at ? 'sent ' + fmtWhen(r.at) : '';
     const dl = $('req-dl'); dl.replaceChildren();
     const row = (k, v) => { if (!v) return; const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); };
-    row('Name', r.name); row('E-mail', r.email); row('Company / division / function', r.unit); row('Access needed for', r.scope); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
+    row('Name', r.name); row('E-mail', r.email); row('Company / division / function', r.unit); row('Access needed for', r.scope || (r.divisions ? divNames(normDivs(r.divisions)) : '')); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
+    reqDivs.set(r.divisions === undefined ? 'all' : normDivs(r.divisions)); $('req-divs').hidden = reset || $('req-role').value !== 'viewer';
     row('Account', known ? `exists: ${known.name} (${roleName(known.role)})` : 'none yet');
     $('req-role-wrap').hidden = reset; $('req-approve').hidden = !isSuper; $('req-approve').textContent = reset ? (known ? 'Issue a new password here (needs token)' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve here (needs token)');
     $('req-approve').disabled = reset ? !known : !!known;
@@ -353,6 +386,9 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     if (!isSuper) document.querySelectorAll('#req-role option[value="superadmin"]').forEach((o) => o.remove());
     $('req-card').hidden = false; $('req-card').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
+  const reqDivs = picker($('req-divs'), 'all');
+  $('req-role').addEventListener('change', () => { $('req-divs').hidden = $('req-role').value !== 'viewer'; });
+  const reqScope = () => $('req-role').value === 'viewer' ? reqDivs.get() : 'all';
   // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every 10 minutes
   // (scripts/read_requests.py). Approving or declining here moves a request to `handled` when you publish.
   let inbox = null;
@@ -387,7 +423,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     if (!current) return;
     const id = String(current.email).toLowerCase(), known = accounts.find((a) => a.id === id);
     if (current.kind === 'reset') { if (known) push({ action: 'reset', id, name: known.name, viaToken: true }); }
-    else if (!known) push({ action: 'add', id, name: current.name, role: $('req-role').value, viaToken: true });
+    else if (!known) { const divisions = reqScope(); if (divisions !== 'all' && !divisions.length) { say('req-note', 'bad', ['Tick at least one division, or All divisions.']); return; } push({ action: 'add', id, name: current.name, role: $('req-role').value, divisions, viaToken: true }); }
     say('req-note', 'ok', [`${current.ref || 'Request'} queued. Publish with your token; the temporary password is shown after publishing.`]);
     $('req-approve').disabled = true; settle('approved');
   });
@@ -398,8 +434,9 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     location.href = `mailto:${encodeURIComponent(MAILBOX)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(word)}`;
   };
   $('req-approve-mail').addEventListener('click', () => {
-    byMail(`approve ${$('req-role').value}`);
-    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within about 10 minutes the hub creates the account for ${current.email} as ${roleName($('req-role').value)}, e-mails them their user ID and temporary password, and takes the request off this list.`]);
+    const divisions = reqScope(); if (divisions !== 'all' && !divisions.length) { say('req-note', 'bad', ['Tick at least one division, or All divisions.']); return; }
+    byMail(`approve ${$('req-role').value} for ${divsArg(divisions)}`);
+    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within about 10 minutes the hub creates the account for ${current.email} as ${roleName($('req-role').value)} (${divNames(divisions)}), e-mails them their user ID and temporary password, and takes the request off this list.`]);
   });
   $('req-decline').addEventListener('click', () => {
     byMail('decline');
@@ -428,9 +465,10 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     cmds.forEach((c) => {
       if (c.action === 'remove') s = s.replace(lineRe(c.id), '');
       else if (c.action === 'role') s = s.replace(lineRe(c.id), (m) => m.replace(/role: '[a-z]+'/, `role: '${c.role}'`));
+      else if (c.action === 'divisions') s = s.replace(lineRe(c.id), (m) => m.replace(/, divisions: (\[[^\]\n]*\]|'all')/, '').replace(/ \},$/, `${divsField({ role: 'viewer', divisions: c.divisions })} },`));
       else {
         const a = accounts.find((x) => x.id === c.id);
-        s = s.replace(lineRe(c.id), ''); s = s.replace(/\n(\s*\];\s*\n\s*const ROUNDS)/, `\n${line({ id: c.id, name: c.name || (a && a.name) || c.id, role: c.role || (a && a.role) || 'viewer', salt: c.salt, hash: c.hash })}\n$1`);
+        s = s.replace(lineRe(c.id), ''); s = s.replace(/\n(\s*\];\s*\n\s*const ROUNDS)/, `\n${line({ id: c.id, name: c.name || (a && a.name) || c.id, role: c.role || (a && a.role) || 'viewer', divisions: c.divisions || (a && a.divisions) || 'all', salt: c.salt, hash: c.hash })}\n$1`);
         if (!s.includes(`id: '${c.id}'`)) throw new Error('could not place the account line; the file layout has changed');
       }
     });
@@ -456,7 +494,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
         const cmds = [];
         for (const c of queue.cmds) { if (c.action === 'add' || c.action === 'reset') { const w = await withSecrets(c); cmds.push(w); shown.push(w); } else cmds.push(c); }
         await edit(REPO.path, (src) => apply(src, cmds), `Accounts: ${queue.cmds.map(commandLine).join(', ')}`);
-        accounts = accounts.filter((a) => !cmds.some((c) => c.action === 'remove' && c.id === a.id)).map((a) => { const r = cmds.find((c) => c.action === 'role' && c.id === a.id); return r ? { ...a, role: r.role } : a; }).concat(cmds.filter((c) => c.action === 'add' && !accounts.some((x) => x.id === c.id)).map(({ id, name, role }) => ({ id, name, role })));
+        accounts = accounts.filter((a) => !cmds.some((c) => c.action === 'remove' && c.id === a.id)).map((a) => { const r = cmds.find((c) => c.action === 'role' && c.id === a.id); const d = cmds.find((c) => c.action === 'divisions' && c.id === a.id); return { ...a, role: r ? r.role : a.role, divisions: d ? d.divisions : a.divisions }; }).concat(cmds.filter((c) => c.action === 'add' && !accounts.some((x) => x.id === c.id)).map(({ id, name, role, divisions }) => ({ id, name, role, divisions: divisions || 'all' })));
         queue.cmds = [];
       }
       const refs = Object.keys(queue.handled);

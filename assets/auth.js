@@ -14,6 +14,16 @@
     { id: 'zmarikar@marikargroup.com', name: "Zulfiquar Marikar", role: 'viewer', salt: '96a6381fc75096aafd17ff61bf3834c3', hash: 'a262c0e1ce536a0f6f62356cc11a46d707d8116ce2a6889ae5277b07521b4cd9' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
+  // Divisions an account can be limited to (keys as in data/divisions.json). An account line without a `divisions`
+  // field, and every admin or super admin, sees all of them. Sales & inventory (TallyPrime companies) belongs to
+  // the Honda divisions.
+  const DIVISIONS = [['GROUP', 'Group vehicle sales'], ['HONDA', 'Honda Kerala'], ['AMZES', 'AMZES (Honda Tamil Nadu)'], ['BIGWING', 'BigWing'], ['RE', 'Royal Enfield'], ['NISSAN', 'Nissan'], ['CSPW', 'CSPW'], ['CANON', 'Canon / OAIP'], ['HR', 'HR']];
+  const DIV_KEYS = DIVISIONS.map((d) => d[0]);
+  const SALES_DIVS = ['HONDA', 'AMZES'];
+  // Normalises a divisions value: 'all', or an array of known keys (empty means none).
+  const normDivs = (v) => { if (v == null || v === 'all' || v === '' ) return 'all'; const a = (Array.isArray(v) ? v : String(v).split(/[\s,]+/)).map((k) => String(k).trim().toUpperCase()).filter((k) => DIV_KEYS.includes(k)); return a.includes('ALL') ? 'all' : [...new Set(a)]; };
+  const divNames = (v) => v === 'all' ? 'All divisions' : (v || []).map((k) => (DIVISIONS.find((d) => d[0] === k) || [k, k])[1]).join(', ') || 'No divisions';
+  const scopeOf = (u) => (!u || u.role === 'admin' || u.role === 'superadmin') ? 'all' : normDivs(u.divisions);
   // Per-browser preferences (theme, menu position). Applied here, in <head>, so pages never flash the wrong theme.
   const pref = (k, v) => { try { if (v === undefined) return localStorage.getItem('mg-' + k); if (v === null) localStorage.removeItem('mg-' + k); else localStorage.setItem('mg-' + k, v); } catch (e) { /* storage blocked */ } return v; };
   const applyTheme = () => { const t = pref('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
@@ -49,6 +59,7 @@
     },
     build(kind, data) {
       const req = { v: 1, kind, ref: ref(kind), at: new Date().toISOString(), ...data };
+      if (kind !== 'reset') { req.divisions = normDivs(req.divisions === undefined ? 'all' : req.divisions); if (req.divisions !== 'all' && !req.divisions.length) req.divisions = 'all'; req.scope = divNames(req.divisions); }
       const code = Requests.encode(req);
       const lines = kind === 'reset'
         ? [`Password reset request ${req.ref}`, '', `User ID: ${req.email}`, `Name: ${req.name || '-'}`, '', 'Request code (paste into Settings > People):', code]
@@ -89,7 +100,13 @@
     exists: (id) => USERS.some((u) => u.id === String(id || '').trim().toLowerCase()),
     ROUNDS,
     // Accounts without their secrets, for the People page.
-    list: () => USERS.map((u) => ({ id: u.id, name: u.name, role: u.role })),
+    list: () => USERS.map((u) => ({ id: u.id, name: u.name, role: u.role, divisions: scopeOf(u) })),
+    DIVISIONS, SALES_DIVS, normDivs, divNames,
+    // The signed-in person's division scope: 'all' or an array of keys. Older sessions (no field) see everything.
+    scope: () => { const s = read(); if (!s) return []; const u = USERS.find((x) => x.id === s.id); return u ? scopeOf(u) : (s.divisions === undefined ? 'all' : normDivs(s.divisions)); },
+    canSee: (key) => { const sc = Auth.scope(); return sc === 'all' || sc.includes(String(key).toUpperCase()); },
+    // Sales & inventory (the TallyPrime dashboards, report builder and note) go with the Honda divisions.
+    canSales: () => SALES_DIVS.some((k) => Auth.canSee(k)),
     pref,
     theme: (t) => { if (t !== undefined) pref('theme', t === 'system' ? null : t); applyTheme(); return pref('theme') || 'system'; },
     derive,
@@ -98,7 +115,7 @@
       // derive even for an unknown ID, so both paths take the same time
       const h = await derive(password, u ? u.salt : '00'.repeat(16));
       if (!u || h !== u.hash) return null;
-      const s = { id: u.id, name: u.name, role: u.role, exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
+      const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
       try { (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage blocked */ }
       noteSignIn(s);
       return s;
@@ -108,8 +125,12 @@
       location.replace('index.html');
     },
     // On every protected page: send visitors without a session to the sign-in page, then back here.
-    guard() {
-      if (read()) return true;
+    guard(need) {
+      if (read()) {
+        const ok = !need || (need === 'sales' ? Auth.canSales() : Auth.canSee(need));
+        if (!ok) { document.documentElement.style.visibility = 'hidden'; location.replace('hub.html?denied=' + encodeURIComponent(need)); }
+        return ok;
+      }
       const here = location.pathname.split('/').pop() + location.search + location.hash;
       document.documentElement.style.visibility = 'hidden';
       location.replace('index.html?next=' + encodeURIComponent(here));

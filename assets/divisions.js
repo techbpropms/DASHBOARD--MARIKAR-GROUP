@@ -171,6 +171,10 @@
   }
 
   fetch('data/divisions.json').then((r) => r.json()).then((data) => {
+    // Only the divisions the signed-in account may see (Settings > People sets each account's divisions).
+    const may = (k) => !window.MGAuth || MGAuth.canSee(k);
+    data.divisions = (data.divisions || []).filter((d) => may(d.key));
+    data.groups = (data.groups || []).map((g) => ({ ...g, divisions: (g.divisions || []).filter(may) })).filter((g) => g.divisions.length);
     DATA = data;
     if (data.takeaway) $('takeaway').textContent = data.takeaway;
     const chip = (key, label) => { const b = el('button', 'dv-chip', label); b.type = 'button'; b.dataset.key = key; b.setAttribute('role', 'tab'); b.addEventListener('click', () => { location.hash = key; if (!key) history.replaceState(null, '', location.pathname); route(); }); return b; };

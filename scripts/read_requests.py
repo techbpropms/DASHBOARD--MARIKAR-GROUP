@@ -14,9 +14,11 @@ the mailbox over IMAP and:
      courteous refusal. Either way the request moves to `handled`.
 
   4. acts on account-management lines from a super admin or an admin: "role <user id> <viewer|admin|superadmin>",
-     "remove <user id>", "reset <user id>" and "add <user id> <Full name> [as admin]". The person concerned is told
-     by e-mail; an admin may not touch super admin accounts or grant that role. Every change is logged in the
-     store's `log`, which Settings > People shows.
+     "remove <user id>", "reset <user id>", "add <user id> <Full name> [as admin] [for HONDA,AMZES]" and
+     "divisions <user id> <all | HONDA,AMZES,...>" (which divisions a viewer may open; admins see all). The person
+     concerned is told by e-mail; an admin may not touch super admin accounts or grant that role. Every change is
+     logged in the store's `log`, which Settings > People shows. An approval may also name the divisions:
+     "approve viewer for HONDA,AMZES"; otherwise the divisions ticked on the request form apply.
 
 Who may approve: the super admin accounts in assets/auth.js, the hub mailbox itself, and any address in the
 APPROVERS variable (comma separated). A reply counts only if it comes from one of those addresses AND either
@@ -55,8 +57,33 @@ CODE = re.compile(r'MGQ1\.([A-Za-z0-9_-]{20,})')
 REF = re.compile(r'\b([AP]R-\d{8}-[0-9A-F]{4})\b')
 COMMAND = re.compile(r'^\W*(approve|approved|ok|okay|yes|decline|declined|reject|rejected)\b(?P<rest>.*)$', re.I)
 ROLE = re.compile(r'\b(viewer|admin|superadmin|super admin)\b', re.I)
-MGMT = re.compile(r'^\W*(role|remove|reset|add)\s+<?([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})>?\s*(.*?)\s*$', re.I)
-KEEP = ('ref', 'kind', 'name', 'email', 'unit', 'scope', 'title', 'reason', 'at')
+MGMT = re.compile(r'^\W*(role|remove|reset|add|divisions?)\s+<?([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})>?\s*(.*?)\s*$', re.I)
+KEEP = ('ref', 'kind', 'name', 'email', 'unit', 'scope', 'title', 'reason', 'at', 'divisions')
+# Division keys an account can be limited to; read from data/divisions.json when it is there (keep both in step).
+DIV_KEYS = ['GROUP', 'HONDA', 'AMZES', 'BIGWING', 'RE', 'NISSAN', 'CSPW', 'CANON', 'HR']
+try:
+    DIV_KEYS = [d['key'] for d in json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'divisions.json'), encoding='utf-8'))['divisions']] or DIV_KEYS
+except (OSError, ValueError, KeyError, TypeError):
+    pass
+
+
+def parse_divs(text, default=None):
+    """'all', a list of known division keys named in the text (after 'for' if present), or `default` if none."""
+    if isinstance(text, list):
+        text = ' '.join(str(t) for t in text)
+    t = str(text or '')
+    m = re.search(r'\bfor\b(.*)$', t, re.I)
+    if m:
+        t = m.group(1)
+    toks = [w.upper() for w in re.split(r'[\s,;/]+', t) if w]
+    if 'ALL' in toks:
+        return 'all'
+    keys = [k for k in toks if k in DIV_KEYS]
+    return list(dict.fromkeys(keys)) if keys else default
+
+
+def divs_text(d):
+    return 'all divisions' if d == 'all' else ', '.join(d) if d else 'no divisions'
 ROUNDS = 210000
 ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
 MAIL_USER = os.environ.get('MAIL_USER', 'mml@bpropms.in')
@@ -71,7 +98,7 @@ def mask(addr):
 
 
 # ----- the account list (assets/auth.js)
-LINE_RE = re.compile(r"\n[ \t]*\{ id: '([^']+)', name: (\"(?:[^\"\\]|\\.)*\"|'[^']*'), role: '([^']+)', salt: '([0-9a-f]+)', hash: '([0-9a-f]+)' \},")
+LINE_RE = re.compile(r"\n[ \t]*\{ id: '([^']+)', name: (\"(?:[^\"\\]|\\.)*\"|'[^']*'), role: '([^']+)', salt: '([0-9a-f]+)', hash: '([0-9a-f]+)'(?:, divisions: (\[[^\]\n]*\]|'all'))? \},")
 
 
 class Accounts:
@@ -83,8 +110,27 @@ class Accounts:
     def find(self, uid):
         for m in LINE_RE.finditer(self.src):
             if m.group(1).lower() == uid.lower():
-                return {'id': m.group(1), 'name': json.loads(m.group(2)) if m.group(2).startswith('"') else m.group(2)[1:-1], 'role': m.group(3)}
+                return {'id': m.group(1), 'name': json.loads(m.group(2)) if m.group(2).startswith('"') else m.group(2)[1:-1], 'role': m.group(3),
+                        'divisions': self._divs(m.group(6)) if m.group(3) == 'viewer' else 'all'}
         return None
+
+    @staticmethod
+    def _divs(field):
+        if not field or field == "'all'":
+            return 'all'
+        return [k.strip().strip("'\"").upper() for k in field.strip('[]').split(',') if k.strip()]
+
+    def set_divisions(self, uid, divs):
+        m = next((m for m in LINE_RE.finditer(self.src) if m.group(1).lower() == uid.lower()), None)
+        if not m:
+            return False
+        line = self.src[m.start():m.end()]
+        line = re.sub(r", divisions: (\[[^\]\n]*\]|'all')", '', line, count=1)
+        if divs != 'all':
+            line = line.replace(" },", f", divisions: [{', '.join(repr(k) for k in divs)}] }},", 1)
+        self.src = self.src[:m.start()] + line + self.src[m.end():]
+        self.changed = True
+        return True
 
     def superadmins(self):
         return [m.group(1).lower() for m in LINE_RE.finditer(self.src) if m.group(3) == 'superadmin']
@@ -114,15 +160,16 @@ class Accounts:
         pick = lambda n: ''.join(secrets.choice(ALPHABET) for _ in range(n))
         return f'MG-{pick(4)}-{pick(4)}-{pick(4)}'
 
-    def _line(self, uid, name, role, pw):
+    def _line(self, uid, name, role, pw, divs='all'):
         salt = secrets.token_hex(16)
         h = hashlib.pbkdf2_hmac('sha256', pw.encode('utf-8'), bytes.fromhex(salt), ROUNDS, 32).hex()
-        return f"    {{ id: '{uid}', name: {json.dumps(name, ensure_ascii=False)}, role: '{role}', salt: '{salt}', hash: '{h}' }},"
+        extra = '' if divs == 'all' or role != 'viewer' else f", divisions: [{', '.join(repr(k) for k in divs)}]"
+        return f"    {{ id: '{uid}', name: {json.dumps(name, ensure_ascii=False)}, role: '{role}', salt: '{salt}', hash: '{h}'{extra} }},"
 
-    def add(self, uid, name, role):
-        """Adds an account (or replaces an existing one's password) and returns the new temporary password."""
+    def add(self, uid, name, role, divs='all'):
+        """Adds an account (or replaces an existing one's password, keeping its divisions) and returns the new temporary password."""
         pw = self.password()
-        line = self._line(uid, name, role, pw)
+        line = self._line(uid, name, role, pw, divs)
         existing = next((m for m in LINE_RE.finditer(self.src) if m.group(1).lower() == uid.lower()), None)
         if existing:
             self.src = self.src[:existing.start()] + '\n' + line + self.src[existing.end():]
@@ -148,7 +195,9 @@ def decode(code):
         return None
     if not isinstance(req, dict) or req.get('kind') not in ('access', 'reset') or not req.get('email') or not req.get('ref'):
         return None
-    out = {k: str(req[k])[:300] for k in KEEP if req.get(k)}
+    out = {k: str(req[k])[:300] for k in KEEP if req.get(k) and k != 'divisions'}
+    if req.get('divisions'):
+        out['divisions'] = parse_divs(req['divisions'] if isinstance(req['divisions'], list) else str(req['divisions']), 'all')
     out['email'] = out['email'].strip().lower()
     if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', out['email']):
         return None
@@ -207,7 +256,7 @@ def command_in(text):
             verb = m.group(1).lower()
             role = (ROLE.search(m.group('rest')) or ROLE.search(s))
             role = role.group(1).lower().replace(' ', '') if role else 'viewer'
-            return ('approve' if verb in ('approve', 'approved', 'ok', 'okay', 'yes') else 'decline'), role
+            return ('approve' if verb in ('approve', 'approved', 'ok', 'okay', 'yes') else 'decline'), role, parse_divs(m.group('rest'))
     return None
 
 
@@ -247,7 +296,7 @@ def parse(msg):
             m = REF.search(text)
             refs = [m.group(1)] if m else []
         for r in refs:
-            commands.append({'ref': r, 'action': cmd[0], 'role': cmd[1], 'from': sender, 'in_reply_to': str(msg.get('In-Reply-To', '')).strip(),
+            commands.append({'ref': r, 'action': cmd[0], 'role': cmd[1], 'divisions': cmd[2], 'from': sender, 'in_reply_to': str(msg.get('In-Reply-To', '')).strip(),
                              'authenticated': authenticated(msg), 'received': received})
     # account-management lines: "role x@y admin", "remove x@y", "reset x@y", "add x@y Full Name as admin"
     mgmt = []
@@ -343,15 +392,17 @@ def reminder(waiting, approvers_to):
     lines = [f"  {p['ref']}  {p.get('name') or p['email']}  ({p['email']}; {p.get('unit') or '-'}; {p.get('scope') or '-'})" for p in waiting]
     return ('The following access requests are waiting for a decision:\n\n' + '\n'.join(lines) +
             f'\n\nTo approve, send an e-mail to {MAIL_USER} with the subject "approve" and the reference(s) in the body '
-            '(add "admin" after approve for an admin account). To refuse, use "decline" the same way. '
+            '(add "admin" after approve for an admin account, or "for HONDA,AMZES" to limit a viewer to those divisions; '
+            'otherwise the divisions ticked on the request apply). To refuse, use "decline" the same way. '
             f'The list is also on the People page of {HUB_URL}settings.html.\n\nMarikar Group performance hub')
 
 
-def welcome(name, uid, pw, reset=False):
+def welcome(name, uid, pw, reset=False, divs='all'):
     first = (name or '').split(' ')[0] or 'colleague'
     what = 'Your password has been reset.' if reset else 'Your access to the Marikar Group performance hub has been approved.'
+    scope = '' if divs == 'all' else f'Divisions: {divs_text(divs)}\n'
     return (f'Dear {first},\n\n{what}\n\n'
-            f'Address:   {HUB_URL}\nUser ID:   {uid}\nPassword:  {pw}\n\n'
+            f'Address:   {HUB_URL}\nUser ID:   {uid}\nPassword:  {pw}\n{scope}\n'
             'This is a temporary password: sign in, then change it from the Settings page. Please do not forward this e-mail.\n'
             'The hub works best installed as an app: open the address on your phone or computer and accept the install invitation.\n\n'
             'Regards,\nMarikar Group performance hub\n(automated message from the hub mailbox; replies are read by the administrator)')
@@ -445,7 +496,7 @@ def main():
             settle(req, 'throttled', by='automatic', email=acct['id'].lower())
             print(f"  reset {req['ref']} for {mask(acct['id'])}: already reset in the last 24 hours, skipped")
         elif acct:
-            newpw = accounts.add(acct['id'], acct['name'], acct['role'])
+            newpw = accounts.add(acct['id'], acct['name'], acct['role'], acct['divisions'])
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             settle(req, 'reset', by='automatic', email=acct['id'].lower()); note('reset', acct['id'].lower(), 'forgot password', req['ref'])
             print(f"  reset {req['ref']} for {mask(acct['id'])}: new password e-mailed")
@@ -466,11 +517,15 @@ def main():
             continue
         if cmd['action'] == 'approve':
             role = cmd['role'] if cmd['role'] in ('viewer', 'admin', 'superadmin') else 'viewer'
+            # the divisions: named in the reply ("approve viewer for HONDA,AMZES"), else ticked on the request form
+            divs = 'all' if role != 'viewer' else (cmd.get('divisions') or req.get('divisions') or 'all')
             existed = accounts.find(req['email'])
-            newpw = accounts.add(existed['id'] if existed else req['email'], existed['name'] if existed else req.get('name', req['email']), existed['role'] if existed else role)
-            mailer.send(req['email'], 'Marikar hub: your access', welcome(req.get('name'), req['email'], newpw, reset=bool(existed)))
-            settle(req, 'approved', by=cmd['from'], role=existed['role'] if existed else role); note('approved', req['email'], cmd['from'], f"{req['ref']} as {existed['role'] if existed else role}")
-            print(f"  approved {req['ref']} ({mask(req['email'])}, {existed['role'] if existed else role}) on {mask(cmd['from'])}'s reply; password e-mailed")
+            if existed:
+                role, divs = existed['role'], existed['divisions']
+            newpw = accounts.add(existed['id'] if existed else req['email'], existed['name'] if existed else req.get('name', req['email']), role, divs)
+            mailer.send(req['email'], 'Marikar hub: your access', welcome(req.get('name'), req['email'], newpw, reset=bool(existed), divs=divs))
+            settle(req, 'approved', by=cmd['from'], role=role, divisions=divs); note('approved', req['email'], cmd['from'], f"{req['ref']} as {role} ({divs_text(divs)})")
+            print(f"  approved {req['ref']} ({mask(req['email'])}, {role}, {divs_text(divs)}) on {mask(cmd['from'])}'s reply; password e-mailed")
         else:
             mailer.send(req['email'], f"Marikar hub: access request {req['ref']}", f"Dear {(req.get('name') or 'colleague').split(' ')[0]},\n\nThank you for your request ({req['ref']}). We are not able to approve it at this time. If you believe this is a mistake, reply to this e-mail with your reporting manager copied.\n\nRegards,\nMarikar Group performance hub administrator")
             settle(req, 'declined', by=cmd['from']); note('declined', req['email'], cmd['from'], req['ref'])
@@ -485,7 +540,7 @@ def main():
     if forced:
         acct = accounts.find(forced)
         if acct:
-            newpw = accounts.add(acct['id'], acct['name'], acct['role'])
+            newpw = accounts.add(acct['id'], acct['name'], acct['role'], acct['divisions'])
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             ref = f"PR-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d')}-{secrets.token_hex(2).upper()}"
             handled[ref] = {'status': 'reset', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True; note('reset', acct['id'].lower(), 'administrator (Actions tab)', ref)
@@ -539,11 +594,14 @@ def main():
             key = ('reset', acct['id'].lower(), sender, m['received'][:16])
             if key in done_keys:
                 continue
-            newpw = accounts.add(acct['id'], acct['name'], acct['role'])
+            newpw = accounts.add(acct['id'], acct['name'], acct['role'], acct['divisions'])
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             note('reset', acct['id'].lower(), sender, m['received'][:16])
             print(f"  reset {mask(acct['id'])} on {mask(sender)}'s instruction: new password e-mailed")
         elif act == 'add':
+            fm = re.search(r'\s+for\s+([A-Za-z, /;]+)\s*$', arg, re.I)
+            divs = parse_divs(fm.group(1), 'all') if fm else 'all'
+            arg = arg[:fm.start()] if fm else arg
             rm = re.search(r'\s+as\s+(viewer|admin|superadmin|super admin)\s*$', arg, re.I)
             role = rm.group(1).lower().replace(' ', '') if rm else 'viewer'
             name = (arg[:rm.start()] if rm else arg).strip().strip('"\'') or target
@@ -551,10 +609,22 @@ def main():
                 print(f"  ignored 'add {mask(target)}': account exists (use role or reset)"); continue
             if limited and role == 'superadmin':
                 print(f"  ignored 'add {mask(target)}' from {mask(sender)}: an admin cannot create a super admin"); continue
-            newpw = accounts.add(target, name, role)
-            mailer.send(target, 'Marikar hub: your access', welcome(name, target, newpw))
-            note('added', target, sender, f"{name} as {role}")
-            print(f"  added {mask(target)} as {role} on {mask(sender)}'s instruction; password e-mailed")
+            newpw = accounts.add(target, name, role, divs)
+            mailer.send(target, 'Marikar hub: your access', welcome(name, target, newpw, divs=divs))
+            note('added', target, sender, f"{name} as {role} ({divs_text(divs)})")
+            print(f"  added {mask(target)} as {role} ({divs_text(divs)}) on {mask(sender)}'s instruction; password e-mailed")
+        elif act in ('division', 'divisions'):
+            divs = parse_divs(arg)
+            if not acct or divs is None:
+                print(f"  ignored 'divisions {mask(target)}': {'no such account' if not acct else 'no division named (use all, or keys such as HONDA,AMZES)'}"); continue
+            if acct['role'] != 'viewer':
+                print(f"  ignored 'divisions {mask(target)}': {acct['role']} accounts see all divisions"); continue
+            if acct['divisions'] == divs or ('divisions', acct['id'].lower(), sender, f"{divs_text(acct['divisions'])} -> {divs_text(divs)}") in done_keys:
+                continue
+            accounts.set_divisions(acct['id'], divs)
+            mailer.send(acct['id'], 'Marikar hub: your divisions', f"Dear {acct['name'].split(' ')[0]},\n\nYour access on the Marikar Group performance hub now covers: {divs_text(divs)}. It applies from your next sign-in.\n\nRegards,\nMarikar Group performance hub")
+            note('divisions', acct['id'].lower(), sender, f"{divs_text(acct['divisions'])} -> {divs_text(divs)}")
+            print(f"  divisions {mask(acct['id'])}: {divs_text(acct['divisions'])} -> {divs_text(divs)} on {mask(sender)}'s instruction")
 
     # 4. acknowledge every newly listed access request, once per request, once per address, at most ten a run:
     #    the sign-in form accepts any address, so this must never become a way to send mail to strangers in bulk
