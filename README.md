@@ -236,6 +236,14 @@ sign-in page posts requests to it, it e-mails them to the administrator and ackn
 (see `server/README.md` for running and deploying it on Hostinger). Once it is deployed, set
 `REQUESTS.endpoint` in `assets/auth.js` to its address. Never put the mailbox password in the site's files.
 
+Until the relay is hosted, a form-to-mail service does the same job with no server: sign up at
+web3forms.com with `mml@bpropms.in`, confirm the e-mail it sends, and put the access key it issues in
+`assets/auth.js` as `REQUESTS.endpoint = 'https://api.web3forms.com/submit'` and
+`REQUESTS.fields = { access_key: '…' }`. Requests then arrive in the mailbox within seconds, with the
+request code the super admin pastes into Settings > People. The access key is a public identifier for that
+form, not a password, so it is safe in the page. With neither configured, the form can only open the
+requester's own mail program ("Send by e-mail") or copy the request text.
+
 Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
 step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
 written so the request transport can be swapped without changing the forms.

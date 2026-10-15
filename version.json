@@ -1,8 +1,7 @@
 {
-  "version": "2026.10.15a",
-  "title": "FY 2025–26 registers for Nedumangad and Varkala",
+  "version": "2026.10.15b",
+  "title": "Access requests by form-to-mail",
   "notes": [
-    "Year on year now compares Nedumangad, Kulasekharam and Varkala against the same months of 2025",
-    "Idle stock at 31 March is now measured against the full year for those three units"
+    "The request-access and password-reset forms can post straight to the hub mailbox once a form key is configured"
   ]
 }
