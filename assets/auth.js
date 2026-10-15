@@ -41,7 +41,8 @@
         if (s && s.exp > Date.now()) {
           // the account behind the session: removed means signed out; role, name and divisions follow the file
           const u = USERS.find((x) => x.id === s.id);
-          if (!u) { store.removeItem(KEY); continue; }
+          // removed account, or a password changed since this session began (k = the fingerprint it was opened with): signed out
+          if (!u || (s.k && s.k !== u.hash.slice(0, 8))) { store.removeItem(KEY); continue; }
           return { ...s, name: u.name, role: u.role, divisions: scopeOf(u) };
         }
         store.removeItem(KEY);
@@ -74,6 +75,17 @@
         ? [`Password reset request ${req.ref}`, '', `User ID: ${req.email}`, `Name: ${req.name || '-'}`, '', 'Request code (paste into Settings > People):', code]
         : [`Access request ${req.ref}`, '', `Name: ${req.name}`, `E-mail: ${req.email}`, `Company / division / function: ${req.unit || '-'}`, `Access needed for: ${req.scope || '-'}`, `Designation: ${req.title || '-'}`, `Phone: ${req.phone || '-'}`, `Reason: ${req.reason || '-'}`, '', 'Request code (paste into Settings > People):', code];
       const subject = kind === 'reset' ? `Marikar hub: password reset ${req.ref}` : `Marikar hub: access request ${req.ref} (${req.name})`;
+      return { req, code, text: lines.join('\n'), mailto: `mailto:${REQUESTS.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}` };
+    },
+    // The set-password step (reset.html): the salted fingerprint of the password the person chose, with the one-time
+    // token from their link, as a code the mailbox clerk verifies and writes. The password itself never leaves the browser.
+    async buildSet(id, token, password) {
+      const salt = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('');
+      const hash = await derive(password, salt);
+      const req = { v: 1, kind: 'setpw', id: String(id).trim().toLowerCase(), token, salt, hash, at: new Date().toISOString(), ref: ref('reset') };
+      const code = 'MGP1.' + b64u(JSON.stringify(req));
+      const lines = [`New password for ${req.id}`, '', 'This message carries the fingerprint of the password chosen on the hub, not the password. Send it as it is.', '', code];
+      const subject = `Marikar hub: new password ${req.ref}`;
       return { req, code, text: lines.join('\n'), mailto: `mailto:${REQUESTS.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}` };
     },
     // Sends through the endpoint when there is one; resolves {sent:true} or {sent:false} (then the caller offers e-mail).
@@ -124,7 +136,7 @@
       // derive even for an unknown ID, so both paths take the same time
       const h = await derive(password, u ? u.salt : '00'.repeat(16));
       if (!u || h !== u.hash) return null;
-      const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
+      const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), k: u.hash.slice(0, 8), exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
       try { (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage blocked */ }
       noteSignIn(s);
       return s;

@@ -630,5 +630,44 @@
    "w": 178,
    "h": 37
   }
+ ],
+ "35-reset": [
+  {
+   "label": "New password",
+   "x": 27,
+   "y": 239,
+   "w": 386,
+   "h": 49
+  },
+  {
+   "label": "The three rules",
+   "x": 27,
+   "y": 308,
+   "w": 386,
+   "h": 59
+  },
+  {
+   "label": "Again",
+   "x": 27,
+   "y": 405,
+   "w": 386,
+   "h": 49
+  },
+  {
+   "label": "Set this password",
+   "x": 27,
+   "y": 467,
+   "w": 386,
+   "h": 49
+  }
+ ],
+ "36-password": [
+  {
+   "label": "E-mail me a link",
+   "x": 23,
+   "y": 109,
+   "w": 297,
+   "h": 41
+  }
  ]
 }

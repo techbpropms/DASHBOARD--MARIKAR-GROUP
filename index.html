@@ -351,7 +351,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
 
       <section id="pane-forgot" role="region" aria-labelledby="forgot-h" hidden>
         <h2 id="forgot-h">Reset your password</h2>
-        <p class="lead">Enter your user ID. The administrator will issue a new temporary password to that e-mail address.</p>
+        <p class="lead">Enter your user ID. A one-time link to choose a new password is e-mailed to that address; nobody else is involved.</p>
         <div class="alert" id="f-alert" role="alert"></div>
         <form id="forgot" novalidate>
           <div class="field"><label for="f-id">User ID (e-mail)</label><input id="f-id" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
@@ -487,8 +487,8 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     $('forgot').hidden = true;
     // Whether or not the ID exists is not revealed here; the administrator checks before issuing anything.
     await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', {
-      sent: 'If this ID has an account, a new temporary password will be e-mailed to it within about 10 minutes. Check the spam folder if it does not arrive.',
-      mail: 'Send the request with the button below. If this ID has an account, a new temporary password will be e-mailed to it within about 10 minutes of the request reaching the hub mailbox.' });
+      sent: 'If this ID has an account, a link to choose a new password will be e-mailed to it within about 10 minutes. The link works once and for 24 hours. Check the spam folder if it does not arrive.',
+      mail: 'Send the request with the button below. If this ID has an account, a link to choose a new password will be e-mailed to it within about 10 minutes of the request reaching the hub mailbox.' });
   });
 
   // Focus the user ID only where a keyboard is likely; on phones it would pop the keyboard over the page.

@@ -231,9 +231,10 @@ Instead the page builds a request with a reference (`AR-…` for access, `PR-…
 - opens the requester's mail app with the request addressed to mml@bpropms.in, with a "copy" fallback.
 
 The super admin pastes the e-mail or code into **Settings → People → Access and reset requests**, reviews it,
-picks a role and approves (which creates the account and shows the temporary password once) or declines (which
-opens a reply). Approvals go live with "Publish to the site". Whether an ID exists is never revealed on the
-reset pane; the administrator checks before issuing anything.
+picks a role and the divisions and approves by e-mail (the hub creates the account and e-mails the person a
+one-time link to choose their password) or declines. Whether an ID exists is never revealed on the reset pane;
+the hub checks before sending anything. Signed-in people change their password from Settings → Password, which
+sends the same link.
 
 **Mailbox and relay.** The hub's address is `mml@bpropms.in`. Because a static site cannot send e-mail or hold a
 password, `server/` contains a small Node relay that is the only place the mailbox credentials live: the
@@ -253,9 +254,13 @@ requester's own mail program ("Send by e-mail") or copy the request text.
 `scripts/read_requests.py` every 10 minutes and on demand. It signs in to the mailbox over IMAP and:
 
 - lists every new access request in `data/requests/inbox.json`, which Settings > People shows;
-- settles **password resets** at once: if the ID has an account, a new temporary password is written to
-  `assets/auth.js` and e-mailed to that ID (one reset per address per day); otherwise the address is told
-  how to request access;
+- settles **password resets** with a one-time link: if the ID has an account, a link to `reset.html` (24 hours,
+  single use, at most three a day per address) is e-mailed to that ID; otherwise the address is told how to
+  request access. The person chooses their password on that page; the browser sends only its salted fingerprint,
+  with the link's token, as a code starting `MGP1.` to the mailbox, and the clerk writes it to `assets/auth.js`
+  once the token matches (`links` in the store holds the token's SHA-256 and expiry, nothing else). Approvals,
+  additions and administrator resets send the same link, so **no password ever travels by e-mail**. A changed
+  password ends every earlier session of that account;
 - **acknowledges** every newly listed access request to the requester (reference, what happens next) and
   **reminds** the approvers once a day of requests that have waited more than a day;
 - applies **account-management lines** e-mailed to the mailbox by a super admin (full rights) or an admin (may not
@@ -292,9 +297,10 @@ who knows the URL could add a row or read the report, so treat it as an attendan
 **Refresh.** The circular arrow in the bar checks for a new version of the app and reloads the page with fresh
 data; it is the first thing to try when a figure looks stale.
 
-Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
-step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
-written so the request transport can be swapped without changing the forms.
+Instant (rather than ten-minute) approvals and password changes would need a server. The practical next step is
+a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is written so
+the request transport can be swapped without changing the forms. Operating practices, secrets and the incident
+steps are in `docs/OPERATIONS.md`.
 
 ### Installing as an app
 
