@@ -475,8 +475,8 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     $('forgot').hidden = true;
     // Whether or not the ID exists is not revealed here; the administrator checks before issuing anything.
     await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', {
-      sent: 'If this ID has an account, the administrator will e-mail a new temporary password to it.',
-      mail: 'Send the request with the button below. If this ID has an account, the administrator will e-mail a new temporary password to it.' });
+      sent: 'If this ID has an account, a new temporary password will be e-mailed to it within about 10 minutes. Check the spam folder if it does not arrive.',
+      mail: 'Send the request with the button below. If this ID has an account, a new temporary password will be e-mailed to it within about 10 minutes of the request reaching the hub mailbox.' });
   });
 
   // Focus the user ID only where a keyboard is likely; on phones it would pop the keyboard over the page.

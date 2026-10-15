@@ -1,7 +1,8 @@
 {
-  "version": "2026.10.15d",
-  "title": "User manual v1.2",
+  "version": "2026.10.15e",
+  "title": "Approvals by reply, resets automatic",
   "notes": [
-    "The manual now covers requests listed from the hub mailbox on the People page, and the year-on-year lens with three units"
+    "Forgot password? now e-mails a new temporary password within about 10 minutes, no administrator needed",
+    "The super admin approves a request by replying \"approve\" to its e-mail; the hub creates the account and e-mails the password"
   ]
 }

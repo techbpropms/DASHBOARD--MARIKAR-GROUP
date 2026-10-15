@@ -142,7 +142,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <p class="muted" id="inbox-note">Checking the mailbox list…</p>
       <ul id="inbox-list"></ul>
     </div>
-    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within 15 minutes. If one is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
+    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about 10 minutes. <b>Approve by e-mail</b> opens a one-word reply to the mailbox; the hub then creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
     <div class="reqbox">
       <textarea id="req-in" rows="3" placeholder="Paste the request e-mail or code here" aria-label="Request code"></textarea>
       <button class="btn sec" type="button" id="req-parse">Read request</button>
@@ -152,8 +152,9 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <dl id="req-dl"></dl>
       <div class="actions">
         <label class="inline" id="req-role-wrap">Role <select id="req-role"><option value="viewer">Viewer</option><option value="admin">Admin</option><option value="superadmin">Super admin</option></select></label>
-        <button class="btn" type="button" id="req-approve">Approve and create account</button>
-        <button class="btn sec" type="button" id="req-decline">Decline (opens e-mail)</button>
+        <button class="btn" type="button" id="req-approve-mail">Approve by e-mail</button>
+        <button class="btn sec" type="button" id="req-decline">Decline by e-mail</button>
+        <button class="btn sec" type="button" id="req-approve" title="Creates the account here and needs a GitHub token to publish">Approve here (needs token)</button>
       </div>
       <div class="note" id="req-note" hidden></div>
     </div>
@@ -291,11 +292,12 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const row = (k, v) => { if (!v) return; const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); };
     row('Name', r.name); row('E-mail', r.email); row('Company / division / function', r.unit); row('Access needed for', r.scope); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
     row('Account', known ? `exists: ${known.name} (${roleName(known.role)})` : 'none yet');
-    $('req-role-wrap').hidden = reset; $('req-approve').textContent = reset ? (known ? 'Approve: issue a new password' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve and create account');
+    $('req-role-wrap').hidden = reset; $('req-approve').textContent = reset ? (known ? 'Issue a new password here (needs token)' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve here (needs token)');
     $('req-approve').disabled = reset ? !known : !!known;
+    $('req-approve-mail').hidden = reset; $('req-approve-mail').disabled = !!known; $('req-decline').hidden = reset;
     $('req-card').hidden = false; $('req-card').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
-  // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every 15 minutes
+  // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every 10 minutes
   // (scripts/read_requests.py). Approving or declining here moves a request to `handled` when you publish.
   let inbox = null;
   const handledLocally = (ref) => queue.handled[ref];
@@ -304,7 +306,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const note = $('inbox-note');
     if (!inbox) { note.textContent = 'The mailbox list could not be loaded; paste requests below instead.'; return; }
     const rows = (inbox.pending || []).filter((r) => !handledLocally(r.ref));
-    const when = inbox.updated ? ' Last checked ' + fmtWhen(inbox.updated) + '.' : ' The mailbox has not been read yet: the MAIL_PASSWORD secret may not be set (see README, "Mailbox reader").';
+    const when = inbox.updated ? ' Last checked ' + fmtWhen(inbox.updated) + '.' : ' The mailbox has not been read yet: the MAIL_PASSWORD secret may not be set (see README, "Mailbox clerk").';
     note.textContent = rows.length ? `${rows.length} request${rows.length === 1 ? '' : 's'} waiting in the mailbox.${when}` : `No requests waiting in the mailbox.${when}`;
     rows.forEach((r) => {
       const li = document.createElement('li');
@@ -327,13 +329,20 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     say('req-note', 'ok', [`${current.ref || 'Request'} approved. Give the temporary password shown above to ${current.email}, then publish.`]);
     $('req-approve').disabled = true; settle('approved');
   });
-  $('req-decline').addEventListener('click', () => {
+  // By e-mail: a one-word reply to the hub mailbox, which the mailbox clerk (scripts/read_requests.py) acts on
+  // within about 10 minutes. Send it from an approver's address (a super admin's, or the mailbox itself).
+  const byMail = (word) => {
     if (!current) return;
-    const subj = `Marikar hub: ${current.kind === 'reset' ? 'password reset' : 'access request'} ${current.ref || ''}`.trim();
-    const body = `Dear ${current.name || 'colleague'},\n\nThank you for your request (${current.ref || 'no reference'}). We are not able to approve it at this time.\n\nIf you believe this is a mistake, reply to this e-mail with your reporting manager copied.\n\nRegards,\nMarikar Group performance hub administrator`;
-    location.href = `mailto:${encodeURIComponent(current.email)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
-    say('req-note', 'warn', [`${current.ref || 'Request'} declined; a reply to ${current.email} opened in your mail app. Publish to take it off the mailbox list.`]);
-    settle('declined');
+    const subj = `Re: Marikar hub: access request ${current.ref || ''}${current.name ? ' (' + current.name + ')' : ''}`;
+    location.href = `mailto:${encodeURIComponent(MGAuth.requests.config.to)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(word)}`;
+  };
+  $('req-approve-mail').addEventListener('click', () => {
+    byMail(`approve ${$('req-role').value}`);
+    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within about 10 minutes the hub creates the account for ${current.email} as ${roleName($('req-role').value)}, e-mails them their user ID and temporary password, and takes the request off this list.`]);
+  });
+  $('req-decline').addEventListener('click', () => {
+    byMail('decline');
+    say('req-note', 'warn', [`A reply opened in your mail app: send it as it is. The hub e-mails ${current.email} a courteous refusal and takes the request off this list.`]);
   });
 
   // ----- publishing

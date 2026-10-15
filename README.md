@@ -244,16 +244,27 @@ request code the super admin pastes into Settings > People. The access key is a 
 form, not a password, so it is safe in the page. With neither configured, the form can only open the
 requester's own mail program ("Send by e-mail") or copy the request text.
 
-**Mailbox reader.** Requests also appear in Settings > People on their own: the GitHub Action "Mailbox
-requests" (`.github/workflows/mail-requests.yml`) runs `scripts/read_requests.py` every 15 minutes. It signs
-in to the mailbox over IMAP, finds the request e-mails, decodes their codes and adds new ones to
-`data/requests/inbox.json`; the People page lists that file and, when the super admin approves or declines a
-request and publishes, moves it to `handled`. Set-up is one repository secret: on GitHub, Settings >
-Secrets and variables > Actions > New repository secret, name `MAIL_PASSWORD`, value the mailbox password.
-Optional variables `MAIL_USER` and `MAIL_HOST` override the address and IMAP server (defaults
-`mml@bpropms.in`, `imap.hostinger.com`). "Run workflow" on the Actions tab reads the mailbox at once. The
-repository is public, so the list holds only what the approval needs (name, e-mail, division, scope,
-designation, reason); phone numbers stay in the e-mail. Nothing in the mailbox is deleted or marked.
+**Mailbox clerk.** The GitHub Action "Mailbox requests" (`.github/workflows/mail-requests.yml`) runs
+`scripts/read_requests.py` every 10 minutes and on demand. It signs in to the mailbox over IMAP and:
+
+- lists every new access request in `data/requests/inbox.json`, which Settings > People shows;
+- settles **password resets** at once: if the ID has an account, a new temporary password is written to
+  `assets/auth.js` and e-mailed to that ID (one reset per address per day); otherwise the address is told
+  how to request access;
+- acts on **one-word replies** to a request e-mail from an approver: "approve" (or "approve admin" /
+  "approve superadmin") creates the account and e-mails the requester their user ID and temporary
+  password; "decline" sends a courteous refusal. Approvers are the super admin accounts in `auth.js`, the
+  mailbox itself, and any address in the `APPROVERS` repository variable. A reply counts only if it is a
+  real reply to the request (In-Reply-To) or the mail server recorded a DKIM/SPF pass for the sender.
+  The People page's "Approve by e-mail" and "Decline by e-mail" buttons open that reply ready to send.
+
+Set-up is one repository secret: GitHub > Settings > Secrets and variables > Actions > New repository
+secret, `MAIL_PASSWORD` = the mailbox password. Optional variables: `MAIL_USER`, `MAIL_HOST` (IMAP),
+`SMTP_HOST`, `APPROVERS`. "Run workflow" on the Actions tab runs it at once. The repository is public, so
+the request list holds only what an approval needs (phone numbers stay in the e-mail), and `auth.js` holds
+salted fingerprints only; a password exists solely in the e-mail sent to its owner. Nothing in the mailbox
+is deleted or marked. "Approve here (needs token)" on the People page still works for a super admin who
+holds a GitHub token.
 
 Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
 step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
