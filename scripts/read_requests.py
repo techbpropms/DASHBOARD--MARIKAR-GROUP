@@ -256,7 +256,8 @@ def command_in(text):
             verb = m.group(1).lower()
             role = (ROLE.search(m.group('rest')) or ROLE.search(s))
             role = role.group(1).lower().replace(' ', '') if role else 'viewer'
-            return ('approve' if verb in ('approve', 'approved', 'ok', 'okay', 'yes') else 'decline'), role, parse_divs(m.group('rest'))
+            fm = re.search(r'\bfor\b(.*)$', m.group('rest'), re.I)
+            return ('approve' if verb in ('approve', 'approved', 'ok', 'okay', 'yes') else 'decline'), role, (parse_divs(fm.group(1)) if fm else None)
     return None
 
 
