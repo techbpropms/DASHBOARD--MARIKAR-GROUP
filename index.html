@@ -174,6 +174,8 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
 .field { position: relative; margin-bottom: 16px; }
 .field input { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; transition: border-color .15s, box-shadow .15s; }
 .field select { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.divs { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px 6px; background: var(--field); } .divs legend { padding: 0 6px; font-size: 13px; font-weight: 700; } .divs .chks { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; margin-top: 4px; } @media (max-width: 420px) { .divs .chks { grid-template-columns: 1fr; } }
+.divs label.chk { display: flex; gap: 8px; align-items: center; font-size: 14px; padding: 4px 0; cursor: pointer; } .divs label.chk.all { font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 4px; } .divs[aria-invalid="true"] { border-color: var(--bad); } .divs.is-all .chks { opacity: .45; }
 .field select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 18%, transparent); }
 .field input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 18%, transparent); }
 .field .eye { position: absolute; right: 6px; bottom: 6px; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--link); background: transparent; border: 0; border-radius: 8px; padding: 7px 10px; cursor: pointer; }
@@ -325,7 +327,10 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
             </datalist></div>
             <div class="field"><label for="r-title">Designation</label><input id="r-title" name="title" autocomplete="organization-title" maxlength="80"></div>
           </div>
-          <div class="field"><label for="r-scope">Access needed for</label><select id="r-scope" name="scope"><option value="My division">My division only</option><option value="Several divisions">Several divisions</option><option value="All divisions">All divisions (group-wide)</option></select></div>
+          <fieldset class="field divs" id="r-divs"><legend>Access needed for <small class="opt">(tick one or more)</small></legend>
+            <label class="chk all"><input type="checkbox" id="r-all" value="all"> All divisions (group-wide)</label>
+            <div class="chks" id="r-div-list"></div>
+          </fieldset>
           <div class="field"><label for="r-phone">Mobile <small class="opt">(optional)</small></label><input id="r-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></div>
           <div class="field"><label for="r-reason">What do you need the hub for? <small class="opt">(optional)</small></label><textarea id="r-reason" name="reason" rows="2" maxlength="300"></textarea></div>
           <div class="hp" aria-hidden="true"><label for="r-web">Website</label><input id="r-web" name="website" tabindex="-1" autocomplete="off"></div>
@@ -435,6 +440,12 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
 
   // ----- request access: validate, build the request, send through the endpoint or hand over to e-mail
   const mark = (el, bad) => el.setAttribute('aria-invalid', String(!!bad));
+  // the division tick boxes: "All divisions" or any set of divisions
+  const divList = $('r-div-list');
+  MGAuth.DIVISIONS.forEach(([k, n]) => { const l = document.createElement('label'); l.className = 'chk'; const c = document.createElement('input'); c.type = 'checkbox'; c.value = k; c.name = 'division'; l.append(c, ' ' + n); divList.appendChild(l); });
+  const syncAll = () => { const all = $('r-all').checked; $('r-divs').classList.toggle('is-all', all); divList.querySelectorAll('input').forEach((c) => { c.disabled = all; if (all) c.checked = false; }); };
+  $('r-all').addEventListener('change', syncAll);
+  const chosenDivs = () => $('r-all').checked ? 'all' : [...divList.querySelectorAll('input:checked')].map((c) => c.value);
   async function finish(built, doneId, pId, refId, mailId, copyId, text) {
     const r = await MGAuth.requests.send(built);
     $(pId).textContent = r.sent ? text.sent : text.mail;
@@ -448,11 +459,12 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
   $('request').addEventListener('submit', async (e) => {
     e.preventDefault(); clear('req-alert');
     if ($('r-web').value) { fail('Could not send the request.', 'req-alert'); return; }   // honeypot: bots fill the hidden field
-    const f = { name: $('r-name').value.trim(), email: $('r-email').value.trim().toLowerCase(), unit: $('r-unit').value.trim(), title: $('r-title').value.trim(), phone: $('r-phone').value.trim(), reason: $('r-reason').value.trim(), scope: $('r-scope').value };
+    const f = { name: $('r-name').value.trim(), email: $('r-email').value.trim().toLowerCase(), unit: $('r-unit').value.trim(), title: $('r-title').value.trim(), phone: $('r-phone').value.trim(), reason: $('r-reason').value.trim(), divisions: chosenDivs() };
     const bad = [];
     mark($('r-name'), f.name.length < 2); if (f.name.length < 2) bad.push('your full name');
     mark($('r-email'), !EMAIL.test(f.email)); if (!EMAIL.test(f.email)) bad.push('a valid work e-mail');
     mark($('r-unit'), !f.unit); if (!f.unit) bad.push('your company or division');
+    const noDivs = f.divisions !== 'all' && !f.divisions.length; mark($('r-divs'), noDivs); if (noDivs) bad.push('the divisions you need (or All divisions)');
     if (!$('r-consent').checked) bad.push('the confirmation tick');
     if (bad.length) { fail('Please give ' + bad.join(', ') + '.', 'req-alert'); return; }
     if (MGAuth.exists(f.email)) { fail('This e-mail already has an account. Sign in, or use "Forgot password?" to get a new password.', 'req-alert'); return; }

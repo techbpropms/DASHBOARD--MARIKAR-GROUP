@@ -260,12 +260,14 @@ requester's own mail program ("Send by e-mail") or copy the request text.
   **reminds** the approvers once a day of requests that have waited more than a day;
 - applies **account-management lines** e-mailed to the mailbox by a super admin (full rights) or an admin (may not
   touch super admin accounts or grant that role): `role <user id> <viewer|admin|superadmin>`, `remove <user id>`,
-  `reset <user id>`, `add <user id> <Full name> as <role>`; the person concerned is e-mailed. The People page
+  `reset <user id>`, `add <user id> <Full name> as <role> [for HONDA,AMZES]`, `divisions <user id> <all | keys>`
+  (which divisions a viewer may open; admins and super admins see all); the person concerned is e-mailed. The People page
   queues these and opens the e-mail ready to send; every change is kept in the store's `log` and shown under
   Settings > Account changes;
 - acts on **one-word replies** to a request e-mail from an approver: "approve" (or "approve admin" /
   "approve superadmin") creates the account and e-mails the requester their user ID and temporary
-  password; "decline" sends a courteous refusal. Approvers are the super admin accounts in `auth.js`, the
+  password; "approve viewer for HONDA,AMZES" limits the account to those divisions, otherwise the divisions
+  ticked on the request form apply; "decline" sends a courteous refusal. Approvers are the super admin accounts in `auth.js`, the
   mailbox itself, and any address in the `APPROVERS` repository variable. The clerk reads the mailbox's Sent
   folder as well as INBOX, so a reply made from the mailbox itself always counts; a reply from another
   approver address counts if it reaches the mailbox (keep `mml@bpropms.in` as a recipient) and is a real
@@ -309,5 +311,12 @@ Pages carry the iOS web-app metas and the bar respects the phone's safe areas.
 
 - **Accounts** live in `assets/auth.js` as salted PBKDF2-SHA-256 fingerprints (210,000 rounds); passwords are never stored. Add one with `node scripts/add-user.js <user-id> "<Full name>" [role]`, which prints a temporary password once. User IDs may be e-mail addresses (sign-in ignores capitals). The super admin is `tech@bpropms.com`. To remove an account, delete its line.
 - **Settings → People** (super admin only) does the same from the browser: it creates the account's salted fingerprint, shows the temporary password once, and publishes the updated `assets/auth.js` to this repository through the GitHub API using a fine-grained token (Contents: read and write on this repository only) that is kept in the browser tab until sign-out. Without a token, "Send to BPro instead" copies the account lines (never passwords) into an e-mail to mml@bpropms.in.
+- **Access by division.** A viewer account can be limited to one or more divisions: the keys from `data/divisions.json`
+  (GROUP, HONDA, AMZES, BIGWING, RE, NISSAN, CSPW, CANON, HR) in an optional `divisions: [...]` field on its account
+  line; a line without the field, and every admin or super admin, sees all. The request form asks which divisions are
+  needed, Settings → People shows and changes each viewer's divisions, and the menu, the division dashboards and the
+  Sales & inventory tools (which go with the Honda divisions) show only what the account covers. A page outside the
+  scope sends the visitor back to the hub with a note. `node scripts/add-user.js <id> "<Name>" viewer HONDA,AMZES`
+  creates a limited account from the command line.
 - **What it protects, honestly:** it is a front door for a static site. It keeps casual visitors out and gives the hub a proper entrance, but the data files (`data/*.csv`, `data/*.json`) can still be fetched by anyone who knows their address while the repository and site are public. For real protection, serve the hub from the VPS behind a server-side login (for example Caddy `basic_auth` or forward-auth), or keep the repository private; the sign-in page can then hand over to that login.
 - **Document verification** (`verify.html`) stays public, so anyone holding a document can check it. Report QR codes open the report builder, which asks staff to sign in first.

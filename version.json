@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.15h",
-  "title": "Refresh, people management, sign-in report",
+  "version": "2026.10.15i",
+  "title": "Access by division",
   "notes": [
-    "A Refresh control in the bar reloads the page with fresh data and picks up new versions",
-    "Super admins and admins change roles, reset passwords, add and remove people from Settings > People, applied by one e-mail",
-    "Settings shows every account change the hub has made, and a sign-in report once the log service is connected"
+    "Each viewer account can be limited to one or more divisions; admins and super admins see all",
+    "Settings > People: choose a viewer's divisions from the list, at any time; the request form asks which divisions are needed",
+    "The menu, the division dashboards and the Sales & inventory tools show only what the account covers"
   ]
 }

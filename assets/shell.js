@@ -34,9 +34,9 @@
     ] },
     { label: 'Divisions', href: 'divisions.html', icon: 'div', children: [
       { label: 'All divisions', href: 'divisions.html' },
-      ...GROUPS.map((g) => ({ label: g.label, href: 'divisions.html#g=' + g.key, group: true, children: g.divisions.map(([k, n]) => ({ label: n, href: 'divisions.html#' + k })) })),
+      ...GROUPS.map((g) => ({ label: g.label, href: 'divisions.html#g=' + g.key, group: true, children: g.divisions.map(([k, n]) => ({ label: n, href: 'divisions.html#' + k, div: k })) })),
     ] },
-    { label: 'Sales & inventory', href: 'dashboard.html', icon: 'sales', children: [
+    { label: 'Sales & inventory', href: 'dashboard.html', icon: 'sales', need: 'sales', children: [
       { label: 'Dashboard', href: 'dashboard.html' },
       { label: 'Report builder (PDF / Excel)', href: 'report.html' },
       { label: 'Reconciliation note', href: 'note.html' },
@@ -63,6 +63,11 @@
       if (document.querySelector('.mg-bar')) return;
       const user = MGAuth.user();
       const mode = Shell.nav();
+      // The menu an account sees: divisions outside its scope, groups left empty by that, and Sales & inventory
+      // (the Honda divisions' TallyPrime data) for accounts without a Honda division are left out.
+      const inScope = (it) => (!it.div || MGAuth.canSee(it.div)) && (!it.need || (it.need === 'sales' ? MGAuth.canSales() : MGAuth.canSee(it.need)));
+      const scoped = (items) => items.filter(inScope).map((it) => it.children ? { ...it, children: scoped(it.children) } : it).filter((it) => !it.group || it.children.length);
+      const TREE = user ? scoped(MENU) : MENU;
       document.body.classList.add('mg-nav-' + mode);
 
       // ----- bar
@@ -106,7 +111,7 @@
       const link = (it, cls) => { const a = el('a', cls, it.label); a.href = it.href; if (isHere(it.href)) a.setAttribute('aria-current', 'page'); return a; };
       const buildTop = () => {
         const ul = el('ul');
-        MENU.filter((it) => user || it.href === 'verify.html').forEach((it) => {
+        TREE.filter((it) => user || it.href === 'verify.html').forEach((it) => {
           const li = el('li'); if (within(it)) li.classList.add('on');
           const a = link(it, 'mg-top-a'); a.title = it.label; a.replaceChildren(svg(I[it.icon], 'ic'), el('span', 'lbl', it.label));
           li.append(a);
@@ -131,7 +136,7 @@
       const buildSide = () => {
         const nav = el('nav', 'mg-sidenav'); nav.setAttribute('aria-label', 'Main menu');
         const ul = el('ul');
-        MENU.filter((it) => user || it.href === 'verify.html').forEach((it) => {
+        TREE.filter((it) => user || it.href === 'verify.html').forEach((it) => {
           const li = el('li');
           const kids = (it.children || []).filter(allowed);
           const row = el('div', 'row');
