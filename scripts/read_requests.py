@@ -499,6 +499,11 @@ def main():
             print(f"  approver e-mail: {len(cmds)} reference(s) with a command, {len(mg)} management line(s), first line {first_line(text_of(msg))[:40]!r}")
         if reqs or cmds or mg or spw:
             hub_mails += 1
+        else:
+            # a mail the clerk cannot act on (no request code, no command): named here, masked, so an access request
+            # written in plain words is noticed by the administrator rather than lost
+            subj = re.sub(r'\s+', ' ', str(msg.get('Subject', '')))[:60]
+            print(f"  not actionable: from {mask(email.utils.parseaddr(msg.get('From', ''))[1])}, subject {subj!r}, first line {first_line(text_of(msg))[:50]!r}")
         if ours:
             for cmd in cmds + mg:
                 # sent from the mailbox itself: the administrator signed in to it, which is proof enough
