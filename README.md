@@ -288,12 +288,14 @@ salted fingerprints only; a password exists solely in the e-mail sent to its own
 is deleted or marked. "Approve here (needs token)" on the People page still works for a super admin who
 holds a GitHub token.
 
-**Sign-in report.** Every sign-in is noted on the device it happened on (Settings shows the last 20). For a report
-across users, connect the small logging service in `server/signin-log.gs`: create a Google Sheet, paste the
-script under Extensions > Apps Script, deploy it as a web app (execute as you, access "Anyone"), and put the
-`/exec` URL in `assets/auth.js` as `SIGNINS.endpoint`. The hub then posts one row per sign-in and Settings >
-Sign-in report shows, for admins and super admins, who signed in when and on what, with a CSV download. Anyone
-who knows the URL could add a row or read the report, so treat it as an attendance register rather than evidence.
+**Sign-in report.** Every sign-in is noted on the device it happened on (Settings shows the last 20) and sent as a
+beacon to `signin-log` on the hub's own server: on the VPS, nginx writes one JSON line per sign-in to
+`/srv/hub/log/signins.log` (format in `deploy/hub-signins-format.conf`, bounded by `deploy/hub-signins.logrotate`)
+and serves the file as `signins.log`. Settings > Sign-in report reads it and shows, for admins and super admins,
+who signed in when and on what, with a CSV download. No separate service: it works as soon as the hub is served
+from the VPS (while it is served from GitHub Pages the beacon is ignored and the panel says so). Anyone who can
+reach the address could read the file or add a line, so treat it as an attendance register rather than evidence.
+`server/signin-log.gs` remains as an alternative for a copy of the hub without a server.
 
 **Refresh.** The circular arrow in the bar checks for a new version of the app and reloads the page with fresh
 data; it is the first thing to try when a figure looks stale.

@@ -33,7 +33,6 @@ divisions that are wider than the job, and confirm every admin is still meant to
 | Mailbox password (`mml@bpropms.in`) | Hostinger e-mail; GitHub secret `MAIL_PASSWORD` | Every 6 months, or at once if typed anywhere but the hosting panel and the secret | Hostinger panel → Emails → change; then GitHub → Settings → Secrets → update `MAIL_PASSWORD` |
 | VPS deploy key | the `hub` user on the VPS; GitHub secret `VPS_SSH_KEY` | Yearly, or when the VPS is rebuilt | Re-run `deploy/vps-setup.sh` (it keeps an existing key); to rotate, delete `/home/hub/.ssh/deploy_ed25519*` first |
 | GitHub fine-grained token (People page token route) | the super admin's browser tab only | Expiry set at creation (90 days at most) | Create a new one with Contents read/write on this repository only |
-| Sign-in log endpoint (Apps Script) | `SIGNINS.endpoint` in `assets/auth.js` | If the sheet is shared beyond the administrators | Redeploy the script, update the endpoint |
 
 Never put a secret in the repository, in chat, or in an e-mail. The public repository and the Actions logs are
 written on that assumption: logs mask addresses and never print passwords or tokens.
@@ -60,7 +59,7 @@ Gmail approver accounts matters as much: an approver's mailbox is an approval in
   requests are settled: open the run, read the log, and fix the cause (usually the mailbox password).
 - The clerk e-mails approvers once a day with requests waiting more than a day.
 - Settings → Account changes lists every change the hub made, with who asked. Settings → Sign-in report shows
-  who signs in (across users once the log service is connected).
+  who signs in across users, from the log nginx keeps on the VPS (`/srv/hub/log/signins.log`).
 - The VPS, once in use: `systemctl status nginx`, `/var/log/nginx/hub-access.log`, and `certbot certificates` for the certificate; the "VPS diagnostics" workflow shows all of it from GitHub.
 
 ## Backups and recovery
