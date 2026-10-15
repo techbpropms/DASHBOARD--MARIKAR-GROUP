@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Choose your password · Marikar Group Performance Hub</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/img/marikar-group.png">
+<meta name="theme-color" content="#131c38">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/brand.css">
+<script src="assets/auth.js"></script>
+<style>
+/* The set-password page, opened from the one-time link in the reset e-mail. The password chosen here never leaves the
+   browser: only its salted fingerprint goes to the hub mailbox, as a code the mailbox clerk verifies and writes. */
+:root { --bg: #f7f2ea; --surface: #fffcf7; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1; --mast: #131c38; --violet: #5b4f9e; --amber: #d49a3a;
+  --field: #ffffff; --focus: #5b4f9e; --link: #5b4f9e; --bad: #a63a2a; --bad-soft: #f9e6df; --ok: #2f7a4a; --ok-soft: #e6f3ea; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229; --field: #16130f; --focus: #c9bff5; --link: #c9bff5; --bad: #ef8a7e; --bad-soft: #3a2220; --ok: #7fc99a; --ok-soft: #1f2f25; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229; --field: #16130f; --focus: #c9bff5; --link: #c9bff5; --bad: #ef8a7e; --bad-soft: #3a2220; --ok: #7fc99a; --ok-soft: #1f2f25; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); color: var(--ink); font: 15px/1.5 "Plus Jakarta Sans", system-ui, sans-serif; }
+.card { width: 100%; max-width: 440px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 28px 26px 24px; box-shadow: 0 18px 50px rgba(19, 28, 56, .12); }
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; } .brand img { height: 44px; width: auto; background: #fff; border-radius: 10px; padding: 4px; }
+.brand b { display: block; font-size: 15px; } .brand small { color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-size: 10.5px; font-weight: 700; }
+h1 { font-size: 22px; margin: 0 0 6px; letter-spacing: -.01em; } .lead { color: var(--muted); margin: 0 0 16px; }
+.id { font-weight: 700; word-break: break-all; }
+.field { margin-bottom: 14px; position: relative; } label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+input { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 18%, transparent); }
+input[aria-invalid="true"] { border-color: var(--bad); }
+.eye { position: absolute; right: 6px; top: 29px; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--link); background: transparent; border: 0; border-radius: 8px; padding: 7px 10px; cursor: pointer; }
+.meter { height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; margin: -6px 0 6px; } .meter i { display: block; height: 100%; width: 0; background: var(--bad); transition: width .2s, background .2s; }
+.meter.ok i { background: var(--ok); } .meter.mid i { background: var(--amber); }
+.rules { margin: 0 0 14px; padding: 0; list-style: none; font-size: 13px; color: var(--muted); } .rules li { padding-left: 20px; position: relative; } .rules li::before { content: "○"; position: absolute; left: 2px; } .rules li.ok { color: var(--ok); } .rules li.ok::before { content: "✓"; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font: inherit; font-weight: 700; font-size: 15px; color: #fff; background: var(--mast); border: 0; border-radius: 12px; padding: 13px 16px; cursor: pointer; text-decoration: none; }
+.btn.sec { background: transparent; color: var(--ink); border: 1px solid var(--line); margin-top: 8px; } .btn[disabled] { opacity: .6; cursor: default; }
+.alert { display: none; background: var(--bad-soft); color: var(--bad); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; } .alert.show { display: block; }
+.done { text-align: center; } .done .ic { width: 52px; height: 52px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); display: grid; place-items: center; font-size: 26px; margin: 0 auto 10px; }
+.done h2 { font-size: 19px; margin: 0 0 6px; } .done p { color: var(--muted); } .done .ref { font-size: 13px; }
+.help { margin: 16px 0 0; text-align: center; font-size: 13.5px; } a { color: var(--link); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand"><img src="assets/img/marikar-group.png" alt="Marikar Group"><div><b>Marikar Group</b><small>Performance hub</small></div></div>
+  <div class="alert" id="alert" role="alert"></div>
+
+  <section id="bad" hidden>
+    <h1>This link cannot be used</h1>
+    <p class="lead" id="bad-why"></p>
+    <a class="btn" href="index.html#forgot">Request a new link</a>
+    <p class="help"><a href="index.html">← Back to sign in</a></p>
+  </section>
+
+  <section id="form-wrap" hidden>
+    <h1>Choose your password</h1>
+    <p class="lead">For the account <span class="id" id="who"></span>. The password stays in this browser; only its fingerprint is sent to the hub.</p>
+    <form id="form" novalidate>
+      <div class="field"><label for="pw1">New password</label><input id="pw1" type="password" autocomplete="new-password" autocapitalize="none" spellcheck="false" required><button type="button" class="eye" id="eye">Show</button></div>
+      <div class="meter" id="meter"><i></i></div>
+      <ul class="rules" id="rules">
+        <li data-r="len">At least 10 characters</li>
+        <li data-r="mix">Letters and at least one number or symbol</li>
+        <li data-r="id">Not your user ID or a part of it</li>
+      </ul>
+      <div class="field"><label for="pw2">The same password again</label><input id="pw2" type="password" autocomplete="new-password" autocapitalize="none" spellcheck="false" required></div>
+      <button class="btn" type="submit" id="go">Set this password</button>
+    </form>
+  </section>
+
+  <section class="done" id="done" hidden>
+    <div class="ic" aria-hidden="true">✓</div>
+    <h2 id="done-h">One more step</h2>
+    <p id="done-p"></p>
+    <p class="ref">Reference <b id="done-ref"></b></p>
+    <a class="btn" id="done-mail" href="#">Send by e-mail</a>
+    <button class="btn sec" type="button" id="done-copy">Copy the message instead</button>
+    <p class="help"><a href="index.html">Go to sign in</a></p>
+  </section>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  addEventListener('hashchange', () => location.reload());   // a different link pasted into the same tab starts afresh
+  const fail = (t) => { const a = $('alert'); a.textContent = t; a.classList.add('show'); };
+  const params = new URLSearchParams(location.hash.slice(1));
+  const id = (params.get('u') || '').trim().toLowerCase(), token = params.get('t') || '';
+  const bad = (why) => { $('bad').hidden = false; $('bad-why').textContent = why; };
+  const sha = async (t) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+  (async () => {
+    if (!id || !/^[A-Za-z0-9_-]{20,}$/.test(token)) { bad('The address is incomplete. Open the link from the e-mail again, or request a new one.'); return; }
+    if (!MGAuth.exists(id)) { bad('There is no account for this user ID.'); return; }
+    // the link's state is public knowledge (only the token's hash is stored), so the page can say if it is spent or expired
+    try {
+      const j = await fetch('data/requests/inbox.json', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null);
+      const link = j && j.links && j.links[id];
+      if (link) {
+        if (link.hash !== await sha(token)) { bad('This link has been replaced by a newer one. Use the latest e-mail, or request a new link.'); return; }
+        if (new Date(link.exp) < new Date()) { bad('This link has expired. Links work for 24 hours.'); return; }
+      }
+      else if (j && j.links) { bad('This link has already been used, or has not reached the hub yet. If the e-mail arrived in the last few minutes, try again shortly; otherwise request a new link.'); return; }
+    } catch (e) { /* offline: let the person try */ }
+    $('who').textContent = id; $('form-wrap').hidden = false; $('pw1').focus();
+  })();
+
+  const local = id.split('@')[0];
+  const check = (p) => ({ len: p.length >= 10, mix: /[A-Za-z]/.test(p) && /[^A-Za-z]/.test(p), id: !!p && !p.toLowerCase().includes(local.toLowerCase().slice(0, Math.max(4, local.length))) && p.toLowerCase() !== id });
+  const score = (p) => { const c = check(p); let n = (c.len ? 1 : 0) + (c.mix ? 1 : 0) + (c.id ? 1 : 0); if (p.length >= 14) n += 1; if (/[A-Z]/.test(p) && /[a-z]/.test(p)) n += 1; return n; };
+  $('pw1').addEventListener('input', () => {
+    const p = $('pw1').value, c = check(p), n = score(p);
+    document.querySelectorAll('#rules li').forEach((li) => li.classList.toggle('ok', !!c[li.dataset.r]));
+    const m = $('meter'); m.className = 'meter ' + (n >= 5 ? 'ok' : n >= 3 ? 'mid' : ''); m.firstElementChild.style.width = Math.min(100, n * 20) + '%';
+  });
+  $('eye').addEventListener('click', () => { const t = $('pw1').type === 'password' ? 'text' : 'password'; $('pw1').type = t; $('pw2').type = t; $('eye').textContent = t === 'password' ? 'Show' : 'Hide'; });
+
+  $('form').addEventListener('submit', async (e) => {
+    e.preventDefault(); $('alert').classList.remove('show');
+    const p1 = $('pw1').value, p2 = $('pw2').value, c = check(p1);
+    $('pw1').setAttribute('aria-invalid', String(!(c.len && c.mix && c.id))); $('pw2').setAttribute('aria-invalid', String(p1 !== p2));
+    if (!(c.len && c.mix && c.id)) { fail('The password does not meet the three rules yet.'); return; }
+    if (p1 !== p2) { fail('The two passwords differ.'); return; }
+    const b = $('go'); b.disabled = true; b.textContent = 'Preparing…';
+    const built = await MGAuth.requests.buildSet(id, token, p1);
+    $('pw1').value = ''; $('pw2').value = '';
+    const r = await MGAuth.requests.send(built);
+    $('form-wrap').hidden = true;
+    $('done-h').textContent = r.sent ? 'Password sent to the hub' : 'One more step';
+    $('done-p').textContent = r.sent
+      ? 'The hub applies it within about ten minutes and confirms by e-mail. Then sign in with your new password; sign-ins on other devices end at the same time.'
+      : 'Send the message below to the hub mailbox (it opens in your mail app, filled in). The hub applies the password within about ten minutes of receiving it and confirms by e-mail. Then sign in; sign-ins on other devices end at the same time.';
+    $('done-ref').textContent = built.req.ref;
+    const mail = $('done-mail'); mail.href = built.mailto; mail.textContent = r.sent ? 'Also send by e-mail' : 'Send by e-mail';
+    $('done-copy').onclick = () => navigator.clipboard.writeText(built.text).then(() => { $('done-copy').textContent = 'Copied. Paste it into a message to ' + MGAuth.requests.config.to; }).catch(() => { $('done-copy').textContent = 'Select and copy the message instead'; });
+    $('done').hidden = false;
+  });
+})();
+</script>
+</body>
+</html>

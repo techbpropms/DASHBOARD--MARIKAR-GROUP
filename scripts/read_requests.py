@@ -6,8 +6,11 @@ Every request from the sign-in page reaches the mailbox as an e-mail carrying a 
 the mailbox over IMAP and:
 
   1. lists every new access request in data/requests/inbox.json (`pending`), so Settings > People shows it;
-  2. settles password-reset requests at once: if the ID has an account, a new temporary password is written
-     to assets/auth.js and e-mailed to that ID; if not, the address is told how to request access;
+  2. settles password-reset requests at once: if the ID has an account, a one-time link (24 hours, single use)
+     is e-mailed to that ID; the person opens reset.html, chooses their own password, and the page sends the
+     salted fingerprint back to the mailbox as a code starting MGP1., which this script writes to assets/auth.js
+     (the "set-password" step). If the ID has no account, the address is told how to request access. Passwords
+     never travel by e-mail. Approvals and administrator resets send the same link;
   3. acts on one-word replies from an approver: a reply to a request e-mail whose first line is
      "approve" (optionally "approve admin" / "approve superadmin") creates the account, writes it to
      assets/auth.js and e-mails the user ID and temporary password to the requester; "decline" sends a
@@ -48,11 +51,14 @@ import re
 import secrets
 import smtplib
 import sys
+import urllib.parse
 from email.message import EmailMessage
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STORE = os.path.join(ROOT, 'data', 'requests', 'inbox.json')
 AUTH = os.path.join(ROOT, 'assets', 'auth.js')
+SETPW = re.compile(r'MGP1\.([A-Za-z0-9_-]{40,})')
+LINK_HOURS = 24
 CODE = re.compile(r'MGQ1\.([A-Za-z0-9_-]{20,})')
 REF = re.compile(r'\b([AP]R-\d{8}-[0-9A-F]{4})\b')
 COMMAND = re.compile(r'^\W*(approve|approved|ok|okay|yes|decline|declined|reject|rejected)\b(?P<rest>.*)$', re.I)
@@ -119,6 +125,16 @@ class Accounts:
         if not field or field == "'all'":
             return 'all'
         return [k.strip().strip("'\"").upper() for k in field.strip('[]').split(',') if k.strip()]
+
+    def set_secret(self, uid, salt, h):
+        m = next((m for m in LINE_RE.finditer(self.src) if m.group(1).lower() == uid.lower()), None)
+        if not m:
+            return False
+        line = self.src[m.start():m.end()]
+        line = line.replace(f"salt: '{m.group(4)}', hash: '{m.group(5)}'", f"salt: '{salt}', hash: '{h}'", 1)
+        self.src = self.src[:m.start()] + line + self.src[m.end():]
+        self.changed = True
+        return True
 
     def set_divisions(self, uid, divs):
         m = next((m for m in LINE_RE.finditer(self.src) if m.group(1).lower() == uid.lower()), None)
@@ -204,6 +220,20 @@ def decode(code):
     return out
 
 
+def decode_setpw(code):
+    pad = '=' * (-len(code) % 4)
+    try:
+        d = json.loads(base64.urlsafe_b64decode(code + pad).decode('utf-8'))
+    except Exception:
+        return None
+    if not isinstance(d, dict) or d.get('kind') != 'setpw':
+        return None
+    uid = str(d.get('id', '')).strip().lower(); token = str(d.get('token', '')); salt = str(d.get('salt', '')); h = str(d.get('hash', ''))
+    if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', uid) or not re.fullmatch(r'[0-9a-f]{32}', salt) or not re.fullmatch(r'[0-9a-f]{64}', h) or not re.fullmatch(r'[A-Za-z0-9_-]{20,}', token):
+        return None
+    return {'id': uid, 'token': token, 'salt': salt, 'hash': h, 'at': str(d.get('at', ''))[:40]}
+
+
 def strip_html(s):
     s = re.sub(r'(?is)<(script|style).*?</\1>', ' ', s)
     s = re.sub(r'(?i)<br\s*/?>|</p>|</div>|</tr>', '\n', s)
@@ -278,6 +308,7 @@ def parse(msg):
     text = text_of(msg)
     subject = str(msg.get('Subject', ''))
     reqs, seen = [], set()
+    setpw = [d for d in (decode_setpw(c) for c in SETPW.findall(text)) if d]
     for code in CODE.findall(text):
         r = decode(code)
         if r and r['ref'] not in seen:
@@ -306,7 +337,7 @@ def parse(msg):
         if m:
             mgmt.append({'action': m.group(1).lower(), 'target': m.group(2).lower(), 'arg': m.group(3), 'from': sender,
                          'authenticated': authenticated(msg), 'received': received})
-    return reqs, commands, mgmt
+    return reqs, commands, mgmt, setpw
 
 
 def folders(box):
@@ -385,7 +416,7 @@ def acknowledgement(req):
     return (f'Dear {first},\n\nYour request for access to the Marikar Group performance hub has been received.\n\n'
             f'Reference: {req["ref"]}\nUser ID:   {req["email"]}\n\n'
             'The administrator reviews every request. Once it is approved you will receive a separate e-mail from this address with your '
-            'user ID and a temporary password; most requests are answered within one working day. If you need to follow up, quote the reference.\n\n'
+            'user ID and a link to choose your password; most requests are answered within one working day. If you need to follow up, quote the reference.\n\n'
             'Regards,\nMarikar Group performance hub\n(automated message from the hub mailbox; replies are read by the administrator)')
 
 
@@ -398,15 +429,25 @@ def reminder(waiting, approvers_to):
             f'The list is also on the People page of {HUB_URL}settings.html.\n\nMarikar Group performance hub')
 
 
-def welcome(name, uid, pw, reset=False, divs='all'):
+def link_mail(name, uid, url, why, divs='all'):
+    """The one-time link to choose a password: for a new account, a reset the person asked for, or an administrator's reset."""
     first = (name or '').split(' ')[0] or 'colleague'
-    what = 'Your password has been reset.' if reset else 'Your access to the Marikar Group performance hub has been approved.'
+    what = {'approved': 'Your access to the Marikar Group performance hub has been approved. Choose your password with the link below.',
+            'forgot': 'You asked for a new password on the Marikar Group performance hub. Choose it with the link below.',
+            'admin': 'The administrator has reset your password on the Marikar Group performance hub. Choose a new one with the link below.'}[why]
     scope = '' if divs == 'all' else f'Divisions: {divs_text(divs)}\n'
-    return (f'Dear {first},\n\n{what}\n\n'
-            f'Address:   {HUB_URL}\nUser ID:   {uid}\nPassword:  {pw}\n{scope}\n'
-            'This is a temporary password: sign in, then change it from the Settings page. Please do not forward this e-mail.\n'
-            'The hub works best installed as an app: open the address on your phone or computer and accept the install invitation.\n\n'
+    return (f'Dear {first},\n\n{what}\n\n{url}\n\n'
+            f'User ID:   {uid}\n{scope}'
+            f'The link works once and expires in {LINK_HOURS} hours. If you did not ask for it, ignore this e-mail; your password stays as it is.\n'
+            'After you choose a password, the hub confirms by e-mail when it is live (within about ten minutes).\n\n'
             'Regards,\nMarikar Group performance hub\n(automated message from the hub mailbox; replies are read by the administrator)')
+
+
+def password_set_mail(name, uid):
+    first = (name or '').split(' ')[0] or 'colleague'
+    return (f'Dear {first},\n\nYour new password on the Marikar Group performance hub is live. Sign in at {HUB_URL} with your user ID {uid}.\n\n'
+            'Every earlier sign-in on other devices has been ended. If you did not set this password, write to the administrator at once.\n\n'
+            'Regards,\nMarikar Group performance hub')
 
 
 # ----- the run
@@ -424,6 +465,8 @@ def main():
         store = {}
     pending = [p for p in store.get('pending', []) if isinstance(p, dict) and p.get('ref')]
     handled = store.get('handled', {}) if isinstance(store.get('handled'), dict) else {}
+    # one-time set-password links: id -> {hash of the token, expiry, why}; only the hash is kept, so the public file is harmless
+    links = store.get('links', {}) if isinstance(store.get('links'), dict) else {}
     accounts = Accounts(args.auth)
     approvers = set(accounts.superadmins()) | {MAIL_USER.lower()} | {a.strip().lower() for a in os.environ.get('APPROVERS', '').split(',') if a.strip()}
 
@@ -440,7 +483,7 @@ def main():
     # 1. new requests and commands
     known = {p['ref'] for p in pending} | set(handled)
     mids = {p.get('mid') for p in pending if p.get('mid')}
-    commands, management, added, changed = [], [], [], False
+    commands, management, setpws, added, changed = [], [], [], [], False
     log = [e for e in store.get('log', []) if isinstance(e, dict)] if isinstance(store.get('log'), list) else []
 
     def note(action, who, by, detail=''):
@@ -448,12 +491,13 @@ def main():
         log.append({'at': NOW, 'action': action, 'who': who, 'by': by, 'detail': detail}); changed = True
     from_approvers = hub_mails = 0
     for msg, ours in messages:
-        reqs, cmds, mg = parse(msg)
+        reqs, cmds, mg, spw = parse(msg)
+        setpws.extend(spw)
         if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers | set(accounts.admins()):
             from_approvers += 1
             # what the approver's e-mail looked like to the clerk (first typed line only, shortened)
             print(f"  approver e-mail: {len(cmds)} reference(s) with a command, {len(mg)} management line(s), first line {first_line(text_of(msg))[:40]!r}")
-        if reqs or cmds or mg:
+        if reqs or cmds or mg or spw:
             hub_mails += 1
         if ours:
             for cmd in cmds + mg:
@@ -478,29 +522,62 @@ def main():
         handled[req['ref']] = {'status': status, 'at': NOW, **extra}
         changed = True
 
-    # 2. resets: settled at once, the new password goes only to the account's own address
-    def recent_reset(addr):
+    def issue_link(acct, why, ref=None):
+        """E-mails a one-time set-password link to the account's own address and remembers the token's hash."""
+        nonlocal changed
+        token = secrets.token_urlsafe(24)
+        exp = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=LINK_HOURS)).isoformat(timespec='seconds')
+        links[acct['id'].lower()] = {'hash': hashlib.sha256(token.encode()).hexdigest(), 'exp': exp, 'why': why, 'ref': ref or '', 'at': NOW}
+        url = f"{HUB_URL}reset.html#u={urllib.parse.quote(acct['id'].lower())}&t={token}"
+        subject = {'approved': 'Marikar hub: your access', 'forgot': 'Marikar hub: choose a new password', 'admin': 'Marikar hub: your password was reset'}[why]
+        mailer.send(acct['id'], subject, link_mail(acct['name'], acct['id'], url, why, acct.get('divisions', 'all')))
+        changed = True
+
+    def links_today(addr):
+        n = 0
         for h in handled.values():
-            if h.get('status') == 'reset' and h.get('email') == addr:
+            if h.get('status') in ('reset', 'link') and h.get('email') == addr:
                 try:
                     if dt.datetime.fromisoformat(h['at']) > dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=24):
-                        return True
+                        n += 1
                 except ValueError:
                     pass
-        return False
+        return n
 
+    # 1b. passwords chosen through a link: the token must match an unexpired link for that account
+    for d in setpws:
+        link = links.get(d['id'])
+        if not link or link['hash'] != hashlib.sha256(d['token'].encode()).hexdigest():
+            print(f"  ignored a set-password code for {mask(d['id'])}: no matching link (already used, or not issued)"); continue
+        try:
+            expired = dt.datetime.fromisoformat(link['exp']) < dt.datetime.now(dt.timezone.utc)
+        except ValueError:
+            expired = True
+        if expired:
+            del links[d['id']]; changed = True
+            print(f"  ignored a set-password code for {mask(d['id'])}: link expired"); continue
+        acct = accounts.find(d['id'])
+        if not acct:
+            del links[d['id']]; changed = True
+            print(f"  ignored a set-password code for {mask(d['id'])}: no such account"); continue
+        accounts.set_secret(acct['id'], d['salt'], d['hash'])
+        del links[d['id']]; changed = True
+        mailer.send(acct['id'], 'Marikar hub: your password is live', password_set_mail(acct['name'], acct['id']))
+        note('password', acct['id'].lower(), 'the account owner, by link', link.get('why', ''))
+        print(f"  password set for {mask(acct['id'])} through the {link.get('why', '')} link; confirmation e-mailed")
+
+    # 2. resets: settled at once, the new password goes only to the account's own address
     for req in [p for p in pending if p['kind'] == 'reset']:
         acct = accounts.find(req['email'])
-        if acct and recent_reset(acct['id'].lower()):
-            # one reset a day per address: a second request within the day is noted, not acted on, so nobody can
-            # keep changing someone else's password from the sign-in page
+        if acct and links_today(acct['id'].lower()) >= 3:
+            # three links a day per address: the link only ever goes to the account's own address, so this is a
+            # cap on nuisance mail, not a security boundary
             settle(req, 'throttled', by='automatic', email=acct['id'].lower())
-            print(f"  reset {req['ref']} for {mask(acct['id'])}: already reset in the last 24 hours, skipped")
+            print(f"  reset {req['ref']} for {mask(acct['id'])}: three links already sent in the last 24 hours, skipped")
         elif acct:
-            newpw = accounts.add(acct['id'], acct['name'], acct['role'], acct['divisions'])
-            mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
-            settle(req, 'reset', by='automatic', email=acct['id'].lower()); note('reset', acct['id'].lower(), 'forgot password', req['ref'])
-            print(f"  reset {req['ref']} for {mask(acct['id'])}: new password e-mailed")
+            issue_link(acct, 'forgot', req['ref'])
+            settle(req, 'link', by='automatic', email=acct['id'].lower()); note('reset link', acct['id'].lower(), 'forgot password', req['ref'])
+            print(f"  reset {req['ref']} for {mask(acct['id'])}: set-password link e-mailed")
         else:
             mailer.send(req['email'], 'Marikar hub: password reset request', f"A password reset was requested for {req['email']}, but no hub account uses this ID. To get access, open {HUB_URL} and choose Request access.\n\nIf you did not ask for this, you can ignore this e-mail.\n\nRegards,\nMarikar Group performance hub")
             settle(req, 'no-account', by='automatic')
@@ -523,10 +600,10 @@ def main():
             existed = accounts.find(req['email'])
             if existed:
                 role, divs = existed['role'], existed['divisions']
-            newpw = accounts.add(existed['id'] if existed else req['email'], existed['name'] if existed else req.get('name', req['email']), role, divs)
-            mailer.send(req['email'], 'Marikar hub: your access', welcome(req.get('name'), req['email'], newpw, reset=bool(existed), divs=divs))
+            accounts.add(existed['id'] if existed else req['email'], existed['name'] if existed else req.get('name', req['email']), role, divs)   # secret discarded: the link sets it
+            issue_link({'id': existed['id'] if existed else req['email'], 'name': existed['name'] if existed else req.get('name', req['email']), 'divisions': divs}, 'approved', req['ref'])
             settle(req, 'approved', by=cmd['from'], role=role, divisions=divs); note('approved', req['email'], cmd['from'], f"{req['ref']} as {role} ({divs_text(divs)})")
-            print(f"  approved {req['ref']} ({mask(req['email'])}, {role}, {divs_text(divs)}) on {mask(cmd['from'])}'s reply; password e-mailed")
+            print(f"  approved {req['ref']} ({mask(req['email'])}, {role}, {divs_text(divs)}) on {mask(cmd['from'])}'s reply; set-password link e-mailed")
         else:
             mailer.send(req['email'], f"Marikar hub: access request {req['ref']}", f"Dear {(req.get('name') or 'colleague').split(' ')[0]},\n\nThank you for your request ({req['ref']}). We are not able to approve it at this time. If you believe this is a mistake, reply to this e-mail with your reporting manager copied.\n\nRegards,\nMarikar Group performance hub administrator")
             settle(req, 'declined', by=cmd['from']); note('declined', req['email'], cmd['from'], req['ref'])
@@ -541,11 +618,10 @@ def main():
     if forced:
         acct = accounts.find(forced)
         if acct:
-            newpw = accounts.add(acct['id'], acct['name'], acct['role'], acct['divisions'])
-            mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             ref = f"PR-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d')}-{secrets.token_hex(2).upper()}"
-            handled[ref] = {'status': 'reset', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True; note('reset', acct['id'].lower(), 'administrator (Actions tab)', ref)
-            print(f"  reset {ref} for {mask(acct['id'])} on the administrator's instruction: new password e-mailed")
+            issue_link(acct, 'admin', ref)
+            handled[ref] = {'status': 'link', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True; note('reset link', acct['id'].lower(), 'administrator (Actions tab)', ref)
+            print(f"  reset {ref} for {mask(acct['id'])} on the administrator's instruction: set-password link e-mailed")
         else:
             print(f"  reset requested for {mask(forced)}: no such account")
 
@@ -592,13 +668,12 @@ def main():
                 print(f"  ignored 'reset {mask(target)}': no such account"); continue
             if limited and acct['role'] == 'superadmin':
                 print(f"  ignored 'reset {mask(target)}' from {mask(sender)}: an admin cannot reset a super admin"); continue
-            key = ('reset', acct['id'].lower(), sender, m['received'][:16])
+            key = ('reset link', acct['id'].lower(), sender, m['received'][:16])
             if key in done_keys:
                 continue
-            newpw = accounts.add(acct['id'], acct['name'], acct['role'], acct['divisions'])
-            mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
-            note('reset', acct['id'].lower(), sender, m['received'][:16])
-            print(f"  reset {mask(acct['id'])} on {mask(sender)}'s instruction: new password e-mailed")
+            issue_link(acct, 'admin')
+            note('reset link', acct['id'].lower(), sender, m['received'][:16])
+            print(f"  reset {mask(acct['id'])} on {mask(sender)}'s instruction: set-password link e-mailed")
         elif act == 'add':
             fm = re.search(r'\s+for\s+([A-Za-z, /;]+)\s*$', arg, re.I)
             divs = parse_divs(fm.group(1), 'all') if fm else 'all'
@@ -610,10 +685,10 @@ def main():
                 print(f"  ignored 'add {mask(target)}': account exists (use role or reset)"); continue
             if limited and role == 'superadmin':
                 print(f"  ignored 'add {mask(target)}' from {mask(sender)}: an admin cannot create a super admin"); continue
-            newpw = accounts.add(target, name, role, divs)
-            mailer.send(target, 'Marikar hub: your access', welcome(name, target, newpw, divs=divs))
+            accounts.add(target, name, role, divs)
+            issue_link({'id': target, 'name': name, 'divisions': divs}, 'approved')
             note('added', target, sender, f"{name} as {role} ({divs_text(divs)})")
-            print(f"  added {mask(target)} as {role} ({divs_text(divs)}) on {mask(sender)}'s instruction; password e-mailed")
+            print(f"  added {mask(target)} as {role} ({divs_text(divs)}) on {mask(sender)}'s instruction; set-password link e-mailed")
         elif act in ('division', 'divisions'):
             divs = parse_divs(arg)
             if not acct or divs is None:
@@ -661,6 +736,8 @@ def main():
         reminded_at = NOW; changed = True
         print(f"  reminded {', '.join(mask(a) for a in to)} of {len(waiting)} waiting request(s)")
 
+    for uid in [u for u, l in links.items() if dt.datetime.fromisoformat(l.get('exp', '2000-01-01T00:00:00+00:00')) < dt.datetime.now(dt.timezone.utc)]:
+        del links[uid]; changed = True
     pending = [p for p in pending if p['ref'] not in handled]
     pending.sort(key=lambda p: p.get('received') or p.get('at') or '')
     print(f"{len(messages)} e-mail(s) read ({hub_mails} about the hub, {from_approvers} from approver addresses), {len(added)} new request(s), {len(commands)} reply command(s), {mailer.sent} e-mail(s) sent, {len(pending)} waiting, {len(handled)} handled")
@@ -670,7 +747,7 @@ def main():
         return
     os.makedirs(os.path.dirname(args.store), exist_ok=True)
     with open(args.store, 'w', encoding='utf-8') as f:
-        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled, 'log': log[-300:]}, f, ensure_ascii=False, indent=2); f.write('\n')
+        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled, 'links': links, 'log': log[-300:]}, f, ensure_ascii=False, indent=2); f.write('\n')
     accounts.save()
 
 

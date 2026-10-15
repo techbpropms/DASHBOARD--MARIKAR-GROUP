@@ -217,7 +217,10 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <div class="note sticky"><b class="t">Sticky note</b>Keep the reference (it looks like <code>AR-20261014-7618</code>). If you need to chase a request, quote it.</div>
 
   <h2>Forgot your password</h2>
-  <figure class="narrow"><img src="img/04-forgot.jpg" alt="Reset your password"><figcaption>Enter your <span class="pt">1</span> user ID and <span class="pt">2</span> request a reset. Within about ten minutes a new temporary password is e-mailed to that address; nobody else is involved. One reset per address per day.</figcaption></figure>
+  <figure class="narrow"><img src="img/04-forgot.jpg" alt="Reset your password"><figcaption>Enter your <span class="pt">1</span> user ID and <span class="pt">2</span> request a reset. Within about ten minutes a one-time link is e-mailed to that address; nobody else is involved.</figcaption></figure>
+  <p>The link opens the page below on the hub. It works once and for 24 hours. Choose a password that meets the three rules, type it twice and press <b>Set this password</b>. The password itself stays in your browser: only its fingerprint goes to the hub, through your mail app if the page asks you to send a message. Within about ten minutes the hub applies it and confirms by e-mail; then sign in. Every other sign-in of your account ends at that moment.</p>
+  <figure class="narrow"><img src="img/35-reset.jpg" alt="Choose your password page"><figcaption><span class="pt">1</span> the new password, with the <span class="pt">2</span> three rules ticking off as you type; <span class="pt">3</span> the same again; <span class="pt">4</span> Set this password.</figcaption></figure>
+  <div class="note sticky"><b class="t">Sticky note</b>Already signed in and want a new password? Settings → Password sends you the same link. Nobody, not even the administrator, ever sees or sends a password: a new account and an administrator's reset arrive as the same link.</div>
   <h2>Roles</h2>
   <table><tr><th>Role</th><th>Can</th></tr>
     <tr><td><b>Viewer</b></td><td>Open the dashboards, tracker, note and reports for <span class="hl">the divisions on their account</span> (all of them, or a chosen few); download PDF and Excel reports; verify documents; choose their own theme and menu layout.</td></tr>
@@ -367,6 +370,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h1>Settings</h1>
   <h2>Appearance</h2>
   <figure><img src="img/22-settings-appearance.jpg" alt="Appearance settings"><figcaption><span class="pt">1</span> Theme: System, Light or Dark. <span class="pt">2</span> Menu position: top bar or sidebar. Both are saved on that browser only.</figcaption></figure>
+  <h2>Password</h2>
+  <figure><img src="img/36-password.jpg" alt="Password panel"><figcaption><span class="pt">1</span> sends a one-time link to your own address; open it and choose the new password (chapter 3, "Forgot your password"). The link works once and for 24 hours; the change is live within about ten minutes and ends your other sign-ins.</figcaption></figure>
   <h2>People (admins and super admins)</h2>
   <figure><img src="img/23-settings-people.jpg" alt="People settings: accounts and the division editor"><figcaption><span class="pt">1</span> the accounts, with a role drop-down, the divisions each may open, Reset password and Remove · <span class="pt">2</span> the division editor, opened by clicking a viewer's divisions.</figcaption></figure>
   <figure><img src="img/23b-people-requests.jpg" alt="People settings: requests, adding a person and the queue"><figcaption><span class="pt">3</span> the requests waiting in the hub mailbox, with when it was last read, and <b>Open</b> · <span class="pt">4</span> the request read back, with the role and the divisions ticked on the form · <span class="pt">5</span> <b>Approve by e-mail</b> (and Decline by e-mail) · <span class="pt">6</span> Add a person · <span class="pt">7</span> the changes waiting to go live, sent as one e-mail.</figcaption></figure>
@@ -375,14 +380,14 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <ol class="steps">
     <li>Pick the new role from the drop-down on the person's row. Admins can set Viewer or Admin; only a super admin can grant Super admin.</li>
     <li>Click the divisions shown on a viewer's row (for example "All divisions"). The editor opens under the table: tick <b>All divisions</b>, or tick the divisions the person may open. Every tick is queued at once; <b>Done</b> closes the editor. Admins and super admins always see all divisions, so the editor is for viewers only.</li>
-    <li><b>Reset password</b> queues a new temporary password, e-mailed to the person's own address. <b>Remove</b> queues the removal; you cannot remove yourself or the last super admin, and an admin cannot change, reset or remove a super admin.</li>
+    <li><b>Reset password</b> queues a one-time link to choose a new password, e-mailed to the person's own address. <b>Remove</b> queues the removal; you cannot remove yourself or the last super admin, and an admin cannot change, reset or remove a super admin.</li>
     <li>Click <b>Send by e-mail</b> and send the message that opens.</li>
   </ol>
   <h3>Adding a person</h3>
   <ol class="steps">
     <li>Enter the full name, the work e-mail (their user ID) and a role. For a viewer, tick <b>All divisions</b> or the divisions they may open, then <b>Create account</b>.</li>
     <li>The account is queued. Click <b>Send by e-mail</b> and send the message.</li>
-    <li>Within about ten minutes the hub creates the account and e-mails the person their user ID, temporary password and, where limited, their divisions. There is no password to copy or pass on.</li>
+    <li>Within about ten minutes the hub creates the account and e-mails the person a one-time link to choose their password, with their user ID and, where limited, their divisions. There is no password to copy or pass on.</li>
   </ol>
   <h3>Acting on a request</h3>
   <p>Requests from the sign-in page go to the hub mailbox <b>mml@bpropms.in</b>. The hub reads that mailbox every ten minutes, acknowledges each new request to the person who sent it, and lists it at the top of the People page: who asked, for which division, which divisions they ticked, the reference and the time. Approval is one e-mail; the hub does the rest.</p>
@@ -390,7 +395,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <li>Open Settings → People. New requests are listed under <b>Access and reset requests</b>; the line above them says when the mailbox was last read. Click <b>Open</b> to see the full request.</li>
     <li>Check the role and the divisions. The divisions come pre-ticked from the form; change them if the request asks for more than the person should have. An admin or super admin role covers all divisions.</li>
     <li>Click <b>Approve by e-mail</b>. A reply opens in your mail app addressed to the hub mailbox with the word <code>approve</code>, the role and the divisions (for example <code>approve viewer for RE,BIGWING</code>); send it as it is. <b>Decline by e-mail</b> works the same way.</li>
-    <li>Within about ten minutes the hub creates the account, e-mails the person their user ID and temporary password, and takes the request off the list.</li>
+    <li>Within about ten minutes the hub creates the account, e-mails the person a one-time link to choose their password, and takes the request off the list.</li>
   </ol>
   <p>You can also act without opening the page: send an e-mail from your own address to <b>mml@bpropms.in</b>. For approvals, put <code>approve</code> in the subject and the references one per line in the body (for example <code>AR-20261015-0546</code>); add <code>admin</code> for an admin account, or <code>for HONDA,AMZES</code> to limit a viewer to those divisions (otherwise the divisions ticked on the form apply). For other changes, write one line each: <code>role &lt;user id&gt; admin</code>, <code>divisions &lt;user id&gt; HONDA,NISSAN</code> (or <code>all</code>), <code>reset &lt;user id&gt;</code>, <code>remove &lt;user id&gt;</code>, <code>add &lt;user id&gt; Full Name as viewer for CSPW</code>. The division keys are GROUP, HONDA, AMZES, BIGWING, RE, NISSAN, CSPW, CANON and HR. The hub accepts these e-mails only from the administrator addresses it knows and from the mailbox itself.</p>
   <div class="note sticky"><b class="t">Sticky note</b>If a request has waited more than a day, the hub sends you one reminder a day listing what is open. Two requests from the same e-mail address (someone pressing Send twice) are settled together.</div>
@@ -441,7 +446,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <dt>Can I share a report outside the group?</dt><dd>Reports are for internal circulation. If one must be shared, the recipient can check it is genuine with the QR code, which is the point of the verification.</dd>
     <dt>Does the hub work offline?</dt><dd>The installed app opens offline with the last data it saw and says so. New data needs a connection.</dd>
     <dt>Where is my data stored?</dt><dd>Aggregated figures are published with the hub. Raw Tally exports with customer details stay with Accounts and are never uploaded.</dd>
-    <dt>Can I change my own password?</dt><dd>Not yet. Use "Forgot password?" on the sign-in page and the administrator issues a new one. Self-service password changes arrive with the hub's server-based sign-in in a later version.</dd>
+    <dt>Can I change my own password?</dt><dd>Yes: Settings → Password sends a one-time link to your address; the page it opens lets you choose the new one. "Forgot password?" on the sign-in page does the same without signing in.</dd>
+    <dt>Does anyone see my password?</dt><dd>No. It is chosen in your browser and only its fingerprint is sent to the hub. Nobody can read it back, which is why a forgotten password is replaced, never recovered.</dd>
     <dt>The page looks different from the screenshots.</dt><dd>You may be on a different theme or menu layout; both are in Settings → Appearance. New versions also add features; the update message lists them.</dd>
     <dt>How do I get a colleague access?</dt><dd>Ask them to use <b>Request access</b> on the sign-in page, choosing their function or division and ticking the divisions they need. An admin approves it within a working day.</dd>
     <dt>Why can I not see a division, or the Sales &amp; inventory menu?</dt><dd>Your account covers only some divisions. The Divisions menu lists the ones you have, and Sales &amp; inventory needs Honda Kerala or AMZES. Ask an admin to change your divisions from Settings → People; the change applies from your next sign-in.</dd>
@@ -482,6 +488,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <tr><td>The update message keeps reappearing</td><td>An old tab is still open</td><td>Close every tab of the hub, open it once more and tap Update.</td></tr>
     <tr><td>A report's QR code says the figures do not match</td><td>Data was reloaded since the report was made</td><td>Expected: the report is a snapshot. Build a fresh one.</td></tr>
     <tr><td>The sidebar covers the page on a small laptop</td><td>Sidebar mode below 900 px becomes a drawer</td><td>Use the ☰ button, or switch to the top bar in Settings.</td></tr>
+    <tr><td>The reset link says it has expired or been used</td><td>Links work once and for 24 hours; a newer request replaces the older link</td><td>Request a new link from the sign-in page or Settings → Password and use the latest e-mail.</td></tr>
+    <tr><td>I set a password but cannot sign in yet</td><td>The hub applies it within about ten minutes and confirms by e-mail</td><td>Wait for the confirmation, then press Refresh in the bar or reload the sign-in page.</td></tr>
     <tr><td>A page sends me back to the hub with a note</td><td>The page is outside the divisions on your account</td><td>Ask an admin to add the division from Settings → People, then sign out and in again.</td></tr>
     <tr><td>An account change sent by e-mail has not been applied</td><td>The e-mail went to someone else, or was sent from an address the hub does not know</td><td>Send it to mml@bpropms.in from your own admin address, one change per line. The log under Settings → Account changes shows what was applied.</td></tr>
     <tr><td>Publishing accounts says the token was not accepted</td><td>Token expired or lacks Contents: write</td><td>Create a new fine-grained token for the repository with Contents read and write, paste it again.</td></tr></table>
@@ -492,6 +500,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h1>Version history</h1>
   <p class="lead">Each release raises the app version; installed copies show an update message with the notes.</p>
   <table class="version"><tr><th>Version</th><th>Date</th><th>What changed</th></tr>
+    <tr><td>2026.10.15l</td><td>15 Oct 2026</td><td>Passwords by one-time link: resets, new accounts and administrator resets send a link to the person's own address, who chooses the password on the hub; nothing is e-mailed in clear. Settings → Password for signed-in people. A changed password ends other sign-ins. User manual v1.5.</td></tr>
+    <tr><td>2026.10.15k</td><td>15 Oct 2026</td><td>Audit fixes: removed accounts signed out at once; role and division changes apply on the next page load; clerk schedule off the round minutes.</td></tr>
     <tr><td>2026.10.15j</td><td>15 Oct 2026</td><td>User manual v1.4; the division editor on the People page opens under the table.</td></tr>
     <tr><td>2026.10.15i</td><td>15 Oct 2026</td><td>Access by division: viewer accounts limited to chosen divisions; the request form asks which; the menu, division dashboards and Sales &amp; inventory follow the account's scope; division editor on the People page.</td></tr>
     <tr><td>2026.10.15h</td><td>15 Oct 2026</td><td>Refresh in the bar; People page for admins as well as super admins, with roles, resets, additions and removals applied by one e-mail; Account changes log; sign-in report.</td></tr>
@@ -517,7 +527,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <tr><td>2026.10.14</td><td>14 Oct 2026</td><td>Landing and sign-in page; hub moves behind sign-in. Custom domain mmlpbi.bpropms.in.</td></tr>
     <tr><td>2026.10.13</td><td>13 Oct 2026</td><td>Division dashboards for nine divisions; installable app with update message; BPro branding, warm palette and QR verification on every download; reconciliation note PDF on letterhead; financial position panel.</td></tr>
     <tr><td>2026.10.12</td><td>12 Oct 2026</td><td>HD Attingal pilot dashboard; multi-company data model; hub landing page; report builder with subtotals and grand totals; HOD action tracker copy.</td></tr></table>
-  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15j. Changes since v1.3: access by division (roles table, the new section in Getting started, the request form), the Refresh control, the People page for admins with the division editor and the e-mail route for every change, the Account changes log, the Sign-in report, and new FAQ and troubleshooting entries.</p>
+  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15l. Changes since v1.4: passwords by one-time link (Forgot your password, Settings → Password, the People page steps, FAQ and troubleshooting). Changes since v1.3: access by division (roles table, the new section in Getting started, the request form), the Refresh control, the People page for admins with the division editor and the e-mail route for every change, the Account changes log, the Sign-in report, and new FAQ and troubleshooting entries.</p>
 </section>
 
 <!-- ======================= 17 GLOSSARY ======================= -->
@@ -528,7 +538,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <div><dt>Divisions (of an account)</dt><dd> — the list of divisions a viewer may open: All divisions, or a chosen set; set on approval and changed from Settings → People.</dd></div>
   <div><dt>Division group</dt><dd> — a consolidation page showing several divisions together (Automotive, Parts &amp; distribution, Office automation, People).</dd></div>
   <div><dt>Document ID</dt><dd> — the code printed on every hub document (RN-…, MGR-…, UM-…) that the verify page checks.</dd></div>
-  <div><dt>Fingerprint</dt><dd> — the SHA-256 hash of a file, used to confirm a digital copy is unchanged.</dd></div>
+  <div><dt>Fingerprint</dt><dd> — the SHA-256 hash of a file, used to confirm a digital copy is unchanged; also the salted hash the hub keeps instead of a password.</dd></div>
+  <div><dt>One-time link</dt><dd> — the e-mailed link that opens the page where a person chooses their password; single use, 24 hours.</dd></div>
   <div><dt>FY</dt><dd> — financial year, 1 April to 31 March. FY 2026–27 runs from 1 April 2026.</dd></div>
   <div><dt>Grand Total</dt><dd> — the last line of a Tally register or stock summary, which every build must match.</dd></div>
   <div><dt>Gross billing</dt><dd> — everything invoiced including GST.</dd></div>

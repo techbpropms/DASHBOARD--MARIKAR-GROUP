@@ -138,19 +138,26 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     <p class="muted" style="margin:10px 0 0">On phones the menu opens from the ☰ button in either case.</p>
   </section>
 
+  <section class="panel" id="password">
+    <h2>Password</h2>
+    <p class="muted">Change your password with a one-time link sent to your own e-mail address. The link opens a page on the hub where you choose the new password; it works once and for 24 hours. Every other sign-in of your account ends when the new password goes live.</p>
+    <div class="actions"><button class="btn" type="button" id="pw-link">E-mail me a link to change my password</button></div>
+    <div class="note" id="pw-note" hidden></div>
+  </section>
+
   <section class="panel" id="people" hidden>
     <h2>People</h2>
     <p class="muted">Who can sign in to the hub. Passwords are never stored: each account keeps only a salted fingerprint. Changes made here are queued below and go live when you publish them.</p>
     <div class="tbl"><table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th>Divisions</th><th></th></tr></thead><tbody></tbody></table></div>
     <div class="divedit" id="div-editor" hidden><div class="head"><b id="div-editor-who"></b><button class="btn sm sec" type="button" id="div-editor-done">Done</button></div><div class="divbox" id="div-editor-box"></div></div>
-    <p class="muted" id="people-hint">Change a role with the drop-down, choose which divisions a viewer may open under Divisions (admins and super admins see all), or use Reset password and Remove. Changes are queued below and go out as one e-mail to the hub mailbox; the hub applies them within about ten minutes and tells the people concerned.</p>
+    <p class="muted" id="people-hint">Change a role with the drop-down, choose which divisions a viewer may open under Divisions (admins and super admins see all), or use Reset password (the person receives a one-time link to choose a new one) and Remove. Changes are queued below and go out as one e-mail to the hub mailbox; the hub applies them within about ten minutes and tells the people concerned.</p>
 
     <h3>Access and reset requests</h3>
     <div class="inbox" id="inbox">
       <p class="muted" id="inbox-note">Checking the mailbox list…</p>
       <ul id="inbox-list"></ul>
     </div>
-    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about 10 minutes. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
+    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about 10 minutes. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically with a one-time link to the person's own address. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
     <div class="reqbox">
       <textarea id="req-in" rows="3" placeholder="Paste the request e-mail or code here" aria-label="Request code"></textarea>
       <button class="btn sec" type="button" id="req-parse">Read request</button>
@@ -229,6 +236,18 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   const paintNav = () => { const n = MGShell.nav(); document.querySelectorAll('#nav-choices .choice').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.n === n))); };
   document.querySelectorAll('#nav-choices .choice').forEach((b) => b.addEventListener('click', () => { if (MGShell.nav() !== b.dataset.n) { MGShell.nav(b.dataset.n); location.reload(); } }));
   if (window.MGShell) paintNav(); else document.addEventListener('DOMContentLoaded', paintNav);
+
+  // ----- password: the same reset request the sign-in page makes, for the signed-in ID; the link goes to that address only
+  $('pw-link').addEventListener('click', async () => {
+    const b = $('pw-link'); b.disabled = true;
+    const built = MGAuth.requests.build('reset', { email: user.id, name: user.name });
+    const r = await MGAuth.requests.send(built);
+    const n = $('pw-note'); n.className = 'note ok'; n.replaceChildren();
+    const p = document.createElement('p');
+    if (r.sent) p.textContent = `Requested (${built.req.ref}). Within about ten minutes a link arrives at ${user.id}; open it and choose your new password.`;
+    else { p.textContent = `One more step: send the request to the hub mailbox. Within about ten minutes of it arriving, a link comes to ${user.id}; open it and choose your new password. `; const a = document.createElement('a'); a.href = built.mailto; a.textContent = 'Open the e-mail'; a.className = 'btn sm'; p.append(a); }
+    n.append(p); n.hidden = false; b.disabled = false;
+  });
 
   // ----- sign-in report (everyone sees this device's list; admins and super admins see the report across users)
   const fmtWhen = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); };
@@ -352,7 +371,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     $('div-editor').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   $('div-editor-done').addEventListener('click', () => { editing = null; $('div-editor').hidden = true; });
-  const describe = (c) => c.action === 'role' ? `Make ${c.name} (${c.id}) ${roleName(c.role)}` : c.action === 'remove' ? `Remove ${c.name} (${c.id})` : c.action === 'reset' ? `New temporary password for ${c.name} (${c.id}), sent to them by e-mail` : c.action === 'divisions' ? `Divisions of ${c.name} (${c.id}): ${divNames(c.divisions)}` : `Add ${c.name} (${c.id}, ${roleName(c.role)}${c.role === 'viewer' && c.divisions !== 'all' ? ', ' + divNames(c.divisions) : ''}); the hub e-mails them their password`;
+  const describe = (c) => c.action === 'role' ? `Make ${c.name} (${c.id}) ${roleName(c.role)}` : c.action === 'remove' ? `Remove ${c.name} (${c.id})` : c.action === 'reset' ? `Reset for ${c.name} (${c.id}): a one-time link to choose a new password, sent to them by e-mail` : c.action === 'divisions' ? `Divisions of ${c.name} (${c.id}): ${divNames(c.divisions)}` : `Add ${c.name} (${c.id}, ${roleName(c.role)}${c.role === 'viewer' && c.divisions !== 'all' ? ', ' + divNames(c.divisions) : ''}); the hub e-mails them a link to choose their password`;
   const commandLine = (c) => c.action === 'role' ? `role ${c.id} ${c.role}` : c.action === 'remove' ? `remove ${c.id}` : c.action === 'reset' ? `reset ${c.id}` : c.action === 'divisions' ? `divisions ${c.id} ${divsArg(c.divisions)}` : `add ${c.id} ${c.name} as ${c.role}${c.role === 'viewer' && c.divisions && c.divisions !== 'all' ? ' for ' + divsArg(c.divisions) : ''}`;
   function paintPending() {
     const ul = $('pending-list'); ul.replaceChildren();
@@ -371,7 +390,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const divisions = role === 'viewer' ? addDivs.get() : 'all';
     if (divisions !== 'all' && !divisions.length) { say('add-note', 'bad', ['Tick at least one division, or All divisions.']); return; }
     push({ action: 'add', id, name, role, divisions }); $('add').reset(); addDivs.set('all');
-    say('add-note', 'ok', [`${name} queued. Send the change below; the hub creates the account and e-mails them their user ID and temporary password.`]);
+    say('add-note', 'ok', [`${name} queued. Send the change below; the hub creates the account and e-mails them a one-time link to choose their password.`]);
   });
   if (!isSuper) document.querySelector('#p-role option[value="superadmin"]').remove();
   const addDivs = picker($('p-divs'), 'all');
@@ -453,7 +472,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   $('req-approve-mail').addEventListener('click', () => {
     const divisions = reqScope(); if (divisions !== 'all' && !divisions.length) { say('req-note', 'bad', ['Tick at least one division, or All divisions.']); return; }
     byMail(`approve ${$('req-role').value} for ${divsArg(divisions)}`);
-    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within about 10 minutes the hub creates the account for ${current.email} as ${roleName($('req-role').value)} (${divNames(divisions)}), e-mails them their user ID and temporary password, and takes the request off this list.`]);
+    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within about 10 minutes the hub creates the account for ${current.email} as ${roleName($('req-role').value)} (${divNames(divisions)}), e-mails them a one-time link to choose their password, and takes the request off this list.`]);
   });
   $('req-decline').addEventListener('click', () => {
     byMail('decline');

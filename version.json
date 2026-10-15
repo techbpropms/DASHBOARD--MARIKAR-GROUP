@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.15k",
-  "title": "Audit fixes",
+  "version": "2026.10.15l",
+  "title": "Passwords by one-time link",
   "notes": [
-    "A removed account is signed out at once, and a changed role or set of divisions applies on the next page load",
-    "In an approval reply, divisions count only after the word \"for\"",
-    "The mailbox clerk runs at 4, 14, 24, 34, 44 and 54 minutes past the hour"
+    "Forgot password, new accounts and administrator resets now send a one-time link to your own e-mail address; you choose the password on the hub and nothing is e-mailed in clear",
+    "Settings > Password sends the same link to signed-in people; a changed password ends your other sign-ins",
+    "User manual v1.5 and an operations runbook for the administrators"
   ]
 }
