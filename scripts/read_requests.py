@@ -271,7 +271,7 @@ def main():
     # 1. new requests and commands
     known = {p['ref'] for p in pending} | set(handled)
     mids = {p.get('mid') for p in pending if p.get('mid')}
-    commands, added = [], []
+    commands, added, changed = [], [], False
     for msg in messages:
         reqs, cmd = parse(msg)
         for r in reqs:
@@ -279,9 +279,14 @@ def main():
                 known.add(r['ref']); pending.append(r); added.append(r)
                 if r.get('mid'):
                     mids.add(r['mid'])
+            else:
+                # listed by an earlier version without the e-mail's Message-ID: record it so a reply is recognised
+                for p in pending:
+                    if p['ref'] == r['ref'] and not p.get('mid') and r.get('mid'):
+                        p['mid'] = r['mid']; mids.add(r['mid']); changed = True
         if cmd:
             commands.append(cmd)
-    changed = bool(added)
+    changed = changed or bool(added)
 
     def settle(req, status, **extra):
         nonlocal changed
