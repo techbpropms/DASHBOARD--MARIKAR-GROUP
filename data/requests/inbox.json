@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15T08:40:09+00:00",
+  "updated": "2026-10-15T08:47:44+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -43,6 +43,12 @@
       "at": "2026-10-15T08:40:09+00:00",
       "by": "babukadavoor@gmail.com",
       "role": "viewer"
+    },
+    "PR-20261015-08AB": {
+      "status": "reset",
+      "at": "2026-10-15T08:47:44+00:00",
+      "by": "automatic",
+      "email": "gm@marikarautomobiles.in"
     }
   }
 }
