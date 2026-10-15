@@ -244,6 +244,17 @@ request code the super admin pastes into Settings > People. The access key is a 
 form, not a password, so it is safe in the page. With neither configured, the form can only open the
 requester's own mail program ("Send by e-mail") or copy the request text.
 
+**Mailbox reader.** Requests also appear in Settings > People on their own: the GitHub Action "Mailbox
+requests" (`.github/workflows/mail-requests.yml`) runs `scripts/read_requests.py` every 15 minutes. It signs
+in to the mailbox over IMAP, finds the request e-mails, decodes their codes and adds new ones to
+`data/requests/inbox.json`; the People page lists that file and, when the super admin approves or declines a
+request and publishes, moves it to `handled`. Set-up is one repository secret: on GitHub, Settings >
+Secrets and variables > Actions > New repository secret, name `MAIL_PASSWORD`, value the mailbox password.
+Optional variables `MAIL_USER` and `MAIL_HOST` override the address and IMAP server (defaults
+`mml@bpropms.in`, `imap.hostinger.com`). "Run workflow" on the Actions tab reads the mailbox at once. The
+repository is public, so the list holds only what the approval needs (name, e-mail, division, scope,
+designation, reason); phone numbers stay in the e-mail. Nothing in the mailbox is deleted or marked.
+
 Instant approvals, e-mailed reset links and first-sign-in password changes need a server. The practical next
 step is a hosted auth service (Supabase or Firebase) or a small API on the Hostinger VPS; the page code is
 written so the request transport can be swapped without changing the forms.

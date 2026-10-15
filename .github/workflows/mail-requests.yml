@@ -1,0 +1,36 @@
+# Every 15 minutes: read new access and password-reset requests from the hub mailbox into
+# data/requests/inbox.json, so Settings > People shows them without anyone pasting codes.
+# Needs one repository secret, MAIL_PASSWORD (the mailbox password). The address and server
+# are in scripts/read_requests.py; override with MAIL_USER / MAIL_HOST variables if they change.
+name: Mailbox requests
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mail-requests
+  cancel-in-progress: false
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the mailbox
+        env:
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_USER: ${{ vars.MAIL_USER }}
+          MAIL_HOST: ${{ vars.MAIL_HOST }}
+        run: |
+          [ -n "$MAIL_USER" ] || unset MAIL_USER
+          [ -n "$MAIL_HOST" ] || unset MAIL_HOST
+          python3 scripts/read_requests.py
+      - name: Publish new requests
+        run: |
+          if git diff --quiet -- data/requests/inbox.json; then echo "nothing new"; exit 0; fi
+          git config user.name "Marikar hub mailbox"
+          git config user.email "mml@bpropms.in"
+          git add data/requests/inbox.json
+          git commit -m "Requests: new access or reset requests from the mailbox"
+          git push

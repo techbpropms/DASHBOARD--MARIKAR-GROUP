@@ -1,7 +1,8 @@
 {
-  "version": "2026.10.15b",
-  "title": "Access requests by form-to-mail",
+  "version": "2026.10.15c",
+  "title": "Requests appear in Settings on their own",
   "notes": [
-    "The request-access and password-reset forms can post straight to the hub mailbox once a form key is configured"
+    "Settings > People lists the access and reset requests waiting in the hub mailbox, read every 15 minutes",
+    "Approving or declining a request and publishing takes it off the list"
   ]
 }
