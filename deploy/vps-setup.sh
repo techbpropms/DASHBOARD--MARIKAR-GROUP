@@ -26,7 +26,7 @@ echo "== deploy user and site folder"
 id -u "$SITE_USER" >/dev/null 2>&1 || useradd --system --create-home --shell /bin/bash "$SITE_USER"
 mkdir -p "$SITE_DIR" && chown -R "$SITE_USER:$SITE_USER" /srv/hub
 KEY=/home/$SITE_USER/.ssh/deploy_ed25519
-if [ ! -f "$KEY" ]; then
+if [ -z "${SETUP_VIA_ACTIONS:-}" ] && [ ! -f "$KEY" ]; then
   sudo -u "$SITE_USER" mkdir -p "/home/$SITE_USER/.ssh"
   sudo -u "$SITE_USER" ssh-keygen -q -t ed25519 -N '' -C 'marikar-hub-deploy' -f "$KEY"
   sudo -u "$SITE_USER" sh -c "cat '$KEY.pub' >> /home/$SITE_USER/.ssh/authorized_keys"
@@ -53,6 +53,9 @@ ufw allow OpenSSH >/dev/null; ufw allow 80/tcp >/dev/null; ufw allow 443/tcp >/d
 ufw --force enable >/dev/null
 
 IP=$(curl -fsS https://api.ipify.org || hostname -I | awk '{print $1}')
+if [ -n "${SETUP_VIA_ACTIONS:-}" ]; then
+  echo; echo "Done. Caddy is serving /srv/hub/site on $IP. Next: point the DNS record mmlpbi.bpropms.in (type A) at $IP."; exit 0
+fi
 cat <<MSG
 
 Done. Now, in the GitHub repository (Settings > Secrets and variables > Actions > New repository secret):

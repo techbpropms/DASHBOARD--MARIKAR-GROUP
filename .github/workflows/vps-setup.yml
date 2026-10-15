@@ -1,0 +1,41 @@
+# One-time set-up of the Hostinger VPS from GitHub, so nobody needs a terminal: runs deploy/vps-setup.sh on the
+# server over SSH. Needs two repository secrets: VPS_HOST (the server's IP address) and VPS_PASSWORD (its root
+# password, from the Hostinger panel: VPS > SSH access). Run it from the Actions tab: "Set up VPS" > Run workflow.
+# Afterwards "Deploy to VPS" runs on every change with the same two secrets.
+name: Set up VPS
+on:
+  workflow_dispatch:
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the secrets
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_PASSWORD" ]; then
+            echo "::error::Add the repository secrets VPS_HOST (server IP) and VPS_PASSWORD (root password) first: Settings > Secrets and variables > Actions."; exit 1
+          fi
+      - name: Run the set-up script on the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          sudo apt-get install -y -qq sshpass >/dev/null
+          mkdir -p ~/.ssh && ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          # the script installs Caddy, creates the site folder and firewall rules; it prints no secrets
+          sshpass -e ssh -o StrictHostKeyChecking=yes "root@$VPS_HOST" 'SETUP_VIA_ACTIONS=1 bash -s' < deploy/vps-setup.sh
+        shell: bash
+      - name: Copy the site now
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          rsync -az --delete --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
+            --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
+            -e "sshpass -e ssh -o StrictHostKeyChecking=yes" ./ "root@$VPS_HOST:/srv/hub/site/"
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -k "https://$VPS_HOST/version.json" -H 'Host: mmlpbi.bpropms.in' || true)
+          echo "The server answers https://$VPS_HOST/version.json with HTTP $code (200 = ready)."
+          echo "Next: point the DNS record mmlpbi.bpropms.in (type A) at $VPS_HOST. Caddy fetches the certificate itself."
