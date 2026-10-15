@@ -26,7 +26,9 @@
   // Access and password-reset requests. The hub is a static site, so a request travels as a signed-looking code:
   // by POST to REQUESTS.endpoint when one is configured (any form-to-mail service that accepts JSON), otherwise in
   // an e-mail the requester sends to REQUESTS.to. The super admin pastes the code into Settings > People to act on it.
-  const REQUESTS = { to: 'mml@bpropms.in', endpoint: '' };
+  // `fields` is merged into every POST: for Web3Forms set endpoint 'https://api.web3forms.com/submit' and
+  // fields { access_key: '<key issued to mml@bpropms.in>' }; for the relay in server/ leave fields empty.
+  const REQUESTS = { to: 'mml@bpropms.in', endpoint: '', fields: {} };
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - str.length % 4) % 4))));
   const ref = (kind) => { const d = new Date(); const ymd = d.toISOString().slice(0, 10).replace(/-/g, ''); const r = Array.from(crypto.getRandomValues(new Uint8Array(2)), (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase(); return `${kind === 'reset' ? 'PR' : 'AR'}-${ymd}-${r}`; };
@@ -51,8 +53,11 @@
     async send(built) {
       if (!REQUESTS.endpoint) return { sent: false };
       try {
-        const r = await fetch(REQUESTS.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ subject: built.text.split('\n')[0], ref: built.req.ref, kind: built.req.kind, name: built.req.name, email: built.req.email, message: built.text, code: built.code }) });
-        return { sent: r.ok };
+        const r = await fetch(REQUESTS.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...(REQUESTS.fields || {}), subject: built.text.split('\n')[0], ref: built.req.ref, kind: built.req.kind, name: built.req.name, email: built.req.email, message: built.text, code: built.code }) });
+        if (!r.ok) return { sent: false };
+        // Form-to-mail services answer 200 with {success:false} when the key is wrong: treat that as not sent.
+        const j = await r.clone().json().catch(() => null);
+        return { sent: !(j && j.success === false) };
       } catch (e) { return { sent: false }; }
     },
   };

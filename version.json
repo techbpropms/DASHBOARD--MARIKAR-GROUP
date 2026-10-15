@@ -1,7 +1,7 @@
 {
-  "version": "2026.10.14m",
-  "title": "User manual v1.1",
+  "version": "2026.10.15b",
+  "title": "Access requests by form-to-mail",
   "notes": [
-    "The manual now covers the request-access form, the access scope and the install-the-app invitation"
+    "The request-access and password-reset forms can post straight to the hub mailbox once a form key is configured"
   ]
 }
