@@ -136,7 +136,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <ol>
     <li><span>How to read this manual</span><span class="d"></span><span class="pg" data-h="How to read this manual"></span></li>
     <li><span>Background of the programme</span><span class="d"></span><span class="pg" data-h="Background of the programme"></span></li>
-    <li><span>Getting started: address, sign-in, access requests</span><span class="d"></span><span class="pg" data-h="Getting started"></span></li>
+    <li><span>Getting started: address, sign-in, access requests, roles and divisions</span><span class="d"></span><span class="pg" data-h="Getting started"></span></li>
     <li><span>Finding your way: menu, themes, phone</span><span class="d"></span><span class="pg" data-h="Finding your way around"></span></li>
     <li><span>The hub landing page</span><span class="d"></span><span class="pg" data-h="The hub landing page"></span></li>
     <li><span>Division dashboards and division groups</span><span class="d"></span><span class="pg" data-h="Division dashboards"></span></li>
@@ -144,7 +144,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <li><span>Report builder (PDF and Excel)</span><span class="d"></span><span class="pg" data-h="Report builder"></span></li>
     <li><span>HOD action tracker</span><span class="d"></span><span class="pg" data-h="HOD action tracker"></span></li>
     <li><span>Reconciliation note and document verification</span><span class="d"></span><span class="pg" data-h="Reconciliation note and document verification"></span></li>
-    <li><span>Settings: appearance and People (super admin)</span><span class="d"></span><span class="pg" data-h="Settings"></span></li>
+    <li><span>Settings: appearance, People, account changes, sign-in report</span><span class="d"></span><span class="pg" data-h="Settings"></span></li>
     <li><span>Hub Explorer: levels, badges and the quiz</span><span class="d"></span><span class="pg" data-h="Hub Explorer"></span></li>
     <li><span>Frequently asked questions</span><span class="d"></span><span class="pg" data-h="Frequently asked questions"></span></li>
     <li><span>Rarely asked questions</span><span class="d"></span><span class="pg" data-h="Rarely asked questions"></span></li>
@@ -211,8 +211,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
 
   <h2>Requesting access</h2>
   <p>New to the hub? Choose the <b>Request access</b> tab and fill in the form. Within about ten minutes you receive an acknowledgement from <b>mml@bpropms.in</b> with your reference. When the administrator approves the request, a second e-mail from the same address brings your user ID and a temporary password, usually within one working day. Sign in with it and change it from the Settings page.</p>
-  <figure><img src="img/02-request.jpg" alt="Request access form"><figcaption>Request access: <span class="pt">1</span> full name, <span class="pt">2</span> work e-mail (it becomes your user ID), <span class="pt">3</span> company, division or function, <span class="pt">4</span> the access you need, <span class="pt">5</span> the confirmation tick, <span class="pt">6</span> Send request.</figcaption></figure>
-  <p>The <b>company / division / function</b> box suggests the corporate functions (Management / Corporate, Finance &amp; Accounts, Admin, HR, IT, Internal audit, Marketing) as well as every division, plus "All divisions" and "Other"; you can also type your own. <b>Access needed for</b> tells the administrator whether you need your own division, several, or the whole group, so the right role can be set before you sign in for the first time.</p>
+  <figure><img src="img/02-request.jpg" alt="Request access form"><figcaption>Request access: <span class="pt">1</span> full name, <span class="pt">2</span> work e-mail (it becomes your user ID), <span class="pt">3</span> company, division or function, <span class="pt">4</span> the divisions you need, <span class="pt">5</span> the confirmation tick, <span class="pt">6</span> Send request.</figcaption></figure>
+  <p>The <b>company / division / function</b> box suggests the corporate functions (Management / Corporate, Finance &amp; Accounts, Admin, HR, IT, Internal audit, Marketing) as well as every division, plus "All divisions" and "Other"; you can also type your own. Under <b>Access needed for</b>, tick <b>All divisions</b> for group-wide access or tick the divisions you work with (one or more). The administrator sees exactly what you asked for and can approve it as it is, or adjust it, before you sign in for the first time.</p>
   <figure class="narrow"><img src="img/03-request-done.jpg" alt="Request ready to send"><figcaption>After you send: a <span class="pt">1</span> reference to quote, <span class="pt">2</span> a button that opens your mail app with the request filled in for the administrator, and <span class="pt">3</span> a copy option if your mail app does not open.</figcaption></figure>
   <div class="note sticky"><b class="t">Sticky note</b>Keep the reference (it looks like <code>AR-20261014-7618</code>). If you need to chase a request, quote it.</div>
 
@@ -220,9 +220,13 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <figure class="narrow"><img src="img/04-forgot.jpg" alt="Reset your password"><figcaption>Enter your <span class="pt">1</span> user ID and <span class="pt">2</span> request a reset. Within about ten minutes a new temporary password is e-mailed to that address; nobody else is involved. One reset per address per day.</figcaption></figure>
   <h2>Roles</h2>
   <table><tr><th>Role</th><th>Can</th></tr>
-    <tr><td><b>Viewer</b></td><td>Open every dashboard, tracker, note and report; download PDF and Excel reports; verify documents; choose their own theme and menu layout.</td></tr>
-    <tr><td><b>Admin</b></td><td>Everything a viewer can; reserved for future editing rights.</td></tr>
-    <tr><td><b>Super admin</b></td><td>Everything above, plus Settings → People: add, reset and remove accounts and act on access requests.</td></tr></table>
+    <tr><td><b>Viewer</b></td><td>Open the dashboards, tracker, note and reports for <span class="hl">the divisions on their account</span> (all of them, or a chosen few); download PDF and Excel reports; verify documents; choose their own theme and menu layout.</td></tr>
+    <tr><td><b>Admin</b></td><td>Everything a viewer can, for every division, plus Settings → People: add people, change roles and divisions, reset passwords, remove accounts and act on access requests. An admin cannot touch super admin accounts or grant that role.</td></tr>
+    <tr><td><b>Super admin</b></td><td>Everything above for every account, and the token route for publishing changes directly.</td></tr></table>
+  <h2>Access by division</h2>
+  <p>A viewer account carries a list of divisions: <b>All divisions</b>, or any set of Group vehicle sales, Honda Kerala, AMZES, BigWing, Royal Enfield, Nissan, CSPW, Canon / OAIP and HR. The hub then shows that person only what they cover: the Divisions menu lists their divisions and the groups those fall in, the division dashboards page shows only those cards, and the <b>Sales &amp; inventory</b> tools (built from the Honda units' TallyPrime data) appear only for accounts with Honda Kerala or AMZES. Admins and super admins always see everything.</p>
+  <figure><img src="img/34-scoped-menu.jpg" alt="Menu for an account limited to two divisions"><figcaption>Signed in with an account limited to Honda Kerala and AMZES: <span class="pt">1</span> the Divisions menu lists only those two, under Automotive; <span class="pt">2</span> Sales &amp; inventory is present because they are Honda divisions. A CSPW-only account would see neither.</figcaption></figure>
+  <p>The list is set when the request is approved (from what you ticked on the form) and can be changed at any time from Settings → People. A change applies from your next sign-in. If you open a page outside your divisions, the hub sends you back to the landing page with a short note; ask the administrator if you need it.</p>
   <h2>Installing the hub as an app</h2>
   <p>The hub invites you to install it on every visit until you do. Installed, it opens full-screen from your home screen or desktop, keeps working offline with the last data it saw, and shows an <b>Update available</b> message when a new version is published (tap <b>Update</b> to switch).</p>
   <figure class="two"><img src="img/29-install-phone.jpg" alt="Install card on Android"><img src="img/30-install-iphone.jpg" alt="Install steps on iPhone"><figcaption>Left, Android / Chrome / Edge: <span class="pt">1</span> the card; <b>Install</b> opens the phone's own install dialog in one tap. Right, iPhone and iPad: Apple allows no one-tap install, so the card shows the two steps, Share → Add to Home Screen, and a "Done, it's installed" button.</figcaption></figure>
@@ -238,12 +242,14 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h2>The menu</h2>
   <table><tr><th>Main item</th><th>Submenu</th><th>Opens</th></tr>
     <tr><td><b>Hub</b></td><td>—</td><td>The landing page: headline figures, review tools, baseline and insights.</td></tr>
-    <tr><td><b>Divisions</b></td><td>All divisions · <b>Automotive</b> · Parts &amp; distribution · Office automation · People</td><td>The division dashboards. Each <span class="hl">division group</span> is a consolidation page showing its divisions together; under it sit the divisions themselves.</td></tr>
-    <tr><td><b>Sales &amp; inventory</b></td><td>Dashboard · Report builder · Reconciliation note</td><td>The TallyPrime-based sales and inventory views.</td></tr>
+    <tr><td><b>Divisions</b></td><td>All divisions · <b>Automotive</b> · Parts &amp; distribution · Office automation · People</td><td>The division dashboards. Each <span class="hl">division group</span> is a consolidation page showing its divisions together; under it sit the divisions themselves. An account limited to some divisions sees only those (chapter 3, "Access by division").</td></tr>
+    <tr><td><b>Sales &amp; inventory</b></td><td>Dashboard · Report builder · Reconciliation note</td><td>The TallyPrime-based sales and inventory views; shown to accounts covering the Honda divisions.</td></tr>
     <tr><td><b>HOD action tracker</b></td><td>—</td><td>The 31 actions, league standings and roadmap.</td></tr>
     <tr><td><b>Verify a document</b></td><td>—</td><td>Public page to check a document's ID or QR code.</td></tr>
-    <tr><td><b>Settings</b></td><td>Appearance · People</td><td>Your theme and menu layout; account management for the super admin.</td></tr></table>
+    <tr><td><b>Settings</b></td><td>Appearance · People</td><td>Your theme and menu layout, the sign-in report, and (for admins and super admins) account management and the account-changes log.</td></tr></table>
   <div class="note tip"><b class="t">On screen</b>Hover a main item to open its submenu; on a touch screen tap once to open it and tap the item again to follow it.</div>
+  <h2>Refresh</h2>
+  <figure><img src="img/31-refresh.jpg" alt="The bar with the Refresh control"><figcaption><span class="pt">1</span> <b>Refresh</b>, next to the <span class="pt">2</span> theme switch, reloads the page with fresh data and picks up a new version of the hub if one has been published. Use it when a figure, a request or an account change you expect is not showing yet.</figcaption></figure>
   <h2>Light, dark or system</h2>
   <figure><img src="img/07-theme-dark.jpg" alt="Dashboard in dark theme"><figcaption>The <span class="pt">1</span> theme switch: System follows your device, Light and Dark force a theme. The choice is remembered on that browser.</figcaption></figure>
   <h2>Top bar or sidebar</h2>
@@ -361,27 +367,41 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h1>Settings</h1>
   <h2>Appearance</h2>
   <figure><img src="img/22-settings-appearance.jpg" alt="Appearance settings"><figcaption><span class="pt">1</span> Theme: System, Light or Dark. <span class="pt">2</span> Menu position: top bar or sidebar. Both are saved on that browser only.</figcaption></figure>
-  <h2>People (super admin only)</h2>
-  <figure><img src="img/23-settings-people.jpg" alt="People settings"><figcaption><span class="pt">1</span> the accounts, with Reset password and Remove · <span class="pt">2</span> the requests waiting in the hub mailbox, with when it was last read · <span class="pt">3</span> Open fills the request card · <span class="pt">4</span> where a request e-mail or code can still be pasted by hand · <span class="pt">5</span> the request read back, with <b>Approve by e-mail</b> and <b>Decline by e-mail</b> (and the token route for those who have one) · <span class="pt">6</span> Add a person.</figcaption></figure>
+  <h2>People (admins and super admins)</h2>
+  <figure><img src="img/23-settings-people.jpg" alt="People settings: accounts and the division editor"><figcaption><span class="pt">1</span> the accounts, with a role drop-down, the divisions each may open, Reset password and Remove · <span class="pt">2</span> the division editor, opened by clicking a viewer's divisions.</figcaption></figure>
+  <figure><img src="img/23b-people-requests.jpg" alt="People settings: requests, adding a person and the queue"><figcaption><span class="pt">3</span> the requests waiting in the hub mailbox, with when it was last read, and <b>Open</b> · <span class="pt">4</span> the request read back, with the role and the divisions ticked on the form · <span class="pt">5</span> <b>Approve by e-mail</b> (and Decline by e-mail) · <span class="pt">6</span> Add a person · <span class="pt">7</span> the changes waiting to go live, sent as one e-mail.</figcaption></figure>
+  <p>Everything on this page works the same way: a change is <span class="hl">queued</span> under <b>Changes waiting to go live</b>, then <b>Send by e-mail</b> opens one e-mail to the hub mailbox with the changes as plain lines. Send it from your own address as it is. The hub reads the mailbox within about ten minutes, applies the changes, e-mails the people concerned (a new password, a changed role, a changed set of divisions, a removal) and records each change in the <b>Account changes</b> log below. Nothing to copy and no token needed. A super admin who holds a GitHub token can still <b>Publish with token</b> instead.</p>
+  <h3>Changing a role or a person's divisions</h3>
+  <ol class="steps">
+    <li>Pick the new role from the drop-down on the person's row. Admins can set Viewer or Admin; only a super admin can grant Super admin.</li>
+    <li>Click the divisions shown on a viewer's row (for example "All divisions"). The editor opens under the table: tick <b>All divisions</b>, or tick the divisions the person may open. Every tick is queued at once; <b>Done</b> closes the editor. Admins and super admins always see all divisions, so the editor is for viewers only.</li>
+    <li><b>Reset password</b> queues a new temporary password, e-mailed to the person's own address. <b>Remove</b> queues the removal; you cannot remove yourself or the last super admin, and an admin cannot change, reset or remove a super admin.</li>
+    <li>Click <b>Send by e-mail</b> and send the message that opens.</li>
+  </ol>
   <h3>Adding a person</h3>
   <ol class="steps">
-    <li>Enter the full name, the work e-mail (their user ID) and a role, then <b>Create account</b>.</li>
-    <li>Copy the temporary password shown. It appears once and is not stored anywhere.</li>
-    <li>The change is queued under <b>Changes waiting to go live</b>. Click <b>Publish to the site</b>; the site rebuilds in about a minute and the password then works.</li>
-    <li>Send the person their user ID and temporary password by a separate channel.</li>
+    <li>Enter the full name, the work e-mail (their user ID) and a role. For a viewer, tick <b>All divisions</b> or the divisions they may open, then <b>Create account</b>.</li>
+    <li>The account is queued. Click <b>Send by e-mail</b> and send the message.</li>
+    <li>Within about ten minutes the hub creates the account and e-mails the person their user ID, temporary password and, where limited, their divisions. There is no password to copy or pass on.</li>
   </ol>
   <h3>Acting on a request</h3>
-  <p>Requests from the sign-in page go to the hub mailbox <b>mml@bpropms.in</b>. The hub reads that mailbox every ten minutes, acknowledges each new request to the person who sent it, and lists it at the top of the People page: who asked, for which division, the scope they need, the reference and the time. Approval is one e-mail; the hub does the rest.</p>
+  <p>Requests from the sign-in page go to the hub mailbox <b>mml@bpropms.in</b>. The hub reads that mailbox every ten minutes, acknowledges each new request to the person who sent it, and lists it at the top of the People page: who asked, for which division, which divisions they ticked, the reference and the time. Approval is one e-mail; the hub does the rest.</p>
   <ol class="steps">
     <li>Open Settings → People. New requests are listed under <b>Access and reset requests</b>; the line above them says when the mailbox was last read. Click <b>Open</b> to see the full request.</li>
-    <li>Choose a role, then click <b>Approve by e-mail</b>. A reply opens in your mail app addressed to the hub mailbox with the word <code>approve</code> and the reference; send it as it is. <b>Decline by e-mail</b> works the same way.</li>
-    <li>Within about ten minutes the hub creates the account, e-mails the person their user ID and temporary password, and takes the request off the list. Nothing to copy, nothing to publish.</li>
+    <li>Check the role and the divisions. The divisions come pre-ticked from the form; change them if the request asks for more than the person should have. An admin or super admin role covers all divisions.</li>
+    <li>Click <b>Approve by e-mail</b>. A reply opens in your mail app addressed to the hub mailbox with the word <code>approve</code>, the role and the divisions (for example <code>approve viewer for RE,BIGWING</code>); send it as it is. <b>Decline by e-mail</b> works the same way.</li>
+    <li>Within about ten minutes the hub creates the account, e-mails the person their user ID and temporary password, and takes the request off the list.</li>
   </ol>
-  <p>You can also approve several at once without opening the page: send an e-mail from your own address to <b>mml@bpropms.in</b> with the subject <code>approve</code> and the references one per line in the body (for example <code>AR-20261015-0546</code>). Add <code>admin</code> after the word approve for an admin account. The hub accepts these e-mails only from the super admin addresses it knows and from the mailbox itself.</p>
+  <p>You can also act without opening the page: send an e-mail from your own address to <b>mml@bpropms.in</b>. For approvals, put <code>approve</code> in the subject and the references one per line in the body (for example <code>AR-20261015-0546</code>); add <code>admin</code> for an admin account, or <code>for HONDA,AMZES</code> to limit a viewer to those divisions (otherwise the divisions ticked on the form apply). For other changes, write one line each: <code>role &lt;user id&gt; admin</code>, <code>divisions &lt;user id&gt; HONDA,NISSAN</code> (or <code>all</code>), <code>reset &lt;user id&gt;</code>, <code>remove &lt;user id&gt;</code>, <code>add &lt;user id&gt; Full Name as viewer for CSPW</code>. The division keys are GROUP, HONDA, AMZES, BIGWING, RE, NISSAN, CSPW, CANON and HR. The hub accepts these e-mails only from the administrator addresses it knows and from the mailbox itself.</p>
   <div class="note sticky"><b class="t">Sticky note</b>If a request has waited more than a day, the hub sends you one reminder a day listing what is open. Two requests from the same e-mail address (someone pressing Send twice) are settled together.</div>
   <div class="note tip"><b class="t">Tip</b>Phone numbers are shown in the request e-mail, not on this page: the list is published with the site, so it carries only what an approval needs. Password resets never reach this page: they are settled automatically, and the new password goes only to the account's own address.</div>
+  <h2>Account changes</h2>
+  <figure><img src="img/32-changes.jpg" alt="Account changes log"><figcaption><span class="pt">1</span> every approval, refusal, reset, role change, change of divisions, addition and removal the hub has carried out, newest first: when, what, which account, who asked for it and the detail. Shown to admins and super admins.</figcaption></figure>
+  <h2>Sign-in report</h2>
+  <figure><img src="img/33-signins.jpg" alt="Sign-in report"><figcaption><span class="pt">1</span> the state of the report across users; <span class="pt">2</span> the sign-ins recorded on this device (the last 20), which everyone sees.</figcaption></figure>
+  <p>Every successful sign-in is noted on the device it happened on. The report <b>across users</b>, which lists who signed in when, on what kind of device and how often, with a period of 7, 30 or 90 days and a CSV download, switches on once the small sign-in log service is connected (a five-minute set-up described in the README under "Sign-in report"). Until then the panel says so and shows this device's sign-ins only.</p>
   <div class="note lens"><b class="t">Lens</b>Passwords are never stored. Each account keeps only a salted fingerprint of its password (PBKDF2-SHA-256, 210,000 rounds). A password exists only in the e-mail sent to its owner, which is why a forgotten password is replaced, never recovered.</div>
-  <div class="note caution"><b class="t">Caution</b><b>Approve here (needs token)</b> and <b>Add a person</b> create the account in the browser and need a GitHub token to publish; they remain for the super admin who holds one. Everyone else uses the e-mail route, which needs no token at all.</div>
+  <div class="note caution"><b class="t">Caution</b><b>Approve here (needs token)</b> and <b>Publish with token</b> write the change from the browser and need a GitHub token; they remain for the super admin who holds one. Everyone else uses the e-mail route, which needs no token at all.</div>
 </section>
 
 <!-- ======================= 12 GAMIFICATION ======================= -->
@@ -423,7 +443,11 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <dt>Where is my data stored?</dt><dd>Aggregated figures are published with the hub. Raw Tally exports with customer details stay with Accounts and are never uploaded.</dd>
     <dt>Can I change my own password?</dt><dd>Not yet. Use "Forgot password?" on the sign-in page and the administrator issues a new one. Self-service password changes arrive with the hub's server-based sign-in in a later version.</dd>
     <dt>The page looks different from the screenshots.</dt><dd>You may be on a different theme or menu layout; both are in Settings → Appearance. New versions also add features; the update message lists them.</dd>
-    <dt>How do I get a colleague access?</dt><dd>Ask them to use <b>Request access</b> on the sign-in page, choosing their function or division and the access they need. The administrator approves it within a working day.</dd>
+    <dt>How do I get a colleague access?</dt><dd>Ask them to use <b>Request access</b> on the sign-in page, choosing their function or division and ticking the divisions they need. An admin approves it within a working day.</dd>
+    <dt>Why can I not see a division, or the Sales &amp; inventory menu?</dt><dd>Your account covers only some divisions. The Divisions menu lists the ones you have, and Sales &amp; inventory needs Honda Kerala or AMZES. Ask an admin to change your divisions from Settings → People; the change applies from your next sign-in.</dd>
+    <dt>How do I limit someone to their own division?</dt><dd>Settings → People: click the divisions shown on their row, tick the right ones, then Send by e-mail. Or e-mail <code>divisions &lt;user id&gt; HONDA</code> to mml@bpropms.in from your own address.</dd>
+    <dt>Where is the login report?</dt><dd>Settings → Sign-in report. Everyone sees the sign-ins made on their own device; admins see the report across users once the sign-in log service is connected.</dd>
+    <dt>A change I expect is not showing.</dt><dd>Click <b>Refresh</b> in the bar. It reloads with fresh data and picks up a new version if one was published.</dd>
     <dt>Who do I contact?</dt><dd>mml@bpropms.in for access and sign-in; your division's HOD for figures; BPro (www.bpropms.com) for the hub itself.</dd>
   </dl>
 </section>
@@ -437,7 +461,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <dt>What happens if two super admins publish account changes at the same time?</dt><dd>The second publish is refused with "the file changed on GitHub meanwhile; try again". Nothing is lost; the second person simply publishes again.</dd>
     <dt>Can the request code in an access e-mail be forged?</dt><dd>It can be typed by anyone, which is why the super admin reviews every request and the new password is sent to the e-mail address in the request, not to whoever sent it.</dd>
     <dt>What does a requester receive, and when?</dt><dd>An acknowledgement with the reference within about ten minutes of sending the request, then, once approved, an e-mail from mml@bpropms.in with the user ID, a temporary password and the hub's address. Both go to the work e-mail typed in the form.</dd>
-    <dt>Can I approve from my phone?</dt><dd>Yes. Reply "approve" to the request e-mail from the hub mailbox, or send a new e-mail to mml@bpropms.in with the subject "approve" and the references in the body. The hub acts within about ten minutes.</dd>
+    <dt>Can I approve from my phone?</dt><dd>Yes. Reply "approve" to the request e-mail from the hub mailbox (add "for HONDA,AMZES" to limit the divisions), or send a new e-mail to mml@bpropms.in with the subject "approve" and the references in the body. The hub acts within about ten minutes.</dd>
+    <dt>Can two admins change the same person at once?</dt><dd>Yes. Each e-mail is applied in turn; the later one wins, and both appear in the Account changes log with who sent them.</dd>
     <dt>Why does "Thought for the day" change every seven seconds?</dt><dd>Seven quotes, seven seconds each. Hover it to pause, or use the dots. Under a reduced-motion setting it stays still.</dd>
     <dt>Why is a bill sometimes counted as negative?</dt><dd>In a few bills the discount exceeds the bill, so the true amount is negative, but Tally's export drops the minus sign. The build detects these from each bill's ledger arithmetic; that is what makes the totals match the Grand Total.</dd>
     <dt>Why does Marthandam's export look different from the others?</dt><dd>Its discounts are exported as negative amounts while the other units export them as positive. The build uses the size of the amount, so both reconcile.</dd>
@@ -457,6 +482,8 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <tr><td>The update message keeps reappearing</td><td>An old tab is still open</td><td>Close every tab of the hub, open it once more and tap Update.</td></tr>
     <tr><td>A report's QR code says the figures do not match</td><td>Data was reloaded since the report was made</td><td>Expected: the report is a snapshot. Build a fresh one.</td></tr>
     <tr><td>The sidebar covers the page on a small laptop</td><td>Sidebar mode below 900 px becomes a drawer</td><td>Use the ☰ button, or switch to the top bar in Settings.</td></tr>
+    <tr><td>A page sends me back to the hub with a note</td><td>The page is outside the divisions on your account</td><td>Ask an admin to add the division from Settings → People, then sign out and in again.</td></tr>
+    <tr><td>An account change sent by e-mail has not been applied</td><td>The e-mail went to someone else, or was sent from an address the hub does not know</td><td>Send it to mml@bpropms.in from your own admin address, one change per line. The log under Settings → Account changes shows what was applied.</td></tr>
     <tr><td>Publishing accounts says the token was not accepted</td><td>Token expired or lacks Contents: write</td><td>Create a new fine-grained token for the repository with Contents read and write, paste it again.</td></tr></table>
 </section>
 
@@ -465,6 +492,10 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <h1>Version history</h1>
   <p class="lead">Each release raises the app version; installed copies show an update message with the notes.</p>
   <table class="version"><tr><th>Version</th><th>Date</th><th>What changed</th></tr>
+    <tr><td>2026.10.15j</td><td>15 Oct 2026</td><td>User manual v1.4; the division editor on the People page opens under the table.</td></tr>
+    <tr><td>2026.10.15i</td><td>15 Oct 2026</td><td>Access by division: viewer accounts limited to chosen divisions; the request form asks which; the menu, division dashboards and Sales &amp; inventory follow the account's scope; division editor on the People page.</td></tr>
+    <tr><td>2026.10.15h</td><td>15 Oct 2026</td><td>Refresh in the bar; People page for admins as well as super admins, with roles, resets, additions and removals applied by one e-mail; Account changes log; sign-in report.</td></tr>
+    <tr><td>2026.10.15g</td><td>15 Oct 2026</td><td>Audit hardening of the mailbox clerk: masked addresses in logs, acknowledgement cap, administrator reset from the Actions tab.</td></tr>
     <tr><td>2026.10.15f</td><td>15 Oct 2026</td><td>Every access request is acknowledged to the requester as soon as it is listed; the administrator is reminded once a day of requests waiting more than a day.</td></tr>
     <tr><td>2026.10.15e</td><td>15 Oct 2026</td><td>Approvals by e-mail: "approve" or "decline" to the hub mailbox creates the account and e-mails the user ID and password. Password resets automatic. Approve by e-mail / Decline by e-mail on the People page.</td></tr>
     <tr><td>2026.10.15d</td><td>15 Oct 2026</td><td>User manual v1.2.</td></tr>
@@ -486,13 +517,15 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
     <tr><td>2026.10.14</td><td>14 Oct 2026</td><td>Landing and sign-in page; hub moves behind sign-in. Custom domain mmlpbi.bpropms.in.</td></tr>
     <tr><td>2026.10.13</td><td>13 Oct 2026</td><td>Division dashboards for nine divisions; installable app with update message; BPro branding, warm palette and QR verification on every download; reconciliation note PDF on letterhead; financial position panel.</td></tr>
     <tr><td>2026.10.12</td><td>12 Oct 2026</td><td>HD Attingal pilot dashboard; multi-company data model; hub landing page; report builder with subtotals and grand totals; HOD action tracker copy.</td></tr></table>
-  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15g. Changes since v1.2: approvals by e-mail with no token, automatic password resets, the acknowledgement and reminder e-mails, the People figure and steps, two FAQ entries, and the version history.</p>
+  <p>This manual is version __VERSION__, issued __DATE__, document __DOCID__. It describes app version 2026.10.15j. Changes since v1.3: access by division (roles table, the new section in Getting started, the request form), the Refresh control, the People page for admins with the division editor and the e-mail route for every change, the Account changes log, the Sign-in report, and new FAQ and troubleshooting entries.</p>
 </section>
 
 <!-- ======================= 17 GLOSSARY ======================= -->
 <section class="chapter glossary">
   <h1>Glossary</h1>
   <div><dt>AMC</dt><dd> — annual maintenance contract; AMC service bills are counted as service jobs.</dd></div>
+  <div><dt>Admin</dt><dd> — an account that manages people (roles, divisions, resets, additions, removals, approvals) for every account except super admins.</dd></div>
+  <div><dt>Divisions (of an account)</dt><dd> — the list of divisions a viewer may open: All divisions, or a chosen set; set on approval and changed from Settings → People.</dd></div>
   <div><dt>Division group</dt><dd> — a consolidation page showing several divisions together (Automotive, Parts &amp; distribution, Office automation, People).</dd></div>
   <div><dt>Document ID</dt><dd> — the code printed on every hub document (RN-…, MGR-…, UM-…) that the verify page checks.</dd></div>
   <div><dt>Fingerprint</dt><dd> — the SHA-256 hash of a file, used to confirm a digital copy is unchanged.</dd></div>
@@ -506,7 +539,7 @@ figcaption::before { content: "Figure " counter(fig) " · "; font-weight: 700; c
   <div><dt>Net revenue</dt><dd> — income ledgers minus discounts, without GST.</dd></div>
   <div><dt>Register</dt><dd> — TallyPrime's Service Bill Register export, one per company per financial year.</dd></div>
   <div><dt>Stock summary</dt><dd> — TallyPrime's closing stock report at a balance date, by stock group and item.</dd></div>
-  <div><dt>Super admin</dt><dd> — the account that manages people and approves access requests.</dd></div>
+  <div><dt>Super admin</dt><dd> — the account with every right, including over admins and super admins, and the token route for publishing.</dd></div>
   <div><dt>Voucher type</dt><dd> — Tally's bill category: service bill, AMC service bill, spare sale invoice, local sales, branch transfer.</dd></div>
 </section>
 
