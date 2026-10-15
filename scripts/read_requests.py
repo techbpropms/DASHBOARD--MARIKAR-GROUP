@@ -202,14 +202,22 @@ def parse(msg):
             seen.add(r['ref'])
             r.update({'received': received, 'from': sender, 'mid': str(msg.get('Message-ID', '')).strip()})
             reqs.append(r)
-    cmd = command_in(text)
-    command = None
+    # A command word in the subject or the first typed lines applies to every request reference the e-mail names
+    # (a reply's subject names one; a composed e-mail can list several in its body).
+    cmd = command_in(re.sub(r'^\s*(re|fwd?|fw):\s*', '', subject, flags=re.I)) or command_in(text)
+    commands = []
     if cmd:
-        m = REF.search(subject) or REF.search(text)
-        if m:
-            command = {'ref': m.group(1), 'action': cmd[0], 'role': cmd[1],
-                       'from': sender, 'in_reply_to': str(msg.get('In-Reply-To', '')).strip(), 'authenticated': authenticated(msg), 'received': received}
-    return reqs, command
+        refs = []
+        for r in REF.findall(subject) + REF.findall('\n'.join(typed_lines(text, 20))):
+            if r not in refs:
+                refs.append(r)
+        if not refs:
+            m = REF.search(text)
+            refs = [m.group(1)] if m else []
+        for r in refs:
+            commands.append({'ref': r, 'action': cmd[0], 'role': cmd[1], 'from': sender, 'in_reply_to': str(msg.get('In-Reply-To', '')).strip(),
+                             'authenticated': authenticated(msg), 'received': received})
+    return reqs, commands
 
 
 def folders(box):
@@ -327,17 +335,17 @@ def main():
     commands, added, changed = [], [], False
     from_approvers = hub_mails = 0
     for msg, ours in messages:
-        reqs, cmd = parse(msg)
+        reqs, cmds = parse(msg)
         if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers:
             from_approvers += 1
             # what the approver's e-mail looked like to the clerk (first typed line only, shortened)
-            print(f"  approver e-mail: ref {'found' if REF.search(str(msg.get('Subject', ''))) or REF.search(text_of(msg)) else 'missing'}, "
-                  f"first line {first_line(text_of(msg))[:40]!r}, command {'yes' if cmd else 'no'}")
-        if reqs or cmd:
+            print(f"  approver e-mail: {len(cmds)} reference(s) with a command, first line {first_line(text_of(msg))[:40]!r}")
+        if reqs or cmds:
             hub_mails += 1
-        if cmd and ours:
-            # sent from the mailbox itself: the administrator signed in to it, which is proof enough
-            cmd['from'] = MAIL_USER.lower(); cmd['authenticated'] = True
+        if ours:
+            for cmd in cmds:
+                # sent from the mailbox itself: the administrator signed in to it, which is proof enough
+                cmd['from'] = MAIL_USER.lower(); cmd['authenticated'] = True
         for r in reqs:
             if r['ref'] not in known:
                 known.add(r['ref']); pending.append(r); added.append(r)
@@ -348,8 +356,7 @@ def main():
                 for p in pending:
                     if p['ref'] == r['ref'] and not p.get('mid') and r.get('mid'):
                         p['mid'] = r['mid']; mids.add(r['mid']); changed = True
-        if cmd:
-            commands.append(cmd)
+        commands.extend(cmds)
     changed = changed or bool(added)
 
     def settle(req, status, **extra):
