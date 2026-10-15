@@ -1,7 +1,9 @@
 {
-  "version": "2026.10.15g",
-  "title": "User manual v1.3",
+  "version": "2026.10.15h",
+  "title": "Refresh, people management, sign-in report",
   "notes": [
-    "The manual now covers approvals by e-mail, automatic password resets and the acknowledgement e-mails"
+    "A Refresh control in the bar reloads the page with fresh data and picks up new versions",
+    "Super admins and admins change roles, reset passwords, add and remove people from Settings > People, applied by one e-mail",
+    "Settings shows every account change the hub has made, and a sign-in report once the log service is connected"
   ]
 }

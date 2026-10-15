@@ -13,6 +13,11 @@ the mailbox over IMAP and:
      assets/auth.js and e-mails the user ID and temporary password to the requester; "decline" sends a
      courteous refusal. Either way the request moves to `handled`.
 
+  4. acts on account-management lines from a super admin or an admin: "role <user id> <viewer|admin|superadmin>",
+     "remove <user id>", "reset <user id>" and "add <user id> <Full name> [as admin]". The person concerned is told
+     by e-mail; an admin may not touch super admin accounts or grant that role. Every change is logged in the
+     store's `log`, which Settings > People shows.
+
 Who may approve: the super admin accounts in assets/auth.js, the hub mailbox itself, and any address in the
 APPROVERS variable (comma separated). A reply counts only if it comes from one of those addresses AND either
 it is a true reply (In-Reply-To names the request e-mail) or the mailbox's Authentication-Results header
@@ -50,6 +55,7 @@ CODE = re.compile(r'MGQ1\.([A-Za-z0-9_-]{20,})')
 REF = re.compile(r'\b([AP]R-\d{8}-[0-9A-F]{4})\b')
 COMMAND = re.compile(r'^\W*(approve|approved|ok|okay|yes|decline|declined|reject|rejected)\b(?P<rest>.*)$', re.I)
 ROLE = re.compile(r'\b(viewer|admin|superadmin|super admin)\b', re.I)
+MGMT = re.compile(r'^\W*(role|remove|reset|add)\s+<?([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})>?\s*(.*?)\s*$', re.I)
 KEEP = ('ref', 'kind', 'name', 'email', 'unit', 'scope', 'title', 'reason', 'at')
 ROUNDS = 210000
 ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
@@ -82,6 +88,26 @@ class Accounts:
 
     def superadmins(self):
         return [m.group(1).lower() for m in LINE_RE.finditer(self.src) if m.group(3) == 'superadmin']
+
+    def admins(self):
+        return [m.group(1).lower() for m in LINE_RE.finditer(self.src) if m.group(3) == 'admin']
+
+    def set_role(self, uid, role):
+        m = next((m for m in LINE_RE.finditer(self.src) if m.group(1).lower() == uid.lower()), None)
+        if not m:
+            return False
+        line = self.src[m.start():m.end()]
+        self.src = self.src[:m.start()] + line.replace(f"role: '{m.group(3)}'", f"role: '{role}'", 1) + self.src[m.end():]
+        self.changed = True
+        return True
+
+    def remove(self, uid):
+        m = next((m for m in LINE_RE.finditer(self.src) if m.group(1).lower() == uid.lower()), None)
+        if not m:
+            return False
+        self.src = self.src[:m.start()] + self.src[m.end():]
+        self.changed = True
+        return True
 
     @staticmethod
     def password():
@@ -223,7 +249,14 @@ def parse(msg):
         for r in refs:
             commands.append({'ref': r, 'action': cmd[0], 'role': cmd[1], 'from': sender, 'in_reply_to': str(msg.get('In-Reply-To', '')).strip(),
                              'authenticated': authenticated(msg), 'received': received})
-    return reqs, commands
+    # account-management lines: "role x@y admin", "remove x@y", "reset x@y", "add x@y Full Name as admin"
+    mgmt = []
+    for line in typed_lines(text, 40):
+        m = MGMT.match(line)
+        if m:
+            mgmt.append({'action': m.group(1).lower(), 'target': m.group(2).lower(), 'arg': m.group(3), 'from': sender,
+                         'authenticated': authenticated(msg), 'received': received})
+    return reqs, commands, mgmt
 
 
 def folders(box):
@@ -355,20 +388,26 @@ def main():
     # 1. new requests and commands
     known = {p['ref'] for p in pending} | set(handled)
     mids = {p.get('mid') for p in pending if p.get('mid')}
-    commands, added, changed = [], [], False
+    commands, management, added, changed = [], [], [], False
+    log = [e for e in store.get('log', []) if isinstance(e, dict)] if isinstance(store.get('log'), list) else []
+
+    def note(action, who, by, detail=''):
+        nonlocal changed
+        log.append({'at': NOW, 'action': action, 'who': who, 'by': by, 'detail': detail}); changed = True
     from_approvers = hub_mails = 0
     for msg, ours in messages:
-        reqs, cmds = parse(msg)
-        if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers:
+        reqs, cmds, mg = parse(msg)
+        if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers | set(accounts.admins()):
             from_approvers += 1
             # what the approver's e-mail looked like to the clerk (first typed line only, shortened)
-            print(f"  approver e-mail: {len(cmds)} reference(s) with a command, first line {first_line(text_of(msg))[:40]!r}")
-        if reqs or cmds:
+            print(f"  approver e-mail: {len(cmds)} reference(s) with a command, {len(mg)} management line(s), first line {first_line(text_of(msg))[:40]!r}")
+        if reqs or cmds or mg:
             hub_mails += 1
         if ours:
-            for cmd in cmds:
+            for cmd in cmds + mg:
                 # sent from the mailbox itself: the administrator signed in to it, which is proof enough
                 cmd['from'] = MAIL_USER.lower(); cmd['authenticated'] = True
+        management.extend(mg)
         for r in reqs:
             if r['ref'] not in known:
                 known.add(r['ref']); pending.append(r); added.append(r)
@@ -408,7 +447,7 @@ def main():
         elif acct:
             newpw = accounts.add(acct['id'], acct['name'], acct['role'])
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
-            settle(req, 'reset', by='automatic', email=acct['id'].lower())
+            settle(req, 'reset', by='automatic', email=acct['id'].lower()); note('reset', acct['id'].lower(), 'forgot password', req['ref'])
             print(f"  reset {req['ref']} for {mask(acct['id'])}: new password e-mailed")
         else:
             mailer.send(req['email'], 'Marikar hub: password reset request', f"A password reset was requested for {req['email']}, but no hub account uses this ID. To get access, open {HUB_URL} and choose Request access.\n\nIf you did not ask for this, you can ignore this e-mail.\n\nRegards,\nMarikar Group performance hub")
@@ -430,11 +469,11 @@ def main():
             existed = accounts.find(req['email'])
             newpw = accounts.add(existed['id'] if existed else req['email'], existed['name'] if existed else req.get('name', req['email']), existed['role'] if existed else role)
             mailer.send(req['email'], 'Marikar hub: your access', welcome(req.get('name'), req['email'], newpw, reset=bool(existed)))
-            settle(req, 'approved', by=cmd['from'], role=existed['role'] if existed else role)
+            settle(req, 'approved', by=cmd['from'], role=existed['role'] if existed else role); note('approved', req['email'], cmd['from'], f"{req['ref']} as {existed['role'] if existed else role}")
             print(f"  approved {req['ref']} ({mask(req['email'])}, {existed['role'] if existed else role}) on {mask(cmd['from'])}'s reply; password e-mailed")
         else:
             mailer.send(req['email'], f"Marikar hub: access request {req['ref']}", f"Dear {(req.get('name') or 'colleague').split(' ')[0]},\n\nThank you for your request ({req['ref']}). We are not able to approve it at this time. If you believe this is a mistake, reply to this e-mail with your reporting manager copied.\n\nRegards,\nMarikar Group performance hub administrator")
-            settle(req, 'declined', by=cmd['from'])
+            settle(req, 'declined', by=cmd['from']); note('declined', req['email'], cmd['from'], req['ref'])
             print(f"  declined {req['ref']} ({mask(req['email'])}) on {mask(cmd['from'])}'s reply")
         # the same person sometimes sends twice: the other copies are settled with this one
         for twin in pending:
@@ -449,10 +488,73 @@ def main():
             newpw = accounts.add(acct['id'], acct['name'], acct['role'])
             mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
             ref = f"PR-{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d')}-{secrets.token_hex(2).upper()}"
-            handled[ref] = {'status': 'reset', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True
+            handled[ref] = {'status': 'reset', 'at': NOW, 'by': 'administrator', 'email': acct['id'].lower()}; changed = True; note('reset', acct['id'].lower(), 'administrator (Actions tab)', ref)
             print(f"  reset {ref} for {mask(acct['id'])} on the administrator's instruction: new password e-mailed")
         else:
             print(f"  reset requested for {mask(forced)}: no such account")
+
+    # 3c. account management by e-mail: super admins and the mailbox may do anything; an admin may not touch a super
+    #     admin account or grant that role. A line is acted on once (same action, target and sender are skipped).
+    ROLES = ('viewer', 'admin', 'superadmin')
+    done_keys = {(e.get('action'), e.get('who'), e.get('by'), e.get('detail')) for e in log}
+    admin_senders = set(accounts.admins())
+    for m in management:
+        sender, target, act = m['from'], m['target'], m['action']
+        full = sender in approvers
+        limited = sender in admin_senders and not full
+        if not (full or limited):
+            print(f"  ignored '{act} {mask(target)}' from {mask(sender)}: not an administrator"); continue
+        if not m['authenticated']:
+            print(f"  ignored '{act} {mask(target)}' from {mask(sender)}: sender not verified"); continue
+        acct = accounts.find(target)
+        arg = m['arg'].strip()
+        if act == 'role':
+            rm = ROLE.search(arg); role = rm.group(1).lower().replace(' ', '') if rm else ''
+            if not acct or role not in ROLES:
+                print(f"  ignored 'role {mask(target)}': {'no such account' if not acct else 'no such role'}"); continue
+            if limited and (acct['role'] == 'superadmin' or role == 'superadmin'):
+                print(f"  ignored 'role {mask(target)}' from {mask(sender)}: an admin cannot change super admin access"); continue
+            if acct['role'] == role or ('role', target, sender, f"{acct['role']} -> {role}") in done_keys:
+                continue
+            accounts.set_role(acct['id'], role)
+            mailer.send(acct['id'], 'Marikar hub: your access level', f"Dear {acct['name'].split(' ')[0]},\n\nYour access level on the Marikar Group performance hub is now: {role}. It applies from your next sign-in.\n\nRegards,\nMarikar Group performance hub")
+            note('role', acct['id'].lower(), sender, f"{acct['role']} -> {role}")
+            print(f"  role {mask(acct['id'])}: {acct['role']} -> {role} on {mask(sender)}'s instruction")
+        elif act == 'remove':
+            if not acct:
+                print(f"  ignored 'remove {mask(target)}': no such account"); continue
+            if limited and acct['role'] == 'superadmin':
+                print(f"  ignored 'remove {mask(target)}' from {mask(sender)}: an admin cannot remove a super admin"); continue
+            if acct['id'].lower() == sender or (acct['role'] == 'superadmin' and len(accounts.superadmins()) == 1):
+                print(f"  ignored 'remove {mask(target)}': cannot remove yourself or the last super admin"); continue
+            accounts.remove(acct['id'])
+            mailer.send(acct['id'], 'Marikar hub: access removed', f"Dear {acct['name'].split(' ')[0]},\n\nYour account on the Marikar Group performance hub has been removed. If you believe this is a mistake, write to {MAIL_USER}.\n\nRegards,\nMarikar Group performance hub")
+            note('removed', acct['id'].lower(), sender, acct['role'])
+            print(f"  removed {mask(acct['id'])} on {mask(sender)}'s instruction")
+        elif act == 'reset':
+            if not acct:
+                print(f"  ignored 'reset {mask(target)}': no such account"); continue
+            if limited and acct['role'] == 'superadmin':
+                print(f"  ignored 'reset {mask(target)}' from {mask(sender)}: an admin cannot reset a super admin"); continue
+            key = ('reset', acct['id'].lower(), sender, m['received'][:16])
+            if key in done_keys:
+                continue
+            newpw = accounts.add(acct['id'], acct['name'], acct['role'])
+            mailer.send(acct['id'], 'Marikar hub: your new password', welcome(acct['name'], acct['id'], newpw, reset=True))
+            note('reset', acct['id'].lower(), sender, m['received'][:16])
+            print(f"  reset {mask(acct['id'])} on {mask(sender)}'s instruction: new password e-mailed")
+        elif act == 'add':
+            rm = re.search(r'\s+as\s+(viewer|admin|superadmin|super admin)\s*$', arg, re.I)
+            role = rm.group(1).lower().replace(' ', '') if rm else 'viewer'
+            name = (arg[:rm.start()] if rm else arg).strip().strip('"\'') or target
+            if acct:
+                print(f"  ignored 'add {mask(target)}': account exists (use role or reset)"); continue
+            if limited and role == 'superadmin':
+                print(f"  ignored 'add {mask(target)}' from {mask(sender)}: an admin cannot create a super admin"); continue
+            newpw = accounts.add(target, name, role)
+            mailer.send(target, 'Marikar hub: your access', welcome(name, target, newpw))
+            note('added', target, sender, f"{name} as {role}")
+            print(f"  added {mask(target)} as {role} on {mask(sender)}'s instruction; password e-mailed")
 
     # 4. acknowledge every newly listed access request, once per request, once per address, at most ten a run:
     #    the sign-in form accepts any address, so this must never become a way to send mail to strangers in bulk
@@ -497,7 +599,7 @@ def main():
         return
     os.makedirs(os.path.dirname(args.store), exist_ok=True)
     with open(args.store, 'w', encoding='utf-8') as f:
-        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled}, f, ensure_ascii=False, indent=2); f.write('\n')
+        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled, 'log': log[-300:]}, f, ensure_ascii=False, indent=2); f.write('\n')
     accounts.save()
 
 

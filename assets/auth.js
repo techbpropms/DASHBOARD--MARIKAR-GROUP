@@ -67,8 +67,23 @@
       } catch (e) { return { sent: false }; }
     },
   };
+  // Sign-in log. Every successful sign-in is noted on this device (last 50) and, when SIGNINS.endpoint is set to the
+  // small Google Apps Script in server/signin-log.gs, posted there so Settings can show a report across users.
+  const SIGNINS = { endpoint: '' };
+  const device = () => { const ua = navigator.userAgent; const os = /Android/i.test(ua) ? 'Android' : /iPhone|iPad/i.test(ua) ? 'iPhone/iPad' : /Windows/i.test(ua) ? 'Windows' : /Mac OS/i.test(ua) ? 'Mac' : /Linux/i.test(ua) ? 'Linux' : 'other'; const br = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : /Firefox\//.test(ua) ? 'Firefox' : 'browser'; return `${br} on ${os}${matchMedia('(display-mode: standalone)').matches ? ' (app)' : ''}`; };
+  const noteSignIn = (s) => {
+    const row = { at: new Date().toISOString(), id: s.id, name: s.name, role: s.role, device: device() };
+    try { const k = 'mg-signins'; const list = JSON.parse(localStorage.getItem(k) || '[]'); list.push(row); localStorage.setItem(k, JSON.stringify(list.slice(-50))); } catch (e) { /* storage blocked */ }
+    if (SIGNINS.endpoint) { try { fetch(SIGNINS.endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(row), keepalive: true }).catch(() => {}); } catch (e) { /* offline */ } }
+  };
   const Auth = {
     user: read,
+    signins: {
+      config: SIGNINS,
+      local: () => { try { return JSON.parse(localStorage.getItem('mg-signins') || '[]'); } catch (e) { return []; } },
+      // The report for the last `days` days from the endpoint: rows of {at, id, name, role, device}, newest first.
+      report: async (days) => { if (!SIGNINS.endpoint) return null; const r = await fetch(`${SIGNINS.endpoint}?report=${days || 30}`, { cache: 'no-store' }); if (!r.ok) throw new Error('report ' + r.status); const j = await r.json(); return (Array.isArray(j) ? j : j.rows || []).sort((a, b) => (b.at || '').localeCompare(a.at || '')); },
+    },
     requests: Requests,
     exists: (id) => USERS.some((u) => u.id === String(id || '').trim().toLowerCase()),
     ROUNDS,
@@ -84,6 +99,7 @@
       if (!u || h !== u.hash) return null;
       const s = { id: u.id, name: u.name, role: u.role, exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
       try { (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage blocked */ }
+      noteSignIn(s);
       return s;
     },
     signOut() {

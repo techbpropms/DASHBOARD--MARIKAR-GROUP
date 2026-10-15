@@ -51,6 +51,11 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
 
 /* ----- right cluster */
 .mg-right { flex: none; margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.mg-refresh { width: 34px; height: 34px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.85); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.mg-refresh svg { width: 17px; height: 17px; }
+.mg-refresh:hover { background: rgba(255,255,255,.18); }
+.mg-refresh.is-busy svg { animation: mg-spin .8s linear infinite; }
+@keyframes mg-spin { to { transform: rotate(360deg); } }
 .mg-theme { display: inline-flex; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 3px; }
 .mg-theme button { width: 32px; height: 28px; border: 0; border-radius: 999px; background: transparent; color: rgba(255,255,255,.8); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 .mg-theme button svg { width: 16px; height: 16px; }

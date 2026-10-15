@@ -136,6 +136,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     <h2>People</h2>
     <p class="muted">Who can sign in to the hub. Passwords are never stored: each account keeps only a salted fingerprint. Changes made here are queued below and go live when you publish them.</p>
     <div class="tbl"><table id="people-table"><thead><tr><th>Name</th><th>User ID</th><th>Role</th><th></th></tr></thead><tbody></tbody></table></div>
+    <p class="muted" id="people-hint">Change a role with the drop-down, or use Reset password and Remove. Changes are queued below and go out as one e-mail to the hub mailbox; the hub applies them within about ten minutes and tells the people concerned.</p>
 
     <h3>Access and reset requests</h3>
     <div class="inbox" id="inbox">
@@ -172,8 +173,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <b>Changes waiting to go live</b>
       <ul id="pending-list"></ul>
       <div class="actions">
-        <button class="btn" type="button" id="publish">Publish to the site</button>
-        <button class="btn sec" type="button" id="mail">Send to BPro instead</button>
+        <button class="btn" type="button" id="mail">Send by e-mail</button>
+        <button class="btn sec" type="button" id="publish">Publish with token</button>
         <button class="btn sec" type="button" id="discard">Discard</button>
       </div>
       <details id="token-box">
@@ -185,9 +186,23 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     </div>
   </section>
 
+  <section class="panel" id="changes" hidden>
+    <h2>Account changes</h2>
+    <p class="muted" id="changes-note">Every approval, refusal, reset, role change, addition and removal the hub has carried out, newest first.</p>
+    <div class="tbl"><table id="changes-table"><thead><tr><th>When</th><th>Action</th><th>Account</th><th>By</th><th>Detail</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="panel" id="signins">
+    <h2>Sign-in report</h2>
+    <p class="muted" id="signins-note"></p>
+    <div class="tbl"><table id="signins-table"><thead><tr><th>Person</th><th>Role</th><th>Last sign-in</th><th>Device</th><th>Sign-ins</th></tr></thead><tbody></tbody></table></div>
+    <div class="actions" style="margin-top:10px"><button class="btn sec sm" type="button" id="signins-csv" hidden>Download CSV</button><label class="inline" id="signins-days-wrap" hidden>Period <select id="signins-days"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></label></div>
+    <div class="tbl" id="signins-mine-wrap" style="margin-top:14px"><h3 style="margin:0 0 6px">Sign-ins on this device</h3><table id="signins-mine"><thead><tr><th>When</th><th>Person</th><th>Device</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
   <section class="panel" id="no-people" hidden>
     <h2>People</h2>
-    <p class="muted">Accounts are managed by the super admin. To get someone access, write to <a href="mailto:mml@bpropms.in?subject=Marikar%20hub%20access">mml@bpropms.in</a>.</p>
+    <p class="muted">Accounts are managed by the super admin and the admins. To get someone access, ask them to use <b>Request access</b> on the sign-in page, or write to <a href="mailto:mml@bpropms.in?subject=Marikar%20hub%20access">mml@bpropms.in</a>.</p>
   </section>
 
   <footer class="credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
@@ -206,76 +221,116 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   document.querySelectorAll('#nav-choices .choice').forEach((b) => b.addEventListener('click', () => { if (MGShell.nav() !== b.dataset.n) { MGShell.nav(b.dataset.n); location.reload(); } }));
   if (window.MGShell) paintNav(); else document.addEventListener('DOMContentLoaded', paintNav);
 
-  // ----- people (super admin only)
-  if (user.role !== 'superadmin') { $('no-people').hidden = false; return; }
-  $('people').hidden = false;
+  // ----- sign-in report (everyone sees this device's list; admins and super admins see the report across users)
+  const fmtWhen = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); };
+  const roleName = (r) => r === 'superadmin' ? 'Super admin' : r === 'admin' ? 'Admin' : 'Viewer';
+  const isSuper = user.role === 'superadmin', isAdmin = user.role === 'admin', manages = isSuper || isAdmin;
+  (function signinReport() {
+    const mine = MGAuth.signins.local().slice().reverse();
+    const tb = document.querySelector('#signins-mine tbody'); tb.replaceChildren();
+    mine.slice(0, 20).forEach((r) => { const tr = document.createElement('tr'); [fmtWhen(r.at), r.name || r.id, r.device || ''].forEach((t) => { const td = document.createElement('td'); td.textContent = t; tr.appendChild(td); }); tb.appendChild(tr); });
+    if (!mine.length) { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 3; td.className = 'muted'; td.textContent = 'No sign-ins recorded on this device yet.'; tr.appendChild(td); tb.appendChild(tr); }
+    const note = $('signins-note'), table = $('signins-table');
+    if (!manages) { note.textContent = 'Your recent sign-ins on this device. Administrators see the report across users.'; table.hidden = true; return; }
+    if (!MGAuth.signins.config.endpoint) {
+      note.textContent = 'The report across users switches on once the sign-in log service is connected (five minutes: see README, "Sign-in report"). Until then only this device\'s sign-ins are listed below.';
+      table.hidden = true; return;
+    }
+    $('signins-csv').hidden = false; $('signins-days-wrap').hidden = false;
+    let rows = [];
+    const load = async () => {
+      const days = Number($('signins-days').value);
+      note.textContent = 'Loading…';
+      try { rows = await MGAuth.signins.report(days); } catch (e) { note.textContent = 'The sign-in log could not be read (' + e.message + ').'; return; }
+      const by = new Map();
+      rows.forEach((r) => { const k = (r.id || '').toLowerCase(); const e = by.get(k) || { id: k, name: r.name, role: r.role, last: '', device: '', n: 0 }; e.n += 1; if ((r.at || '') > e.last) { e.last = r.at; e.device = r.device; e.name = r.name || e.name; e.role = r.role || e.role; } by.set(k, e); });
+      const list = [...by.values()].sort((a, b) => b.last.localeCompare(a.last));
+      const body = table.querySelector('tbody'); body.replaceChildren();
+      list.forEach((e) => { const tr = document.createElement('tr'); [e.name || e.id, roleName(e.role), fmtWhen(e.last), e.device, String(e.n)].forEach((t, i) => { const td = document.createElement('td'); td.textContent = t; if (i === 0) td.title = e.id; tr.appendChild(td); }); body.appendChild(tr); });
+      const never = MGAuth.list().filter((a) => !by.has(a.id));
+      note.textContent = `${rows.length} sign-in${rows.length === 1 ? '' : 's'} by ${list.length} ${list.length === 1 ? 'person' : 'people'} in the last ${days} days.` + (never.length ? ` Not signed in: ${never.map((a) => a.name).join(', ')}.` : '');
+    };
+    $('signins-days').addEventListener('change', load);
+    $('signins-csv').addEventListener('click', () => {
+      const csv = ['at,id,name,role,device'].concat(rows.map((r) => [r.at, r.id, r.name, r.role, r.device].map((v) => '"' + String(v || '').replace(/"/g, '""') + '"').join(','))).join('\n');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `marikar-hub-signins-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+    });
+    load();
+  })();
+
+  // ----- people (super admin and admin)
+  if (!manages) { $('no-people').hidden = false; return; }
+  $('people').hidden = false; $('changes').hidden = false;
   const REPO = { owner: 'techbpropms', repo: 'DASHBOARD--MARIKAR-GROUP', path: 'assets/auth.js', inbox: 'data/requests/inbox.json', branch: 'main' };
+  const MAILBOX = MGAuth.requests.config.to;
   const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
   const A = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
   const pick = (n) => Array.from(crypto.getRandomValues(new Uint8Array(n)), (b) => A[b % A.length]).join('');
   const line = (u) => `    { id: '${u.id}', name: ${JSON.stringify(u.name)}, role: '${u.role}', salt: '${u.salt}', hash: '${u.hash}' },`;
   const lineRe = (id) => new RegExp(`\\n[ \\t]*\\{ id: '${id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}',[^\\n]*`);
-  // The queue: account lines to add and ids to remove, applied to the live auth.js at publish time.
-  const queue = { add: [], remove: [], handled: {} };
+  // The queue: account commands (role / remove / reset / add) plus requests marked handled. They go out as one e-mail
+  // to the hub mailbox, or, for a super admin holding a GitHub token, are written to the site directly.
+  const queue = { cmds: [], handled: {} };
   let accounts = MGAuth.list();
+  const canTouch = (a) => isSuper || a.role !== 'superadmin';
+  const queued = (action, id) => queue.cmds.find((c) => c.action === action && c.id === id);
+  const push = (cmd) => { queue.cmds = queue.cmds.filter((c) => !(c.id === cmd.id && (c.action === cmd.action || cmd.action === 'remove' || c.action === 'remove'))); queue.cmds.push(cmd); paintTable(); paintPending(); };
+  if (!isSuper) { $('publish').hidden = true; $('token-box').hidden = true; }
 
-  const roleName = (r) => r === 'superadmin' ? 'Super admin' : r === 'admin' ? 'Admin' : 'Viewer';
   function paintTable() {
     const tb = document.querySelector('#people-table tbody'); tb.replaceChildren();
-    const rows = accounts.filter((a) => !queue.remove.includes(a.id)).concat(queue.add.filter((a) => !accounts.some((x) => x.id === a.id)).map((a) => ({ ...a, pending: true })));
+    const rows = accounts.filter((a) => !queued('remove', a.id)).concat(queue.cmds.filter((c) => c.action === 'add' && !accounts.some((x) => x.id === c.id)).map((c) => ({ id: c.id, name: c.name, role: c.role, pending: true })));
     rows.forEach((a) => {
       const tr = document.createElement('tr');
       const td = (t) => { const c = document.createElement('td'); c.textContent = t; tr.appendChild(c); return c; };
       td(a.name + (a.pending ? ' (new)' : '')); td(a.id);
-      const r = td(''); const p = document.createElement('span'); p.className = 'pill ' + a.role; p.textContent = roleName(a.role); r.appendChild(p);
+      const r = td('');
+      const rc = queued('role', a.id);
+      if (!a.pending && canTouch(a) && a.id !== user.id) {
+        const sel = document.createElement('select'); sel.setAttribute('aria-label', 'Role of ' + a.name);
+        [['viewer', 'Viewer'], ['admin', 'Admin']].concat(isSuper ? [['superadmin', 'Super admin']] : []).forEach(([v, n]) => { const o = document.createElement('option'); o.value = v; o.textContent = n; sel.appendChild(o); });
+        sel.value = rc ? rc.role : a.role;
+        sel.addEventListener('change', () => { if (sel.value === a.role) { queue.cmds = queue.cmds.filter((c) => !(c.action === 'role' && c.id === a.id)); paintTable(); paintPending(); } else push({ action: 'role', id: a.id, role: sel.value, name: a.name }); });
+        r.appendChild(sel);
+      } else { const p = document.createElement('span'); p.className = 'pill ' + a.role; p.textContent = roleName(a.role); r.appendChild(p); }
       const act = td(''); act.className = 'act';
-      if (!a.pending) {
-        const reset = document.createElement('button'); reset.type = 'button'; reset.className = 'btn sm sec'; reset.textContent = 'Reset password';
-        reset.addEventListener('click', () => create(a.name, a.id, a.role, true));
+      if (!a.pending && canTouch(a)) {
+        const reset = document.createElement('button'); reset.type = 'button'; reset.className = 'btn sm sec'; reset.textContent = queued('reset', a.id) ? 'Reset queued' : 'Reset password';
+        reset.addEventListener('click', () => push({ action: 'reset', id: a.id, name: a.name }));
         act.append(reset, ' ');
-        if (a.id !== user.id) {
+        if (a.id !== user.id && !(a.role === 'superadmin' && accounts.filter((x) => x.role === 'superadmin').length === 1)) {
           const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'btn sm danger'; rm.textContent = 'Remove';
-          rm.addEventListener('click', () => { if (confirm(`Remove ${a.name} (${a.id})? They will not be able to sign in once published.`)) { queue.remove.push(a.id); paintTable(); paintPending(); } });
+          rm.addEventListener('click', () => { if (confirm(`Remove ${a.name} (${a.id})? They will not be able to sign in once the change is applied.`)) push({ action: 'remove', id: a.id, name: a.name }); });
           act.append(rm);
         }
       }
       tb.appendChild(tr);
     });
   }
+  const describe = (c) => c.action === 'role' ? `Make ${c.name} (${c.id}) ${roleName(c.role)}` : c.action === 'remove' ? `Remove ${c.name} (${c.id})` : c.action === 'reset' ? `New temporary password for ${c.name} (${c.id}), sent to them by e-mail` : `Add ${c.name} (${c.id}, ${roleName(c.role)}); the hub e-mails them their password`;
+  const commandLine = (c) => c.action === 'role' ? `role ${c.id} ${c.role}` : c.action === 'remove' ? `remove ${c.id}` : c.action === 'reset' ? `reset ${c.id}` : `add ${c.id} ${c.name} as ${c.role}`;
   function paintPending() {
     const ul = $('pending-list'); ul.replaceChildren();
-    queue.add.forEach((a) => { const li = document.createElement('li'); li.textContent = `${accounts.some((x) => x.id === a.id) ? 'Reset password for' : 'Add'} ${a.name} (${a.id}, ${roleName(a.role)})`; ul.appendChild(li); });
-    queue.remove.forEach((id) => { const li = document.createElement('li'); li.textContent = `Remove ${id}`; ul.appendChild(li); });
+    queue.cmds.forEach((c) => { const li = document.createElement('li'); li.textContent = describe(c); ul.appendChild(li); });
     Object.entries(queue.handled).forEach(([ref, h]) => { const li = document.createElement('li'); li.textContent = `Mark request ${ref} as ${h.status}`; ul.appendChild(li); });
-    $('pending').hidden = !(queue.add.length || queue.remove.length || Object.keys(queue.handled).length);
+    $('pending').hidden = !(queue.cmds.length || Object.keys(queue.handled).length);
   }
   function say(id, cls, lines) { const n = $(id); n.className = 'note ' + cls; n.replaceChildren(...lines.map((t) => { const p = document.createElement('p'); if (typeof t === 'string') p.textContent = t; else p.append(...t); return p; })); n.hidden = false; }
 
-  async function create(name, id, role, reset) {
-    const pw = `MG-${pick(4)}-${pick(4)}-${pick(4)}`;
-    const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
-    const hash = await MGAuth.derive(pw, salt);
-    queue.add = queue.add.filter((a) => a.id !== id); queue.remove = queue.remove.filter((x) => x !== id);
-    queue.add.push({ id, name, role, salt, hash });
-    const code = document.createElement('code'); code.textContent = pw;
-    const copy = document.createElement('button'); copy.type = 'button'; copy.className = 'btn sm sec'; copy.textContent = 'Copy';
-    copy.addEventListener('click', () => navigator.clipboard.writeText(pw).then(() => { copy.textContent = 'Copied'; }));
-    const wrap = document.createElement('span'); wrap.className = 'pw'; wrap.append(code, copy);
-    say('add-note', 'ok', [`${reset ? 'New password for' : 'Account ready for'} ${name} (${id}). Give them this temporary password now; it is shown only once and is not stored anywhere:`, [wrap], 'It starts working once you publish the change below.']);
-    paintTable(); paintPending();
-  }
   $('add').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = $('p-name').value.trim(), id = $('p-id').value.trim().toLowerCase(), role = $('p-role').value;
-    if (!name || !/^[a-z0-9._@+-]+$/.test(id)) { say('add-note', 'bad', ['Enter the person\'s name and an e-mail style user ID (letters, digits, . _ @ + -).']); return; }
-    if (accounts.some((a) => a.id === id) && !queue.remove.includes(id)) { say('add-note', 'bad', [`${id} already has an account. Use "Reset password" in the list to issue a new password.`]); return; }
-    create(name, id, role, false); $('add').reset();
+    if (!name || !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(id)) { say('add-note', 'bad', ['Enter the person\'s name and their work e-mail address (it becomes the user ID).']); return; }
+    if (role === 'superadmin' && !isSuper) { say('add-note', 'bad', ['Only a super admin can create a super admin.']); return; }
+    if (accounts.some((a) => a.id === id)) { say('add-note', 'bad', [`${id} already has an account. Change the role in the list, or use Reset password.`]); return; }
+    push({ action: 'add', id, name, role }); $('add').reset();
+    say('add-note', 'ok', [`${name} queued. Send the change below; the hub creates the account and e-mails them their user ID and temporary password.`]);
   });
-  $('discard').addEventListener('click', () => { queue.add = []; queue.remove = []; queue.handled = {}; paintInbox(); $('add-note').hidden = true; $('pub-note').hidden = true; paintTable(); paintPending(); });
+  if (!isSuper) document.querySelector('#p-role option[value="superadmin"]').remove();
+  $('discard').addEventListener('click', () => { queue.cmds = []; queue.handled = {}; $('add-note').hidden = true; $('pub-note').hidden = true; paintInbox(); paintTable(); paintPending(); });
 
   // ----- requests from the sign-in page (access and password reset)
   let current = null;
-  const fmtWhen = (iso) => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); };
   $('req-parse').addEventListener('click', () => {
     const r = MGAuth.requests.decode($('req-in').value);
     $('req-note').hidden = true;
@@ -292,9 +347,10 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const row = (k, v) => { if (!v) return; const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); };
     row('Name', r.name); row('E-mail', r.email); row('Company / division / function', r.unit); row('Access needed for', r.scope); row('Designation', r.title); row('Phone', r.phone); row('Reason', r.reason);
     row('Account', known ? `exists: ${known.name} (${roleName(known.role)})` : 'none yet');
-    $('req-role-wrap').hidden = reset; $('req-approve').textContent = reset ? (known ? 'Issue a new password here (needs token)' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve here (needs token)');
+    $('req-role-wrap').hidden = reset; $('req-approve').hidden = !isSuper; $('req-approve').textContent = reset ? (known ? 'Issue a new password here (needs token)' : 'No account with this ID') : (known ? 'Account already exists' : 'Approve here (needs token)');
     $('req-approve').disabled = reset ? !known : !!known;
     $('req-approve-mail').hidden = reset; $('req-approve-mail').disabled = !!known; $('req-decline').hidden = reset;
+    if (!isSuper) document.querySelectorAll('#req-role option[value="superadmin"]').forEach((o) => o.remove());
     $('req-card').hidden = false; $('req-card').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every 10 minutes
@@ -318,23 +374,28 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       open.addEventListener('click', () => show(r));
       li.append(pill, who, when, open); ul.appendChild(li);
     });
+    // the change log
+    const tb = document.querySelector('#changes-table tbody'); tb.replaceChildren();
+    const log = (inbox.log || []).slice().reverse().slice(0, 60);
+    log.forEach((e) => { const tr = document.createElement('tr'); [fmtWhen(e.at), e.action, e.who, e.by, e.detail || ''].forEach((t) => { const td = document.createElement('td'); td.textContent = t; tr.appendChild(td); }); tb.appendChild(tr); });
+    $('changes-note').textContent = log.length ? 'Every approval, refusal, reset, role change, addition and removal the hub has carried out, newest first.' : 'No changes recorded yet. Approvals, resets, role changes, additions and removals will be listed here.';
   }
   fetch('data/requests/inbox.json', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null).then((j) => { inbox = j && typeof j === 'object' ? j : null; paintInbox(); }).catch(() => { inbox = null; paintInbox(); });
   const settle = (status) => { if (current && current.ref) { queue.handled[current.ref] = { status, at: new Date().toISOString(), by: user.id }; paintInbox(); paintPending(); } };
+  // Approve here (token route, super admin): the account is created in this browser and published with the token.
   $('req-approve').addEventListener('click', () => {
     if (!current) return;
     const id = String(current.email).toLowerCase(), known = accounts.find((a) => a.id === id);
-    if (current.kind === 'reset') { if (known) create(known.name, id, known.role, true); }
-    else if (!known) create(current.name, id, $('req-role').value, false);
-    say('req-note', 'ok', [`${current.ref || 'Request'} approved. Give the temporary password shown above to ${current.email}, then publish.`]);
+    if (current.kind === 'reset') { if (known) push({ action: 'reset', id, name: known.name, viaToken: true }); }
+    else if (!known) push({ action: 'add', id, name: current.name, role: $('req-role').value, viaToken: true });
+    say('req-note', 'ok', [`${current.ref || 'Request'} queued. Publish with your token; the temporary password is shown after publishing.`]);
     $('req-approve').disabled = true; settle('approved');
   });
-  // By e-mail: a one-word reply to the hub mailbox, which the mailbox clerk (scripts/read_requests.py) acts on
-  // within about 10 minutes. It reads the mailbox's Sent folder too, so a reply made from the mailbox counts.
+  // By e-mail: a one-word reply to the hub mailbox, which the mailbox clerk acts on within about 10 minutes.
   const byMail = (word) => {
     if (!current) return;
     const subj = `Re: Marikar hub: access request ${current.ref || ''}${current.name ? ' (' + current.name + ')' : ''}`;
-    location.href = `mailto:${encodeURIComponent(MGAuth.requests.config.to)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(word)}`;
+    location.href = `mailto:${encodeURIComponent(MAILBOX)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(word)}`;
   };
   $('req-approve-mail').addEventListener('click', () => {
     byMail(`approve ${$('req-role').value}`);
@@ -345,23 +406,41 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     say('req-note', 'warn', [`A reply opened in your mail app: send it as it is. The hub e-mails ${current.email} a courteous refusal and takes the request off this list.`]);
   });
 
-  // ----- publishing
+  // ----- sending the queue by e-mail (everyone) or publishing with a token (super admin)
+  $('mail').addEventListener('click', () => {
+    const lines = queue.cmds.map(commandLine).concat(Object.entries(queue.handled).map(([ref, h]) => `${h.status === 'approved' ? 'approve' : 'decline'} ${ref}`));
+    if (!lines.length) return;
+    const body = lines.join('\n') + `\n\n(Sent from the People page by ${user.name}.)`;
+    location.href = `mailto:${encodeURIComponent(MAILBOX)}?subject=${encodeURIComponent('Marikar hub: account changes')}&body=${encodeURIComponent(body)}`;
+    say('pub-note', 'ok', ['An e-mail opened in your mail app: send it as it is, from your own address. The hub applies the changes within about ten minutes and e-mails the people concerned. If your mail app did not open, copy these lines into an e-mail to ' + MAILBOX + ':', [Object.assign(document.createElement('code'), { textContent: lines.join(' · ') })]]);
+    queue.cmds = []; queue.handled = {}; paintTable(); paintPending();
+  });
   const tokenKey = 'mg-gh-token';
   const token = () => { try { return sessionStorage.getItem(tokenKey) || ''; } catch (e) { return ''; } };
-  $('token-save').addEventListener('click', () => { const t = $('gh-token').value.trim(); try { if (t) sessionStorage.setItem(tokenKey, t); else sessionStorage.removeItem(tokenKey); } catch (e) { /* blocked */ } $('gh-token').value = ''; say('pub-note', t ? 'ok' : 'warn', [t ? 'Token kept for this sign-in. Click "Publish to the site".' : 'Token cleared.']); });
-  const apply = (src) => {
+  $('token-save').addEventListener('click', () => { const t = $('gh-token').value.trim(); try { if (t) sessionStorage.setItem(tokenKey, t); else sessionStorage.removeItem(tokenKey); } catch (e) { /* blocked */ } $('gh-token').value = ''; say('pub-note', t ? 'ok' : 'warn', [t ? 'Token kept for this sign-in. Click "Publish with token".' : 'Token cleared.']); });
+  async function withSecrets(c) {
+    // an add or reset applied with the token needs a password made here; it is shown once after publishing
+    const pw = `MG-${pick(4)}-${pick(4)}-${pick(4)}`; const salt = hex(crypto.getRandomValues(new Uint8Array(16))); const hash = await MGAuth.derive(pw, salt);
+    return { ...c, salt, hash, pw };
+  }
+  const apply = (src, cmds) => {
     let s = src;
-    queue.remove.forEach((id) => { s = s.replace(lineRe(id), ''); });
-    queue.add.forEach((a) => { s = s.replace(lineRe(a.id), ''); s = s.replace(/\n(\s*\];\s*\n\s*const ROUNDS)/, `\n${line(a)}\n$1`); });
-    if (!queue.add.every((a) => s.includes(`id: '${a.id}'`))) throw new Error('could not place the account line; the file layout has changed');
+    cmds.forEach((c) => {
+      if (c.action === 'remove') s = s.replace(lineRe(c.id), '');
+      else if (c.action === 'role') s = s.replace(lineRe(c.id), (m) => m.replace(/role: '[a-z]+'/, `role: '${c.role}'`));
+      else {
+        const a = accounts.find((x) => x.id === c.id);
+        s = s.replace(lineRe(c.id), ''); s = s.replace(/\n(\s*\];\s*\n\s*const ROUNDS)/, `\n${line({ id: c.id, name: c.name || (a && a.name) || c.id, role: c.role || (a && a.role) || 'viewer', salt: c.salt, hash: c.hash })}\n$1`);
+        if (!s.includes(`id: '${c.id}'`)) throw new Error('could not place the account line; the file layout has changed');
+      }
+    });
     return s;
   };
   $('publish').addEventListener('click', async () => {
-    if (!token()) { $('token-box').open = true; say('pub-note', 'warn', ['Paste a GitHub token first (or use "Send to BPro instead").']); return; }
+    if (!token()) { $('token-box').open = true; say('pub-note', 'warn', ['Paste a GitHub token first, or use "Send by e-mail".']); return; }
     const b = $('publish'); b.disabled = true; b.textContent = 'Publishing…';
     try {
       const H = { Authorization: 'Bearer ' + token(), Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
-      // Reads one file from the repository, applies a change and writes it back (the Contents API needs the sha).
       const edit = async (path, change, message) => {
         const api = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${path}`;
         const cur = await fetch(`${api}?ref=${REPO.branch}`, { headers: H });
@@ -372,37 +451,26 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
         const put = await fetch(api, { method: 'PUT', headers: H, body: JSON.stringify({ message: `${message}\n\nPublished from the hub's People page by ${user.id}.`, content: btoa(bin), sha: meta.sha, branch: REPO.branch }) });
         if (!put.ok) throw new Error(put.status === 409 ? 'the file changed on GitHub meanwhile; try again' : `GitHub refused the update (${put.status})`);
       };
-      if (queue.add.length || queue.remove.length) {
-        const what = queue.add.map((a) => (accounts.some((x) => x.id === a.id) ? 'reset ' : 'add ') + a.id).concat(queue.remove.map((id) => 'remove ' + id)).join(', ');
-        await edit(REPO.path, apply, `Accounts: ${what}`);
-        accounts = accounts.filter((a) => !queue.remove.includes(a.id)).concat(queue.add.filter((a) => !accounts.some((x) => x.id === a.id)).map(({ id, name, role }) => ({ id, name, role })));
-        queue.add = []; queue.remove = [];
+      const shown = [];
+      if (queue.cmds.length) {
+        const cmds = [];
+        for (const c of queue.cmds) { if (c.action === 'add' || c.action === 'reset') { const w = await withSecrets(c); cmds.push(w); shown.push(w); } else cmds.push(c); }
+        await edit(REPO.path, (src) => apply(src, cmds), `Accounts: ${queue.cmds.map(commandLine).join(', ')}`);
+        accounts = accounts.filter((a) => !cmds.some((c) => c.action === 'remove' && c.id === a.id)).map((a) => { const r = cmds.find((c) => c.action === 'role' && c.id === a.id); return r ? { ...a, role: r.role } : a; }).concat(cmds.filter((c) => c.action === 'add' && !accounts.some((x) => x.id === c.id)).map(({ id, name, role }) => ({ id, name, role })));
+        queue.cmds = [];
       }
       const refs = Object.keys(queue.handled);
       if (refs.length) {
-        await edit(REPO.inbox, (src) => {
-          let j; try { j = JSON.parse(src); } catch (e) { j = {}; }
-          const handled = { ...(j.handled || {}), ...queue.handled };
-          const pending = (j.pending || []).filter((r) => !handled[r.ref]);
-          return JSON.stringify({ updated: j.updated || '', pending, handled }, null, 2) + '\n';
-        }, `Requests: ${refs.map((r) => `${r} ${queue.handled[r].status}`).join(', ')}`);
+        await edit(REPO.inbox, (src) => { let j; try { j = JSON.parse(src); } catch (e) { j = {}; } const handled = { ...(j.handled || {}), ...queue.handled }; const pending = (j.pending || []).filter((r) => !handled[r.ref]); return JSON.stringify({ ...j, pending, handled }, null, 2) + '\n'; }, `Requests: ${refs.map((r) => `${r} ${queue.handled[r].status}`).join(', ')}`);
         if (inbox) { inbox.handled = { ...(inbox.handled || {}), ...queue.handled }; inbox.pending = (inbox.pending || []).filter((r) => !inbox.handled[r.ref]); }
         queue.handled = {};
       }
       paintTable(); paintPending(); paintInbox();
-      say('pub-note', 'ok', ['Published. The site rebuilds in about a minute; new passwords work after that. Installed phone apps pick it up on their next open.']);
-      $('pending').hidden = false; setTimeout(() => { if (!queue.add.length && !queue.remove.length && !Object.keys(queue.handled).length) $('pending').hidden = true; }, 8000);
+      const pws = shown.map((w) => { const code = document.createElement('code'); code.textContent = `${w.id}: ${w.pw}`; return [code]; });
+      say('pub-note', 'ok', ['Published. The site rebuilds in about a minute.'].concat(pws.length ? ['Temporary passwords, shown once; pass them on by a separate channel:'] : []).concat(pws));
     } catch (err) {
-      say('pub-note', 'bad', [`Not published: ${err.message}.`, 'Nothing was changed. You can try again or use "Send to BPro instead".']);
-    } finally { b.disabled = false; b.textContent = 'Publish to the site'; }
-  });
-  $('mail').addEventListener('click', () => {
-    const body = ['Please apply these account changes to assets/auth.js on the Marikar hub:', '',
-      ...queue.add.map((a) => `ADD/RESET:\n${line(a)}`), ...queue.remove.map((id) => `REMOVE: ${id}`),
-      ...Object.entries(queue.handled).map(([ref, h]) => `REQUEST ${ref}: ${h.status} (mark handled in data/requests/inbox.json)`), '', `Requested by ${user.name} (${user.id}).`].join('\n');
-    navigator.clipboard.writeText(body).catch(() => {});
-    location.href = 'mailto:mml@bpropms.in?subject=' + encodeURIComponent('Marikar hub: account changes') + '&body=' + encodeURIComponent(body);
-    say('pub-note', 'ok', ['The request (account lines only; no passwords) was copied and opened in your mail app. Send it to mml@bpropms.in.']);
+      say('pub-note', 'bad', [`Not published: ${err.message}.`, 'Nothing was changed. You can try again or use "Send by e-mail".']);
+    } finally { b.disabled = false; b.textContent = 'Publish with token'; }
   });
   paintTable(); paintPending();
 })();
