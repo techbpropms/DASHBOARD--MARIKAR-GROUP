@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T06:25:13+00:00",
+  "updated": "2026-10-16T06:30:13+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -183,13 +183,6 @@
       "why": "admin",
       "ref": "PR-20261016-F698",
       "at": "2026-10-16T05:52:44+00:00"
-    },
-    "kintin@marikar.in": {
-      "hash": "a4e2ecce03bad9d49b80e7dd39cd56440e8f6c83c678f0c2a3e0864273cef232",
-      "exp": "2026-10-17T06:25:24+00:00",
-      "why": "forgot",
-      "ref": "PR-20261016-5147",
-      "at": "2026-10-16T06:25:13+00:00"
     }
   },
   "feedback": [
@@ -447,6 +440,13 @@
       "who": "gmoperations@marikargroup.com",
       "by": "tech@bpropms.com",
       "detail": "GROUP, NISSAN -> GROUP, HONDA, AMZES, BIGWING, RE, NISSAN (as on the access request)"
+    },
+    {
+      "at": "2026-10-16T06:30:13+00:00",
+      "action": "password",
+      "who": "kintin@marikar.in",
+      "by": "the account owner, by link",
+      "detail": "forgot"
     }
   ]
 }
