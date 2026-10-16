@@ -167,7 +167,8 @@ a.btn { display: inline-flex; text-decoration: none; }
 .done h3 { margin: 0 0 6px; font-size: 20px; font-weight: 800; }
 .done p { margin: 0 0 12px; font-size: 14px; color: var(--muted); }
 .done .ref { font-size: 13px; color: var(--ink); } .done .ref b { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; }
-[role="tabpanel"][hidden], #pane-forgot[hidden], .done[hidden] { display: none; }
+[role="tabpanel"][hidden], #pane-forgot[hidden], .done[hidden], form[hidden], .btn[hidden] { display: none !important; }
+.rules { margin: -4px 0 14px; padding: 0; list-style: none; font-size: 12.5px; color: var(--muted); } .rules li { padding-left: 18px; position: relative; } .rules li::before { content: "○"; position: absolute; left: 2px; } .rules li.ok { color: var(--ok, #2e7d4f); } .rules li.ok::before { content: "✓"; }
 .card h2 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -.01em; }
 .card .lead { margin: 6px 0 24px; color: var(--muted); font-size: 14px; }
 label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
@@ -351,12 +352,33 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
 
       <section id="pane-forgot" role="region" aria-labelledby="forgot-h" hidden>
         <h2 id="forgot-h">Reset your password</h2>
-        <p class="lead">Enter your user ID. A one-time link to choose a new password is e-mailed to that address; nobody else is involved.</p>
+        <p class="lead">Enter your user ID. A code reaches that mailbox within a minute; type it here with your new password and you are done. Nobody else is involved.</p>
         <div class="alert" id="f-alert" role="alert"></div>
         <form id="forgot" novalidate>
           <div class="field"><label for="f-id">User ID (e-mail)</label><input id="f-id" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
-          <button class="btn" type="submit" id="f-go"><span class="spin" aria-hidden="true"></span><span id="f-go-text">Request a reset</span></button>
+          <button class="btn" type="submit" id="f-go"><span class="spin" aria-hidden="true"></span><span id="f-go-text">E-mail me a code</span></button>
+          <p class="help" style="margin-top:10px">A code reaches your own mailbox within a minute. <a href="#code" id="f-have">I already have a code</a></p>
         </form>
+        <form id="setpw" novalidate hidden>
+          <div class="field"><label for="s-id">User ID (e-mail)</label><input id="s-id" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+          <div class="field"><label for="s-code">Code from the e-mail</label><input id="s-code" type="text" inputmode="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" maxlength="9" required></div>
+          <div class="field"><label for="s-pw1">New password</label><input id="s-pw1" type="password" autocomplete="new-password" required><button class="eye" type="button" id="s-eye" aria-controls="s-pw1">Show</button></div>
+          <ul class="rules" id="s-rules"><li data-r="len">At least 10 characters</li><li data-r="mix">Letters and at least one number or symbol</li><li data-r="id">Not your user ID</li></ul>
+          <div class="field"><label for="s-pw2">New password again</label><input id="s-pw2" type="password" autocomplete="new-password" required></div>
+          <button class="btn" type="submit" id="s-go"><span class="spin" aria-hidden="true"></span><span id="s-go-text">Set my password</span></button>
+          <p class="help" style="margin-top:10px"><a href="#forgot" id="s-new">Send me a new code</a></p>
+        </form>
+        <div class="done" id="s-wait" hidden>
+          <div class="done-ic" aria-hidden="true">…</div>
+          <h3>Setting your password</h3>
+          <p id="s-wait-p">The hub is applying it. This takes a few seconds.</p>
+        </div>
+        <div class="done" id="s-ok" hidden>
+          <div class="done-ic" aria-hidden="true">✓</div>
+          <h3>Your password is live</h3>
+          <p>Sign in with it now. Sign-ins on other devices have been ended.</p>
+          <button class="btn" type="button" id="s-signin">Sign in</button>
+        </div>
         <div class="done" id="f-done" hidden>
           <div class="done-ic" aria-hidden="true">✓</div>
           <h3>Reset request ready</h3>
@@ -411,6 +433,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
   $('f-back').addEventListener('click', (e) => { e.preventDefault(); pane('signin'); });
   document.querySelectorAll('.tabs [role="tab"]').forEach((t) => t.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { pane(t.id === 'tab-in' ? 'request' : 'signin'); } }));
   if (location.hash === '#request') pane('request'); else if (location.hash === '#forgot') pane('forgot');
+  const pre = new URLSearchParams(location.search).get('u'); if (pre) { $('uid').value = pre; history.replaceState(null, '', location.pathname + location.hash); }
 
   // ----- sign in
   $('eye').addEventListener('click', () => {
@@ -489,8 +512,48 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     const sentReset = await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', {
       sent: 'If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two. The link works once and for 24 hours. Check the spam folder if it does not arrive.',
       mail: 'Send the request with the button below. If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two of the request reaching the hub mailbox.' });
-    $('f-done').querySelector('h3').textContent = sentReset ? 'Reset requested' : 'Reset request ready';
+    $('f-done').querySelector('h3').textContent = sentReset ? 'Code on its way' : 'Reset request ready';
+    if (sentReset) { $('f-done-p').textContent = `If ${id} has an account, an e-mail with a code (and a link) reaches it within a minute. Enter the code below with your new password.`; $('f-done-mail').hidden = true; $('f-done-copy').hidden = true; $('f-done').after($('setpw')); $('s-id').value = id; $('setpw').hidden = false; $('s-code').focus(); }
   });
+  // ----- the code from the e-mail plus the new password, on this page: no link to open, no administrator involved
+  $('f-have').addEventListener('click', (e) => { e.preventDefault(); $('s-id').value = $('f-id').value.trim().toLowerCase() || $('uid').value.trim().toLowerCase(); $('forgot').hidden = true; $('f-done').hidden = true; $('setpw').hidden = false; ($('s-id').value ? $('s-code') : $('s-id')).focus(); });
+  $('s-new').addEventListener('click', (e) => { e.preventDefault(); $('setpw').hidden = true; $('f-done').hidden = true; $('forgot').hidden = false; $('f-go').disabled = false; $('f-go-text').textContent = 'E-mail me a code'; $('f-id').value = $('s-id').value; $('f-id').focus(); });
+  const pwCheck = (p, id) => { const local = (id.split('@')[0] || ''); return { len: p.length >= 10, mix: /[A-Za-z]/.test(p) && /[^A-Za-z]/.test(p), id: !!p && !(local.length >= 4 && p.toLowerCase().includes(local.toLowerCase().slice(0, Math.max(4, local.length)))) && p.toLowerCase() !== id }; };
+  $('s-pw1').addEventListener('input', () => { const c = pwCheck($('s-pw1').value, $('s-id').value.trim().toLowerCase()); document.querySelectorAll('#s-rules li').forEach((li) => li.classList.toggle('ok', !!c[li.dataset.r])); });
+  $('s-eye').addEventListener('click', () => { const t = $('s-pw1').type === 'password' ? 'text' : 'password'; $('s-pw1').type = t; $('s-pw2').type = t; $('s-eye').textContent = t === 'password' ? 'Show' : 'Hide'; });
+  // the account's current fingerprint, so the page can tell when the new password is live on the hub
+  const fingerprint = async (id) => { try { const t = await (await fetch('assets/auth.js', { cache: 'no-store' })).text(); const m = t.match(new RegExp("id: '" + id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + "'[^\\n]*hash: '([0-9a-f]{64})'")); return m ? m[1] : null; } catch (e) { return null; } };
+  $('setpw').addEventListener('submit', async (e) => {
+    e.preventDefault(); clear('f-alert');
+    const id = $('s-id').value.trim().toLowerCase(), code = $('s-code').value.trim().toUpperCase().replace(/[^A-Z0-9]/g, ''), p1 = $('s-pw1').value, p2 = $('s-pw2').value, c = pwCheck(p1, id);
+    mark($('s-id'), !EMAIL.test(id)); mark($('s-code'), code.length !== 8); mark($('s-pw1'), !(c.len && c.mix && c.id)); mark($('s-pw2'), p1 !== p2);
+    if (!EMAIL.test(id)) return fail('Enter the e-mail address you sign in with.', 'f-alert');
+    if (code.length !== 8) return fail('The code has 8 letters and digits, as in the e-mail (XXXX-XXXX).', 'f-alert');
+    if (!(c.len && c.mix && c.id)) return fail('The password does not meet the three rules yet.', 'f-alert');
+    if (p1 !== p2) return fail('The two passwords differ.', 'f-alert');
+    $('s-go').disabled = true; $('s-go-text').textContent = 'Preparing…';
+    const before = await fingerprint(id);
+    const built = await MGAuth.requests.buildSet(id, code, p1);
+    $('s-pw1').value = ''; $('s-pw2').value = '';
+    const r = await MGAuth.requests.send(built);
+    $('setpw').hidden = true;
+    if (!r.sent) {
+      // not on the hub's own server: the message goes by e-mail instead, same result
+      await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', { sent: '', mail: 'Send the message with the button below; the hub applies your password within a minute or two of receiving it and confirms by e-mail.' });
+      $('f-done').querySelector('h3').textContent = 'One more step'; $('f-done').hidden = false; return;
+    }
+    $('s-wait').hidden = false;
+    // the hub applies it within seconds; watch for the change rather than asking the person to guess when
+    const started = Date.now();
+    const tick = async () => {
+      const now = await fingerprint(id);
+      if (now && now !== before) { $('s-wait').hidden = true; $('s-ok').hidden = false; return; }
+      if (Date.now() - started > 150000) { $('s-wait-p').textContent = 'The hub has not accepted it yet. Check the code against the e-mail (it works once and expires after 24 hours) and try again, or send yourself a new code.'; $('setpw').hidden = false; $('s-go').disabled = false; $('s-go-text').textContent = 'Set my password'; $('s-code').focus(); return; }
+      setTimeout(tick, 4000);
+    };
+    setTimeout(tick, 5000);
+  });
+  $('s-signin').addEventListener('click', () => { $('uid').value = $('s-id').value.trim().toLowerCase(); pane('signin'); $('pw').value = ''; $('pw').focus(); });
 
   // Focus the user ID only where a keyboard is likely; on phones it would pop the keyboard over the page.
   if (!location.hash && matchMedia('(hover: hover) and (min-width: 901px)').matches) $('uid').focus();

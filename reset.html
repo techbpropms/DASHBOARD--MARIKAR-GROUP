@@ -124,18 +124,30 @@ input[aria-invalid="true"] { border-color: var(--bad); }
     if (!(c.len && c.mix && c.id)) { fail('The password does not meet the three rules yet.'); return; }
     if (p1 !== p2) { fail('The two passwords differ.'); return; }
     const b = $('go'); b.disabled = true; b.textContent = 'Preparing…';
+    try { const t = await (await fetch('assets/auth.js', { cache: 'no-store' })).text(); const m = t.match(new RegExp("id: '" + id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + "'[^\\n]*hash: '([0-9a-f]{64})'")); window.__fpBefore = m ? m[1] : null; } catch (e) { window.__fpBefore = null; }
     const built = await MGAuth.requests.buildSet(id, token, p1);
     $('pw1').value = ''; $('pw2').value = '';
     const r = await MGAuth.requests.send(built);
     $('form-wrap').hidden = true;
-    $('done-h').textContent = r.sent ? 'Password sent to the hub' : 'One more step';
+    $('done-h').textContent = r.sent ? 'Setting your password' : 'One more step';
     $('done-p').textContent = r.sent
-      ? 'The hub applies it within a minute and confirms by e-mail. Then sign in with your new password; sign-ins on other devices end at the same time.'
+      ? 'The hub is applying it; this takes a few seconds. This page tells you when it is live.'
       : 'Send the message below to the hub mailbox (it opens in your mail app, filled in). The hub applies the password within a minute or two of receiving it and confirms by e-mail. Then sign in; sign-ins on other devices end at the same time.';
     $('done-ref').textContent = built.req.ref;
     const mail = $('done-mail'); mail.href = built.mailto; mail.textContent = 'Send by e-mail'; mail.hidden = r.sent; $('done-copy').hidden = r.sent;
     $('done-copy').onclick = () => navigator.clipboard.writeText(built.text).then(() => { $('done-copy').textContent = 'Copied. Paste it into a message to ' + MGAuth.requests.config.to; }).catch(() => { $('done-copy').textContent = 'Select and copy the message instead'; });
     $('done').hidden = false;
+    if (r.sent) {
+      const fp = async () => { try { const t = await (await fetch('assets/auth.js', { cache: 'no-store' })).text(); const m = t.match(new RegExp("id: '" + id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + "'[^\\n]*hash: '([0-9a-f]{64})'")); return m ? m[1] : null; } catch (e) { return null; } };
+      const before = window.__fpBefore || null; const started = Date.now();
+      const tick = async () => {
+        const now = await fp();
+        if (now && now !== before) { $('done-h').textContent = 'Your password is live'; $('done-p').textContent = 'Sign in with it now. Sign-ins on other devices have been ended.'; const a = $('done-mail'); a.hidden = false; a.textContent = 'Sign in'; a.href = 'index.html?u=' + encodeURIComponent(id); return; }
+        if (Date.now() - started > 150000) { $('done-p').textContent = 'The hub has not accepted it yet. If this link was already used, request a new one from Forgot password on the sign-in page.'; return; }
+        setTimeout(tick, 4000);
+      };
+      setTimeout(tick, 5000);
+    }
   });
 })();
 </script>

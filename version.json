@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.16f",
-  "title": "Settings for administrators only",
+  "version": "2026.10.16g",
+  "title": "Password reset on the sign-in page",
   "notes": [
-    "Settings (People, Account changes, Feedback, Sign-in report) is now for super admins and admins only; viewers no longer see it",
-    "The theme switch and a more prominent Refresh button sit in the bar at the top for everyone",
-    "Sign-in report fix (from the previous release)"
+    "Forgot password: a code reaches your mailbox within a minute; enter it with your new password on the sign-in page itself, and sign in as soon as the page says it is live",
+    "The e-mailed link still works too, and tells you when the password is live",
+    "Submissions on the hub are handled within seconds"
   ]
 }
