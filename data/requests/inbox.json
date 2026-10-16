@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T11:12:28+00:00",
+  "updated": "2026-10-16T11:16:32+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -202,6 +202,12 @@
       "at": "2026-10-16T11:05:56+00:00",
       "by": "automatic",
       "email": "process@bpropms.com"
+    },
+    "PR-20261016-2425": {
+      "status": "link",
+      "at": "2026-10-16T11:16:32+00:00",
+      "by": "automatic",
+      "email": "agm.oaip@marikar.in"
     }
   },
   "links": {
@@ -232,6 +238,13 @@
       "why": "forgot",
       "ref": "PR-20261016-7814",
       "at": "2026-10-16T11:05:56+00:00"
+    },
+    "agm.oaip@marikar.in": {
+      "hash": "6f5d57631c2f0e89c3fd068656876125bca525e313531eadeb5eba32abc01872",
+      "exp": "2026-10-17T11:16:41+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-2425",
+      "at": "2026-10-16T11:16:32+00:00"
     }
   },
   "feedback": [
@@ -622,6 +635,13 @@
       "who": "agm.oaip@marikar.in",
       "by": "the account owner, by link",
       "detail": "admin"
+    },
+    {
+      "at": "2026-10-16T11:16:32+00:00",
+      "action": "reset link",
+      "who": "agm.oaip@marikar.in",
+      "by": "forgot password",
+      "detail": "PR-20261016-2425"
     }
   ]
 }
