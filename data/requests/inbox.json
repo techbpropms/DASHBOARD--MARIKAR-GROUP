@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T08:25:13+00:00",
+  "updated": "2026-10-16T08:40:13+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -192,13 +192,6 @@
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:45:13+00:00"
-    },
-    "seniormanager.sales@marikarnissan.co.in": {
-      "hash": "61309f9ef173b24f8e46a98ce9400372abfe4b6fdaa45f39d086da875c16dd08",
-      "exp": "2026-10-17T05:52:53+00:00",
-      "why": "admin",
-      "ref": "PR-20261016-F698",
-      "at": "2026-10-16T05:52:44+00:00"
     },
     "gm@marikarautomobiles.in": {
       "hash": "8c8957f3f083f67cfd3af64e73ec744f53eda8868bc516791bef9babbe9f3a38",
@@ -505,6 +498,13 @@
       "who": "gmoperations@marikargroup.com",
       "by": "the account owner, by link",
       "detail": "approved"
+    },
+    {
+      "at": "2026-10-16T08:40:13+00:00",
+      "action": "password",
+      "who": "seniormanager.sales@marikarnissan.co.in",
+      "by": "the account owner, by link",
+      "detail": "admin"
     }
   ]
 }
