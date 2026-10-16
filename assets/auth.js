@@ -171,7 +171,8 @@
     // On every protected page: send visitors without a session to the sign-in page, then back here.
     guard(need) {
       if (read()) {
-        const ok = !need || (need === 'sales' ? Auth.canSales() : Auth.canSee(need));
+        const s = read();
+        const ok = !need || (need === 'admin' ? ['admin', 'superadmin'].includes(s.role) : need === 'sales' ? Auth.canSales() : Auth.canSee(need));
         if (!ok) { document.documentElement.style.visibility = 'hidden'; location.replace('hub.html?denied=' + encodeURIComponent(need)); }
         return ok;
       }
