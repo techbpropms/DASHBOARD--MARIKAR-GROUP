@@ -227,6 +227,9 @@ password?**. The hub is a static site with no server, so a request cannot be sto
 Instead the page builds a request with a reference (`AR-…` for access, `PR-…` for reset) and a code starting
 `MGQ1.` that carries the details, then:
 
+- sends it to the hub's own server first (`submit` on the VPS: nginx records the code in `/srv/hub/log/submit.log`,
+  which the "Mailbox requests" workflow fetches over SSH and the clerk reads like mail; only requests and
+  set-password codes count from there, never approvals); failing that,
 - posts it to `MGAuth.requests.config.endpoint` when one is configured in `assets/auth.js` (any form-to-mail
   service that accepts JSON), so it reaches the administrator without further steps; otherwise
 - opens the requester's mail app with the request addressed to mml@bpropms.in, with a "copy" fallback.

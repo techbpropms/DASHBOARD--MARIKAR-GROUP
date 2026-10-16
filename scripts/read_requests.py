@@ -383,6 +383,30 @@ def from_mailbox(host, user, password, days):
     box.logout()
 
 
+def from_submissions(path):
+    """Codes submitted on the hub itself (reset.html and the sign-in page post them to /submit on the VPS, nginx
+    writes one JSON line each). Each becomes a message with no sender, so only requests and set-password codes
+    count; approvals and management lines need a verified sender and are never read from here."""
+    try:
+        lines = open(path, encoding='utf-8', errors='replace').read().splitlines()
+    except OSError:
+        return
+    for line in lines:
+        try:
+            o = json.loads(line)
+        except ValueError:
+            continue
+        code = urllib.parse.unquote(str(o.get('code', '')).replace('+', ' ')).strip()
+        if not code:
+            continue
+        msg = EmailMessage()
+        msg['From'] = 'hub-submission@localhost'
+        msg['Subject'] = 'Submitted on the hub'
+        msg['Date'] = email.utils.format_datetime(dt.datetime.fromisoformat(o['at'])) if o.get('at') else email.utils.formatdate()
+        msg.set_content(code)
+        yield msg, False
+
+
 def from_folder(folder):
     """Saved .eml files; a name starting with "sent-" stands for a message found in the Sent folder."""
     for name in sorted(os.listdir(folder)):
@@ -454,6 +478,7 @@ def password_set_mail(name, uid):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--eml', help='folder of .eml files to read instead of the mailbox')
+    ap.add_argument('--submissions', help='JSON-lines file of codes submitted on the hub itself (fetched from the VPS)')
     ap.add_argument('--store', default=STORE)
     ap.add_argument('--auth', default=AUTH)
     args = ap.parse_args()
@@ -478,6 +503,10 @@ def main():
         if not pw:
             sys.exit('MAIL_PASSWORD is not set: add the mailbox password as a repository secret named MAIL_PASSWORD')
         messages = list(from_mailbox(os.environ.get('MAIL_HOST', 'imap.hostinger.com'), MAIL_USER, pw, int(os.environ.get('MAIL_DAYS', '60'))))
+    if args.submissions:
+        subs = list(from_submissions(args.submissions))
+        print(f"submissions made on the hub: {len(subs)}")
+        messages.extend(subs)
     mailer = Mailer(os.environ.get('SMTP_HOST', 'smtp.hostinger.com'), MAIL_USER, pw, dry)
 
     # 1. new requests and commands

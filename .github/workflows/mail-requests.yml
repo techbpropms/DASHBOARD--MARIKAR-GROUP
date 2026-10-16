@@ -24,6 +24,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch the codes submitted on the hub itself
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          : > submissions.jsonl
+          if [ -z "$VPS_HOST" ] || { [ -z "$VPS_SSH_KEY" ] && [ -z "$SSHPASS" ]; }; then echo "no VPS secrets; mailbox only"; exit 0; fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          if [ -n "$VPS_SSH_KEY" ]; then printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key; ssh_cmd="ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes"
+          else sudo apt-get install -y -qq sshpass >/dev/null; export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"; ssh_cmd="sshpass -e ssh -o StrictHostKeyChecking=yes"; fi
+          $ssh_cmd "root@$VPS_HOST" 'cat /srv/hub/log/submit.log 2>/dev/null' > submissions.jsonl || echo "::warning::could not fetch the submissions from the VPS; mailbox only"
+          echo "$(wc -l < submissions.jsonl) submission line(s) fetched"
       - name: Read the mailbox and settle requests
         env:
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
@@ -35,7 +48,7 @@ jobs:
           RESET_NOW: ${{ github.event.inputs.reset }}
         run: |
           for v in MAIL_USER MAIL_HOST SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
-          python3 scripts/read_requests.py
+          python3 scripts/read_requests.py --submissions submissions.jsonl
       - name: Publish
         run: |
           if git diff --quiet -- data/requests/inbox.json assets/auth.js; then echo "nothing new"; exit 0; fi

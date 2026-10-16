@@ -39,7 +39,7 @@ chown -R root:root "$SITE_DIR"; chmod -R u=rwX,go=rX "$SITE_DIR"
 
 echo "== sign-in log (nginx writes it, the Settings page reads it)"
 mkdir -p /srv/hub/log && chmod 755 /srv/hub/log
-touch /srv/hub/log/signins.log && chmod 644 /srv/hub/log/signins.log
+touch /srv/hub/log/signins.log /srv/hub/log/submit.log && chmod 644 /srv/hub/log/signins.log && chmod 600 /srv/hub/log/submit.log
 curl -fsSL "$REPO_RAW/deploy/hub-signins-format.conf" -o /etc/nginx/conf.d/hub-signins-format.conf
 curl -fsSL "$REPO_RAW/deploy/hub-signins.logrotate" -o /etc/logrotate.d/hub-signins
 
@@ -48,9 +48,10 @@ CONF=/etc/nginx/sites-available/$HOST
 if [ ! -f "$CONF" ] || ! grep -q 'listen 443' "$CONF"; then
   # not yet certified: (re)write the plain server block; once certbot has edited it, leave it alone
   curl -fsSL "$REPO_RAW/deploy/nginx-hub.conf" -o "$CONF"
-elif ! grep -q 'signin-log' "$CONF"; then
-  # certified earlier, before the sign-in log existed: add the two locations to every server block
-  sed -i 's#^\(\s*\)location / { try_files#\1location = /signin-log { access_log /srv/hub/log/signins.log hub_signins; add_header Cache-Control no-store; return 204; }\n\1location = /signins.log { alias /srv/hub/log/signins.log; default_type text/plain; add_header Cache-Control "no-cache, no-store, must-revalidate"; }\n\1location / { try_files#' "$CONF"
+else
+  # certified earlier: certbot owns the file now, so missing locations are inserted into every server block
+  grep -q 'signin-log' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /signin-log { access_log /srv/hub/log/signins.log hub_signins; add_header Cache-Control no-store; return 204; }\n\1location = /signins.log { alias /srv/hub/log/signins.log; default_type text/plain; add_header Cache-Control "no-cache, no-store, must-revalidate"; }\n\1location / { try_files#' "$CONF"
+  grep -q '/submit ' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /submit { access_log /srv/hub/log/submit.log hub_submit; add_header Cache-Control no-store; return 204; }\n\1location / { try_files#' "$CONF"
 fi
 ln -sf "$CONF" /etc/nginx/sites-enabled/$HOST
 nginx -t

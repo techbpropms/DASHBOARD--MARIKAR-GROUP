@@ -133,7 +133,7 @@ input[aria-invalid="true"] { border-color: var(--bad); }
       ? 'The hub applies it within about ten minutes and confirms by e-mail. Then sign in with your new password; sign-ins on other devices end at the same time.'
       : 'Send the message below to the hub mailbox (it opens in your mail app, filled in). The hub applies the password within about ten minutes of receiving it and confirms by e-mail. Then sign in; sign-ins on other devices end at the same time.';
     $('done-ref').textContent = built.req.ref;
-    const mail = $('done-mail'); mail.href = built.mailto; mail.textContent = r.sent ? 'Also send by e-mail' : 'Send by e-mail';
+    const mail = $('done-mail'); mail.href = built.mailto; mail.textContent = 'Send by e-mail'; mail.hidden = r.sent; $('done-copy').hidden = r.sent;
     $('done-copy').onclick = () => navigator.clipboard.writeText(built.text).then(() => { $('done-copy').textContent = 'Copied. Paste it into a message to ' + MGAuth.requests.config.to; }).catch(() => { $('done-copy').textContent = 'Select and copy the message instead'; });
     $('done').hidden = false;
   });
