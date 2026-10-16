@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T05:40:46+00:00",
+  "updated": "2026-10-16T05:45:13+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -210,19 +210,33 @@
       "ref": "PR-20261016-F118",
       "at": "2026-10-16T05:25:36+00:00"
     },
-    "cspw@marikar.in": {
-      "hash": "f162bb9f6f6ff9d1917dbd4c23fc42c7280f801c7d36edea98ba1396dea27832",
-      "exp": "2026-10-17T05:40:53+00:00",
-      "why": "approved",
-      "ref": "",
-      "at": "2026-10-16T05:40:46+00:00"
-    },
     "serm@marikar.in": {
       "hash": "c95a6d312c391ba137889db4a13c207e727ab3857351c729485e6c5258ac1764",
       "exp": "2026-10-17T05:40:56+00:00",
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:40:46+00:00"
+    },
+    "gmoperations@marikargroup.com": {
+      "hash": "387106ecfaf0f91cab4a33f49d7c40c3c79add085ddde17cae9fcb580c3f15c2",
+      "exp": "2026-10-17T05:45:23+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T05:45:13+00:00"
+    },
+    "agm.oaip@gmail.com": {
+      "hash": "0fd54e9bcc3aa2c5205958ce4328886e7785cafcb37b045a844c571b4b521cd5",
+      "exp": "2026-10-17T05:45:25+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T05:45:13+00:00"
+    },
+    "seniormanager.re@marikar.in": {
+      "hash": "dbc1c2476868632f936ccd9f182f5b7b5230e8f9591bb4aa754ac8827c0b5b8f",
+      "exp": "2026-10-17T05:45:27+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T05:45:13+00:00"
     }
   },
   "feedback": [
@@ -333,6 +347,34 @@
       "who": "serm@marikar.in",
       "by": "babukadavoor@gmail.com",
       "detail": "Jayaprasad.G as viewer (all divisions)"
+    },
+    {
+      "at": "2026-10-16T05:45:13+00:00",
+      "action": "password",
+      "who": "cspw@marikar.in",
+      "by": "the account owner, by link",
+      "detail": "approved"
+    },
+    {
+      "at": "2026-10-16T05:45:13+00:00",
+      "action": "added",
+      "who": "gmoperations@marikargroup.com",
+      "by": "babukadavoor@gmail.com",
+      "detail": "JIJI R THOMAS as viewer (GROUP, NISSAN)"
+    },
+    {
+      "at": "2026-10-16T05:45:13+00:00",
+      "action": "added",
+      "who": "agm.oaip@gmail.com",
+      "by": "babukadavoor@gmail.com",
+      "detail": "MAHESH as viewer (CANON)"
+    },
+    {
+      "at": "2026-10-16T05:45:13+00:00",
+      "action": "added",
+      "who": "seniormanager.re@marikar.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Cibin Jacob as viewer (RE)"
     }
   ]
 }
