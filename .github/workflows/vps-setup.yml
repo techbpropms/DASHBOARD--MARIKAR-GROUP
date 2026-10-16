@@ -25,13 +25,13 @@ jobs:
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
           SSHPASS: ${{ secrets.VPS_PASSWORD }}
         run: |
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          methods=$(ssh -o BatchMode=yes -o PreferredAuthentications=none -o StrictHostKeyChecking=yes "root@$VPS_HOST" true 2>&1 | grep -o 'Permission denied ([^)]*)' || true)
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -T 15 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          methods=$(ssh -o BatchMode=yes -o PreferredAuthentications=none -o StrictHostKeyChecking=accept-new "root@$VPS_HOST" true 2>&1 | grep -o 'Permission denied ([^)]*)' || true)
           echo "The server answers for root with: ${methods:-no answer: is VPS_HOST the IP address of the server?}"
           if [ -n "$VPS_SSH_KEY" ]; then
             printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
-            if ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes "root@$VPS_HOST" true 2>/dev/null; then
-              echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"; echo "Signed in with the key."; exit 0
+            if ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=accept-new "root@$VPS_HOST" true 2>/dev/null; then
+              echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"; echo "Signed in with the key."; exit 0
             fi
             echo "::warning::The server did not accept the key in VPS_SSH_KEY (is its public half added to the VPS under Settings > SSH keys?). Trying the password."
           fi
@@ -40,8 +40,8 @@ jobs:
           if [ -z "$SSHPASS" ]; then echo "::error::No password to try and the key was refused."; exit 1; fi
           case "$methods" in *password*) ;; *) echo "::error::Password log-in is switched off for root on this server. In the Hostinger panel open VPS > Settings > SSH access and enable it, or use the key route (VPS_SSH_KEY)."; exit 1;; esac
           sudo apt-get install -y -qq sshpass >/dev/null
-          if sshpass -e ssh -o StrictHostKeyChecking=yes -o PreferredAuthentications=password "root@$VPS_HOST" true 2>/dev/null; then
-            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"; echo "Signed in with the password."
+          if sshpass -e ssh -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password "root@$VPS_HOST" true 2>/dev/null; then
+            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"; echo "Signed in with the password."
           else
             echo "::error::The server did not accept the root password in the VPS_PASSWORD secret. Either set the root password again in the Hostinger panel (VPS > Settings > Root password; restart the server if the panel suggests it) and update the secret, or use the key route: add the public key to the VPS under Settings > SSH keys and put the private key in VPS_SSH_KEY."; exit 1
           fi

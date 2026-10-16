@@ -33,14 +33,14 @@ jobs:
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -T 15 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
           if [ -n "$VPS_SSH_KEY" ]; then
             printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
-            echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
+            echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"
             echo "user_default=root" >> "$GITHUB_ENV"
           else
             sudo apt-get install -y -qq sshpass >/dev/null
-            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=yes" >> "$GITHUB_ENV"
+            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"
             echo "user_default=root" >> "$GITHUB_ENV"
           fi
       - name: Copy the site
