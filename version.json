@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.16c",
-  "title": "404 page, What's new, uptime check",
+  "version": "2026.10.16d",
+  "title": "Feedback form and launch mail",
   "notes": [
-    "A hub-styled page for addresses that do not exist, also shown offline for pages never opened before",
-    "Settings shows the current version's notes under What's new",
-    "The hub's address is checked every half hour and the owner is e-mailed if it stops answering"
+    "A two-minute feedback form (feedback.html) that needs no sign-in; answers reach the hub mailbox and Settings > Feedback within five minutes, and the person gets a thank-you",
+    "A personalised launch e-mail to every user, sent from the Actions tab (Send mail to users)",
+    "The mailbox clerk now also runs on the VPS every five minutes"
   ]
 }

@@ -254,6 +254,14 @@ request code the super admin pastes into Settings > People. The access key is a 
 form, not a password, so it is safe in the page. With neither configured, the form can only open the
 requester's own mail program ("Send by e-mail") or copy the request text.
 
+**Feedback and mail to users.** `feedback.html` is a two-minute survey that needs no sign-in (the launch e-mail links
+to it with the person's name and ID prefilled; a score tapped in the mail is prefilled too). The answers travel as a
+code starting `MGF1.` by the same route as access requests; the clerk stores them in `data/requests/inbox.json`
+(`feedback`, shown under Settings → Feedback with a CSV download), mails them to the hub mailbox and the approvers,
+and thanks the person by e-mail. `scripts/send_mail.py` sends a branded, personalised e-mail from the hub mailbox to
+every user (templates under `docs/mail/`, placeholders `{{first}}`, `{{name}}`, `{{id}}`, `{{form}}`); the "Send
+mail to users" workflow runs it from the Actions tab, with a dry run and a test send to chosen addresses.
+
 **Mailbox clerk.** `scripts/read_requests.py` runs on the VPS every five minutes (`deploy/clerk-run.sh`, installed
 by the "Install clerk on VPS" workflow; see `deploy/README.md`) and, as the fallback, in the GitHub Action
 "Mailbox requests" (`.github/workflows/mail-requests.yml`), which stands back while the server's clerk is healthy. It signs in to the mailbox over IMAP and:

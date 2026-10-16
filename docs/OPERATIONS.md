@@ -64,6 +64,9 @@ Gmail approver accounts matters as much: an approver's mailbox is an approval in
   clerk is also down means no requests are settled: open the run, read the log, and fix the cause (usually the
   mailbox password).
 - The clerk e-mails approvers once a day with requests waiting more than a day.
+- Survey answers (feedback.html) arrive by e-mail at the mailbox and the approvers as they come in, and are listed
+  under Settings → Feedback. To write to all users again, add a template under `docs/mail/` and run "Send mail to
+  users" (dry run first, then a test send to yourself, then `all`).
 - Settings → Account changes lists every change the hub made, with who asked. Settings → Sign-in report shows
   who signs in across users, from the log nginx keeps on the VPS (`/srv/hub/log/signins.log`).
 - The VPS, once in use: `systemctl status nginx`, `/var/log/nginx/hub-access.log`, and `certbot certificates` for the certificate; the "VPS diagnostics" workflow shows all of it from GitHub.

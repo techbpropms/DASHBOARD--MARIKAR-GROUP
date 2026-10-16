@@ -58,6 +58,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STORE = os.path.join(ROOT, 'data', 'requests', 'inbox.json')
 AUTH = os.path.join(ROOT, 'assets', 'auth.js')
 SETPW = re.compile(r'MGP1\.([A-Za-z0-9_-]{40,})')
+FEEDBACK = re.compile(r'MGF1\.([A-Za-z0-9_-]{20,})')
+FB_QUESTIONS = {'q1': 'Signing in and resetting the password', 'q2': 'Figures correct and current', 'q2t': 'Which figure / month', 'q3': 'Clarity of reports and charts', 'q4': 'Speed and ease on the phone', 'q5': 'Looked for first', 'q6': 'Missing every month', 'q7': 'Would help most (top three)', 'q8': 'Other suggestion'}
 LINK_HOURS = 24
 CODE = re.compile(r'MGQ1\.([A-Za-z0-9_-]{20,})')
 REF = re.compile(r'\b([AP]R-\d{8}-[0-9A-F]{4})\b')
@@ -119,6 +121,11 @@ class Accounts:
                 return {'id': m.group(1), 'name': json.loads(m.group(2)) if m.group(2).startswith('"') else m.group(2)[1:-1], 'role': m.group(3),
                         'divisions': self._divs(m.group(6)) if m.group(3) == 'viewer' else 'all'}
         return None
+
+    def list(self):
+        """Every account: id, name, role, divisions."""
+        return [{'id': m.group(1), 'name': json.loads(m.group(2)) if m.group(2).startswith('"') else m.group(2)[1:-1], 'role': m.group(3),
+                 'divisions': self._divs(m.group(6)) if m.group(3) == 'viewer' else 'all'} for m in LINE_RE.finditer(self.src)]
 
     @staticmethod
     def _divs(field):
@@ -232,6 +239,48 @@ def decode_setpw(code):
     if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', uid) or not re.fullmatch(r'[0-9a-f]{32}', salt) or not re.fullmatch(r'[0-9a-f]{64}', h) or not re.fullmatch(r'[A-Za-z0-9_-]{20,}', token):
         return None
     return {'id': uid, 'token': token, 'salt': salt, 'hash': h, 'at': str(d.get('at', ''))[:40]}
+
+
+def decode_feedback(code):
+    """A code from feedback.html (MGF1.): who answered and the answers, every value trimmed to a safe length."""
+    pad = '=' * (-len(code) % 4)
+    try:
+        d = json.loads(base64.urlsafe_b64decode(code + pad).decode('utf-8'))
+    except Exception:
+        return None
+    if not isinstance(d, dict) or d.get('kind') != 'feedback' or not isinstance(d.get('a'), dict):
+        return None
+    uid = str(d.get('id', '')).strip().lower()
+    if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', uid) or not re.fullmatch(r'FB-\d{8}-[0-9A-F]{4}', str(d.get('ref', ''))):
+        return None
+    a = {}
+    for k in FB_QUESTIONS:
+        v = d['a'].get(k)
+        if k == 'q7':
+            a[k] = [str(x)[:60] for x in v][:3] if isinstance(v, list) else []
+        else:
+            a[k] = str(v or '')[:600].strip()
+    return {'ref': d['ref'], 'id': uid, 'name': str(d.get('name', ''))[:80].strip(), 'at': str(d.get('at', ''))[:40], 'a': a}
+
+
+def feedback_text(fb):
+    lines = [f"Feedback {fb['ref']} from {fb['name'] or '-'} ({fb['id']}), {fb['at'][:16].replace('T', ' ')} UTC", '']
+    for k, label in FB_QUESTIONS.items():
+        v = fb['a'].get(k)
+        v = ', '.join(v) if isinstance(v, list) else v
+        if v:
+            lines.append(f"{label}: {v}")
+    return '\n'.join(lines)
+
+
+def feedback_thanks(fb):
+    first = (fb.get('name') or '').split(' ')[0] or 'colleague'
+    return (f"Dear {first},\n\nThank you for your feedback on the Marikar Group performance hub (reference {fb['ref']}). "
+            "It has reached Dr. Babu B and the hub team, and goes into the review that decides the next release.\n\n"
+            "If you asked for a correction to a figure or to your divisions, it will be looked at and you will hear back by e-mail. "
+            "Further suggestions are welcome at any time: simply reply to this e-mail.\n\n"
+            "With warm regards,\nDr. Babu B\nCo-founder, BPro Consulting & Technologies\nwww.bpropms.com · www.drbabu.in\n\n"
+            "Marikar Group performance hub · " + HUB_URL)
 
 
 def strip_html(s):
@@ -519,14 +568,23 @@ def main():
         nonlocal changed
         log.append({'at': NOW, 'action': action, 'who': who, 'by': by, 'detail': detail}); changed = True
     from_approvers = hub_mails = 0
+    feedback = [f for f in store.get('feedback', []) if isinstance(f, dict) and f.get('ref')] if isinstance(store.get('feedback'), list) else []
+    new_feedback = []
     for msg, ours in messages:
         reqs, cmds, mg, spw = parse(msg)
         setpws.extend(spw)
+        fb_here = False
+        for m in FEEDBACK.finditer(text_of(msg)):
+            fb = decode_feedback(m.group(1))
+            if fb:
+                fb_here = True
+                if fb['ref'] not in {f['ref'] for f in feedback + new_feedback}:
+                    new_feedback.append(fb)
         if email.utils.parseaddr(msg.get('From', ''))[1].lower() in approvers | set(accounts.admins()):
             from_approvers += 1
             # what the approver's e-mail looked like to the clerk (first typed line only, shortened)
             print(f"  approver e-mail: {len(cmds)} reference(s) with a command, {len(mg)} management line(s), first line {first_line(text_of(msg))[:40]!r}")
-        if reqs or cmds or mg or spw:
+        if reqs or cmds or mg or spw or fb_here:
             hub_mails += 1
         else:
             # a mail the clerk cannot act on (no request code, no command): named here, masked, so an access request
@@ -750,6 +808,20 @@ def main():
         req['acked'] = NOW; acked_addrs.add(req['email']); sent_acks += 1; changed = True
         print(f"  acknowledged {req['ref']} to {mask(req['email'])}")
 
+    # 4b. survey answers from feedback.html: kept in the store (Settings > Feedback), the person thanked, the answers
+    #     mailed to the hub mailbox and the approvers; at most one thank-you per address per run, the page being public
+    thanked = set()
+    fb_to = sorted({MAIL_USER.lower()} | {a for a in approvers if not a.endswith('@bpropms.com')})
+    for fb in new_feedback[:20]:
+        fb['received'] = NOW
+        feedback.append(fb); changed = True
+        note('feedback', fb['id'], fb['id'], f"survey answers {fb['ref']}")
+        for addr in fb_to:
+            mailer.send(addr, f"Marikar hub: feedback {fb['ref']} from {fb['name'] or fb['id']}", feedback_text(fb))
+        if fb['id'] not in thanked:
+            mailer.send(fb['id'], 'Marikar hub: thank you for your feedback', feedback_thanks(fb)); thanked.add(fb['id'])
+        print(f"  feedback {fb['ref']} from {mask(fb['id'])} recorded and acknowledged")
+
     # 5. once a day, remind the approvers of anything that has waited more than a day
     waiting = []
     for p in pending:
@@ -781,7 +853,7 @@ def main():
         return
     os.makedirs(os.path.dirname(args.store), exist_ok=True)
     with open(args.store, 'w', encoding='utf-8') as f:
-        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled, 'links': links, 'log': log[-300:]}, f, ensure_ascii=False, indent=2); f.write('\n')
+        json.dump({'updated': NOW, 'reminded_at': reminded_at, 'pending': pending, 'handled': handled, 'links': links, 'feedback': feedback[-500:], 'log': log[-300:]}, f, ensure_ascii=False, indent=2); f.write('\n')
     accounts.save()
 
 

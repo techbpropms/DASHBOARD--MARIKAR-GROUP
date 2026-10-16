@@ -209,6 +209,13 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     <div class="tbl"><table id="changes-table"><thead><tr><th>When</th><th>Action</th><th>Account</th><th>By</th><th>Detail</th></tr></thead><tbody></tbody></table></div>
   </section>
 
+  <section class="panel" id="feedback" hidden>
+    <h2>Feedback</h2>
+    <p class="muted" id="fb-note">Answers to the survey (feedback.html, linked from the launch e-mail), newest first. Each is also mailed to the hub mailbox and the approvers when it arrives.</p>
+    <div class="tbl"><table id="fb-table"><thead><tr><th>When</th><th>Person</th><th>Sign-in</th><th>Figures</th><th>Clarity</th><th>Phone</th><th>Comments and wishes</th></tr></thead><tbody></tbody></table></div>
+    <div class="actions" style="margin-top:10px"><button class="btn sec sm" type="button" id="fb-csv" hidden>Download CSV</button><a class="btn sec sm" href="feedback.html" target="_blank" rel="noopener">Open the form</a></div>
+  </section>
+
   <section class="panel" id="whatsnew">
     <h2>What's new</h2>
     <p class="muted" id="wn-title">Loading the version notes…</p>
@@ -303,7 +310,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
 
   // ----- people (super admin and admin)
   if (!manages) { $('no-people').hidden = false; return; }
-  $('people').hidden = false; $('changes').hidden = false;
+  $('people').hidden = false; $('changes').hidden = false; $('feedback').hidden = false;
   const REPO = { owner: 'techbpropms', repo: 'DASHBOARD--MARIKAR-GROUP', path: 'assets/auth.js', inbox: 'data/requests/inbox.json', branch: 'main' };
   const MAILBOX = MGAuth.requests.config.to;
   const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -443,6 +450,16 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every 10 minutes
   // (scripts/read_requests.py). Approving or declining here moves a request to `handled` when you publish.
   let inbox = null;
+  // Settings > Feedback: the survey answers the clerk stored (inbox.json `feedback`)
+  function paintFeedback(inbox) {
+    const rows = (inbox.feedback || []).slice().sort((a, b) => (b.received || b.at || '').localeCompare(a.received || a.at || ''));
+    const tb = $('fb-table').querySelector('tbody'); tb.replaceChildren();
+    const words = (a) => [['Figures', a.q2t], ['First', a.q5], ['Missing', a.q6], ['Top three', (a.q7 || []).join(', ')], ['Other', a.q8]].filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(' · ');
+    rows.forEach((f) => { const a = f.a || {}; const tr = document.createElement('tr'); [fmtWhen(f.received || f.at), `${f.name || ''} (${f.id})`, a.q1 || '', a.q2 || '', a.q3 || '', a.q4 || '', words(a)].forEach((v) => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }); tb.appendChild(tr); });
+    $('fb-note').textContent = rows.length ? `${rows.length} response${rows.length === 1 ? '' : 's'} so far, newest first. Each was also mailed to the hub mailbox and the approvers when it arrived.` : 'No survey answers yet. The launch e-mail links to the form; answers appear here within five minutes of being sent.';
+    $('fb-csv').hidden = !rows.length;
+    $('fb-csv').onclick = () => { const esc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"'; const head = ['When', 'Name', 'User ID', 'Sign-in', 'Figures', 'Which', 'Clarity', 'Phone', 'First', 'Missing', 'Top three', 'Other']; const lines = [head.join(',')].concat(rows.map((f) => { const a = f.a || {}; return [f.received || f.at, f.name, f.id, a.q1, a.q2, a.q2t, a.q3, a.q4, a.q5, a.q6, (a.q7 || []).join('; '), a.q8].map(esc).join(','); })); const b = new Blob([lines.join('\r\n')], { type: 'text/csv' }); const u = URL.createObjectURL(b); const l = document.createElement('a'); l.href = u; l.download = 'hub-feedback.csv'; l.click(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
+  }
   const handledLocally = (ref) => queue.handled[ref];
   function paintInbox() {
     const ul = $('inbox-list'); ul.replaceChildren();
@@ -461,6 +478,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       open.addEventListener('click', () => show(r));
       li.append(pill, who, when, open); ul.appendChild(li);
     });
+    paintFeedback(inbox);
     // the change log
     const tb = document.querySelector('#changes-table tbody'); tb.replaceChildren();
     // the log (kept by the clerk since 15 Oct) plus every settled request from `handled`, so requests approved
