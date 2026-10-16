@@ -433,6 +433,20 @@
       "who": "kintin@marikar.in",
       "by": "forgot password",
       "detail": "PR-20261016-5147"
+    },
+    {
+      "at": "2026-10-16T06:27:12+00:00",
+      "action": "divisions",
+      "who": "serm@marikar.in",
+      "by": "tech@bpropms.com",
+      "detail": "all divisions -> HONDA, AMZES, BIGWING, RE (as on the access request)"
+    },
+    {
+      "at": "2026-10-16T06:27:12+00:00",
+      "action": "divisions",
+      "who": "gmoperations@marikargroup.com",
+      "by": "tech@bpropms.com",
+      "detail": "GROUP, NISSAN -> GROUP, HONDA, AMZES, BIGWING, RE, NISSAN (as on the access request)"
     }
   ]
 }
