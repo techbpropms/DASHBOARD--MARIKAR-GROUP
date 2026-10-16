@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your feedback · Marikar Group Performance Hub</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/img/marikar-group.png">
+<meta name="theme-color" content="#131c38">
+<link rel="stylesheet" href="assets/brand.css">
+<style>
+/* The feedback form the launch e-mail links to: no sign-in needed, one page, two minutes. The answers go to the
+   hub as a code starting MGF1. (same route as access requests: /submit on the VPS), the mailbox clerk mails a
+   thank-you to the person and the answers to the hub mailbox, and Settings > Feedback lists them. */
+:root { --bg: #f7f2ea; --surface: #fffcf7; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1; --mast: #131c38; --amber: #d49a3a; --link: #5b4f9e; --pick: #131c38; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229; --link: #c9bff5; --pick: #d49a3a; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229; --link: #c9bff5; --pick: #d49a3a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; padding: 20px 16px 40px; background: var(--bg); color: var(--ink); font: 15px/1.5 "Plus Jakarta Sans", system-ui, sans-serif; }
+.card { max-width: 640px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 26px 24px 24px; box-shadow: 0 18px 50px rgba(19, 28, 56, .12); }
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; } .brand img { height: 42px; width: auto; background: #fff; border-radius: 10px; padding: 4px; }
+.brand b { display: block; font-size: 15px; } .brand small { display: block; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-size: 10.5px; font-weight: 700; }
+h1 { font-size: 21px; margin: 0 0 6px; } .lead { color: var(--muted); margin: 0 0 18px; }
+fieldset { border: 0; padding: 0; margin: 0 0 18px; } legend { font-weight: 700; margin-bottom: 8px; padding: 0; }
+.q { display: block; font-weight: 700; margin: 0 0 8px; } .q small { display: block; font-weight: 400; color: var(--muted); }
+.scale { display: flex; gap: 8px; flex-wrap: wrap; } .scale label { flex: 1 1 52px; }
+.scale input, .pick input { position: absolute; opacity: 0; width: 0; height: 0; }
+.scale span, .pick span { display: block; text-align: center; padding: 11px 6px; border: 1.5px solid var(--line); border-radius: 12px; font-weight: 700; cursor: pointer; user-select: none; }
+.scale input:checked + span, .pick input:checked + span { background: var(--pick); color: #fff; border-color: var(--pick); }
+.scale input:focus-visible + span, .pick input:focus-visible + span { outline: 3px solid var(--amber); }
+.ends { display: flex; justify-content: space-between; color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+.pick { display: flex; gap: 8px; flex-wrap: wrap; } .pick label { flex: 1 1 120px; } .pick.col label { flex: 1 1 100%; } .pick.col span { text-align: left; font-weight: 600; }
+textarea, input[type=text], input[type=email] { width: 100%; font: inherit; color: inherit; background: transparent; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; }
+textarea { min-height: 76px; resize: vertical; }
+.who { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 520px) { .who { grid-template-columns: 1fr; } }
+.btn { display: inline-flex; align-items: center; justify-content: center; font: inherit; font-weight: 700; color: #fff; background: var(--mast); border: 0; border-radius: 12px; padding: 13px 20px; cursor: pointer; width: 100%; font-size: 16px; }
+.btn[disabled] { opacity: .6; cursor: default; }
+.err { color: #b3261e; margin: 10px 0 0; min-height: 1.4em; }
+.thanks { text-align: center; padding: 20px 0 8px; } .thanks .tick { font-size: 54px; color: var(--amber); line-height: 1; margin-bottom: 10px; }
+.foot { margin: 18px 0 0; font-size: 12.5px; color: var(--muted); } a { color: var(--link); }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand"><img src="assets/img/marikar-group.png" alt="Marikar Group"><div><b>Marikar Group</b><small>Performance hub · feedback</small></div></div>
+  <form id="f" novalidate>
+    <h1>Two minutes: how is the hub working for you?</h1>
+    <p class="lead">Your answers go straight to Dr. Babu B and the hub team, and decide what the next version brings. Scores are 1 (poor) to 5 (excellent); a line of comment is worth more than the score.</p>
+
+    <fieldset class="who">
+      <div><label class="q" for="name">Your name</label><input id="name" type="text" autocomplete="name" required></div>
+      <div><label class="q" for="id">Your e-mail (hub user ID)</label><input id="id" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required></div>
+    </fieldset>
+
+    <fieldset><span class="q">1. Signing in and resetting the password: how easy was it?</span>
+      <div class="scale" data-q="q1"></div><div class="ends"><span>Difficult</span><span>Very easy</span></div></fieldset>
+    <fieldset><span class="q">2. Are the figures for your division correct and current?</span>
+      <div class="pick" data-q="q2" data-opts="Yes|Partly|No"></div>
+      <textarea id="q2t" placeholder="If partly or no: which figure, which month?" maxlength="400" style="margin-top:8px"></textarea></fieldset>
+    <fieldset><span class="q">3. Clarity of the reports and charts</span>
+      <div class="scale" data-q="q3"></div><div class="ends"><span>Confusing</span><span>Very clear</span></div></fieldset>
+    <fieldset><span class="q">4. Speed and ease of use on your phone</span>
+      <div class="scale" data-q="q4"></div><div class="ends"><span>Slow or awkward</span><span>Quick and easy</span></div></fieldset>
+    <fieldset><label class="q" for="q5">5. Which report or figure do you look for first, and is it easy to reach?</label><textarea id="q5" maxlength="400"></textarea></fieldset>
+    <fieldset><label class="q" for="q6">6. What is missing that you need every month? <small>A register, a comparison, a target, an alert, a download…</small></label><textarea id="q6" maxlength="400"></textarea></fieldset>
+    <fieldset><span class="q">7. Which of these would help you most? <small>Tick up to three.</small></span>
+      <div class="pick col" data-q="q7" data-multi="3" data-opts="Monthly target vs actual|Year-on-year comparison|Branch-wise drill-down|Stock ageing|Daily sales flash by e-mail|Excel download of any table|Malayalam labels"></div></fieldset>
+    <fieldset><label class="q" for="q8">8. Any other suggestion, however small</label><textarea id="q8" maxlength="600"></textarea></fieldset>
+
+    <button class="btn" type="submit" id="go">Send my feedback</button>
+    <p class="err" id="err" role="alert"></p>
+    <p class="foot">Sent to the hub mailbox (mml@bpropms.in). You receive a short thank-you by e-mail; the answers are read by the hub team only.</p>
+  </form>
+  <div class="thanks" id="thanks" hidden>
+    <div class="tick">✓</div>
+    <h1>Thank you, <span id="t-name">colleague</span></h1>
+    <p class="lead" id="t-note">Your feedback has reached the hub team. A short acknowledgement is on its way to your mailbox, and your suggestions go into the next release review.</p>
+    <a class="btn" href="hub.html" style="max-width:260px">Open the hub</a>
+    <p class="foot" id="t-ref"></p>
+  </div>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  const b64u = (s) => btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  // the choice rows: 1-5 scales and option lists, built once so the markup stays short
+  document.querySelectorAll('.scale').forEach((el) => { for (let i = 1; i <= 5; i++) el.insertAdjacentHTML('beforeend', `<label><input type="radio" name="${el.dataset.q}" value="${i}"><span>${i}</span></label>`); });
+  document.querySelectorAll('.pick').forEach((el) => { const multi = el.dataset.multi; el.dataset.opts.split('|').forEach((o) => el.insertAdjacentHTML('beforeend', `<label><input type="${multi ? 'checkbox' : 'radio'}" name="${el.dataset.q}" value="${o.replace(/"/g, '&quot;')}"><span>${o}</span></label>`)); });
+  document.querySelectorAll('.pick[data-multi]').forEach((el) => el.addEventListener('change', () => { const max = +el.dataset.multi, on = el.querySelectorAll('input:checked'); el.querySelectorAll('input:not(:checked)').forEach((i) => { i.disabled = on.length >= max; }); }));
+  // prefilled from the e-mail link: who it is, and the score tapped in the mail
+  $('name').value = qs.get('n') || ''; $('id').value = (qs.get('u') || '').toLowerCase();
+  ['q1', 'q3', 'q4'].forEach((q) => { const v = qs.get(q); if (v) { const i = document.querySelector(`input[name=${q}][value="${v}"]`); if (i) i.checked = true; } });
+  if (qs.get('q2')) { const i = document.querySelector(`input[name=q2][value="${qs.get('q2')}"]`); if (i) i.checked = true; }
+  if (qs.has('q1') || qs.has('q3') || qs.has('q4') || qs.has('q2')) setTimeout(() => document.querySelector('fieldset:nth-of-type(3)').scrollIntoView({ block: 'start', behavior: 'smooth' }), 300);
+
+  const val = (q) => { const i = document.querySelector(`input[name=${q}]:checked`); return i ? i.value : ''; };
+  const vals = (q) => [...document.querySelectorAll(`input[name=${q}]:checked`)].map((i) => i.value);
+  const ref = () => { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return `FB-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${Math.random().toString(16).slice(2, 6).toUpperCase()}`; };
+
+  $('f').addEventListener('submit', async (e) => {
+    e.preventDefault(); $('err').textContent = '';
+    const name = $('name').value.trim(), id = $('id').value.trim().toLowerCase();
+    if (!name) return $('err').textContent = 'Please give your name.';
+    if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(id)) return $('err').textContent = 'Please give the e-mail address you use as your hub user ID.';
+    const a = { q1: val('q1'), q2: val('q2'), q2t: $('q2t').value.trim(), q3: val('q3'), q4: val('q4'), q5: $('q5').value.trim(), q6: $('q6').value.trim(), q7: vals('q7'), q8: $('q8').value.trim() };
+    if (!a.q1 && !a.q2 && !a.q3 && !a.q4 && !a.q5 && !a.q6 && !a.q7.length && !a.q8) return $('err').textContent = 'Please answer at least one question.';
+    const fb = { v: 1, kind: 'feedback', ref: ref(), at: new Date().toISOString(), id, name, a };
+    const code = 'MGF1.' + b64u(JSON.stringify(fb));
+    $('go').disabled = true; $('go').textContent = 'Sending…';
+    let sent = false;
+    try { const r = await fetch(`submit?code=${encodeURIComponent(code)}`, { cache: 'no-store' }); sent = r.ok; } catch (err) { sent = false; }
+    if (!sent) {
+      // not on the hub's own server (or offline): hand the code to the mail app instead, same result
+      const body = `Hub feedback ${fb.ref} from ${name} (${id})\n\n${code}\n`;
+      location.href = `mailto:mml@bpropms.in?subject=${encodeURIComponent('Marikar hub: feedback ' + fb.ref)}&body=${encodeURIComponent(body)}`;
+      $('t-note').textContent = 'Your mail app has opened with your answers as a code: press Send there and they reach the hub team the same way.';
+    }
+    $('t-name').textContent = name.split(' ')[0]; $('t-ref').textContent = `Reference ${fb.ref}`;
+    $('f').hidden = true; $('thanks').hidden = false; window.scrollTo(0, 0);
+  });
+})();
+</script>
+</body>
+</html>

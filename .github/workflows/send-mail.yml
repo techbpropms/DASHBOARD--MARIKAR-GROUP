@@ -1,0 +1,44 @@
+# Sends a branded e-mail from the hub mailbox to the hub's users, one personalised message each, with
+# scripts/send_mail.py. Run it from the Actions tab: choose the template (a file under docs/mail/), the subject and
+# the recipients ("all" = every account in assets/auth.js except the BPro service accounts, or a comma-separated
+# list of user IDs for a test). Needs the MAIL_PASSWORD secret. Addresses are masked in the log.
+name: Send mail to users
+on:
+  workflow_dispatch:
+    inputs:
+      template:
+        description: 'Template file (under docs/mail/)'
+        required: true
+        default: 'docs/mail/launch-2026-10.html'
+      subject:
+        description: 'Subject line'
+        required: true
+        default: 'Marikar Group Performance Hub is live: please sign in and tell us what to build next'
+      to:
+        description: 'Recipients: "all", or a comma-separated list of user IDs (for a test send)'
+        required: true
+        default: 'all'
+      dry:
+        description: 'Dry run: list the recipients and show the text, send nothing (yes/no)'
+        required: false
+        default: 'no'
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send
+        env:
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_USER: ${{ vars.MAIL_USER }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          TEMPLATE: ${{ github.event.inputs.template }}
+          SUBJECT: ${{ github.event.inputs.subject }}
+          TO: ${{ github.event.inputs.to }}
+          DRY: ${{ github.event.inputs.dry }}
+        run: |
+          for v in MAIL_USER SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
+          case "$TEMPLATE" in docs/mail/*.html) ;; *) echo "::error::The template must be a file under docs/mail/"; exit 1;; esac
+          [ -f "$TEMPLATE" ] || { echo "::error::$TEMPLATE does not exist"; exit 1; }
+          [ "$DRY" = "yes" ] && export DRY_RUN=1
+          python3 scripts/send_mail.py --template "$TEMPLATE" --subject "$SUBJECT" --to "$TO"
