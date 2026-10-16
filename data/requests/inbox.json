@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T09:40:56+00:00",
+  "updated": "2026-10-16T10:00:21+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -16,6 +16,24 @@
       "from": "hub-submission@localhost",
       "mid": "",
       "acked": "2026-10-16T09:15:13+00:00"
+    },
+    {
+      "ref": "AR-20261016-D9DF",
+      "kind": "access",
+      "name": "Amal Edwin",
+      "email": "manager.service@marikar.in",
+      "unit": "Royal Enfield",
+      "scope": "Royal Enfield",
+      "title": "Deputy Manager Service",
+      "reason": "Royal Enfield",
+      "at": "2026-10-16T09:59:25.747Z",
+      "divisions": [
+        "RE"
+      ],
+      "received": "2026-10-16T09:59:49+00:00",
+      "from": "manager.service@marikar.in",
+      "mid": "<CABopxjt2m18daZVV96hGNceS3_M_pr-f=hQ9Vy07OtD9PF1jRw@mail.gmail.com>",
+      "acked": "2026-10-16T10:00:21+00:00"
     }
   ],
   "handled": {
