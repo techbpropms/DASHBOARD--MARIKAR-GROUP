@@ -1,0 +1,18 @@
+# Checks every half hour that the hub answers over HTTPS with the current version file. A failure makes the run red,
+# and GitHub e-mails the repository owner about failed runs, so an outage is noticed without anyone watching.
+name: Uptime check
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch the version file over HTTPS
+        run: |
+          out=$(curl -sS --max-time 20 -w '\n%{http_code}' https://mmlpbi.bpropms.in/version.json) || { echo "::error::https://mmlpbi.bpropms.in did not answer"; exit 1; }
+          code=${out##*$'\n'}; body=${out%$'\n'*}
+          echo "HTTP $code"; echo "$body" | head -c 300; echo
+          [ "$code" = "200" ] || { echo "::error::the hub answered HTTP $code"; exit 1; }
+          echo "$body" | grep -q '"version"' || { echo "::error::the answer is not the hub's version file"; exit 1; }

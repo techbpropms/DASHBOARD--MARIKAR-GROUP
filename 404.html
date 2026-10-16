@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Page not found · Marikar Group Performance Hub</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/img/marikar-group.png">
+<meta name="theme-color" content="#131c38">
+<link rel="stylesheet" href="assets/brand.css">
+<script src="assets/auth.js"></script>
+<style>
+/* Served by nginx for any address the hub does not have (error_page 404), and by the service worker when a page is
+   not in the cache offline. Links go to real pages; nothing here depends on data files. */
+:root { --bg: #f7f2ea; --surface: #fffcf7; --ink: #2a241f; --muted: #6b6157; --line: #e8dfd1; --mast: #131c38; --amber: #d49a3a; --link: #5b4f9e; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229; --link: #c9bff5; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #16130f; --surface: #1f1b17; --ink: #f1ebe2; --muted: #b2a698; --line: #3a3229; --link: #c9bff5; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); color: var(--ink); font: 15px/1.5 "Plus Jakarta Sans", system-ui, sans-serif; }
+.card { width: 100%; max-width: 480px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 28px 26px 24px; box-shadow: 0 18px 50px rgba(19, 28, 56, .12); text-align: center; }
+.brand { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 18px; } .brand img { height: 44px; width: auto; background: #fff; border-radius: 10px; padding: 4px; }
+.brand b { display: block; font-size: 15px; text-align: left; } .brand small { display: block; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-size: 10.5px; font-weight: 700; text-align: left; }
+.code { font-size: 44px; font-weight: 800; letter-spacing: -.02em; color: var(--amber); margin: 6px 0 0; }
+h1 { font-size: 21px; margin: 4px 0 8px; } p { color: var(--muted); margin: 0 0 18px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; font: inherit; font-weight: 700; color: #fff; background: var(--mast); border: 0; border-radius: 12px; padding: 12px 18px; text-decoration: none; margin: 4px; }
+.btn.sec { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.help { margin: 16px 0 0; font-size: 13.5px; } a { color: var(--link); }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand"><img src="assets/img/marikar-group.png" alt="Marikar Group"><div><b>Marikar Group</b><small>Performance hub</small></div></div>
+  <div class="code" id="code">404</div>
+  <h1 id="title">That page is not on the hub</h1>
+  <p id="why">The address may be mistyped, or the page may have moved. Everything on the hub is reachable from the landing page.</p>
+  <a class="btn" href="hub.html" id="go">Go to the hub</a>
+  <a class="btn sec" href="index.html">Sign in</a>
+  <p class="help">Looking for a report or a note? Open <a href="verify.html">Verify a document</a> and enter its document ID.</p>
+</main>
+<script>
+(() => {
+  // offline, the service worker serves this page for anything not cached: say so instead of "not found"
+  if (!navigator.onLine) { document.getElementById('code').textContent = 'Offline'; document.getElementById('title').textContent = 'This page is not available offline'; document.getElementById('why').textContent = 'The hub keeps the pages you have opened before. Connect to the internet and try again, or go back to a page you have already seen.'; }
+  if (!MGAuth.user()) document.getElementById('go').textContent = 'Go to sign in', document.getElementById('go').href = 'index.html';
+})();
+</script>
+</body>
+</html>
