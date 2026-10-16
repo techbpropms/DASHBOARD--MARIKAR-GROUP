@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T05:52:44+00:00",
+  "updated": "2026-10-16T05:55:16+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -174,13 +174,6 @@
     "agm.oaip@gmail.com": {
       "hash": "0fd54e9bcc3aa2c5205958ce4328886e7785cafcb37b045a844c571b4b521cd5",
       "exp": "2026-10-17T05:45:25+00:00",
-      "why": "approved",
-      "ref": "",
-      "at": "2026-10-16T05:45:13+00:00"
-    },
-    "seniormanager.re@marikar.in": {
-      "hash": "dbc1c2476868632f936ccd9f182f5b7b5230e8f9591bb4aa754ac8827c0b5b8f",
-      "exp": "2026-10-17T05:45:27+00:00",
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:45:13+00:00"
@@ -399,6 +392,27 @@
       "who": "seniormanager.sales@marikarnissan.co.in",
       "by": "administrator (account added)",
       "detail": "AR-20261016-2370 as viewer (BIGWING, NISSAN)"
+    },
+    {
+      "at": "2026-10-16T05:55:16+00:00",
+      "action": "password",
+      "who": "seniormanager.re@marikar.in",
+      "by": "the account owner, by link",
+      "detail": "approved"
+    },
+    {
+      "at": "2026-10-16T05:55:16+00:00",
+      "action": "bounce",
+      "who": "agm.oaip@gmail.com",
+      "by": "mail system",
+      "detail": "agm.oaip@gmail.com (<20261016045606.DE20446249C@relay.mailch)"
+    },
+    {
+      "at": "2026-10-16T05:55:16+00:00",
+      "action": "bounce",
+      "who": "agm.oaip@gmail.com",
+      "by": "mail system",
+      "detail": "agm.oaip@gmail.com (<20261016054530.78C3C7A20E1@relay.mailch)"
     }
   ]
 }
