@@ -448,9 +448,19 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     });
     // the change log
     const tb = document.querySelector('#changes-table tbody'); tb.replaceChildren();
-    const log = (inbox.log || []).slice().reverse().slice(0, 60);
+    // the log (kept by the clerk since 15 Oct) plus every settled request from `handled`, so requests approved
+    // before the log existed are listed too; a request already in the log is not repeated
+    const logged = (inbox.log || []).map((e) => ({ ...e }));
+    const inLog = (ref) => logged.some((e) => (e.detail || '').includes(ref));
+    Object.entries(inbox.handled || {}).forEach(([ref, h]) => {
+      if (inLog(ref)) return;
+      const action = { approved: 'approved', declined: 'declined', reset: 'reset', link: 'reset link', throttled: 'reset skipped', 'no-account': 'reset refused' }[h.status] || h.status;
+      logged.push({ at: h.at, action, who: h.email || (h.role ? `(${roleName(h.role)})` : ''), by: h.by || '', detail: ref + (h.divisions ? ' · ' + divNames(normDivs(h.divisions)) : '') + (h.note ? ' · ' + h.note : '') });
+    });
+    const log = logged.sort((a, b) => (b.at || '').localeCompare(a.at || '')).slice(0, 120);
     log.forEach((e) => { const tr = document.createElement('tr'); [fmtWhen(e.at), e.action, e.who, e.by, e.detail || ''].forEach((t) => { const td = document.createElement('td'); td.textContent = t; tr.appendChild(td); }); tb.appendChild(tr); });
-    $('changes-note').textContent = log.length ? 'Every approval, refusal, reset, role change, addition and removal the hub has carried out, newest first.' : 'No changes recorded yet. Approvals, resets, role changes, additions and removals will be listed here.';
+    const settled = Object.keys(inbox.handled || {}).length;
+    $('changes-note').textContent = log.length ? `Every approval, refusal, reset, role change, addition and removal the hub has carried out, newest first: ${log.length} entr${log.length === 1 ? 'y' : 'ies'}, ${settled} request${settled === 1 ? '' : 's'} settled in all.` : 'No changes recorded yet. Approvals, resets, role changes, additions and removals will be listed here.';
   }
   fetch('data/requests/inbox.json', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null).then((j) => { inbox = j && typeof j === 'object' ? j : null; paintInbox(); }).catch(() => { inbox = null; paintInbox(); });
   const settle = (status) => { if (current && current.ref) { queue.handled[current.ref] = { status, at: new Date().toISOString(), by: user.id }; paintInbox(); paintPending(); } };

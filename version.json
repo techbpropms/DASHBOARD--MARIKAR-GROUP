@@ -1,8 +1,8 @@
 {
-  "version": "2026.10.15m",
-  "title": "Sign-in report on the hub's own server",
+  "version": "2026.10.16a",
+  "title": "Served from the Marikar VPS",
   "notes": [
-    "Sign-ins are recorded by the hub's server and Settings > Sign-in report shows them across users for admins and super admins",
-    "No separate logging service is needed any more"
+    "The hub is now served from the group's own server with its HTTPS certificate; the sign-in report across users is live",
+    "Settings > Account changes lists every settled request, including those approved before the log existed"
   ]
 }
