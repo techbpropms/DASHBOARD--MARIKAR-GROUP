@@ -457,6 +457,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     if (s) { $('go-text').textContent = 'Welcome, ' + s.name; location.replace(next); return; }
     tries++;
     $('go').disabled = false; $('go-text').textContent = 'Sign in';
+    if (!MGAuth.exists(id)) { mark($('uid'), true); fail('No account uses this user ID. Check the spelling of your official e-mail address, or use Request access.'); return; }
     fail(tries >= 3 ? 'Still not matching. Use "Forgot password?" below, or write to mml@bpropms.in.' : 'That user ID and password don’t match. Check them and try again.');
     $('pw').value = ''; $('pw').focus();
   });
@@ -505,6 +506,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     e.preventDefault(); clear('f-alert');
     const id = $('f-id').value.trim().toLowerCase();
     mark($('f-id'), !EMAIL.test(id)); if (!EMAIL.test(id)) { fail('Enter the e-mail address you sign in with.', 'f-alert'); return; }
+    if (!MGAuth.exists(id)) { mark($('f-id'), true); fail('No account uses this user ID. Check the spelling of your official e-mail address; if you have no account yet, use Request access.', 'f-alert'); return; }
     $('f-go').disabled = true; $('f-go-text').textContent = 'Preparing…';
     const built = MGAuth.requests.build('reset', { email: id });
     $('forgot').hidden = true;

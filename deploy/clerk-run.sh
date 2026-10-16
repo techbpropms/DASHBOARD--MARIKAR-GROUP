@@ -41,6 +41,8 @@ git fetch -q origin main 2>/dev/null || { status false "cannot read the reposito
 git reset -q --hard origin/main
 git clean -qfd
 git push -q --dry-run origin HEAD:main 2>/dev/null || { status false "the deploy key may read but not write; $KEYNOTE"; exit 0; }
+# the account file and the request store on the site always follow main (the deploy leaves them to this clerk)
+for f in assets/auth.js data/requests/inbox.json; do cmp -s "$f" "$SITE/$f" || install -m 644 "$f" "$SITE/$f"; done
 
 cp -f "$LOG/submit.log" "$D/submissions.jsonl" 2>/dev/null || : > "$D/submissions.jsonl"
 export APPROVERS="${APPROVERS:-drbabukollam@gmail.com,babukadavoor@gmail.com}"

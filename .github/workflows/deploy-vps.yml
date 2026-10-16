@@ -1,4 +1,6 @@
 # Publishes the hub to the Hostinger VPS whenever main changes (merges, and the mailbox clerk's own commits).
+# The account file and the request store are left to the clerk on the server, which copies them from main every
+# minute and at once after its own changes: a deploy in flight can then never overwrite a password that just went live.
 # One-time set-up: the "Set up VPS" workflow (or deploy/vps-setup.sh by hand). Repository secrets: VPS_HOST (IP
 # or host name) and either VPS_PASSWORD (the root password) or VPS_SSH_KEY (a private key whose public half is on
 # the server for root); optional VPS_USER (default root) and VPS_PATH (default /srv/hub/site).
@@ -56,6 +58,7 @@ jobs:
           rsync -az --delete \
             --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
             --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
+            --exclude 'assets/auth.js' --exclude 'data/requests/inbox.json' \
             -e "$ssh_cmd" \
             ./ "${VPS_USER:-$user_default}@$VPS_HOST:$VPS_PATH/"
           echo "deployed $(git rev-parse --short HEAD) to $VPS_HOST:$VPS_PATH"
