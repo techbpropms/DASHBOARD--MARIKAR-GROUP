@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T13:53:10+00:00",
+  "updated": "2026-10-16T13:56:10+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -225,6 +225,12 @@
       "at": "2026-10-16T13:51:49+00:00",
       "by": "automatic",
       "email": "gopakumar@marikarengineers.com"
+    },
+    "PR-20261016-BC79": {
+      "status": "link",
+      "at": "2026-10-16T13:56:10+00:00",
+      "by": "automatic",
+      "email": "gopakumar@marikarengineers.com"
     }
   },
   "links": {
@@ -263,6 +269,14 @@
       "why": "admin",
       "ref": "PR-20261016-26C5",
       "at": "2026-10-16T12:03:20+00:00"
+    },
+    "gopakumar@marikarengineers.com": {
+      "hash": "3460f55d401b5941a6e5fdedf145ec4265ef69640736a4594c0e1d72f91fd44d",
+      "code": "de12fb0aecb23055ca83657c798b5a7978d080ac24c1f306f557012b25670a12",
+      "exp": "2026-10-17T13:56:21+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-BC79",
+      "at": "2026-10-16T13:56:10+00:00"
     }
   },
   "feedback": [
@@ -695,6 +709,13 @@
       "who": "gopakumar@marikarenguneers.com",
       "by": "mail system",
       "detail": "gopakumar@marikarenguneers.com (<20261016134958.5C1BF380EC1@relay.mailch)"
+    },
+    {
+      "at": "2026-10-16T13:56:10+00:00",
+      "action": "reset link",
+      "who": "gopakumar@marikarengineers.com",
+      "by": "forgot password",
+      "detail": "PR-20261016-BC79"
     }
   ]
 }
