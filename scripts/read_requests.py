@@ -775,6 +775,8 @@ def main():
             name = (arg[:rm.start()] if rm else arg).strip().strip('"\'') or target
             if acct:
                 print(f"  ignored 'add {mask(target)}': account exists (use role or reset)"); continue
+            if any(e.get('action') == 'added' and e.get('who') == target and e.get('by') == sender for e in log):
+                continue   # this line was carried out before; the account has since been removed or re-created on purpose
             if limited and role == 'superadmin':
                 print(f"  ignored 'add {mask(target)}' from {mask(sender)}: an admin cannot create a super admin"); continue
             accounts.add(target, name, role, divs)
@@ -793,6 +795,25 @@ def main():
             mailer.send(acct['id'], 'Marikar hub: your divisions', f"Dear {acct['name'].split(' ')[0]},\n\nYour access on the Marikar Group performance hub now covers: {divs_text(divs)}. It applies from your next sign-in.\n\nRegards,\nMarikar Group performance hub")
             note('divisions', acct['id'].lower(), sender, f"{divs_text(acct['divisions'])} -> {divs_text(divs)}")
             print(f"  divisions {mask(acct['id'])}: {divs_text(acct['divisions'])} -> {divs_text(divs)} on {mask(sender)}'s instruction")
+
+    # 3c2. returned mail: when a link or notice could not be delivered, the failed address goes into the change log,
+    #      so Settings > Account changes shows it and the administrator can correct the ID
+    seen_bounces = {e.get('detail') for e in log if e.get('action') == 'bounce'}
+    for msg, ours in messages:
+        subj = str(msg.get('Subject', ''))
+        if not re.search(r'undeliver|delivery (status|failure)|returned to sender|mail delivery failed', subj, re.I):
+            continue
+        body = text_of(msg)
+        failed = re.findall(r'<?([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})>?[^\n]*?(?:said|rejected|does not exist|unknown|not found|550|no such)', body, re.I)
+        failed = [f.lower() for f in failed if f.lower() != MAIL_USER.lower()]
+        mid = str(msg.get('Message-ID', '')).strip()
+        for addr in dict.fromkeys(failed):
+            key = f"{addr} ({mid[:40]})" if mid else addr
+            if key in seen_bounces:
+                continue
+            seen_bounces.add(key)
+            note('bounce', addr, 'mail system', key)
+            print(f"  returned mail for {mask(addr)}: the address does not accept mail; correct the ID or ask for another")
 
     # 3d. a request whose ID now has an account (added from Settings > People rather than approved on the request) is
     #     settled as approved, so it stops showing as waiting; the person has their link from the add already
