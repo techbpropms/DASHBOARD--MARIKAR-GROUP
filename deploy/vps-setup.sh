@@ -51,6 +51,7 @@ if [ ! -f "$CONF" ] || ! grep -q 'listen 443' "$CONF"; then
 else
   # certified earlier: certbot owns the file now, so missing locations are inserted into every server block
   grep -q 'signin-log' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /signin-log { access_log /srv/hub/log/signins.log hub_signins; add_header Cache-Control no-store; return 204; }\n\1location = /signins.log { alias /srv/hub/log/signins.log; default_type text/plain; add_header Cache-Control "no-cache, no-store, must-revalidate"; }\n\1location / { try_files#' "$CONF"
+  grep -q 'error_page 404' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1error_page 404 /404.html;\n\1location / { try_files#' "$CONF"
   grep -q '/submit ' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /submit { access_log /srv/hub/log/submit.log hub_submit; add_header Cache-Control no-store; return 204; }\n\1location / { try_files#' "$CONF"
 fi
 ln -sf "$CONF" /etc/nginx/sites-enabled/$HOST

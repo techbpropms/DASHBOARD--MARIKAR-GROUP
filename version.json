@@ -1,8 +1,9 @@
 {
-  "version": "2026.10.16b",
-  "title": "Requests go straight to the hub",
+  "version": "2026.10.16c",
+  "title": "404 page, What's new, uptime check",
   "notes": [
-    "Request access, Forgot password, Change password and the set-password page send their request to the hub directly: no mail app needed any more",
-    "The e-mail route remains as a fallback"
+    "A hub-styled page for addresses that do not exist, also shown offline for pages never opened before",
+    "Settings shows the current version's notes under What's new",
+    "The hub's address is checked every half hour and the owner is e-mailed if it stops answering"
   ]
 }
