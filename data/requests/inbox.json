@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T04:20:46+00:00",
+  "updated": "2026-10-16T04:25:26+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -39,6 +39,29 @@
       "from": "hub-submission@localhost",
       "mid": "",
       "acked": "2026-10-16T04:20:46+00:00"
+    },
+    {
+      "ref": "AR-20261016-DF24",
+      "kind": "access",
+      "name": "JIJI R THOMAS",
+      "email": "gmoperations@marikargroup.com",
+      "unit": "Marikar Group  - Sales Operations",
+      "scope": "Group vehicle sales, Honda Kerala, AMZES (Honda Tamil Nadu), BigWing, Royal Enfield, Nissan",
+      "title": "GENERAL MANAGER - OPERATIONS",
+      "reason": "Performance Monitoring, Analysis , Evaluation.",
+      "at": "2026-10-16T04:22:52.039Z",
+      "divisions": [
+        "GROUP",
+        "HONDA",
+        "AMZES",
+        "BIGWING",
+        "RE",
+        "NISSAN"
+      ],
+      "received": "2026-10-16T04:22:52+00:00",
+      "from": "hub-submission@localhost",
+      "mid": "",
+      "acked": "2026-10-16T04:25:26+00:00"
     }
   ],
   "handled": {
