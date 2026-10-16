@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T09:15:13+00:00",
+  "updated": "2026-10-16T09:18:38+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -184,6 +184,12 @@
         "CANON"
       ],
       "email": "agm.oaip@marikar.in"
+    },
+    "PR-20261016-BDB4": {
+      "status": "link",
+      "at": "2026-10-16T09:18:38+00:00",
+      "by": "administrator",
+      "email": "agm.oaip@marikar.in"
     }
   },
   "links": {
@@ -200,6 +206,13 @@
       "why": "forgot",
       "ref": "PR-20261016-71EC",
       "at": "2026-10-16T08:20:13+00:00"
+    },
+    "agm.oaip@marikar.in": {
+      "hash": "7565343c525eaecf86a62e3a6bb4a2b2ddd90249564ee999dbdc6e7efec0c04e",
+      "exp": "2026-10-17T09:18:47+00:00",
+      "why": "admin",
+      "ref": "PR-20261016-BDB4",
+      "at": "2026-10-16T09:18:38+00:00"
     }
   },
   "feedback": [
@@ -520,6 +533,13 @@
       "who": "agm.oaip@marikar.in",
       "by": "tech@bpropms.com",
       "detail": "AR-20261016-0ADC as viewer (CANON); replaces the bouncing Gmail ID"
+    },
+    {
+      "at": "2026-10-16T09:18:38+00:00",
+      "action": "reset link",
+      "who": "agm.oaip@marikar.in",
+      "by": "administrator (Actions tab)",
+      "detail": "PR-20261016-BDB4"
     }
   ]
 }
