@@ -63,5 +63,6 @@ jobs:
             --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
             -e "$ssh_cmd" ./ "root@$VPS_HOST:/srv/hub/site/"
           code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "http://$VPS_HOST/version.json" -H 'Host: mmlpbi.bpropms.in' || true)
-          echo "The server answers http://$VPS_HOST/version.json for mmlpbi.bpropms.in with HTTP $code (200 = ready)."
-          echo "Next: point the DNS record mmlpbi.bpropms.in (type A) at $VPS_HOST, then run this workflow once more for the HTTPS certificate."
+          https=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 --resolve "mmlpbi.bpropms.in:443:$VPS_HOST" "https://mmlpbi.bpropms.in/version.json" || true)
+          if [ "$https" = "200" ]; then echo "https://mmlpbi.bpropms.in answers HTTP 200 from this server with a valid certificate: the move is complete."
+          else echo "The server answers http://$VPS_HOST/version.json for mmlpbi.bpropms.in with HTTP $code (200 = ready; 301 = already redirecting to HTTPS)."; echo "Next: point the DNS record mmlpbi.bpropms.in (type A) at $VPS_HOST, then run this workflow once more for the HTTPS certificate."; fi"
