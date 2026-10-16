@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15T20:26:49+00:00",
+  "updated": "2026-10-16T02:40:13+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -85,6 +85,29 @@
       "at": "2026-10-15T13:03:32+00:00"
     }
   },
+  "feedback": [
+    {
+      "ref": "FB-20261016-9167",
+      "id": "drbabukollam@gmail.com",
+      "name": "drbabukollam",
+      "at": "2026-10-16T02:38:11.776Z",
+      "a": {
+        "q1": "1",
+        "q2": "",
+        "q2t": "",
+        "q3": "4",
+        "q4": "",
+        "q5": "",
+        "q6": "",
+        "q7": [
+          "Stock ageing",
+          "Malayalam labels"
+        ],
+        "q8": "hkjhkhkhjk"
+      },
+      "received": "2026-10-16T02:40:13+00:00"
+    }
+  ],
   "log": [
     {
       "at": "2026-10-15T10:57:57+00:00",
@@ -113,6 +136,13 @@
       "who": "gm@marikarautomobiles.in",
       "by": "babukadavoor@gmail.com",
       "detail": "all divisions -> CSPW, CANON"
+    },
+    {
+      "at": "2026-10-16T02:40:13+00:00",
+      "action": "feedback",
+      "who": "drbabukollam@gmail.com",
+      "by": "drbabukollam@gmail.com",
+      "detail": "survey answers FB-20261016-9167"
     }
   ]
 }
