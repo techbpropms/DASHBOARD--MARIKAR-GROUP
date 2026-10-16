@@ -18,7 +18,8 @@ REPO=git@github.com:techbpropms/DASHBOARD--MARIKAR-GROUP.git
 mkdir -p "$D" "$LOG"; chmod 700 "$D"
 exec > >(tee -a "$D/clerk.log") 2>&1
 echo "== $(date -u +'%Y-%m-%d %H:%M:%S') UTC"
-exec 9>"$D/lock"; flock -n 9 || { echo "another run is still going; skipped"; exit 0; }
+# runs queue behind one another (a submission arriving during the minute run, a reset passed from GitHub): wait, never skip
+exec 9>"$D/lock"; flock -w 240 9 || { echo "another run has held the lock for four minutes; giving up this one"; exit 0; }
 
 status() { # $1 ok (true/false), $2 note; the Settings page shows it
   printf '{"at":"%s","ok":%s,"note":"%s"}\n' "$(date -u +%FT%TZ)" "$1" "$2" > "$LOG/clerk.json.tmp" && mv -f "$LOG/clerk.json.tmp" "$LOG/clerk.json" && chmod 644 "$LOG/clerk.json"
