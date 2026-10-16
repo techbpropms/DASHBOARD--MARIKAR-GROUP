@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T11:16:32+00:00",
+  "updated": "2026-10-16T11:19:10+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -238,13 +238,6 @@
       "why": "forgot",
       "ref": "PR-20261016-7814",
       "at": "2026-10-16T11:05:56+00:00"
-    },
-    "agm.oaip@marikar.in": {
-      "hash": "6f5d57631c2f0e89c3fd068656876125bca525e313531eadeb5eba32abc01872",
-      "exp": "2026-10-17T11:16:41+00:00",
-      "why": "forgot",
-      "ref": "PR-20261016-2425",
-      "at": "2026-10-16T11:16:32+00:00"
     }
   },
   "feedback": [
@@ -642,6 +635,13 @@
       "who": "agm.oaip@marikar.in",
       "by": "forgot password",
       "detail": "PR-20261016-2425"
+    },
+    {
+      "at": "2026-10-16T11:19:10+00:00",
+      "action": "password",
+      "who": "agm.oaip@marikar.in",
+      "by": "the account owner, by link",
+      "detail": "forgot"
     }
   ]
 }
