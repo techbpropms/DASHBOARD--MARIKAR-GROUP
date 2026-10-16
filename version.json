@@ -1,8 +1,9 @@
 {
-  "version": "2026.10.16e",
-  "title": "Sign-in report fix",
+  "version": "2026.10.16f",
+  "title": "Settings for administrators only",
   "notes": [
-    "The sign-in report and the sign-in beacon no longer pass through the offline cache, so every sign-in is recorded on the server and the report is current",
-    "Feedback form and launch e-mail (from the previous release)"
+    "Settings (People, Account changes, Feedback, Sign-in report) is now for super admins and admins only; viewers no longer see it",
+    "The theme switch and a more prominent Refresh button sit in the bar at the top for everyone",
+    "Sign-in report fix (from the previous release)"
   ]
 }

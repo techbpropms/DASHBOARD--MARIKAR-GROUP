@@ -43,9 +43,13 @@
     ] },
     { label: 'HOD action tracker', href: 'tracker.html', icon: 'track' },
     { label: 'Verify a document', href: 'verify.html', icon: 'verify' },
-    { label: 'Settings', href: 'settings.html', icon: 'gear', children: [
+    // administration: super admins and admins only; viewers have the theme switch and Refresh in the bar instead
+    { label: 'Settings', href: 'settings.html', icon: 'gear', role: ['superadmin', 'admin'], children: [
+      { label: 'People', href: 'settings.html#people' },
+      { label: 'Account changes', href: 'settings.html#changes' },
+      { label: 'Feedback', href: 'settings.html#feedback' },
+      { label: 'Sign-in report', href: 'settings.html#signins' },
       { label: 'Appearance', href: 'settings.html#appearance' },
-      { label: 'People', href: 'settings.html#people', role: ['superadmin', 'admin'] },
     ] },
   ];
 
@@ -67,7 +71,8 @@
       // (the Honda divisions' TallyPrime data) for accounts without a Honda division are left out.
       const inScope = (it) => (!it.div || MGAuth.canSee(it.div)) && (!it.need || (it.need === 'sales' ? MGAuth.canSales() : MGAuth.canSee(it.need)));
       const scoped = (items) => items.filter(inScope).map((it) => it.children ? { ...it, children: scoped(it.children) } : it).filter((it) => !it.group || it.children.length);
-      const TREE = user ? scoped(MENU) : MENU;
+      const forRole = (it) => !it.role || (user && [].concat(it.role).includes(user.role));
+      const TREE = (user ? scoped(MENU) : MENU).filter(forRole);
       document.body.classList.add('mg-nav-' + mode);
 
       // ----- bar
@@ -87,7 +92,7 @@
       themes.forEach(([k, n, ic]) => { const b = el('button'); b.type = 'button'; b.dataset.t = k; b.title = n + ' theme'; b.setAttribute('aria-label', n + ' theme'); b.append(svg(ic)); b.addEventListener('click', () => { MGAuth.theme(k); paint(); }); tsw.append(b); });
       paint();
       // ----- refresh: checks for a new version of the app, then reloads this page with fresh data
-      const rf = el('button', 'mg-ic mg-refresh'); rf.type = 'button'; rf.title = 'Refresh'; rf.setAttribute('aria-label', 'Refresh'); rf.append(svg(I.refresh));
+      const rf = el('button', 'mg-ic mg-refresh'); rf.type = 'button'; rf.title = 'Refresh: check for a new version and reload with fresh data'; rf.setAttribute('aria-label', 'Refresh'); rf.append(svg(I.refresh), el('span', 'lbl', 'Refresh'));
       rf.addEventListener('click', () => {
         rf.classList.add('is-busy'); rf.disabled = true;
         const go = () => location.reload();
