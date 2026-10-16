@@ -121,7 +121,8 @@
   const noteSignIn = (s) => {
     const row = { at: new Date().toISOString(), id: s.id, name: s.name, role: s.role, device: device() };
     try { const k = 'mg-signins'; const list = JSON.parse(localStorage.getItem(k) || '[]'); list.push(row); localStorage.setItem(k, JSON.stringify(list.slice(-50))); } catch (e) { /* storage blocked */ }
-    if (SIGNINS.endpoint) { try { const q = new URLSearchParams({ id: row.id, name: row.name, role: row.role, device: row.device }); fetch(`${SIGNINS.endpoint}?${q}`, { mode: 'no-cors', cache: 'no-store', keepalive: true }).catch(() => {}); } catch (e) { /* offline */ } }
+    // t makes each beacon a distinct address, so nothing between here and the server can answer it from a cache
+    if (SIGNINS.endpoint) { try { const q = new URLSearchParams({ id: row.id, name: row.name, role: row.role, device: row.device, t: Date.now() }); fetch(`${SIGNINS.endpoint}?${q}`, { mode: 'no-cors', cache: 'no-store', keepalive: true }).catch(() => {}); } catch (e) { /* offline */ } }
   };
   const Auth = {
     user: read,
