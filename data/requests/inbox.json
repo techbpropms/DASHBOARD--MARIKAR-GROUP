@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T05:25:36+00:00",
+  "updated": "2026-10-16T05:40:46+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -209,6 +209,20 @@
       "why": "forgot",
       "ref": "PR-20261016-F118",
       "at": "2026-10-16T05:25:36+00:00"
+    },
+    "cspw@marikar.in": {
+      "hash": "f162bb9f6f6ff9d1917dbd4c23fc42c7280f801c7d36edea98ba1396dea27832",
+      "exp": "2026-10-17T05:40:53+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T05:40:46+00:00"
+    },
+    "serm@marikar.in": {
+      "hash": "c95a6d312c391ba137889db4a13c207e727ab3857351c729485e6c5258ac1764",
+      "exp": "2026-10-17T05:40:56+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T05:40:46+00:00"
     }
   },
   "feedback": [
@@ -305,6 +319,20 @@
       "who": "amul.verghese@marikar.in",
       "by": "forgot password",
       "detail": "PR-20261016-F118"
+    },
+    {
+      "at": "2026-10-16T05:40:46+00:00",
+      "action": "added",
+      "who": "cspw@marikar.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Biju S as viewer (CSPW)"
+    },
+    {
+      "at": "2026-10-16T05:40:46+00:00",
+      "action": "added",
+      "who": "serm@marikar.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Jayaprasad.G as viewer (all divisions)"
     }
   ]
 }

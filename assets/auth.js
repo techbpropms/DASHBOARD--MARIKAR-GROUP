@@ -13,6 +13,8 @@
     { id: 'gopakumar@marikarengineers.com', name: "GOPAKUMAR.H", role: 'viewer', salt: 'a3439ecb723114baaae4c26af37c3c26', hash: '1b0810c71fb20c30d1eae2d728809994414585682ecfa27e4851aa7b67e5eced' },
     { id: 'zmarikar@marikargroup.com', name: "Zulfiquar Marikar", role: 'viewer', salt: '96a6381fc75096aafd17ff61bf3834c3', hash: 'a262c0e1ce536a0f6f62356cc11a46d707d8116ce2a6889ae5277b07521b4cd9' },
     { id: 'kintin@marikar.in', name: "Kintin", role: 'viewer', salt: 'b0458e2eec96512071853b6980b6eca6', hash: '3102bf1134c80bc38a6f831ef42ba552ec7e0d2620987ae78ab7899a0454b3d8' },
+    { id: 'cspw@marikar.in', name: "Biju S", role: 'viewer', salt: '9ff786c604f1c208b3d01abae97fdbc8', hash: '51708989ce830ca6c40b14b6f895eba5e1cace67bee812db76ad7bc646c217a4', divisions: ['CSPW'] },
+    { id: 'serm@marikar.in', name: "Jayaprasad.G", role: 'viewer', salt: 'f675b0431a20e99ea98164545a09492d', hash: '4e7a312e5d1a249ad2ea621da7bcf8342df202025796b8a14ec93f93369dcd29' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   // Divisions an account can be limited to (keys as in data/divisions.json). An account line without a `divisions`
