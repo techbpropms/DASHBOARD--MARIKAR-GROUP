@@ -1,41 +1,7 @@
 {
-  "updated": "2026-10-16T10:10:26+00:00",
+  "updated": "2026-10-16T10:55:13+00:00",
   "reminded_at": "",
-  "pending": [
-    {
-      "ref": "AR-20261016-D947",
-      "kind": "access",
-      "name": "Thanseem Shajahan",
-      "email": "process@bpropms.com",
-      "unit": "Bpro",
-      "scope": "All divisions",
-      "title": "Head - Process & Audit (MCD)",
-      "at": "2026-10-16T09:11:39.764Z",
-      "divisions": "all",
-      "received": "2026-10-16T09:11:40+00:00",
-      "from": "hub-submission@localhost",
-      "mid": "",
-      "acked": "2026-10-16T09:15:13+00:00"
-    },
-    {
-      "ref": "AR-20261016-D9DF",
-      "kind": "access",
-      "name": "Amal Edwin",
-      "email": "manager.service@marikar.in",
-      "unit": "Royal Enfield",
-      "scope": "Royal Enfield",
-      "title": "Deputy Manager Service",
-      "reason": "Royal Enfield",
-      "at": "2026-10-16T09:59:25.747Z",
-      "divisions": [
-        "RE"
-      ],
-      "received": "2026-10-16T09:59:49+00:00",
-      "from": "manager.service@marikar.in",
-      "mid": "<CABopxjt2m18daZVV96hGNceS3_M_pr-f=hQ9Vy07OtD9PF1jRw@mail.gmail.com>",
-      "acked": "2026-10-16T10:00:21+00:00"
-    }
-  ],
+  "pending": [],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
@@ -214,6 +180,22 @@
       "at": "2026-10-16T09:40:56+00:00",
       "by": "automatic",
       "email": "zmarikar@marikargroup.com"
+    },
+    "AR-20261016-D947": {
+      "status": "approved",
+      "at": "2026-10-16T10:55:13+00:00",
+      "by": "account added by an administrator",
+      "role": "admin",
+      "divisions": "all"
+    },
+    "AR-20261016-D9DF": {
+      "status": "approved",
+      "at": "2026-10-16T10:55:13+00:00",
+      "by": "account added by an administrator",
+      "role": "viewer",
+      "divisions": [
+        "RE"
+      ]
     }
   },
   "links": {
@@ -237,6 +219,20 @@
       "why": "forgot",
       "ref": "PR-20261016-6C13",
       "at": "2026-10-16T09:40:56+00:00"
+    },
+    "manager.service@marikar.in": {
+      "hash": "4e9264318e0978e57056413a98c5398972efd1f0f3d7d56f3d6f441f04c08011",
+      "exp": "2026-10-17T10:55:22+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T10:55:13+00:00"
+    },
+    "process@bpropms.com": {
+      "hash": "6c6d268e0798a4a6b5bed2cb9f5f5795ede7f282afe2feaeb2c9a3e136659fc3",
+      "exp": "2026-10-17T10:55:24+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T10:55:13+00:00"
     }
   },
   "feedback": [
@@ -578,6 +574,34 @@
       "who": "gm@marikarautomobiles.in",
       "by": "the account owner, by link",
       "detail": "forgot"
+    },
+    {
+      "at": "2026-10-16T10:55:13+00:00",
+      "action": "added",
+      "who": "manager.service@marikar.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Amal Edwin as viewer (RE)"
+    },
+    {
+      "at": "2026-10-16T10:55:13+00:00",
+      "action": "added",
+      "who": "process@bpropms.com",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Thnaseem Shajahan as admin (all divisions)"
+    },
+    {
+      "at": "2026-10-16T10:55:13+00:00",
+      "action": "approved",
+      "who": "process@bpropms.com",
+      "by": "administrator (account added)",
+      "detail": "AR-20261016-D947 as admin (all divisions)"
+    },
+    {
+      "at": "2026-10-16T10:55:13+00:00",
+      "action": "approved",
+      "who": "manager.service@marikar.in",
+      "by": "administrator (account added)",
+      "detail": "AR-20261016-D9DF as viewer (RE)"
     }
   ]
 }
