@@ -40,6 +40,23 @@ Git history, the mail relay (`server/`), the build and mailbox scripts and this 
 Tally files never leave the owner's computer. The root password or key lives only in the GitHub secret. The
 set-up changes nothing else on the server: no other web server, no firewall rules, no other site's configuration.
 
+## Clerk on the VPS (every five minutes)
+
+The mailbox clerk (`scripts/read_requests.py`) also runs on the server, every five minutes, so approvals,
+password links and submitted codes are settled promptly rather than whenever GitHub finds time for the
+scheduled workflow. Install it once from the Actions tab: **Install clerk on VPS** → Run workflow. It needs the
+`MAIL_PASSWORD` secret as well as the VPS secrets, puts the runner (`deploy/clerk-run.sh`), a deploy key and the
+settings in `/srv/hub/clerk`, a clone of the repository in `/srv/hub/repo`, and a systemd timer `hub-clerk.timer`.
+
+The run ends by printing a **public key**. Add it to the repository under **Settings → Deploy keys → Add deploy
+key**, tick **Allow write access**. From the next five-minute tick the server's clerk takes over: it pulls `main`,
+reads the mailbox and `/srv/hub/log/submit.log`, commits `data/requests/inbox.json` and `assets/auth.js`, pushes
+to `main` and copies the two files straight into the live site. The **Mailbox requests** workflow on GitHub keeps
+running as the fallback: it asks the server when the clerk last ran and stands back while that is under
+20 minutes (a `reset` input is passed on to the server). Settings → Account changes shows the server clerk's last
+run and note (`/clerk.json`); on the server, `journalctl -u hub-clerk` and `/srv/hub/clerk/clerk.log` have the
+detail. Run the workflow again after changing the mailbox password or `deploy/clerk-run.sh`.
+
 ## Later: a real login
 
 With the hub on the VPS it can be put behind a server-side login, so the data files are no longer readable

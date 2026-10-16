@@ -1,3 +1,6 @@
+# The clerk on GitHub Actions. Since the clerk also runs on the VPS every five minutes (deploy/clerk-setup.sh),
+# this workflow first asks the server when that clerk last ran: within 20 minutes, it stands back (and passes a
+# `reset` input on to the server); otherwise it does the work itself, so requests are settled either way.
 # Every 10 minutes: read the hub mailbox, list new access requests for Settings > People, settle
 # password resets (new password e-mailed to the account's own address), and act on "approve" /
 # "decline" replies from an approver (account created and the password e-mailed to the requester).
@@ -29,15 +32,25 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
           SSHPASS: ${{ secrets.VPS_PASSWORD }}
+          RESET_NOW: ${{ github.event.inputs.reset }}
         run: |
           : > submissions.jsonl
           if [ -z "$VPS_HOST" ] || { [ -z "$VPS_SSH_KEY" ] && [ -z "$SSHPASS" ]; }; then echo "no VPS secrets; mailbox only"; exit 0; fi
           mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -T 15 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
           if [ -n "$VPS_SSH_KEY" ]; then printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key; ssh_cmd="ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new"
           else sudo apt-get install -y -qq sshpass >/dev/null; export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"; ssh_cmd="sshpass -e ssh -o StrictHostKeyChecking=accept-new"; fi
+          last=$($ssh_cmd "root@$VPS_HOST" 'cat /srv/hub/clerk/last-run 2>/dev/null' || true)
+          if [ -n "$last" ] && [ $(( $(date +%s) - last )) -lt 1200 ]; then
+            echo "The clerk on the VPS ran $(( ( $(date +%s) - last ) / 60 )) minute(s) ago; it handles the mailbox, so this run stands back."
+            reset=$(printf %s "$RESET_NOW" | tr -cd 'A-Za-z0-9@._+-')
+            if [ -n "$reset" ]; then echo "passing the reset for $reset to the clerk on the server"; $ssh_cmd "root@$VPS_HOST" "RESET_NOW=$reset /srv/hub/clerk/run.sh"; fi
+            echo "skip=1" >> "$GITHUB_ENV"; exit 0
+          fi
+          [ -n "$last" ] && echo "::warning::The clerk on the VPS last ran $(( ( $(date +%s) - last ) / 60 )) minutes ago; this run does the work (check the Install clerk on VPS workflow)."
           $ssh_cmd "root@$VPS_HOST" 'cat /srv/hub/log/submit.log 2>/dev/null' > submissions.jsonl || echo "::warning::could not fetch the submissions from the VPS; mailbox only"
           echo "$(wc -l < submissions.jsonl) submission line(s) fetched"
       - name: Read the mailbox and settle requests
+        if: env.skip != '1'
         env:
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_USER: ${{ vars.MAIL_USER }}
@@ -50,10 +63,12 @@ jobs:
           for v in MAIL_USER MAIL_HOST SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
           python3 scripts/read_requests.py --submissions submissions.jsonl
       - name: Publish
+        if: env.skip != '1'
         run: |
           if git diff --quiet -- data/requests/inbox.json assets/auth.js; then echo "nothing new"; exit 0; fi
           git config user.name "Marikar hub mailbox"
           git config user.email "mml@bpropms.in"
           git add data/requests/inbox.json assets/auth.js
           git commit -m "Requests: settled from the hub mailbox"
+          git pull --rebase -q origin main || true
           git push

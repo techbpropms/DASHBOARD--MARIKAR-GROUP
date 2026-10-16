@@ -157,7 +157,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <p class="muted" id="inbox-note">Checking the mailbox list…</p>
       <ul id="inbox-list"></ul>
     </div>
-    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about 10 minutes. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically with a one-time link to the person's own address. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
+    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about five minutes. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically with a one-time link to the person's own address. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
     <div class="reqbox">
       <textarea id="req-in" rows="3" placeholder="Paste the request e-mail or code here" aria-label="Request code"></textarea>
       <button class="btn sec" type="button" id="req-parse">Read request</button>
@@ -205,6 +205,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   <section class="panel" id="changes" hidden>
     <h2>Account changes</h2>
     <p class="muted" id="changes-note">Every approval, refusal, reset, role change, addition and removal the hub has carried out, newest first.</p>
+    <p class="muted" id="clerk-note" hidden></p>
     <div class="tbl"><table id="changes-table"><thead><tr><th>When</th><th>Action</th><th>Account</th><th>By</th><th>Detail</th></tr></thead><tbody></tbody></table></div>
   </section>
 
@@ -474,6 +475,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const log = logged.sort((a, b) => (b.at || '').localeCompare(a.at || '')).slice(0, 120);
     log.forEach((e) => { const tr = document.createElement('tr'); [fmtWhen(e.at), e.action, e.who, e.by, e.detail || ''].forEach((t) => { const td = document.createElement('td'); td.textContent = t; tr.appendChild(td); }); tb.appendChild(tr); });
     const settled = Object.keys(inbox.handled || {}).length;
+    // the clerk on the server writes /clerk.json after every run (absent on the GitHub Pages fallback)
+    fetch('clerk.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).then((c) => { if (!c || !c.at) return; const n = $('clerk-note'); n.hidden = false; n.textContent = `Clerk on the server: last ran ${fmtWhen(c.at)}; ${c.ok ? '' : 'needs attention: '}${c.note}.`; }).catch(() => {});
     $('changes-note').textContent = log.length ? `Every approval, refusal, reset, role change, addition and removal the hub has carried out, newest first: ${log.length} entr${log.length === 1 ? 'y' : 'ies'}, ${settled} request${settled === 1 ? '' : 's'} settled in all.` : 'No changes recorded yet. Approvals, resets, role changes, additions and removals will be listed here.';
   }
   fetch('data/requests/inbox.json', { cache: 'no-store' }).then((r) => r.ok ? r.json() : null).then((j) => { inbox = j && typeof j === 'object' ? j : null; paintInbox(); }).catch(() => { inbox = null; paintInbox(); });

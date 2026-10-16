@@ -1,7 +1,7 @@
 # Operating the hub: practices for a production service
 
 The hub is a static site on GitHub Pages (and, once set up, the Hostinger VPS) with one automated operator, the
-mailbox clerk in GitHub Actions. This page is the runbook: who does what, which secrets exist, how changes are
+mailbox clerk: it runs on the VPS every five minutes and, as the fallback, in GitHub Actions. This page is the runbook: who does what, which secrets exist, how changes are
 released, how to recover, and what to do when something looks wrong. Keep it current when any of these change.
 
 ## Roles and responsibilities
@@ -30,7 +30,8 @@ divisions that are wider than the job, and confirm every admin is still meant to
 
 | Secret | Lives in | Rotate when | How |
 |---|---|---|---|
-| Mailbox password (`mml@bpropms.in`) | Hostinger e-mail; GitHub secret `MAIL_PASSWORD` | Every 6 months, or at once if typed anywhere but the hosting panel and the secret | Hostinger panel → Emails → change; then GitHub → Settings → Secrets → update `MAIL_PASSWORD` |
+| Mailbox password (`mml@bpropms.in`) | Hostinger e-mail; GitHub secret `MAIL_PASSWORD`; on the VPS `/srv/hub/clerk/env` (root only) | Every 6 months, or at once if typed anywhere but the hosting panel and the secret | Hostinger panel → Emails → change; then GitHub → Settings → Secrets → update `MAIL_PASSWORD`; then run "Install clerk on VPS" so the server gets it too |
+| Clerk deploy key (VPS → GitHub) | `/srv/hub/clerk/key` on the VPS; public half under GitHub Settings → Deploy keys (write access) | Yearly, or when the VPS is rebuilt | Delete `/srv/hub/clerk/key*` on the server, run "Install clerk on VPS", add the new public key it prints, remove the old one from Deploy keys |
 | VPS deploy key | the `hub` user on the VPS; GitHub secret `VPS_SSH_KEY` | Yearly, or when the VPS is rebuilt | Re-run `deploy/vps-setup.sh` (it keeps an existing key); to rotate, delete `/home/hub/.ssh/deploy_ed25519*` first |
 | GitHub fine-grained token (People page token route) | the super admin's browser tab only | Expiry set at creation (90 days at most) | Create a new one with Contents read/write on this repository only |
 
@@ -55,8 +56,13 @@ Gmail approver accounts matters as much: an approver's mailbox is an approval in
 
 ## Monitoring
 
-- GitHub e-mails the repository owner when a workflow run fails. A failing "Mailbox requests" run means no
-  requests are settled: open the run, read the log, and fix the cause (usually the mailbox password).
+- Settings → Account changes shows when the clerk on the server last ran and its note (from `/clerk.json`).
+  "Needs attention" there, or a last run older than 20 minutes, means that clerk is stuck: on the server,
+  `journalctl -u hub-clerk -n 50` and `/srv/hub/clerk/clerk.log` say why; re-running "Install clerk on VPS" repairs
+  the runner, the timer and the settings. Meanwhile the GitHub workflow settles requests, every 10 minutes at best.
+- GitHub e-mails the repository owner when a workflow run fails. A failing "Mailbox requests" run while the server
+  clerk is also down means no requests are settled: open the run, read the log, and fix the cause (usually the
+  mailbox password).
 - The clerk e-mails approvers once a day with requests waiting more than a day.
 - Settings → Account changes lists every change the hub made, with who asked. Settings → Sign-in report shows
   who signs in across users, from the log nginx keeps on the VPS (`/srv/hub/log/signins.log`).
