@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T05:55:16+00:00",
+  "updated": "2026-10-16T06:25:13+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -140,16 +140,15 @@
         "BIGWING",
         "NISSAN"
       ]
+    },
+    "PR-20261016-5147": {
+      "status": "link",
+      "at": "2026-10-16T06:25:13+00:00",
+      "by": "automatic",
+      "email": "kintin@marikar.in"
     }
   },
   "links": {
-    "kintin@marikar.in": {
-      "hash": "0400e33626d10913126d899a5e11ce85ff87e8910590c283053d9a36f5f18258",
-      "exp": "2026-10-16T13:03:38+00:00",
-      "why": "approved",
-      "ref": "AR-20261015-E701",
-      "at": "2026-10-15T13:03:32+00:00"
-    },
     "amul.verghese@marikar.in": {
       "hash": "c01fb5a7eb1d9ca425267ff2db9ff18c78beb962dd4f419f3cff6e97403c63f2",
       "exp": "2026-10-17T05:25:43+00:00",
@@ -184,6 +183,13 @@
       "why": "admin",
       "ref": "PR-20261016-F698",
       "at": "2026-10-16T05:52:44+00:00"
+    },
+    "kintin@marikar.in": {
+      "hash": "a4e2ecce03bad9d49b80e7dd39cd56440e8f6c83c678f0c2a3e0864273cef232",
+      "exp": "2026-10-17T06:25:24+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-5147",
+      "at": "2026-10-16T06:25:13+00:00"
     }
   },
   "feedback": [
@@ -413,6 +419,20 @@
       "who": "agm.oaip@gmail.com",
       "by": "mail system",
       "detail": "agm.oaip@gmail.com (<20261016054530.78C3C7A20E1@relay.mailch)"
+    },
+    {
+      "at": "2026-10-16T06:25:13+00:00",
+      "action": "password",
+      "who": "kintin@marikar.in",
+      "by": "the account owner, by link",
+      "detail": "approved"
+    },
+    {
+      "at": "2026-10-16T06:25:13+00:00",
+      "action": "reset link",
+      "who": "kintin@marikar.in",
+      "by": "forgot password",
+      "detail": "PR-20261016-5147"
     }
   ]
 }
