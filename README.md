@@ -254,8 +254,9 @@ request code the super admin pastes into Settings > People. The access key is a 
 form, not a password, so it is safe in the page. With neither configured, the form can only open the
 requester's own mail program ("Send by e-mail") or copy the request text.
 
-**Mailbox clerk.** The GitHub Action "Mailbox requests" (`.github/workflows/mail-requests.yml`) runs
-`scripts/read_requests.py` every 10 minutes and on demand. It signs in to the mailbox over IMAP and:
+**Mailbox clerk.** `scripts/read_requests.py` runs on the VPS every five minutes (`deploy/clerk-run.sh`, installed
+by the "Install clerk on VPS" workflow; see `deploy/README.md`) and, as the fallback, in the GitHub Action
+"Mailbox requests" (`.github/workflows/mail-requests.yml`), which stands back while the server's clerk is healthy. It signs in to the mailbox over IMAP and:
 
 - lists every new access request in `data/requests/inbox.json`, which Settings > People shows;
 - settles **password resets** with a one-time link: if the ID has an account, a link to `reset.html` (24 hours,

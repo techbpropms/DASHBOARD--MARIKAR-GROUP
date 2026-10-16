@@ -1,0 +1,82 @@
+# Installs (or refreshes) the mailbox clerk on the Hostinger VPS, where it runs every five minutes: a clone of the
+# repository in /srv/hub/repo, a systemd timer and the clerk's settings in /srv/hub/clerk/env (the mailbox
+# password from the MAIL_PASSWORD secret, written over SSH; it never appears in the log). Needs the same secrets
+# as "Set up VPS" (VPS_HOST and VPS_SSH_KEY or VPS_PASSWORD) plus MAIL_PASSWORD. Run it from the Actions tab.
+# One step stays with a person: the public key the run prints must be added under repository Settings > Deploy
+# keys with "Allow write access"; until then the clerk on the server waits and the "Mailbox requests" workflow
+# carries on. Run this workflow again whenever deploy/clerk-run.sh or the mailbox password changes.
+name: Install clerk on VPS
+on:
+  workflow_dispatch:
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the secrets
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        run: |
+          if [ -z "$VPS_HOST" ] || { [ -z "$VPS_PASSWORD" ] && [ -z "$VPS_SSH_KEY" ]; }; then
+            echo "::error::Add the repository secrets VPS_HOST and VPS_SSH_KEY (or VPS_PASSWORD) first: Settings > Secrets and variables > Actions."; exit 1
+          fi
+          [ -n "$MAIL_PASSWORD" ] || { echo "::error::The MAIL_PASSWORD secret (the hub mailbox password) is not set."; exit 1; }
+      - name: Reach the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -T 15 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          if [ -n "$VPS_SSH_KEY" ]; then
+            printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+            if ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=accept-new "root@$VPS_HOST" true 2>/dev/null; then
+              echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"; echo "Signed in with the key."; exit 0
+            fi
+            echo "::warning::The server did not accept the key in VPS_SSH_KEY. Trying the password."
+          fi
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          [ -n "$SSHPASS" ] || { echo "::error::No password to try and the key was refused."; exit 1; }
+          sudo apt-get install -y -qq sshpass >/dev/null
+          if sshpass -e ssh -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password "root@$VPS_HOST" true 2>/dev/null; then
+            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"; echo "Signed in with the password."
+          else
+            echo "::error::The server accepted neither the key nor the password; see the Set up VPS workflow for the remedies."; exit 1
+          fi
+      - name: Install the clerk on the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          $ssh_cmd "root@$VPS_HOST" 'bash -s' < deploy/clerk-setup.sh
+          # the runner from this checkout, so a change on a branch can be tried before it is on main
+          $ssh_cmd "root@$VPS_HOST" 'cat > /srv/hub/clerk/run.sh && chmod 700 /srv/hub/clerk/run.sh' < deploy/clerk-run.sh
+      - name: Write the settings on the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_USER: ${{ vars.MAIL_USER }}
+          MAIL_HOST: ${{ vars.MAIL_HOST }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          APPROVERS: ${{ vars.APPROVERS || 'drbabukollam@gmail.com,babukadavoor@gmail.com' }}
+        run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          # over the SSH connection's standard input, never on a command line or in this log
+          {
+            printf 'MAIL_PASSWORD=%s\n' "$MAIL_PASSWORD"
+            printf 'APPROVERS=%s\n' "$APPROVERS"
+            for v in MAIL_USER MAIL_HOST SMTP_HOST; do [ -n "${!v}" ] && printf '%s=%s\n' "$v" "${!v}"; done
+            printf 'HUB_URL=https://mmlpbi.bpropms.in/\n'
+          } | $ssh_cmd "root@$VPS_HOST" 'umask 077; cat > /srv/hub/clerk/env && chmod 600 /srv/hub/clerk/env && echo "settings written"'
+      - name: First run
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          $ssh_cmd "root@$VPS_HOST" '/srv/hub/clerk/run.sh; echo; echo "Status: $(cat /srv/hub/log/clerk.json)"; echo; echo "Deploy key to add with write access (Settings > Deploy keys):"; cat /srv/hub/clerk/key.pub'
