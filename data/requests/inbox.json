@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T03:15:41+00:00",
+  "updated": "2026-10-16T04:00:46+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -125,6 +125,28 @@
         "q8": "hkjhkhkhjk"
       },
       "received": "2026-10-16T02:40:13+00:00"
+    },
+    {
+      "ref": "FB-20261016-E189",
+      "id": "gm@marikarautomobiles.in",
+      "name": "Shaheen Parvaz",
+      "at": "2026-10-16T03:55:40.843Z",
+      "a": {
+        "q1": "3",
+        "q2": "Yes",
+        "q2t": "",
+        "q3": "4",
+        "q4": "4",
+        "q5": "HOD Action",
+        "q6": "Stock ageing",
+        "q7": [
+          "Monthly target vs actual",
+          "Year-on-year comparison",
+          "Stock ageing"
+        ],
+        "q8": ""
+      },
+      "received": "2026-10-16T04:00:46+00:00"
     }
   ],
   "log": [
@@ -162,6 +184,13 @@
       "who": "drbabukollam@gmail.com",
       "by": "drbabukollam@gmail.com",
       "detail": "survey answers FB-20261016-9167"
+    },
+    {
+      "at": "2026-10-16T04:00:46+00:00",
+      "action": "feedback",
+      "who": "gm@marikarautomobiles.in",
+      "by": "gm@marikarautomobiles.in",
+      "detail": "survey answers FB-20261016-E189"
     }
   ]
 }
