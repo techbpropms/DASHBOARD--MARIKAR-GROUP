@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T07:10:13+00:00",
+  "updated": "2026-10-16T07:55:51+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -164,6 +164,12 @@
       "at": "2026-10-16T06:25:13+00:00",
       "by": "automatic",
       "email": "kintin@marikar.in"
+    },
+    "PR-20261016-594B": {
+      "status": "link",
+      "at": "2026-10-16T07:55:51+00:00",
+      "by": "automatic",
+      "email": "zmarikar@marikargroup.com"
     }
   },
   "links": {
@@ -194,6 +200,13 @@
       "why": "admin",
       "ref": "PR-20261016-F698",
       "at": "2026-10-16T05:52:44+00:00"
+    },
+    "zmarikar@marikargroup.com": {
+      "hash": "5e6f2e21d4a0a703fed9eb4b2d1a85ebc32f0a5cd95cdb072c3125c1c92da7c0",
+      "exp": "2026-10-17T07:56:00+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-594B",
+      "at": "2026-10-16T07:55:51+00:00"
     }
   },
   "feedback": [
@@ -465,6 +478,13 @@
       "who": "amul.verghese@marikar.in",
       "by": "the account owner, by link",
       "detail": "forgot"
+    },
+    {
+      "at": "2026-10-16T07:55:51+00:00",
+      "action": "reset link",
+      "who": "zmarikar@marikargroup.com",
+      "by": "forgot password",
+      "detail": "PR-20261016-594B"
     }
   ]
 }
