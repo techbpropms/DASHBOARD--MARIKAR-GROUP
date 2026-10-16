@@ -1,8 +1,8 @@
 {
-  "version": "2026.10.16a",
-  "title": "Served from the Marikar VPS",
+  "version": "2026.10.16b",
+  "title": "Requests go straight to the hub",
   "notes": [
-    "The hub is now served from the group's own server with its HTTPS certificate; the sign-in report across users is live",
-    "Settings > Account changes lists every settled request, including those approved before the log existed"
+    "Request access, Forgot password, Change password and the set-password page send their request to the hub directly: no mail app needed any more",
+    "The e-mail route remains as a fallback"
   ]
 }

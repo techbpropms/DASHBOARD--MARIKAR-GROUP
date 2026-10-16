@@ -56,7 +56,7 @@
   // an e-mail the requester sends to REQUESTS.to. The super admin pastes the code into Settings > People to act on it.
   // `fields` is merged into every POST: for Web3Forms set endpoint 'https://api.web3forms.com/submit' and
   // fields { access_key: '<key issued to mml@bpropms.in>' }; for the relay in server/ leave fields empty.
-  const REQUESTS = { to: 'mml@bpropms.in', endpoint: '', fields: {} };
+  const REQUESTS = { to: 'mml@bpropms.in', direct: 'submit', endpoint: '', fields: {} };
   const b64u = (str) => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const unb64u = (str) => decodeURIComponent(escape(atob(str.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - str.length % 4) % 4))));
   const ref = (kind) => { const d = new Date(); const ymd = d.toISOString().slice(0, 10).replace(/-/g, ''); const r = Array.from(crypto.getRandomValues(new Uint8Array(2)), (b) => b.toString(16).padStart(2, '0')).join('').toUpperCase(); return `${kind === 'reset' ? 'PR' : 'AR'}-${ymd}-${r}`; };
@@ -91,6 +91,11 @@
     },
     // Sends through the endpoint when there is one; resolves {sent:true} or {sent:false} (then the caller offers e-mail).
     async send(built) {
+      // the hub's own server (the VPS) takes the code directly: nginx records it and the clerk reads it; on a copy
+      // served elsewhere the address does not exist and the e-mail route below is offered instead
+      if (REQUESTS.direct) {
+        try { const r = await fetch(`${REQUESTS.direct}?code=${encodeURIComponent(built.code)}`, { cache: 'no-store' }); if (r.ok) return { sent: true }; } catch (e) { /* not served from the VPS */ }
+      }
       if (!REQUESTS.endpoint) return { sent: false };
       try {
         const r = await fetch(REQUESTS.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...(REQUESTS.fields || {}), subject: built.text.split('\n')[0], ref: built.req.ref, kind: built.req.kind, name: built.req.name, email: built.req.email, message: built.text, code: built.code }) });

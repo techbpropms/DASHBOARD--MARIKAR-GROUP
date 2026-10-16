@@ -450,7 +450,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     const r = await MGAuth.requests.send(built);
     $(pId).textContent = r.sent ? text.sent : text.mail;
     $(refId).textContent = built.req.ref;
-    const mail = $(mailId); mail.href = built.mailto; mail.textContent = r.sent ? 'Also send by e-mail' : 'Send by e-mail';
+    const mail = $(mailId); mail.href = built.mailto; mail.textContent = 'Send by e-mail'; mail.hidden = r.sent; $(copyId).hidden = r.sent;
     $(copyId).onclick = () => navigator.clipboard.writeText(built.text).then(() => { $(copyId).textContent = 'Copied. Paste it into a message to mml@bpropms.in'; }).catch(() => { $(copyId).textContent = 'Select and copy the e-mail text instead'; });
     $(doneId).hidden = false;
     try { localStorage.setItem('mg-last-request', JSON.stringify({ ref: built.req.ref, at: built.req.at, kind: built.req.kind })); } catch (err) { /* ignore */ }
@@ -486,9 +486,10 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     const built = MGAuth.requests.build('reset', { email: id });
     $('forgot').hidden = true;
     // Whether or not the ID exists is not revealed here; the administrator checks before issuing anything.
-    await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', {
+    const sentReset = await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', {
       sent: 'If this ID has an account, a link to choose a new password will be e-mailed to it within about 10 minutes. The link works once and for 24 hours. Check the spam folder if it does not arrive.',
       mail: 'Send the request with the button below. If this ID has an account, a link to choose a new password will be e-mailed to it within about 10 minutes of the request reaching the hub mailbox.' });
+    $('f-done').querySelector('h3').textContent = sentReset ? 'Reset requested' : 'Reset request ready';
   });
 
   // Focus the user ID only where a keyboard is likely; on phones it would pop the keyboard over the page.
