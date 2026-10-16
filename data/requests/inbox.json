@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T05:45:13+00:00",
+  "updated": "2026-10-16T05:50:16+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -237,6 +237,13 @@
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:45:13+00:00"
+    },
+    "satheseniormanager.sales@marikarnissan.co.in": {
+      "hash": "30733bf8429b58c74829c982fece5a63d93f903393707639f1263a9672ba4f5f",
+      "exp": "2026-10-17T05:50:24+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-16T05:50:16+00:00"
     }
   },
   "feedback": [
@@ -375,6 +382,13 @@
       "who": "seniormanager.re@marikar.in",
       "by": "babukadavoor@gmail.com",
       "detail": "Cibin Jacob as viewer (RE)"
+    },
+    {
+      "at": "2026-10-16T05:50:16+00:00",
+      "action": "added",
+      "who": "satheseniormanager.sales@marikarnissan.co.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Satheesh Chandran BH as viewer (BIGWING, NISSAN)"
     }
   ]
 }
