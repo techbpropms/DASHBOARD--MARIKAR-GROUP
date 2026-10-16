@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T12:03:20+00:00",
+  "updated": "2026-10-16T13:49:38+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -214,6 +214,11 @@
       "at": "2026-10-16T12:03:20+00:00",
       "by": "administrator",
       "email": "tech@bpropms.com"
+    },
+    "PR-20261016-DEC8": {
+      "status": "no-account",
+      "at": "2026-10-16T13:49:38+00:00",
+      "by": "automatic"
     }
   },
   "links": {
