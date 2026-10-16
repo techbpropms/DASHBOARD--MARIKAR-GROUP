@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T04:55:56+00:00",
+  "updated": "2026-10-16T05:25:36+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -187,6 +187,12 @@
       "by": "babukadavoor@gmail.com",
       "role": "viewer",
       "divisions": "all"
+    },
+    "PR-20261016-F118": {
+      "status": "link",
+      "at": "2026-10-16T05:25:36+00:00",
+      "by": "automatic",
+      "email": "amul.verghese@marikar.in"
     }
   },
   "links": {
@@ -196,6 +202,13 @@
       "why": "approved",
       "ref": "AR-20261015-E701",
       "at": "2026-10-15T13:03:32+00:00"
+    },
+    "amul.verghese@marikar.in": {
+      "hash": "c01fb5a7eb1d9ca425267ff2db9ff18c78beb962dd4f419f3cff6e97403c63f2",
+      "exp": "2026-10-17T05:25:43+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-F118",
+      "at": "2026-10-16T05:25:36+00:00"
     }
   },
   "feedback": [
@@ -285,6 +298,13 @@
       "who": "gm@marikarautomobiles.in",
       "by": "gm@marikarautomobiles.in",
       "detail": "survey answers FB-20261016-E189"
+    },
+    {
+      "at": "2026-10-16T05:25:36+00:00",
+      "action": "reset link",
+      "who": "amul.verghese@marikar.in",
+      "by": "forgot password",
+      "detail": "PR-20261016-F118"
     }
   ]
 }
