@@ -19,6 +19,7 @@
     { id: 'agm.oaip@gmail.com', name: "MAHESH", role: 'viewer', salt: '1160663270ca93d61a36cf26659f5d97', hash: 'a7a718aad998307052363e87640b5300ef9aa8567ad9f60d1a977233cce7f7e5', divisions: ['CANON'] },
     { id: 'seniormanager.re@marikar.in', name: "Cibin Jacob", role: 'viewer', salt: 'dad76f6d885006fb0a4ce3cfd5afe3ff', hash: 'fa0387bd53f47053359891c500814df88f6f91a6b490bb14d27b2348fda690ec', divisions: ['RE'] },
     { id: 'seniormanager.sales@marikarnissan.co.in', name: "Satheesh Chandran BH", role: 'viewer', salt: 'ef8e6f41e9d4c8b183603190d53aa602', hash: 'fc53a29a41ec3a081867658d1b09f0a5f625d97db88ad5fad14391fe3079ed95', divisions: ['BIGWING', 'NISSAN'] },
+    { id: 'satheseniormanager.sales@marikarnissan.co.in', name: "Satheesh Chandran BH", role: 'viewer', salt: 'a6249b4f7d1a8d9f85318b884450eecb', hash: 'd69feaee21be83e1c850699bec76ab4707508bf6676c7cb168568310ded684a5', divisions: ['BIGWING', 'NISSAN'] },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   // Divisions an account can be limited to (keys as in data/divisions.json). An account line without a `divisions`
