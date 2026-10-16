@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T13:49:38+00:00",
+  "updated": "2026-10-16T13:51:49+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -219,6 +219,12 @@
       "status": "no-account",
       "at": "2026-10-16T13:49:38+00:00",
       "by": "automatic"
+    },
+    "PR-20261016-7622": {
+      "status": "link",
+      "at": "2026-10-16T13:51:49+00:00",
+      "by": "automatic",
+      "email": "gopakumar@marikarengineers.com"
     }
   },
   "links": {
@@ -257,6 +263,14 @@
       "why": "admin",
       "ref": "PR-20261016-26C5",
       "at": "2026-10-16T12:03:20+00:00"
+    },
+    "gopakumar@marikarengineers.com": {
+      "hash": "e6fe4cbdaf7522a5a10a597f741d916481af3912e26991b9a56f3594908d07dc",
+      "code": "650b4771d0453b8a44e3a5cb70c750c4636385315c5cadc5c058ca59aa1e0de0",
+      "exp": "2026-10-17T13:51:59+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-7622",
+      "at": "2026-10-16T13:51:49+00:00"
     }
   },
   "feedback": [
@@ -668,6 +682,13 @@
       "who": "tech@bpropms.com",
       "by": "administrator (Actions tab)",
       "detail": "PR-20261016-26C5"
+    },
+    {
+      "at": "2026-10-16T13:51:49+00:00",
+      "action": "reset link",
+      "who": "gopakumar@marikarengineers.com",
+      "by": "forgot password",
+      "detail": "PR-20261016-7622"
     }
   ]
 }
