@@ -20,6 +20,7 @@ import sys
 import time
 import urllib.parse
 from email.message import EmailMessage
+from email.utils import formataddr
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from read_requests import Accounts, AUTH, MAIL_USER, HUB_URL, mask  # noqa: E402
@@ -74,8 +75,8 @@ def main():
         form = f"{hub}feedback.html?u={urllib.parse.quote(uid)}&n={urllib.parse.quote(name)}"
         body = tpl.replace('{{first}}', html.escape(first)).replace('{{name}}', html.escape(name)).replace('{{id}}', html.escape(uid)).replace('{{form}}', html.escape(form, quote=True))
         msg = EmailMessage()
-        msg['From'] = f"{os.environ.get('MAIL_FROM_NAME', 'Dr. Babu B, Marikar Group performance hub')} <{MAIL_USER}>"
-        msg['To'] = f'{name} <{uid}>'
+        msg['From'] = formataddr((os.environ.get('MAIL_FROM_NAME', 'Dr. Babu B, Marikar Group performance hub'), MAIL_USER))
+        msg['To'] = formataddr((name, uid))
         msg['Reply-To'] = os.environ.get('REPLY_TO', MAIL_USER)
         msg['Subject'] = args.subject
         msg.set_content(to_text(body))
