@@ -794,6 +794,14 @@ def main():
             note('divisions', acct['id'].lower(), sender, f"{divs_text(acct['divisions'])} -> {divs_text(divs)}")
             print(f"  divisions {mask(acct['id'])}: {divs_text(acct['divisions'])} -> {divs_text(divs)} on {mask(sender)}'s instruction")
 
+    # 3d. a request whose ID now has an account (added from Settings > People rather than approved on the request) is
+    #     settled as approved, so it stops showing as waiting; the person has their link from the add already
+    for req in [p for p in pending if p['kind'] == 'access' and p['ref'] not in handled and accounts.find(p['email'])]:
+        acct = accounts.find(req['email'])
+        settle(req, 'approved', by='account added by an administrator', role=acct['role'], divisions=acct['divisions'])
+        note('approved', req['email'], 'administrator (account added)', f"{req['ref']} as {acct['role']} ({divs_text(acct['divisions'])})")
+        print(f"  {req['ref']} settled: {mask(req['email'])} already has an account")
+
     # 4. acknowledge every newly listed access request, once per request, once per address, at most ten a run:
     #    the sign-in form accepts any address, so this must never become a way to send mail to strangers in bulk
     acked_addrs = {p['email'] for p in pending if p.get('acked')}

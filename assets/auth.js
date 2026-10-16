@@ -18,7 +18,7 @@
     { id: 'gmoperations@marikargroup.com', name: "JIJI R THOMAS", role: 'viewer', salt: '9e8d8978153019381eac2cb8703ed17b', hash: 'a375f57a709616557f1f66c533ec18a737d727e822827e84a4169d394fb4a0e7', divisions: ['GROUP', 'NISSAN'] },
     { id: 'agm.oaip@gmail.com', name: "MAHESH", role: 'viewer', salt: '1160663270ca93d61a36cf26659f5d97', hash: 'a7a718aad998307052363e87640b5300ef9aa8567ad9f60d1a977233cce7f7e5', divisions: ['CANON'] },
     { id: 'seniormanager.re@marikar.in', name: "Cibin Jacob", role: 'viewer', salt: 'dad76f6d885006fb0a4ce3cfd5afe3ff', hash: 'fa0387bd53f47053359891c500814df88f6f91a6b490bb14d27b2348fda690ec', divisions: ['RE'] },
-    { id: 'satheseniormanager.sales@marikarnissan.co.in', name: "Satheesh Chandran BH", role: 'viewer', salt: 'fba34c048be990818c24c429caae6e0f', hash: 'a213f92dfc2fb4bab069ceb5f8244540e5b7410a161460ce7b9d1fb9a840b1e1', divisions: ['BIGWING', 'NISSAN'] },
+    { id: 'seniormanager.sales@marikarnissan.co.in', name: "Satheesh Chandran BH", role: 'viewer', salt: 'ef8e6f41e9d4c8b183603190d53aa602', hash: 'fc53a29a41ec3a081867658d1b09f0a5f625d97db88ad5fad14391fe3079ed95', divisions: ['BIGWING', 'NISSAN'] },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   // Divisions an account can be limited to (keys as in data/divisions.json). An account line without a `divisions`

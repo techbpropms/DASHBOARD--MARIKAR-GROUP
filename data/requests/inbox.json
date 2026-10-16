@@ -237,13 +237,6 @@
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:45:13+00:00"
-    },
-    "satheseniormanager.sales@marikarnissan.co.in": {
-      "hash": "30733bf8429b58c74829c982fece5a63d93f903393707639f1263a9672ba4f5f",
-      "exp": "2026-10-17T05:50:24+00:00",
-      "why": "approved",
-      "ref": "",
-      "at": "2026-10-16T05:50:16+00:00"
     }
   },
   "feedback": [
@@ -389,6 +382,13 @@
       "who": "satheseniormanager.sales@marikarnissan.co.in",
       "by": "babukadavoor@gmail.com",
       "detail": "Satheesh Chandran BH as viewer (BIGWING, NISSAN)"
+    },
+    {
+      "at": "2026-10-16T06:05:00+00:00",
+      "action": "corrected",
+      "who": "seniormanager.sales@marikarnissan.co.in",
+      "by": "tech@bpropms.com",
+      "detail": "account re-created under the ID on the request; the mistyped ID satheseniormanager.sales@... removed"
     }
   ]
 }
