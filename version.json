@@ -1,9 +1,8 @@
 {
-  "version": "2026.10.16d",
-  "title": "Feedback form and launch mail",
+  "version": "2026.10.16e",
+  "title": "Sign-in report fix",
   "notes": [
-    "A two-minute feedback form (feedback.html) that needs no sign-in; answers reach the hub mailbox and Settings > Feedback within five minutes, and the person gets a thank-you",
-    "A personalised launch e-mail to every user, sent from the Actions tab (Send mail to users)",
-    "The mailbox clerk now also runs on the VPS every five minutes"
+    "The sign-in report and the sign-in beacon no longer pass through the offline cache, so every sign-in is recorded on the server and the report is current",
+    "Feedback form and launch e-mail (from the previous release)"
   ]
 }

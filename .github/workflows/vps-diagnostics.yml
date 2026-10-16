@@ -30,6 +30,10 @@ jobs:
           echo; echo "== certificate"; certbot certificates 2>/dev/null | grep -E 'Certificate Name|Domains|Expiry' || echo "none yet"
           echo; echo "== DNS"; getent ahostsv4 mmlpbi.bpropms.in | awk '{print $1; exit}'; curl -fsS https://api.ipify.org; echo
           echo; echo "== site folder"; ls -la /srv/hub/site 2>/dev/null | head -8; test -f /srv/hub/site/version.json && cat /srv/hub/site/version.json
+          echo; echo "== sign-in log (counts only; names and IDs masked)"; ls -la /srv/hub/log 2>/dev/null; for f in signins.log submit.log; do printf '%s: %s line(s)\n' "$f" "$(wc -l < /srv/hub/log/$f 2>/dev/null || echo 0)"; done
+          tail -3 /srv/hub/log/signins.log 2>/dev/null | sed -E 's/"id":"[^"]*"/"id":"…"/; s/"name":"[^"]*"/"name":"…"/; s/"ip":"[^"]*"/"ip":"…"/'
+          grep -c 'signin-log' /etc/nginx/sites-available/mmlpbi.bpropms.in 2>/dev/null | sed 's/^/signin-log locations in the site file: /'; nginx -T 2>/dev/null | grep -c 'log_format hub_signins' | sed 's/^/hub_signins log format loaded: /'
+          grep -i 'signin\|hub' /var/log/nginx/error.log 2>/dev/null | tail -3
           echo; echo "== firewall"; ufw status 2>/dev/null | head -8
           echo; echo "== disk and memory"; df -h / | tail -1; free -m | awk 'NR<=2'
           REMOTE
