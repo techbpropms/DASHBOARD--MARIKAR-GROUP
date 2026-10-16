@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T04:25:26+00:00",
+  "updated": "2026-10-16T04:55:56+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -62,6 +62,57 @@
       "from": "hub-submission@localhost",
       "mid": "",
       "acked": "2026-10-16T04:25:26+00:00"
+    },
+    {
+      "ref": "AR-20261016-9255",
+      "kind": "access",
+      "name": "Mahesh M",
+      "email": "agm.oaip@gmail.com",
+      "unit": "Canon / OAIP",
+      "scope": "Canon / OAIP",
+      "title": "AGM",
+      "at": "2026-10-16T04:50:47.736Z",
+      "divisions": [
+        "CANON"
+      ],
+      "received": "2026-10-16T04:50:48+00:00",
+      "from": "hub-submission@localhost",
+      "mid": "",
+      "acked": "2026-10-16T04:55:56+00:00"
+    },
+    {
+      "ref": "AR-20261016-7E2F",
+      "kind": "access",
+      "name": "Cibin Jacob",
+      "email": "seniormanager.re@marikar.in",
+      "unit": "Royal Enfield",
+      "scope": "Royal Enfield",
+      "title": "Manager Sales",
+      "at": "2026-10-16T04:52:57.493Z",
+      "divisions": [
+        "RE"
+      ],
+      "received": "2026-10-16T04:52:58+00:00",
+      "from": "hub-submission@localhost",
+      "mid": "",
+      "acked": "2026-10-16T04:55:56+00:00"
+    },
+    {
+      "ref": "AR-20261016-2370",
+      "kind": "access",
+      "name": "Satheesh Chandran BH",
+      "email": "seniormanager.sales@marikarnissan.co.in",
+      "unit": "Nissan Sales",
+      "scope": "Nissan",
+      "title": "Senior Manager Sales",
+      "at": "2026-10-16T04:55:50.234Z",
+      "divisions": [
+        "NISSAN"
+      ],
+      "received": "2026-10-16T04:55:52+00:00",
+      "from": "hub-submission@localhost",
+      "mid": "",
+      "acked": "2026-10-16T04:55:56+00:00"
     }
   ],
   "handled": {
