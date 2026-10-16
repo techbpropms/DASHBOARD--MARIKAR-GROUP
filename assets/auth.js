@@ -9,7 +9,7 @@
     { id: 'hrmanager@marikarmotors.com', name: "Abhilash A G", role: 'viewer', salt: 'b766ac37667a692858b160fb3f92a990', hash: 'fb8ddc6dc646bbd3b9573892d1827d27f3cb030cc774254c58b8eefeac789629' },
     { id: 'manikuttan@marikar.in', name: "Manikuttan P", role: 'viewer', salt: 'b72fd5e5f9c3f0478fd45ea6faf2b509', hash: '2fe6c1a680e9a28fa549f975ae3b490542a0a9b952c23bf5eff34e6abea50ea5' },
     { id: 'mi.accounts@marikarindustries.in', name: "Vinod S", role: 'viewer', salt: 'd9a6091944d9be3ecdb53e9bd6a65f60', hash: 'bcd9d7c27007cf94848c720875a2bda2c72b59dfd0130d3a0313e09f93074a89' },
-    { id: 'amul.verghese@marikar.in', name: "AMUL VERGHESE", role: 'viewer', salt: 'c15129c39c0b574e179e36d83379be76', hash: '16faf51cf5cfad08ac8da0ad997e874fdc6a3658d3b76d3067156fa4b97684e7' },
+    { id: 'amul.verghese@marikar.in', name: "AMUL VERGHESE", role: 'viewer', salt: '5013e656bba12ff2a1ccb178eae7f094', hash: '3a705ba4118808a8475a70f40f97a13f9d86dab3ad3c55d8b7fb645f7cf5c092' },
     { id: 'gopakumar@marikarengineers.com', name: "GOPAKUMAR.H", role: 'viewer', salt: 'a3439ecb723114baaae4c26af37c3c26', hash: '1b0810c71fb20c30d1eae2d728809994414585682ecfa27e4851aa7b67e5eced' },
     { id: 'zmarikar@marikargroup.com', name: "Zulfiquar Marikar", role: 'viewer', salt: '96a6381fc75096aafd17ff61bf3834c3', hash: 'a262c0e1ce536a0f6f62356cc11a46d707d8116ce2a6889ae5277b07521b4cd9' },
     { id: 'kintin@marikar.in', name: "Kintin", role: 'viewer', salt: '111923e54d350ab3a611f7d3487d4d33', hash: '9528295ebbde80f127f581fc83776b8e5421ad9af13c283941574d0236b92486' },
