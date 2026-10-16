@@ -1,7 +1,25 @@
 {
-  "updated": "2026-10-16T06:30:13+00:00",
+  "updated": "2026-10-16T06:35:16+00:00",
   "reminded_at": "",
-  "pending": [],
+  "pending": [
+    {
+      "ref": "AR-20261016-0ADC",
+      "kind": "access",
+      "name": "Mahesh M",
+      "email": "agm.oaip@marikar.in",
+      "unit": "Canon / OAIP",
+      "scope": "Canon / OAIP",
+      "title": "AGM",
+      "at": "2026-10-16T06:33:21.741Z",
+      "divisions": [
+        "CANON"
+      ],
+      "received": "2026-10-16T06:33:20+00:00",
+      "from": "hub-submission@localhost",
+      "mid": "",
+      "acked": "2026-10-16T06:35:16+00:00"
+    }
+  ],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
