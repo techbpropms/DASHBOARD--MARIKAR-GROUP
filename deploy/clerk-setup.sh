@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Installs the hub's mailbox clerk on the VPS: /srv/hub/clerk (runner, deploy key, settings), a clone of the
-# repository in /srv/hub/repo, and a systemd timer that runs it every five minutes. Run as root by the "Install
+# repository in /srv/hub/repo, a systemd path unit that runs it the moment a code is submitted on the hub, and a
+# timer that runs it every minute for what arrives by e-mail. Run as root by the "Install
 # clerk on VPS" workflow (which then writes the settings file from the repository secrets), or by hand:
 #   curl -fsSL https://raw.githubusercontent.com/techbpropms/DASHBOARD--MARIKAR-GROUP/main/deploy/clerk-setup.sh | bash
 # Safe to run again. Afterwards add the printed public key to the repository (Settings > Deploy keys, "Allow write
@@ -21,7 +22,7 @@ curl -fsSL "$REPO_RAW/deploy/clerk-run.sh" -o "$D/run.sh"; chmod 700 "$D/run.sh"
 [ -f "$D/key" ] || ssh-keygen -q -t ed25519 -N '' -C "hub-clerk@vps" -f "$D/key"
 chmod 600 "$D/key"
 
-echo "== timer (every five minutes)"
+echo "== the clerk runs the moment a code is submitted on the hub (path unit), and every minute for the mailbox (timer)"
 cat > /etc/systemd/system/hub-clerk.service <<'UNIT'
 [Unit]
 Description=Marikar hub mailbox clerk (one run)
@@ -34,13 +35,24 @@ TimeoutStartSec=600
 UNIT
 cat > /etc/systemd/system/hub-clerk.timer <<'UNIT'
 [Unit]
-Description=Marikar hub mailbox clerk, every five minutes
+Description=Marikar hub mailbox clerk, every minute
 [Timer]
-OnCalendar=*:0/5
-RandomizedDelaySec=20
+OnCalendar=*:*:00
+AccuracySec=5
 Persistent=true
 [Install]
 WantedBy=timers.target
+UNIT
+# a request or a new password submitted on the hub lands in submit.log; nginx writing to it starts a run at once
+touch /srv/hub/log/submit.log
+cat > /etc/systemd/system/hub-clerk.path <<'UNIT'
+[Unit]
+Description=Marikar hub mailbox clerk: run as soon as a code is submitted on the hub
+[Path]
+PathModified=/srv/hub/log/submit.log
+Unit=hub-clerk.service
+[Install]
+WantedBy=multi-user.target
 UNIT
 cat > /etc/logrotate.d/hub-clerk <<'ROT'
 /srv/hub/clerk/clerk.log {
@@ -55,7 +67,9 @@ cat > /etc/logrotate.d/hub-clerk <<'ROT'
 ROT
 systemctl daemon-reload
 systemctl enable --now hub-clerk.timer >/dev/null
+systemctl enable --now hub-clerk.path >/dev/null
 systemctl list-timers hub-clerk.timer --no-pager | sed -n 2p
+systemctl is-active hub-clerk.path | sed 's/^/hub-clerk.path: /'
 
 echo "== nginx: /clerk.json for the Settings page"
 CONF=/etc/nginx/sites-available/mmlpbi.bpropms.in
@@ -64,6 +78,6 @@ if [ -f "$CONF" ] && ! grep -q 'clerk.json' "$CONF"; then
   nginx -t && systemctl reload nginx
 fi
 
-echo; echo "Done. The clerk runs every five minutes once this public key is added to the repository with write access"
+echo; echo "Done. The clerk runs at once on each submission and every minute for the mailbox, once this public key is added to the repository with write access"
 echo "(GitHub: Settings > Deploy keys > Add deploy key, tick 'Allow write access'):"
 cat "$D/key.pub"

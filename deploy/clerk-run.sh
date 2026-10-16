@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # The hub's mailbox clerk on the VPS: one run of scripts/read_requests.py in the server's own clone of the
-# repository, every five minutes from hub-clerk.timer (deploy/clerk-setup.sh installs both). Each run:
+# repository: at once when a code is submitted on the hub (hub-clerk.path watches /srv/hub/log/submit.log) and
+# every minute for the mailbox (hub-clerk.timer); deploy/clerk-setup.sh installs both. Each run:
 #   1. brings /srv/hub/repo level with main (GitHub, over the clerk's deploy key);
 #   2. runs the clerk on the mailbox and on the codes submitted on the hub (/srv/hub/log/submit.log);
 #   3. commits what changed (data/requests/inbox.json, assets/auth.js), pushes it to main, and copies the two

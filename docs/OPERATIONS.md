@@ -1,7 +1,7 @@
 # Operating the hub: practices for a production service
 
 The hub is a static site on GitHub Pages (and, once set up, the Hostinger VPS) with one automated operator, the
-mailbox clerk: it runs on the VPS every five minutes and, as the fallback, in GitHub Actions. This page is the runbook: who does what, which secrets exist, how changes are
+mailbox clerk: it runs on the VPS at once on each submission and every minute for the mailbox, and, as the fallback, in GitHub Actions. This page is the runbook: who does what, which secrets exist, how changes are
 released, how to recover, and what to do when something looks wrong. Keep it current when any of these change.
 
 ## Roles and responsibilities

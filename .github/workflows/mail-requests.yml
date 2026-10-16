@@ -1,4 +1,4 @@
-# The clerk on GitHub Actions. Since the clerk also runs on the VPS every five minutes (deploy/clerk-setup.sh),
+# The clerk on GitHub Actions. Since the clerk also runs on the VPS at once on each submission and every minute (deploy/clerk-setup.sh),
 # this workflow first asks the server when that clerk last ran: within 20 minutes, it stands back (and passes a
 # `reset` input on to the server); otherwise it does the work itself, so requests are settled either way.
 # Every 10 minutes: read the hub mailbox, list new access requests for Settings > People, settle
