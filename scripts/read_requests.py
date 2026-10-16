@@ -94,6 +94,7 @@ def divs_text(d):
     return 'all divisions' if d == 'all' else ', '.join(d) if d else 'no divisions'
 ROUNDS = 210000
 ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
+CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'   # the typed reset code: no 0/O, 1/I/L confusion
 MAIL_USER = os.environ.get('MAIL_USER', 'mml@bpropms.in')
 HUB_URL = os.environ.get('HUB_URL', 'https://mmlpbi.bpropms.in/')
 NOW = dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')
@@ -236,7 +237,7 @@ def decode_setpw(code):
     if not isinstance(d, dict) or d.get('kind') != 'setpw':
         return None
     uid = str(d.get('id', '')).strip().lower(); token = str(d.get('token', '')); salt = str(d.get('salt', '')); h = str(d.get('hash', ''))
-    if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', uid) or not re.fullmatch(r'[0-9a-f]{32}', salt) or not re.fullmatch(r'[0-9a-f]{64}', h) or not re.fullmatch(r'[A-Za-z0-9_-]{20,}', token):
+    if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', uid) or not re.fullmatch(r'[0-9a-f]{32}', salt) or not re.fullmatch(r'[0-9a-f]{64}', h) or not re.fullmatch(r'[A-Za-z0-9_-]{8,}', token):
         return None
     return {'id': uid, 'token': token, 'salt': salt, 'hash': h, 'at': str(d.get('at', ''))[:40]}
 
@@ -502,17 +503,20 @@ def reminder(waiting, approvers_to):
             f'The list is also on the People page of {HUB_URL}settings.html.\n\nMarikar Group performance hub')
 
 
-def link_mail(name, uid, url, why, divs='all'):
-    """The one-time link to choose a password: for a new account, a reset the person asked for, or an administrator's reset."""
+def link_mail(name, uid, url, why, divs='all', code=''):
+    """The one-time permission to choose a password (a link, and the same as a code to type on the sign-in page): for a
+    new account, a reset the person asked for, or an administrator's reset."""
     first = (name or '').split(' ')[0] or 'colleague'
-    what = {'approved': 'Your access to the Marikar Group performance hub has been approved. Choose your password with the link below.',
-            'forgot': 'You asked for a new password on the Marikar Group performance hub. Choose it with the link below.',
-            'admin': 'The administrator has reset your password on the Marikar Group performance hub. Choose a new one with the link below.'}[why]
+    what = {'approved': 'Your access to the Marikar Group performance hub has been approved. Choose your password now.',
+            'forgot': 'You asked for a new password on the Marikar Group performance hub. Choose it now.',
+            'admin': 'The administrator has reset your password on the Marikar Group performance hub. Choose a new one now.'}[why]
     scope = '' if divs == 'all' else f'Divisions: {divs_text(divs)}\n'
-    return (f'Dear {first},\n\n{what}\n\n{url}\n\n'
+    how = (f'Either way works:\n\n  1. On the sign-in page ({HUB_URL}) press "Forgot password?", enter your user ID and this code with your new password:\n\n     {code}\n\n  2. Or open this link and choose the password there:\n\n     {url}\n\n' if code
+           else f'{url}\n\n')
+    return (f'Dear {first},\n\n{what}\n\n{how}'
             f'User ID:   {uid}\n{scope}'
-            f'The link works once and expires in {LINK_HOURS} hours. If you did not ask for it, ignore this e-mail; your password stays as it is.\n'
-            'After you choose a password, the hub confirms by e-mail when it is live (within about ten minutes).\n\n'
+            f'The code and the link work once and expire in {LINK_HOURS} hours. If you did not ask for this, ignore this e-mail; your password stays as it is.\n'
+            'Your new password is live within a minute of being set; the page tells you, and the hub confirms by e-mail.\n\n'
             'Regards,\nMarikar Group performance hub\n(automated message from the hub mailbox; replies are read by the administrator)')
 
 
@@ -618,11 +622,13 @@ def main():
         """E-mails a one-time set-password link to the account's own address and remembers the token's hash."""
         nonlocal changed
         token = secrets.token_urlsafe(24)
+        # the same permission as a short code to type on the sign-in page (no need to open the link on the same device)
+        code = ''.join(secrets.choice(CODE_ALPHABET) for _ in range(8))
         exp = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=LINK_HOURS)).isoformat(timespec='seconds')
-        links[acct['id'].lower()] = {'hash': hashlib.sha256(token.encode()).hexdigest(), 'exp': exp, 'why': why, 'ref': ref or '', 'at': NOW}
+        links[acct['id'].lower()] = {'hash': hashlib.sha256(token.encode()).hexdigest(), 'code': hashlib.sha256(code.encode()).hexdigest(), 'exp': exp, 'why': why, 'ref': ref or '', 'at': NOW}
         url = f"{HUB_URL}reset.html#u={urllib.parse.quote(acct['id'].lower())}&t={token}"
         subject = {'approved': 'Marikar hub: your access', 'forgot': 'Marikar hub: choose a new password', 'admin': 'Marikar hub: your password was reset'}[why]
-        mailer.send(acct['id'], subject, link_mail(acct['name'], acct['id'], url, why, acct.get('divisions', 'all')))
+        mailer.send(acct['id'], subject, link_mail(acct['name'], acct['id'], url, why, acct.get('divisions', 'all'), f"{code[:4]}-{code[4:]}"))
         changed = True
 
     def links_today(addr):
@@ -639,7 +645,8 @@ def main():
     # 1b. passwords chosen through a link: the token must match an unexpired link for that account
     for d in setpws:
         link = links.get(d['id'])
-        if not link or link['hash'] != hashlib.sha256(d['token'].encode()).hexdigest():
+        typed = hashlib.sha256(d['token'].upper().replace('-', '').encode()).hexdigest()   # the code typed on the sign-in page
+        if not link or (link['hash'] != hashlib.sha256(d['token'].encode()).hexdigest() and link.get('code') != typed):
             print(f"  ignored a set-password code for {mask(d['id'])}: no matching link (already used, or not issued)"); continue
         try:
             expired = dt.datetime.fromisoformat(link['exp']) < dt.datetime.now(dt.timezone.utc)
