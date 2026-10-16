@@ -3,23 +3,6 @@
   "reminded_at": "",
   "pending": [
     {
-      "ref": "AR-20261016-0ADC",
-      "kind": "access",
-      "name": "Mahesh M",
-      "email": "agm.oaip@marikar.in",
-      "unit": "Canon / OAIP",
-      "scope": "Canon / OAIP",
-      "title": "AGM",
-      "at": "2026-10-16T06:33:21.741Z",
-      "divisions": [
-        "CANON"
-      ],
-      "received": "2026-10-16T06:33:20+00:00",
-      "from": "hub-submission@localhost",
-      "mid": "",
-      "acked": "2026-10-16T06:35:16+00:00"
-    },
-    {
       "ref": "AR-20261016-D947",
       "kind": "access",
       "name": "Thanseem Shajahan",
@@ -191,6 +174,16 @@
       "at": "2026-10-16T08:20:13+00:00",
       "by": "automatic",
       "email": "gm@marikarautomobiles.in"
+    },
+    "AR-20261016-0ADC": {
+      "status": "approved",
+      "at": "2026-10-16T09:17:59+00:00",
+      "by": "tech@bpropms.com",
+      "role": "viewer",
+      "divisions": [
+        "CANON"
+      ],
+      "email": "agm.oaip@marikar.in"
     }
   },
   "links": {
@@ -200,13 +193,6 @@
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:40:46+00:00"
-    },
-    "agm.oaip@gmail.com": {
-      "hash": "0fd54e9bcc3aa2c5205958ce4328886e7785cafcb37b045a844c571b4b521cd5",
-      "exp": "2026-10-17T05:45:25+00:00",
-      "why": "approved",
-      "ref": "",
-      "at": "2026-10-16T05:45:13+00:00"
     },
     "gm@marikarautomobiles.in": {
       "hash": "8c8957f3f083f67cfd3af64e73ec744f53eda8868bc516791bef9babbe9f3a38",
@@ -520,6 +506,20 @@
       "who": "seniormanager.sales@marikarnissan.co.in",
       "by": "the account owner, by link",
       "detail": "admin"
+    },
+    {
+      "at": "2026-10-16T09:17:59+00:00",
+      "action": "removed",
+      "who": "agm.oaip@gmail.com",
+      "by": "tech@bpropms.com",
+      "detail": "viewer; the address bounced"
+    },
+    {
+      "at": "2026-10-16T09:17:59+00:00",
+      "action": "approved",
+      "who": "agm.oaip@marikar.in",
+      "by": "tech@bpropms.com",
+      "detail": "AR-20261016-0ADC as viewer (CANON); replaces the bouncing Gmail ID"
     }
   ]
 }
