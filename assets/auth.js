@@ -5,7 +5,7 @@
 (() => {
   const USERS = [
     { id: 'tech@bpropms.com', name: 'BPro Tech', role: 'superadmin', salt: 'c9bffb8adcb0509aa306eec81fee55e8', hash: 'cce07b1663cff6fb7c61087e2f55f25978a730644b0f5375d45bc84768c2a774' },
-    { id: 'gm@marikarautomobiles.in', name: "Shaheen Parvaz", role: 'viewer', salt: '9c1084acacc2f41bb11e757ef4f09bf9', hash: '83edc41120754f27a1b7c4ce32ca93fae33e8a09f5fa98134e62870c59c23ff4', divisions: ['CSPW', 'CANON'] },
+    { id: 'gm@marikarautomobiles.in', name: "Shaheen Parvaz", role: 'viewer', salt: '3ebf8a2d9bc8c5c57f64b68e89819c22', hash: '9ef9614122bcdef84f5798c696b4a9f26725d43177104f7247fad40eb50c9b31', divisions: ['CSPW', 'CANON'] },
     { id: 'hrmanager@marikarmotors.com', name: "Abhilash A G", role: 'viewer', salt: 'b766ac37667a692858b160fb3f92a990', hash: 'fb8ddc6dc646bbd3b9573892d1827d27f3cb030cc774254c58b8eefeac789629' },
     { id: 'manikuttan@marikar.in', name: "Manikuttan P", role: 'viewer', salt: 'b72fd5e5f9c3f0478fd45ea6faf2b509', hash: '2fe6c1a680e9a28fa549f975ae3b490542a0a9b952c23bf5eff34e6abea50ea5' },
     { id: 'mi.accounts@marikarindustries.in', name: "Vinod S", role: 'viewer', salt: 'd9a6091944d9be3ecdb53e9bd6a65f60', hash: 'bcd9d7c27007cf94848c720875a2bda2c72b59dfd0130d3a0313e09f93074a89' },

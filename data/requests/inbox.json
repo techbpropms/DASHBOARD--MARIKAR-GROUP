@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T10:00:21+00:00",
+  "updated": "2026-10-16T10:10:26+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -223,13 +223,6 @@
       "why": "approved",
       "ref": "",
       "at": "2026-10-16T05:40:46+00:00"
-    },
-    "gm@marikarautomobiles.in": {
-      "hash": "8c8957f3f083f67cfd3af64e73ec744f53eda8868bc516791bef9babbe9f3a38",
-      "exp": "2026-10-17T08:20:22+00:00",
-      "why": "forgot",
-      "ref": "PR-20261016-71EC",
-      "at": "2026-10-16T08:20:13+00:00"
     },
     "agm.oaip@marikar.in": {
       "hash": "7565343c525eaecf86a62e3a6bb4a2b2ddd90249564ee999dbdc6e7efec0c04e",
@@ -578,6 +571,13 @@
       "who": "zmarikar@marikargroup.com",
       "by": "forgot password",
       "detail": "PR-20261016-6C13"
+    },
+    {
+      "at": "2026-10-16T10:10:26+00:00",
+      "action": "password",
+      "who": "gm@marikarautomobiles.in",
+      "by": "the account owner, by link",
+      "detail": "forgot"
     }
   ]
 }
