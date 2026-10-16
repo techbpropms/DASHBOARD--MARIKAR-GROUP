@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T10:55:13+00:00",
+  "updated": "2026-10-16T11:05:56+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -196,6 +196,12 @@
       "divisions": [
         "RE"
       ]
+    },
+    "PR-20261016-7814": {
+      "status": "link",
+      "at": "2026-10-16T11:05:56+00:00",
+      "by": "automatic",
+      "email": "process@bpropms.com"
     }
   },
   "links": {
@@ -228,11 +234,11 @@
       "at": "2026-10-16T10:55:13+00:00"
     },
     "process@bpropms.com": {
-      "hash": "6c6d268e0798a4a6b5bed2cb9f5f5795ede7f282afe2feaeb2c9a3e136659fc3",
-      "exp": "2026-10-17T10:55:24+00:00",
-      "why": "approved",
-      "ref": "",
-      "at": "2026-10-16T10:55:13+00:00"
+      "hash": "0afac4c5e85b8077fdfce7d30d45dd368e6fda5eff349ab0049b122d3300b087",
+      "exp": "2026-10-17T11:06:08+00:00",
+      "why": "forgot",
+      "ref": "PR-20261016-7814",
+      "at": "2026-10-16T11:05:56+00:00"
     }
   },
   "feedback": [
@@ -602,6 +608,20 @@
       "who": "manager.service@marikar.in",
       "by": "administrator (account added)",
       "detail": "AR-20261016-D9DF as viewer (RE)"
+    },
+    {
+      "at": "2026-10-16T11:05:56+00:00",
+      "action": "password",
+      "who": "process@bpropms.com",
+      "by": "the account owner, by link",
+      "detail": "approved"
+    },
+    {
+      "at": "2026-10-16T11:05:56+00:00",
+      "action": "reset link",
+      "who": "process@bpropms.com",
+      "by": "forgot password",
+      "detail": "PR-20261016-7814"
     }
   ]
 }

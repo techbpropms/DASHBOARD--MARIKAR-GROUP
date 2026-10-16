@@ -20,7 +20,7 @@
     { id: 'seniormanager.sales@marikarnissan.co.in', name: "Satheesh Chandran BH", role: 'viewer', salt: 'c73884550cb50d8e85d4b73461ed7290', hash: '79e5bafdb94d299894fc1f0d3f739ce1eb623d1525035296570272d9fe6cedd3', divisions: ['BIGWING', 'NISSAN'] },
     { id: 'agm.oaip@marikar.in', name: "Mahesh M", role: 'viewer', salt: 'aae95df6d16e7efaa9ff3cc0e9cd8df4', hash: '58f4a18f8f464a43a81454a6ba86cae40650007ae193ab6725f062cb753fbd87', divisions: ['CANON'] },
     { id: 'manager.service@marikar.in', name: "Amal Edwin", role: 'viewer', salt: '518df54ad6559e1ad91cc818c716a039', hash: 'cfe6ef314ccb61b9350a53f2e801bf9a018bdc0d4d8e80234d1ea6bed491798e', divisions: ['RE'] },
-    { id: 'process@bpropms.com', name: "Thnaseem Shajahan", role: 'admin', salt: 'ec0fa6cd1238eda874c118a1989f5834', hash: '63ae94583d480ff0c1dc272b3db37f0dc088b6465db7aca133bf7f94a15afd38' },
+    { id: 'process@bpropms.com', name: "Thnaseem Shajahan", role: 'admin', salt: '2a6ac56e9e327a406f4624b4d761f0ed', hash: '45d6aef04828e08507488f906be467bc58d6060d5d3014d93f32b870253e70d4' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;
   // Divisions an account can be limited to (keys as in data/divisions.json). An account line without a `divisions`
