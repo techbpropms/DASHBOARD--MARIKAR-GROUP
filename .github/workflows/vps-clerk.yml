@@ -1,4 +1,4 @@
-# Installs (or refreshes) the mailbox clerk on the Hostinger VPS, where it runs every five minutes: a clone of the
+# Installs (or refreshes) the mailbox clerk on the Hostinger VPS, where it runs the moment a code is submitted and every minute for the mailbox: a clone of the
 # repository in /srv/hub/repo, a systemd timer and the clerk's settings in /srv/hub/clerk/env (the mailbox
 # password from the MAIL_PASSWORD secret, written over SSH; it never appears in the log). Needs the same secrets
 # as "Set up VPS" (VPS_HOST and VPS_SSH_KEY or VPS_PASSWORD) plus MAIL_PASSWORD. Run it from the Actions tab.

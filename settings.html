@@ -157,7 +157,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       <p class="muted" id="inbox-note">Checking the mailbox list…</p>
       <ul id="inbox-list"></ul>
     </div>
-    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within about five minutes. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically with a one-time link to the person's own address. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
+    <p class="muted">Requests reach the mailbox <b>mml@bpropms.in</b> and are listed above within a minute or two. <b>Approve by e-mail</b> opens a one-word reply; send it from the hub mailbox (or from a super admin's address, keeping <b>mml@bpropms.in</b> as the recipient) and the hub creates the account and e-mails the person their user ID and temporary password, with no token needed. Password resets are handled automatically with a one-time link to the person's own address. If a request is not listed yet, paste the e-mail (or just its code starting <code>MGQ1.</code>) here.</p>
     <div class="reqbox">
       <textarea id="req-in" rows="3" placeholder="Paste the request e-mail or code here" aria-label="Request code"></textarea>
       <button class="btn sec" type="button" id="req-parse">Read request</button>
@@ -259,8 +259,8 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const r = await MGAuth.requests.send(built);
     const n = $('pw-note'); n.className = 'note ok'; n.replaceChildren();
     const p = document.createElement('p');
-    if (r.sent) p.textContent = `Requested (${built.req.ref}). Within about ten minutes a link arrives at ${user.id}; open it and choose your new password.`;
-    else { p.textContent = `One more step: send the request to the hub mailbox. Within about ten minutes of it arriving, a link comes to ${user.id}; open it and choose your new password. `; const a = document.createElement('a'); a.href = built.mailto; a.textContent = 'Open the e-mail'; a.className = 'btn sm'; p.append(a); }
+    if (r.sent) p.textContent = `Requested (${built.req.ref}). Within a minute a link arrives at ${user.id}; open it and choose your new password.`;
+    else { p.textContent = `One more step: send the request to the hub mailbox. Within a minute or two of it arriving, a link comes to ${user.id}; open it and choose your new password. `; const a = document.createElement('a'); a.href = built.mailto; a.textContent = 'Open the e-mail'; a.className = 'btn sm'; p.append(a); }
     n.append(p); n.hidden = false; b.disabled = false;
   });
 
@@ -447,7 +447,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   const reqDivs = picker($('req-divs'), 'all');
   $('req-role').addEventListener('change', () => { $('req-divs').hidden = $('req-role').value !== 'viewer'; });
   const reqScope = () => $('req-role').value === 'viewer' ? reqDivs.get() : 'all';
-  // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every 10 minutes
+  // The mailbox list: data/requests/inbox.json is filled by the "Mailbox requests" action every minute (and at once for codes submitted on the hub)
   // (scripts/read_requests.py). Approving or declining here moves a request to `handled` when you publish.
   let inbox = null;
   // Settings > Feedback: the survey answers the clerk stored (inbox.json `feedback`)
@@ -456,7 +456,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const tb = $('fb-table').querySelector('tbody'); tb.replaceChildren();
     const words = (a) => [['Figures', a.q2t], ['First', a.q5], ['Missing', a.q6], ['Top three', (a.q7 || []).join(', ')], ['Other', a.q8]].filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(' · ');
     rows.forEach((f) => { const a = f.a || {}; const tr = document.createElement('tr'); [fmtWhen(f.received || f.at), `${f.name || ''} (${f.id})`, a.q1 || '', a.q2 || '', a.q3 || '', a.q4 || '', words(a)].forEach((v) => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }); tb.appendChild(tr); });
-    $('fb-note').textContent = rows.length ? `${rows.length} response${rows.length === 1 ? '' : 's'} so far, newest first. Each was also mailed to the hub mailbox and the approvers when it arrived.` : 'No survey answers yet. The launch e-mail links to the form; answers appear here within five minutes of being sent.';
+    $('fb-note').textContent = rows.length ? `${rows.length} response${rows.length === 1 ? '' : 's'} so far, newest first. Each was also mailed to the hub mailbox and the approvers when it arrived.` : 'No survey answers yet. The launch e-mail links to the form; answers appear here within a minute or two of being sent.';
     $('fb-csv').hidden = !rows.length;
     $('fb-csv').onclick = () => { const esc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"'; const head = ['When', 'Name', 'User ID', 'Sign-in', 'Figures', 'Which', 'Clarity', 'Phone', 'First', 'Missing', 'Top three', 'Other']; const lines = [head.join(',')].concat(rows.map((f) => { const a = f.a || {}; return [f.received || f.at, f.name, f.id, a.q1, a.q2, a.q2t, a.q3, a.q4, a.q5, a.q6, (a.q7 || []).join('; '), a.q8].map(esc).join(','); })); const b = new Blob([lines.join('\r\n')], { type: 'text/csv' }); const u = URL.createObjectURL(b); const l = document.createElement('a'); l.href = u; l.download = 'hub-feedback.csv'; l.click(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
   }
@@ -508,7 +508,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     say('req-note', 'ok', [`${current.ref || 'Request'} queued. Publish with your token; the temporary password is shown after publishing.`]);
     $('req-approve').disabled = true; settle('approved');
   });
-  // By e-mail: a one-word reply to the hub mailbox, which the mailbox clerk acts on within about 10 minutes.
+  // By e-mail: a one-word reply to the hub mailbox, which the mailbox clerk acts on within a minute or two.
   const byMail = (word) => {
     if (!current) return;
     const subj = `Re: Marikar hub: access request ${current.ref || ''}${current.name ? ' (' + current.name + ')' : ''}`;
@@ -517,7 +517,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
   $('req-approve-mail').addEventListener('click', () => {
     const divisions = reqScope(); if (divisions !== 'all' && !divisions.length) { say('req-note', 'bad', ['Tick at least one division, or All divisions.']); return; }
     byMail(`approve ${$('req-role').value} for ${divsArg(divisions)}`);
-    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within about 10 minutes the hub creates the account for ${current.email} as ${roleName($('req-role').value)} (${divNames(divisions)}), e-mails them a one-time link to choose their password, and takes the request off this list.`]);
+    say('req-note', 'ok', [`A reply opened in your mail app: send it as it is. Within a minute or two the hub creates the account for ${current.email} as ${roleName($('req-role').value)} (${divNames(divisions)}), e-mails them a one-time link to choose their password, and takes the request off this list.`]);
   });
   $('req-decline').addEventListener('click', () => {
     byMail('decline');
@@ -530,7 +530,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     if (!lines.length) return;
     const body = lines.join('\n') + `\n\n(Sent from the People page by ${user.name}.)`;
     location.href = `mailto:${encodeURIComponent(MAILBOX)}?subject=${encodeURIComponent('Marikar hub: account changes')}&body=${encodeURIComponent(body)}`;
-    say('pub-note', 'ok', ['An e-mail opened in your mail app: send it as it is, from your own address. The hub applies the changes within about ten minutes and e-mails the people concerned. If your mail app did not open, copy these lines into an e-mail to ' + MAILBOX + ':', [Object.assign(document.createElement('code'), { textContent: lines.join(' · ') })]]);
+    say('pub-note', 'ok', ['An e-mail opened in your mail app: send it as it is, from your own address. The hub applies the changes within a minute or two of them arriving and e-mails the people concerned. If your mail app did not open, copy these lines into an e-mail to ' + MAILBOX + ':', [Object.assign(document.createElement('code'), { textContent: lines.join(' · ') })]]);
     queue.cmds = []; queue.handled = {}; paintTable(); paintPending();
   });
   const tokenKey = 'mg-gh-token';

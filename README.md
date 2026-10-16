@@ -262,7 +262,7 @@ and thanks the person by e-mail. `scripts/send_mail.py` sends a branded, persona
 every user (templates under `docs/mail/`, placeholders `{{first}}`, `{{name}}`, `{{id}}`, `{{form}}`); the "Send
 mail to users" workflow runs it from the Actions tab, with a dry run and a test send to chosen addresses.
 
-**Mailbox clerk.** `scripts/read_requests.py` runs on the VPS every five minutes (`deploy/clerk-run.sh`, installed
+**Mailbox clerk.** `scripts/read_requests.py` runs on the VPS at once when a code is submitted on the hub and every minute for the mailbox (`deploy/clerk-run.sh`, installed
 by the "Install clerk on VPS" workflow; see `deploy/README.md`) and, as the fallback, in the GitHub Action
 "Mailbox requests" (`.github/workflows/mail-requests.yml`), which stands back while the server's clerk is healthy. It signs in to the mailbox over IMAP and:
 
