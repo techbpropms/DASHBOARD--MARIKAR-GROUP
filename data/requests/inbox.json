@@ -1,25 +1,7 @@
 {
-  "updated": "2026-10-17T15:13:08+00:00",
+  "updated": "2026-10-17T15:16:09+00:00",
   "reminded_at": "",
-  "pending": [
-    {
-      "ref": "AR-20261017-066B",
-      "kind": "access",
-      "name": "Aman MC",
-      "email": "manager.tvm@marikarhonda.in",
-      "unit": "Honda Sales",
-      "scope": "Honda Kerala",
-      "title": "Deputy Manager",
-      "at": "2026-10-17T09:42:49.898Z",
-      "divisions": [
-        "HONDA"
-      ],
-      "received": "2026-10-17T09:42:50+00:00",
-      "from": "hub-submission@localhost",
-      "mid": "",
-      "acked": "2026-10-17T09:42:56+00:00"
-    }
-  ],
+  "pending": [],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
@@ -297,9 +279,28 @@
       "at": "2026-10-17T15:10:09+00:00",
       "by": "automatic",
       "email": "gopakumar@marikarengineers.com"
+    },
+    "AR-20261017-066B": {
+      "status": "approved",
+      "at": "2026-10-17T15:16:09+00:00",
+      "by": "account added by an administrator",
+      "role": "viewer",
+      "divisions": [
+        "HONDA"
+      ]
     }
   },
-  "links": {},
+  "links": {
+    "manager.tvm@marikarhonda.in": {
+      "hash": "35ee7d1a5653b12e540ecfd68498625a6be7e0fa07c25b1dfe73e54868ae6905",
+      "code": "15917fa43fe5d3e61db8a7e6b6867b45d914a087766e6d72f1c419195adfa28a",
+      "exp": "2026-10-18T15:16:40+00:00",
+      "why": "approved",
+      "ref": "",
+      "at": "2026-10-17T15:16:09+00:00",
+      "prev": []
+    }
+  },
   "feedback": [
     {
       "ref": "FB-20261016-9167",
@@ -875,6 +876,20 @@
       "who": "gopakumar@marikarengineers.com",
       "by": "the account owner, by link",
       "detail": "forgot"
+    },
+    {
+      "at": "2026-10-17T15:16:09+00:00",
+      "action": "added",
+      "who": "manager.tvm@marikarhonda.in",
+      "by": "babukadavoor@gmail.com",
+      "detail": "Aman MC as viewer (HONDA)"
+    },
+    {
+      "at": "2026-10-17T15:16:09+00:00",
+      "action": "approved",
+      "who": "manager.tvm@marikarhonda.in",
+      "by": "administrator (account added)",
+      "detail": "AR-20261017-066B as viewer (HONDA)"
     }
   ]
 }
