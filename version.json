@@ -1,11 +1,10 @@
 {
-  "version": "2026.10.17m",
-  "title": "Kerala and Tamil Nadu; Sales and Service",
+  "version": "2026.10.17n",
+  "title": "Safer sign-in",
   "notes": [
-    "Honda dashboard: pick Kerala (KER) or Tamil Nadu (TN) for a state's figures; state subtotals in the year-on-year, stock and unit tables",
-    "Vehicle divisions (Honda, AMZES, RE, Nissan, BigWing, Group) now read as Sales, then Service (labour & parts)",
-    "Honda Kerala and AMZES show labour and parts per unit from Tally",
-    "Every division is tagged KER or TN in the menu and on its page",
-    "HD Anjugramam joins the Honda dashboard with both years and both stock dates (Apr-Sep +23.2%)"
+    "Signing in now also opens a secure session on the hub's server; the sign-in report in Settings is served only to signed-in administrators",
+    "Administrators: sign out and sign in again once to load the sign-in report",
+    "A monthly e-mail on the 2nd lists the Tally files each unit still owes for the month just closed",
+    "Housekeeping files are no longer published with the site"
   ]
 }

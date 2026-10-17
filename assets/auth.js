@@ -120,6 +120,8 @@
   // serves that file, so Settings can show a report across users. Both are relative addresses: they work once the hub
   // is served from the VPS and are harmlessly ignored while it is served from GitHub Pages.
   const SIGNINS = { endpoint: 'signin-log', report: 'signins.log' };
+  // The server-side session (deploy/hub-auth.py behind nginx): the cookie it sets is what the protected files ask for.
+  const SERVER = { login: 'auth/login', logout: 'auth/logout' };
   const device = () => { const ua = navigator.userAgent; const os = /Android/i.test(ua) ? 'Android' : /iPhone|iPad/i.test(ua) ? 'iPhone/iPad' : /Windows/i.test(ua) ? 'Windows' : /Mac OS/i.test(ua) ? 'Mac' : /Linux/i.test(ua) ? 'Linux' : 'other'; const br = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : /Firefox\//.test(ua) ? 'Firefox' : 'browser'; return `${br} on ${os}${matchMedia('(display-mode: standalone)').matches ? ' (app)' : ''}`; };
   const noteSignIn = (s) => {
     const row = { at: new Date().toISOString(), id: s.id, name: s.name, role: s.role, device: device() };
@@ -181,7 +183,18 @@
       const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), k: u.hash.slice(0, 8), exp: Date.now() + (remember ? 30 * DAY : DAY / 2) };
       try { (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage blocked */ }
       noteSignIn(s);
+      await Auth.serverSignIn(u.id, password, remember);
       return s;
+    },
+    // The same check on the VPS, which answers with a secure session cookie: protected files (the sign-in report)
+    // are served only with it. Waits a few seconds at most and never blocks signing in; on GitHub Pages it is a 404.
+    async serverSignIn(id, password, remember) {
+      if (!SERVER.login) return false;
+      try {
+        const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 4000);
+        const r = await fetch(SERVER.login, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, password, remember: !!remember }), credentials: 'same-origin', cache: 'no-store', signal: ctl.signal });
+        clearTimeout(t); return r.status === 204;
+      } catch (e) { return false; }
     },
     // One account's line as the server has it now ({id, name, role, salt, hash, divisions?}), or null.
     async freshAccount(id) {
@@ -196,6 +209,7 @@
       } catch (e) { return null; }
     },
     signOut() {
+      try { if (SERVER.logout) fetch(SERVER.logout, { method: 'POST', credentials: 'same-origin', keepalive: true }).catch(() => {}); } catch (e) { /* offline */ }
       for (const store of [sessionStorage, localStorage]) { try { store.removeItem(KEY); store.removeItem('mg-gh-token'); } catch (e) { /* ignore */ } }
       location.replace('index.html');
     },

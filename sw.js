@@ -2,7 +2,7 @@
 // revalidated with the server, cached copy offline), so a change such as a new account in auth.js applies on the next
 // load; images come from the cache. Bump VERSION with each release: the new version installs, takes over at once and
 // the open hub pages reload on it on every device (no tap needed), so nobody keeps running an old copy.
-const VERSION = '2026.10.17m';
+const VERSION = '2026.10.17n';
 const CACHE = 'marikar-hub-' + VERSION;
 const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'canon.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html', 'password-help.html',
   'assets/theme.css', 'assets/shell.css', 'assets/shell.js', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
