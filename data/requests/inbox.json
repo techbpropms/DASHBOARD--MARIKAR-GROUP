@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T11:06:10+00:00",
+  "updated": "2026-10-17T12:03:09+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -293,16 +293,7 @@
       "email": "mi.accounts@marikarindustries.in"
     }
   },
-  "links": {
-    "tech@bpropms.com": {
-      "hash": "49b6115e3b5cbe72725f5219b055245cab7e0c5f9c23b7b3ac93382ed50d2c06",
-      "code": "b9e1c1b637eb2d9d6166dc2378028cf3b35ff3069a3d70c68259f1c8fc9ea6c4",
-      "exp": "2026-10-17T12:03:29+00:00",
-      "why": "admin",
-      "ref": "PR-20261016-26C5",
-      "at": "2026-10-16T12:03:20+00:00"
-    }
-  },
+  "links": {},
   "feedback": [
     {
       "ref": "FB-20261016-9167",
