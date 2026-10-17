@@ -637,7 +637,14 @@ def main():
         # the same permission as a short code to type on the sign-in page (no need to open the link on the same device)
         code = ''.join(secrets.choice(CODE_ALPHABET) for _ in range(8))
         exp = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=LINK_HOURS)).isoformat(timespec='seconds')
-        links[acct['id'].lower()] = {'hash': hashlib.sha256(token.encode()).hexdigest(), 'code': hashlib.sha256(code.encode()).hexdigest(), 'exp': exp, 'why': why, 'ref': ref or '', 'at': NOW}
+        # a new code does not cancel the earlier ones: people who asked twice often type the code from the first e-mail,
+        # so the two before stay valid until they expire or any one of them is used
+        before = links.get(acct['id'].lower())
+        prev = []
+        if before:
+            prev = [{k: c.get(k) for k in ('hash', 'code', 'exp')} for c in [before] + list(before.get('prev', []))]
+            prev = [c for c in prev if c.get('exp') and c['exp'] > dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')][:2]
+        links[acct['id'].lower()] = {'hash': hashlib.sha256(token.encode()).hexdigest(), 'code': hashlib.sha256(code.encode()).hexdigest(), 'exp': exp, 'why': why, 'ref': ref or '', 'at': NOW, 'prev': prev}
         url = f"{HUB_URL}reset.html#u={urllib.parse.quote(acct['id'].lower())}&t={token}"
         subject = {'approved': 'Marikar hub: your access', 'forgot': 'Marikar hub: choose a new password', 'admin': 'Marikar hub: your password was reset'}[why]
         mailer.send(acct['id'], subject, link_mail(acct['name'], acct['id'], url, why, acct.get('divisions', 'all'), f"{code[:4]}-{code[4:]}"))
@@ -656,26 +663,31 @@ def main():
 
     # 1b. passwords chosen through a link: the token must match an unexpired link for that account
     for d in setpws:
+        # a code judged on an earlier run is re-read from the log on every run: act the same, but log it only once
+        say = (lambda *_: None) if d.get('ref') in results else print
         link = links.get(d['id'])
         typed = hashlib.sha256(d['token'].upper().replace('-', '').encode()).hexdigest()   # the code typed on the sign-in page
         if not link:
             result(d['ref'], False, 'No code is open for this account: the code was already used, or it has expired. Press "Send me a new code".')
-            print(f"  ignored a set-password code for {mask(d['id'])}: no matching link (already used, or not issued)"); continue
-        if link['hash'] != hashlib.sha256(d['token'].encode()).hexdigest() and link.get('code') != typed:
-            result(d['ref'], False, 'That code does not match the latest one sent. Each new code replaces the earlier ones: use the code in your most recent e-mail, or press "Send me a new code".')
-            print(f"  ignored a set-password code for {mask(d['id'])}: not the latest code"); continue
+            say(f"  ignored a set-password code for {mask(d['id'])}: no matching link (already used, or not issued)"); continue
+        tok = hashlib.sha256(d['token'].encode()).hexdigest()
+        hit = next((c for c in [link] + list(link.get('prev', [])) if c.get('hash') == tok or c.get('code') == typed), None)
+        if not hit:
+            result(d['ref'], False, 'That code does not match the codes sent to this address. Copy it from your most recent e-mail (8 letters and numbers, such as ABCD-EF23), or press "Send me a new code".')
+            say(f"  ignored a set-password code for {mask(d['id'])}: not a code that was sent"); continue
         try:
-            expired = dt.datetime.fromisoformat(link['exp']) < dt.datetime.now(dt.timezone.utc)
-        except ValueError:
+            expired = dt.datetime.fromisoformat(hit['exp']) < dt.datetime.now(dt.timezone.utc)
+        except (ValueError, TypeError):
             expired = True
         if expired:
-            del links[d['id']]; changed = True
+            if hit is link:
+                del links[d['id']]; changed = True
             result(d['ref'], False, 'That code has expired (codes last 24 hours). Press "Send me a new code".')
-            print(f"  ignored a set-password code for {mask(d['id'])}: link expired"); continue
+            say(f"  ignored a set-password code for {mask(d['id'])}: link expired"); continue
         acct = accounts.find(d['id'])
         if not acct:
             del links[d['id']]; changed = True
-            print(f"  ignored a set-password code for {mask(d['id'])}: no such account"); continue
+            say(f"  ignored a set-password code for {mask(d['id'])}: no such account"); continue
         accounts.set_secret(acct['id'], d['salt'], d['hash'])
         result(d['ref'], True, 'Your password is live.')
         del links[d['id']]; changed = True
@@ -686,12 +698,12 @@ def main():
     # 2. resets: settled at once, the new password goes only to the account's own address
     for req in [p for p in pending if p['kind'] == 'reset']:
         acct = accounts.find(req['email'])
-        if acct and links_today(acct['id'].lower()) >= 3:
-            # three links a day per address: the link only ever goes to the account's own address, so this is a
+        if acct and links_today(acct['id'].lower()) >= 5:
+            # five links a day per address: the link only ever goes to the account's own address, so this is a
             # cap on nuisance mail, not a security boundary
             settle(req, 'throttled', by='automatic', email=acct['id'].lower())
-            result(req['ref'], False, 'Three codes were already sent to this address in the last 24 hours. Use the code in the most recent e-mail, or try again tomorrow.')
-            print(f"  reset {req['ref']} for {mask(acct['id'])}: three links already sent in the last 24 hours, skipped")
+            result(req['ref'], False, 'Five codes were already sent to this address in the last 24 hours. Use the code in any of the last three e-mails, or write to mml@bpropms.in for help.')
+            print(f"  reset {req['ref']} for {mask(acct['id'])}: five links already sent in the last 24 hours, skipped")
         elif acct:
             issue_link(acct, 'forgot', req['ref'])
             result(req['ref'], True, 'A code is on its way to your mailbox.')

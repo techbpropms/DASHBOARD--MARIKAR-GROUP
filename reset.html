@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/brand.css">
-<script src="assets/auth.js?v=20261017b"></script>
+<script src="assets/auth.js?v=20261017d"></script>
 <style>
 /* The set-password page, opened from the one-time link in the reset e-mail. The password chosen here never leaves the
    browser: only its salted fingerprint goes to the hub mailbox, as a code the mailbox clerk verifies and writes. */
@@ -62,7 +62,7 @@ input[aria-invalid="true"] { border-color: var(--bad); }
       <div class="field"><label for="pw1">New password</label><input id="pw1" type="password" autocomplete="new-password" autocapitalize="none" spellcheck="false" required><button type="button" class="eye" id="eye">Show</button></div>
       <div class="meter" id="meter"><i></i></div>
       <ul class="rules" id="rules">
-        <li data-r="len">At least 10 characters</li>
+        <li data-r="len">At least 8 characters</li>
         <li data-r="mix">Letters and at least one number or symbol</li>
         <li data-r="id">Not your user ID or a part of it</li>
       </ul>
@@ -108,7 +108,7 @@ input[aria-invalid="true"] { border-color: var(--bad); }
   })();
 
   const local = id.split('@')[0];
-  const check = (p) => ({ len: p.length >= 10, mix: /[A-Za-z]/.test(p) && /[^A-Za-z]/.test(p), id: !!p && !p.toLowerCase().includes(local.toLowerCase().slice(0, Math.max(4, local.length))) && p.toLowerCase() !== id });
+  const check = (p) => ({ len: p.length >= 8, mix: /[A-Za-z]/.test(p) && /[^A-Za-z]/.test(p), id: !!p && !p.toLowerCase().includes(local.toLowerCase().slice(0, Math.max(4, local.length))) && p.toLowerCase() !== id });
   const score = (p) => { const c = check(p); let n = (c.len ? 1 : 0) + (c.mix ? 1 : 0) + (c.id ? 1 : 0); if (p.length >= 14) n += 1; if (/[A-Z]/.test(p) && /[a-z]/.test(p)) n += 1; return n; };
   $('pw1').addEventListener('input', () => {
     const p = $('pw1').value, c = check(p), n = score(p);

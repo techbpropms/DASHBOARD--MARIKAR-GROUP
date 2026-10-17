@@ -126,6 +126,12 @@
     // t makes each beacon a distinct address, so nothing between here and the server can answer it from a cache
     if (SIGNINS.endpoint) { try { const q = new URLSearchParams({ id: row.id, name: row.name, role: row.role, device: row.device, t: Date.now() }); fetch(`${SIGNINS.endpoint}?${q}`, { mode: 'no-cors', cache: 'no-store', keepalive: true }).catch(() => {}); } catch (e) { /* offline */ } }
   };
+  // A failed attempt goes to the same log, marked role 'failed' with the reason in place of a name (never the
+  // password), so the administrators can see who is struggling to get in and help them
+  const noteFailure = (id, why) => {
+    if (!SIGNINS.endpoint || !id) return;
+    try { const q = new URLSearchParams({ id: id.slice(0, 120), name: why, role: 'failed', device: device(), t: Date.now() }); fetch(`${SIGNINS.endpoint}?${q}`, { mode: 'no-cors', cache: 'no-store', keepalive: true }).catch(() => {}); } catch (e) { /* offline */ }
+  };
   const Auth = {
     user: read,
     signins: {
@@ -169,9 +175,9 @@
           if (u) Object.assign(u, fresh); else { USERS.push(fresh); u = fresh; }
           h = await derive(password, u.salt);
         }
-        if (!u || h !== u.hash) return null;
+        if (!u || h !== u.hash) { noteFailure(want, u ? 'wrong password' : 'no such user ID'); return null; }
       }
-      const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), k: u.hash.slice(0, 8), exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
+      const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), k: u.hash.slice(0, 8), exp: Date.now() + (remember ? 30 * DAY : DAY / 2) };
       try { (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage blocked */ }
       noteSignIn(s);
       return s;

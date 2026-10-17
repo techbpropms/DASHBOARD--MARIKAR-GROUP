@@ -20,7 +20,7 @@
 <link rel="preload" as="image" href="assets/img/marikar-group.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/brand.css">
-<script src="assets/auth.js?v=20261017b"></script>
+<script src="assets/auth.js?v=20261017d"></script>
 <style>
 /* Landing and sign-in: brand panel on the left, sign-in card on the right; stacked on phones.
    Nothing on this page shows business figures, because it is seen before sign-in. */
@@ -292,7 +292,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
             <small class="caps" id="caps" hidden>Caps Lock is on</small>
           </div>
           <div class="row">
-            <label><input type="checkbox" id="remember"> Keep me signed in for 7 days</label>
+            <label><input type="checkbox" id="remember" checked> Keep me signed in on this device for 30 days</label>
             <a href="#forgot" id="forgot-link">Forgot password?</a> <a href="password-help.html" class="help-link" style="margin-left:10px;font-size:13px">Step-by-step help</a>
           </div>
           <button class="btn" type="submit" id="go"><span class="spin" aria-hidden="true"></span><span id="go-text">Sign in</span></button>
@@ -363,7 +363,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
           <div class="field"><label for="s-id">User ID (e-mail)</label><input id="s-id" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
           <div class="field"><label for="s-code">Code from the e-mail</label><input id="s-code" type="text" inputmode="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX" maxlength="9" required></div>
           <div class="field"><label for="s-pw1">New password</label><input id="s-pw1" type="password" autocomplete="new-password" required><button class="eye" type="button" id="s-eye" aria-controls="s-pw1">Show</button></div>
-          <ul class="rules" id="s-rules"><li data-r="len">At least 10 characters</li><li data-r="mix">Letters and at least one number or symbol</li><li data-r="id">Not your user ID</li></ul>
+          <ul class="rules" id="s-rules"><li data-r="len">At least 8 characters</li><li data-r="mix">Letters and at least one number or symbol</li><li data-r="id">Not your user ID</li></ul>
           <div class="field"><label for="s-pw2">New password again</label><input id="s-pw2" type="password" autocomplete="new-password" required></div>
           <button class="btn" type="submit" id="s-go"><span class="spin" aria-hidden="true"></span><span id="s-go-text">Set my password</span></button>
           <p class="help" style="margin-top:10px"><a href="#forgot" id="s-new">Send me a new code</a></p>
@@ -512,7 +512,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     $('forgot').hidden = true;
     // Whether or not the ID exists is not revealed here; the administrator checks before issuing anything.
     const sentReset = await finish(built, 'f-done', 'f-done-p', 'f-done-ref', 'f-done-mail', 'f-done-copy', {
-      sent: 'If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two. The link works once and for 24 hours. Check the spam folder if it does not arrive.',
+      sent: 'If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two. The code works once, for 24 hours. Check the spam folder if it does not arrive.',
       mail: 'Send the request with the button below. If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two of the request reaching the hub mailbox.' });
     $('f-done').querySelector('h3').textContent = sentReset ? 'Code on its way' : 'Reset request ready';
     if (sentReset) { (async () => { for (let i = 0; i < 10; i++) { await new Promise((r) => setTimeout(r, 4000)); const v = await verdict(built.req.ref); if (v) { if (v.ok === false) { $('f-done').querySelector('h3').textContent = 'No new code sent'; $('f-done-p').textContent = v.msg; } else { $('f-done').querySelector('h3').textContent = 'Code sent'; } return; } } })();
@@ -521,7 +521,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
   // ----- the code from the e-mail plus the new password, on this page: no link to open, no administrator involved
   $('f-have').addEventListener('click', (e) => { e.preventDefault(); $('s-id').value = $('f-id').value.trim().toLowerCase() || $('uid').value.trim().toLowerCase(); $('forgot').hidden = true; $('f-done').hidden = true; $('setpw').hidden = false; ($('s-id').value ? $('s-code') : $('s-id')).focus(); });
   $('s-new').addEventListener('click', (e) => { e.preventDefault(); $('setpw').hidden = true; $('f-done').hidden = true; $('forgot').hidden = false; $('f-go').disabled = false; $('f-go-text').textContent = 'E-mail me a code'; $('f-id').value = $('s-id').value; $('f-id').focus(); });
-  const pwCheck = (p, id) => { const local = (id.split('@')[0] || ''); return { len: p.length >= 10, mix: /[A-Za-z]/.test(p) && /[^A-Za-z]/.test(p), id: !!p && !(local.length >= 4 && p.toLowerCase().includes(local.toLowerCase().slice(0, Math.max(4, local.length)))) && p.toLowerCase() !== id }; };
+  const pwCheck = (p, id) => { const local = (id.split('@')[0] || ''); return { len: p.length >= 8, mix: /[A-Za-z]/.test(p) && /[^A-Za-z]/.test(p), id: !!p && !(local.length >= 4 && p.toLowerCase().includes(local.toLowerCase().slice(0, Math.max(4, local.length)))) && p.toLowerCase() !== id }; };
   $('s-pw1').addEventListener('input', () => { const c = pwCheck($('s-pw1').value, $('s-id').value.trim().toLowerCase()); document.querySelectorAll('#s-rules li').forEach((li) => li.classList.toggle('ok', !!c[li.dataset.r])); });
   $('s-eye').addEventListener('click', () => { const t = $('s-pw1').type === 'password' ? 'text' : 'password'; $('s-pw1').type = t; $('s-pw2').type = t; $('s-eye').textContent = t === 'password' ? 'Show' : 'Hide'; });
   // the account's current fingerprint, so the page can tell when the new password is live on the hub
