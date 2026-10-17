@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T02:41:28+00:00",
+  "updated": "2026-10-17T02:59:10+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -344,6 +344,24 @@
         "q8": "I recommend developing a Marikar All-Units Daily Sales Performance Dashboard that consolidates the daily sales performance of every Marikar unit into one management dashboard. This will help the management and HODs monitor sales, target achievement, branch-wise performance, and the balance targets in a single view."
       },
       "received": "2026-10-17T02:41:28+00:00"
+    },
+    {
+      "ref": "FB-20261017-6005",
+      "id": "seniormanager.re@marikar.in",
+      "name": "Cibin Jacob",
+      "at": "2026-10-17T02:58:11.698Z",
+      "a": {
+        "q1": "5",
+        "q2": "Yes",
+        "q2t": "",
+        "q3": "5",
+        "q4": "5",
+        "q5": "Division Report",
+        "q6": "Need to add Extended warranty,RSA and finance penetration",
+        "q7": [],
+        "q8": ""
+      },
+      "received": "2026-10-17T02:59:10+00:00"
     }
   ],
   "log": [
@@ -745,6 +763,13 @@
       "who": "cspw@marikar.in",
       "by": "cspw@marikar.in",
       "detail": "survey answers FB-20261017-23B7"
+    },
+    {
+      "at": "2026-10-17T02:59:10+00:00",
+      "action": "feedback",
+      "who": "seniormanager.re@marikar.in",
+      "by": "seniormanager.re@marikar.in",
+      "detail": "survey answers FB-20261017-6005"
     }
   ]
 }
