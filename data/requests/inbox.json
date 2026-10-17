@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T09:42:56+00:00",
+  "updated": "2026-10-17T10:43:06+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -285,6 +285,12 @@
       "at": "2026-10-17T08:28:50+00:00",
       "by": "automatic",
       "email": "gopakumar@marikarengineers.com"
+    },
+    "PR-20261017-6767": {
+      "status": "link",
+      "at": "2026-10-17T10:43:06+00:00",
+      "by": "automatic",
+      "email": "mi.accounts@marikarindustries.in"
     }
   },
   "links": {
@@ -302,6 +308,14 @@
       "why": "admin",
       "ref": "PR-20261016-26C5",
       "at": "2026-10-16T12:03:20+00:00"
+    },
+    "mi.accounts@marikarindustries.in": {
+      "hash": "035b5fda5a67a8d7f6d274c2da0d9eb14836de87ae5ea1b6023b68c44d7419d3",
+      "code": "086f69a57461296e34abee47fac14abc65843822a2ce0a722428080408b90325",
+      "exp": "2026-10-18T10:43:36+00:00",
+      "why": "forgot",
+      "ref": "PR-20261017-6767",
+      "at": "2026-10-17T10:43:06+00:00"
     }
   },
   "feedback": [
@@ -851,6 +865,13 @@
       "who": "hrmanager@marikarmotors.com",
       "by": "the account owner, by link",
       "detail": "forgot"
+    },
+    {
+      "at": "2026-10-17T10:43:06+00:00",
+      "action": "reset link",
+      "who": "mi.accounts@marikarindustries.in",
+      "by": "forgot password",
+      "detail": "PR-20261017-6767"
     }
   ]
 }
