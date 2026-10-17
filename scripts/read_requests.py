@@ -239,7 +239,7 @@ def decode_setpw(code):
     uid = str(d.get('id', '')).strip().lower(); token = str(d.get('token', '')); salt = str(d.get('salt', '')); h = str(d.get('hash', ''))
     if not re.match(r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$', uid) or not re.fullmatch(r'[0-9a-f]{32}', salt) or not re.fullmatch(r'[0-9a-f]{64}', h) or not re.fullmatch(r'[A-Za-z0-9_-]{8,}', token):
         return None
-    return {'id': uid, 'token': token, 'salt': salt, 'hash': h, 'at': str(d.get('at', ''))[:40]}
+    return {'id': uid, 'token': token, 'salt': salt, 'hash': h, 'at': str(d.get('at', ''))[:40], 'ref': str(d.get('ref', ''))[:40]}
 
 
 def decode_feedback(code):
@@ -534,6 +534,7 @@ def main():
     ap.add_argument('--submissions', help='JSON-lines file of codes submitted on the hub itself (fetched from the VPS)')
     ap.add_argument('--store', default=STORE)
     ap.add_argument('--auth', default=AUTH)
+    ap.add_argument('--results', help='file the pages read to show the outcome of a submission by its reference (results.json on the VPS)')
     args = ap.parse_args()
     dry = os.environ.get('DRY_RUN') == '1'
 
@@ -546,6 +547,17 @@ def main():
     # one-time set-password links: id -> {hash of the token, expiry, why}; only the hash is kept, so the public file is harmless
     links = store.get('links', {}) if isinstance(store.get('links'), dict) else {}
     accounts = Accounts(args.auth)
+    # outcomes by reference, for the page that submitted: {ref: {ok, msg, at}}; references are random, no personal data
+    results = {}
+    if args.results:
+        try:
+            results = json.load(open(args.results, encoding='utf-8'))
+        except (OSError, ValueError):
+            results = {}
+
+    def result(ref, ok, msg):
+        if ref and ref not in results:   # the first outcome stands: a code re-read on a later run is not judged again
+            results[ref] = {'ok': ok, 'msg': msg, 'at': NOW}
     approvers = set(accounts.superadmins()) | {MAIL_USER.lower()} | {a.strip().lower() for a in os.environ.get('APPROVERS', '').split(',') if a.strip()}
 
     if args.eml:
@@ -646,20 +658,26 @@ def main():
     for d in setpws:
         link = links.get(d['id'])
         typed = hashlib.sha256(d['token'].upper().replace('-', '').encode()).hexdigest()   # the code typed on the sign-in page
-        if not link or (link['hash'] != hashlib.sha256(d['token'].encode()).hexdigest() and link.get('code') != typed):
+        if not link:
+            result(d['ref'], False, 'No code is open for this account: the code was already used, or it has expired. Press "Send me a new code".')
             print(f"  ignored a set-password code for {mask(d['id'])}: no matching link (already used, or not issued)"); continue
+        if link['hash'] != hashlib.sha256(d['token'].encode()).hexdigest() and link.get('code') != typed:
+            result(d['ref'], False, 'That code does not match the latest one sent. Each new code replaces the earlier ones: use the code in your most recent e-mail, or press "Send me a new code".')
+            print(f"  ignored a set-password code for {mask(d['id'])}: not the latest code"); continue
         try:
             expired = dt.datetime.fromisoformat(link['exp']) < dt.datetime.now(dt.timezone.utc)
         except ValueError:
             expired = True
         if expired:
             del links[d['id']]; changed = True
+            result(d['ref'], False, 'That code has expired (codes last 24 hours). Press "Send me a new code".')
             print(f"  ignored a set-password code for {mask(d['id'])}: link expired"); continue
         acct = accounts.find(d['id'])
         if not acct:
             del links[d['id']]; changed = True
             print(f"  ignored a set-password code for {mask(d['id'])}: no such account"); continue
         accounts.set_secret(acct['id'], d['salt'], d['hash'])
+        result(d['ref'], True, 'Your password is live.')
         del links[d['id']]; changed = True
         mailer.send(acct['id'], 'Marikar hub: your password is live', password_set_mail(acct['name'], acct['id']))
         note('password', acct['id'].lower(), 'the account owner, by link', link.get('why', ''))
@@ -672,14 +690,17 @@ def main():
             # three links a day per address: the link only ever goes to the account's own address, so this is a
             # cap on nuisance mail, not a security boundary
             settle(req, 'throttled', by='automatic', email=acct['id'].lower())
+            result(req['ref'], False, 'Three codes were already sent to this address in the last 24 hours. Use the code in the most recent e-mail, or try again tomorrow.')
             print(f"  reset {req['ref']} for {mask(acct['id'])}: three links already sent in the last 24 hours, skipped")
         elif acct:
             issue_link(acct, 'forgot', req['ref'])
+            result(req['ref'], True, 'A code is on its way to your mailbox.')
             settle(req, 'link', by='automatic', email=acct['id'].lower()); note('reset link', acct['id'].lower(), 'forgot password', req['ref'])
             print(f"  reset {req['ref']} for {mask(acct['id'])}: set-password link e-mailed")
         else:
             mailer.send(req['email'], 'Marikar hub: password reset request', f"A password reset was requested for {req['email']}, but no hub account uses this ID. To get access, open {HUB_URL} and choose Request access.\n\nIf you did not ask for this, you can ignore this e-mail.\n\nRegards,\nMarikar Group performance hub")
             settle(req, 'no-account', by='automatic')
+            result(req['ref'], False, 'No account uses this user ID. Check the spelling, or use Request access.')
             print(f"  reset {req['ref']}: no account for {mask(req['email'])}; told them how to request access")
 
     # 3. approvals and declines by reply
@@ -885,6 +906,13 @@ def main():
     print(f"{len(messages)} e-mail(s) read ({hub_mails} about the hub, {from_approvers} from approver addresses), {len(added)} new request(s), {len(commands)} reply command(s), {mailer.sent} e-mail(s) sent, {len(pending)} waiting, {len(handled)} handled")
     for r in added:
         print(f"  + {r['ref']} {r['kind']} {mask(r['email'])}")
+    if args.results:
+        keep = dict(sorted(results.items(), key=lambda kv: kv[1].get('at', ''))[-300:])
+        tmp = args.results + '.tmp'
+        with open(tmp, 'w', encoding='utf-8') as f:
+            json.dump(keep, f, ensure_ascii=False)
+        os.replace(tmp, args.results)
+        os.chmod(args.results, 0o644)
     if not changed:
         return
     os.makedirs(os.path.dirname(args.store), exist_ok=True)

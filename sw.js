@@ -2,7 +2,7 @@
 // revalidated with the server, cached copy offline), so a change such as a new account in auth.js applies on the next
 // load; images come from the cache. Bump VERSION with each release: the pages then show an
 // "update available" message, and the new version takes over when the reader taps Update.
-const VERSION = '2026.10.16g';
+const VERSION = '2026.10.17a';
 const CACHE = 'marikar-hub-' + VERSION;
 const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html',
   'assets/theme.css', 'assets/shell.css', 'assets/shell.js', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
@@ -20,7 +20,7 @@ self.addEventListener('fetch', (e) => {
   if (url.pathname.endsWith('version.json')) return; // always from the network, so updates are noticed
   // the server's own endpoints and live files: never cached (the sign-in beacon, submitted codes, the sign-in log,
   // the clerk's status), or a repeat sign-in would be answered from the cache and never reach the server
-  if (/(?:^|\/)(signin-log|submit|signins\.log|clerk\.json)$/.test(url.pathname)) return;
+  if (/(?:^|\/)(signin-log|submit|signins\.log|clerk\.json|results\.json)$/.test(url.pathname)) return;
   if (fresh) {
     e.respondWith(fetch(req, { cache: 'no-cache' }).then((r) => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); } return r; })
       .catch(() => caches.match(req).then((r) => r || (req.mode === 'navigate' ? caches.match('404.html').then((n) => n || caches.match('hub.html')) : Response.error()))));

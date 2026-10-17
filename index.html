@@ -515,7 +515,8 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
       sent: 'If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two. The link works once and for 24 hours. Check the spam folder if it does not arrive.',
       mail: 'Send the request with the button below. If this ID has an account, a link to choose a new password will be e-mailed to it within a minute or two of the request reaching the hub mailbox.' });
     $('f-done').querySelector('h3').textContent = sentReset ? 'Code on its way' : 'Reset request ready';
-    if (sentReset) { $('f-done-p').textContent = `If ${id} has an account, an e-mail with a code (and a link) reaches it within a minute. Enter the code below with your new password.`; $('f-done-mail').hidden = true; $('f-done-copy').hidden = true; $('f-done').after($('setpw')); $('s-id').value = id; $('setpw').hidden = false; $('s-code').focus(); }
+    if (sentReset) { (async () => { for (let i = 0; i < 10; i++) { await new Promise((r) => setTimeout(r, 4000)); const v = await verdict(built.req.ref); if (v) { if (v.ok === false) { $('f-done').querySelector('h3').textContent = 'No new code sent'; $('f-done-p').textContent = v.msg; } else { $('f-done').querySelector('h3').textContent = 'Code sent'; } return; } } })();
+      $('f-done-p').textContent = `If ${id} has an account, an e-mail with a code (and a link) reaches it within a minute. Enter the code below with your new password.`; $('f-done-mail').hidden = true; $('f-done-copy').hidden = true; $('f-done').after($('setpw')); $('s-id').value = id; $('setpw').hidden = false; $('s-code').focus(); }
   });
   // ----- the code from the e-mail plus the new password, on this page: no link to open, no administrator involved
   $('f-have').addEventListener('click', (e) => { e.preventDefault(); $('s-id').value = $('f-id').value.trim().toLowerCase() || $('uid').value.trim().toLowerCase(); $('forgot').hidden = true; $('f-done').hidden = true; $('setpw').hidden = false; ($('s-id').value ? $('s-code') : $('s-id')).focus(); });
@@ -524,6 +525,8 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
   $('s-pw1').addEventListener('input', () => { const c = pwCheck($('s-pw1').value, $('s-id').value.trim().toLowerCase()); document.querySelectorAll('#s-rules li').forEach((li) => li.classList.toggle('ok', !!c[li.dataset.r])); });
   $('s-eye').addEventListener('click', () => { const t = $('s-pw1').type === 'password' ? 'text' : 'password'; $('s-pw1').type = t; $('s-pw2').type = t; $('s-eye').textContent = t === 'password' ? 'Show' : 'Hide'; });
   // the account's current fingerprint, so the page can tell when the new password is live on the hub
+  // the clerk's verdict on a submission, by its reference (results.json on the hub's server)
+  const verdict = async (ref) => { try { const r = await fetch('results.json', { cache: 'no-store' }); if (!r.ok) return null; return (await r.json())[ref] || null; } catch (e) { return null; } };
   const fingerprint = async (id) => { try { const t = await (await fetch('assets/auth.js', { cache: 'no-store' })).text(); const m = t.match(new RegExp("id: '" + id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + "'[^\\n]*hash: '([0-9a-f]{64})'")); return m ? m[1] : null; } catch (e) { return null; } };
   $('setpw').addEventListener('submit', async (e) => {
     e.preventDefault(); clear('f-alert');
@@ -550,6 +553,8 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     const tick = async () => {
       const now = await fingerprint(id);
       if (now && now !== before) { $('s-wait').hidden = true; $('s-ok').hidden = false; return; }
+      const v = await verdict(built.req.ref);
+      if (v && v.ok === false) { $('s-wait').hidden = true; fail(v.msg, 'f-alert'); $('setpw').hidden = false; $('s-go').disabled = false; $('s-go-text').textContent = 'Set my password'; $('s-code').value = ''; $('s-code').focus(); return; }
       if (Date.now() - started > 150000) { $('s-wait-p').textContent = 'The hub has not accepted it yet. Check the code against the e-mail (it works once and expires after 24 hours) and try again, or send yourself a new code.'; $('setpw').hidden = false; $('s-go').disabled = false; $('s-go-text').textContent = 'Set my password'; $('s-code').focus(); return; }
       setTimeout(tick, 4000);
     };
