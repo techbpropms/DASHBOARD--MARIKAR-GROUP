@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T04:33:48+00:00",
+  "updated": "2026-10-17T04:38:50+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -249,6 +249,12 @@
       "at": "2026-10-17T04:33:48+00:00",
       "by": "automatic",
       "email": "manager.service@marikar.in"
+    },
+    "PR-20261017-773B": {
+      "status": "link",
+      "at": "2026-10-17T04:38:50+00:00",
+      "by": "automatic",
+      "email": "manager.service@marikar.in"
     }
   },
   "links": {
@@ -267,12 +273,12 @@
       "at": "2026-10-16T09:40:56+00:00"
     },
     "manager.service@marikar.in": {
-      "hash": "940a3623e0bc1232d37bb6a9d99454356a40c5d012b43a0ba4ad7d2ff0e600e7",
-      "code": "9da1e6681baaa401ad3e8d518a1dd6afa343e8a6aac253a640c24a880de4170e",
-      "exp": "2026-10-18T04:33:58+00:00",
+      "hash": "a07fabdc7e67d3b499a683fb39e38a162a6a28952fae7b9a022497ff861dbbe0",
+      "code": "9059b63a91dd1278612d2cad3c9e572668e95ea9e6a56ba2a6438d845b43cec5",
+      "exp": "2026-10-18T04:38:59+00:00",
       "why": "forgot",
-      "ref": "PR-20261017-7D82",
-      "at": "2026-10-17T04:33:48+00:00"
+      "ref": "PR-20261017-773B",
+      "at": "2026-10-17T04:38:50+00:00"
     },
     "process@bpropms.com": {
       "hash": "0afac4c5e85b8077fdfce7d30d45dd368e6fda5eff349ab0049b122d3300b087",
@@ -809,6 +815,13 @@
       "who": "manager.service@marikar.in",
       "by": "forgot password",
       "detail": "PR-20261017-7D82"
+    },
+    {
+      "at": "2026-10-17T04:38:50+00:00",
+      "action": "reset link",
+      "who": "manager.service@marikar.in",
+      "by": "forgot password",
+      "detail": "PR-20261017-773B"
     }
   ]
 }
