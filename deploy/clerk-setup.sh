@@ -73,6 +73,18 @@ systemctl is-active hub-clerk.path | sed 's/^/hub-clerk.path: /'
 
 echo "== nginx: /clerk.json for the Settings page, /results.json for the sign-in and reset pages"
 CONF=/etc/nginx/sites-available/mmlpbi.bpropms.in
+# the account file, the service worker and the version file must never be cached (exact locations outrank /assets/)
+if [ -f "$CONF" ]; then
+  python3 - "$CONF" <<'PY'
+import re, sys
+p = sys.argv[1]; s = open(p).read()
+for f in ('/assets/auth.js', '/sw.js', '/version.json'):
+    if 'location = %s ' % f not in s:
+        s = re.sub(r'^(\s*)location / \{ try_files', lambda m: '%slocation = %s { add_header Cache-Control "no-cache, no-store, must-revalidate"; add_header X-Content-Type-Options nosniff; }\n%s' % (m.group(1), f, m.group(0)), s, flags=re.M)
+open(p, 'w').write(s)
+PY
+  nginx -t && systemctl reload nginx
+fi
 if [ -f "$CONF" ] && ! grep -q 'results.json' "$CONF"; then
   sed -i 's#^\(\s*\)location / { try_files#\1location = /results.json { alias /srv/hub/log/results.json; default_type application/json; add_header Cache-Control "no-store"; }\n\1location / { try_files#' "$CONF"
   nginx -t && systemctl reload nginx

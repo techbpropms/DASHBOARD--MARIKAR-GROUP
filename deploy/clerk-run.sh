@@ -38,6 +38,10 @@ if [ ! -d "$R/.git" ]; then
 fi
 cd "$R"
 git fetch -q origin main 2>/dev/null || { status false "cannot read the repository with the deploy key; $KEYNOTE"; exit 0; }
+# a change from an earlier run that did not reach GitHub is pushed first, never thrown away by the reset below
+if [ -n "$(git rev-list origin/main..HEAD 2>/dev/null)" ]; then
+  if git rebase -q origin/main 2>/dev/null && git push -q origin HEAD:main 2>/dev/null; then echo "pushed a change left over from an earlier run"; git fetch -q origin main; else git rebase --abort 2>/dev/null; status false "a change from an earlier run could not be pushed; kept, retrying next run"; exit 0; fi
+fi
 git reset -q --hard origin/main
 git clean -qfd
 git push -q --dry-run origin HEAD:main 2>/dev/null || { status false "the deploy key may read but not write; $KEYNOTE"; exit 0; }

@@ -157,14 +157,36 @@
     theme: (t) => { if (t !== undefined) pref('theme', t === 'system' ? null : t); applyTheme(); return pref('theme') || 'system'; },
     derive,
     async signIn(id, password, remember) {
-      const u = USERS.find((x) => x.id === String(id).trim().toLowerCase());
+      const want = String(id).trim().toLowerCase();
+      let u = USERS.find((x) => x.id === want);
       // derive even for an unknown ID, so both paths take the same time
-      const h = await derive(password, u ? u.salt : '00'.repeat(16));
-      if (!u || h !== u.hash) return null;
+      let h = await derive(password, u ? u.salt : '00'.repeat(16));
+      if (!u || h !== u.hash) {
+        // the copy of the account file this page loaded may predate a password just set (or an account just added):
+        // read the account's line from the server, bypassing every cache, and check once more against that
+        const fresh = await Auth.freshAccount(want);
+        if (fresh && (!u || fresh.hash !== u.hash || fresh.salt !== u.salt)) {
+          if (u) Object.assign(u, fresh); else { USERS.push(fresh); u = fresh; }
+          h = await derive(password, u.salt);
+        }
+        if (!u || h !== u.hash) return null;
+      }
       const s = { id: u.id, name: u.name, role: u.role, divisions: scopeOf(u), k: u.hash.slice(0, 8), exp: Date.now() + (remember ? 7 * DAY : DAY / 2) };
       try { (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(s)); } catch (e) { /* storage blocked */ }
       noteSignIn(s);
       return s;
+    },
+    // One account's line as the server has it now ({id, name, role, salt, hash, divisions?}), or null.
+    async freshAccount(id) {
+      try {
+        const t = await (await fetch(`assets/auth.js?fresh=${Date.now()}`, { cache: 'no-store' })).text();
+        const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const m = t.match(new RegExp(`\\{ id: '${esc}', name: (?:"((?:[^"\\\\]|\\\\.)*)"|'([^']*)'), role: '([a-z]+)', salt: '([0-9a-f]+)', hash: '([0-9a-f]{64})'(?:, divisions: (\\[[^\\]]*\\]|'all'))? \\}`));
+        if (!m) return null;
+        const a = { id, name: m[1] !== undefined ? JSON.parse('"' + m[1] + '"') : m[2], role: m[3], salt: m[4], hash: m[5] };
+        if (m[6] && m[6] !== "'all'") a.divisions = JSON.parse(m[6].replace(/'/g, '"'));
+        return a;
+      } catch (e) { return null; }
     },
     signOut() {
       for (const store of [sessionStorage, localStorage]) { try { store.removeItem(KEY); store.removeItem('mg-gh-token'); } catch (e) { /* ignore */ } }

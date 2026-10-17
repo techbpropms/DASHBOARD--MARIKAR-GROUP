@@ -1,9 +1,8 @@
 {
-  "version": "2026.10.17a",
-  "title": "Clear answers on password codes",
+  "version": "2026.10.17b",
+  "title": "Sign-in after a password change fixed",
   "notes": [
-    "The sign-in page says at once why a code was not accepted (already used, replaced by a newer code, expired) or why no new code was sent",
-    "A mistyped user ID is named as such at sign-in and at Forgot password",
-    "Password reset on the sign-in page (from the previous release)"
+    "A new password works the moment the page says it is live: browsers no longer keep the old account file, and sign-in double-checks with the server",
+    "Clear answers when a code is not accepted (from the previous release)"
   ]
 }

@@ -38,6 +38,7 @@ jobs:
           systemctl is-active hub-clerk.timer hub-clerk.path 2>/dev/null | paste -sd' ' | sed 's/^/timer, path: /'
           grep -E "password|ignored|reset|feedback|returned|failed|approved|added|bounce|Traceback|Error" /srv/hub/clerk/clerk.log 2>/dev/null | grep -v "^ *approver e-mail" | tail -25
           printf 'results.json: %s entries; served: %s\n' "$(python3 -c 'import json;print(len(json.load(open("/srv/hub/log/results.json"))))' 2>/dev/null || echo none)" "$(curl -s -o /dev/null -w '%{http_code}' --resolve mmlpbi.bpropms.in:443:127.0.0.1 https://mmlpbi.bpropms.in/results.json)"
+          echo "account file Cache-Control: $(curl -sI --resolve mmlpbi.bpropms.in:443:127.0.0.1 https://mmlpbi.bpropms.in/assets/auth.js | tr -d '\r' | awk -F': ' 'tolower($1)=="cache-control"{print $2}' | paste -sd' ')"
           echo "submissions in the last 24 h: $(awk -v d="$(date -u -d '24 hours ago' +%FT%T)" -F'"at":"' 'NF>1{split($2,a,"\""); if (a[1] > d) n++} END{print n+0}' /srv/hub/log/submit.log 2>/dev/null)"
           echo; echo "== firewall"; ufw status 2>/dev/null | head -8
           echo; echo "== disk and memory"; df -h / | tail -1; free -m | awk 'NR<=2'
