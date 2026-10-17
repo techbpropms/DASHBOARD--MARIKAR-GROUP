@@ -1,0 +1,32 @@
+{
+  "code": "HD-AAY",
+  "name": "HD Aralvaymozhi",
+  "register_from": "2026-04-10",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2026-27"
+  ],
+  "bills": 648,
+  "gross": 356636.0,
+  "registers": [
+    {
+      "register_from": "2026-04-10",
+      "register_to": "2026-09-30",
+      "bills": 648,
+      "gross": 356636.0,
+      "distinct_items": 144
+    }
+  ],
+  "stock": [
+    {
+      "as_at": "2026-09-30",
+      "value": 167515.54,
+      "lines": 151,
+      "sales_months": 6
+    }
+  ],
+  "received": [
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026"
+  ]
+}
