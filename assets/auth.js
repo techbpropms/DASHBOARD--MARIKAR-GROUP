@@ -8,7 +8,7 @@
     { id: 'gm@marikarautomobiles.in', name: "Shaheen Parvaz", role: 'viewer', salt: '3ebf8a2d9bc8c5c57f64b68e89819c22', hash: '9ef9614122bcdef84f5798c696b4a9f26725d43177104f7247fad40eb50c9b31', divisions: ['CSPW', 'CANON'] },
     { id: 'hrmanager@marikarmotors.com', name: "Abhilash A G", role: 'viewer', salt: '9c1b45d07594452a3c007dd5e50f1b42', hash: '1235a1b23268758c799d590ccc0f36127cdd5983071d424f2adc6603618ff2f9' },
     { id: 'manikuttan@marikar.in', name: "Manikuttan P", role: 'viewer', salt: 'b72fd5e5f9c3f0478fd45ea6faf2b509', hash: '2fe6c1a680e9a28fa549f975ae3b490542a0a9b952c23bf5eff34e6abea50ea5' },
-    { id: 'mi.accounts@marikarindustries.in', name: "Vinod S", role: 'viewer', salt: 'd9a6091944d9be3ecdb53e9bd6a65f60', hash: 'bcd9d7c27007cf94848c720875a2bda2c72b59dfd0130d3a0313e09f93074a89' },
+    { id: 'mi.accounts@marikarindustries.in', name: "Vinod S", role: 'viewer', salt: 'c723006a87864899ef4515f7dd23cbfb', hash: '0585ebed326d435559974f66d182186fcf0861faef389900dad2158eec90b6a7' },
     { id: 'amul.verghese@marikar.in', name: "AMUL VERGHESE", role: 'viewer', salt: '5013e656bba12ff2a1ccb178eae7f094', hash: '3a705ba4118808a8475a70f40f97a13f9d86dab3ad3c55d8b7fb645f7cf5c092' },
     { id: 'gopakumar@marikarengineers.com', name: "GOPAKUMAR.H", role: 'viewer', salt: 'e10cf8ed5b0bb981d903a9e9d8d59276', hash: 'f63d306a1555a8027687abb89203304d650b12638f3d47d663ac76d73eed8f8a' },
     { id: 'zmarikar@marikargroup.com', name: "Zulfiquar Marikar", role: 'viewer', salt: 'c717eeb942fc5828d4f5504607a49180', hash: 'f30fe27d236e5a4f4ffdf159688a98a962d86d79ebbb432e7a168deed1929a42' },
