@@ -1,14 +1,23 @@
 // Service worker for the installable hub. Pages, scripts, styles and data are fetched fresh when online (network first,
 // revalidated with the server, cached copy offline), so a change such as a new account in auth.js applies on the next
-// load; images come from the cache. Bump VERSION with each release: the pages then show an
-// "update available" message, and the new version takes over when the reader taps Update.
-const VERSION = '2026.10.17b';
+// load; images come from the cache. Bump VERSION with each release: the new version installs, takes over at once and
+// the open hub pages reload on it on every device (no tap needed), so nobody keeps running an old copy.
+const VERSION = '2026.10.17c';
 const CACHE = 'marikar-hub-' + VERSION;
 const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html', 'password-help.html',
   'assets/theme.css', 'assets/shell.css', 'assets/shell.js', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
   'assets/img/marikar-group.png', 'assets/img/bpro.png', 'assets/img/icon-192.png', 'manifest.webmanifest'];
 
-self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).catch(() => {})); });
+// a new version does not wait for every tab to close: it installs, activates and takes over at once, and the open hub
+// pages reload themselves when it takes control (pwa.js, on controllerchange)
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).catch(() => {}));
+  // Chromium can leave the new version waiting when an open page fetches through the old one at the moment of the
+  // switch (older pages ask for version.json just then), so ask again a few times while this worker is awake
+  [1000, 3000, 8000, 20000].forEach((t) => setTimeout(() => self.skipWaiting(), t));
+});
+// no page navigation from here: a navigation waits for activation to finish, so waiting on it would never end
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith('marikar-hub-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
