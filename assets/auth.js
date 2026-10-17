@@ -19,7 +19,7 @@
     { id: 'seniormanager.re@marikar.in', name: "Cibin Jacob", role: 'viewer', salt: 'a74abc5afe88a0b18f1c8c07bfdf6236', hash: '7e3fcb0a6c07f9e7876a03307db7554effedc544f464bb7d5128e4a4f8b9e8de', divisions: ['RE'] },
     { id: 'seniormanager.sales@marikarnissan.co.in', name: "Satheesh Chandran BH", role: 'viewer', salt: 'c73884550cb50d8e85d4b73461ed7290', hash: '79e5bafdb94d299894fc1f0d3f739ce1eb623d1525035296570272d9fe6cedd3', divisions: ['BIGWING', 'NISSAN'] },
     { id: 'agm.oaip@marikar.in', name: "Mahesh M", role: 'viewer', salt: '1372d606a472837ad2910e2df77235bf', hash: 'e3c521b5b3cd2ab28ebd0536ad8e7fdf4f28b182903d6c8042965e11ce3e3d19', divisions: ['CANON'] },
-    { id: 'manager.service@marikar.in', name: "Amal Edwin", role: 'viewer', salt: '518df54ad6559e1ad91cc818c716a039', hash: 'cfe6ef314ccb61b9350a53f2e801bf9a018bdc0d4d8e80234d1ea6bed491798e', divisions: ['RE'] },
+    { id: 'manager.service@marikar.in', name: "Amal Edwin", role: 'viewer', salt: '9ee06dc6fe3472e85241d31241290bca', hash: 'b1eaaf9d19da9b40036a9e6dadd02224287aa0912e023690addce42598708b05', divisions: ['RE'] },
     { id: 'process@bpropms.com', name: "Thnaseem Shajahan", role: 'admin', salt: '2a6ac56e9e327a406f4624b4d761f0ed', hash: '45d6aef04828e08507488f906be467bc58d6060d5d3014d93f32b870253e70d4' },
   ];
   const ROUNDS = 210000, KEY = 'mg-hub-session', DAY = 864e5;

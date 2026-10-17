@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T04:38:50+00:00",
+  "updated": "2026-10-17T04:44:10+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -271,14 +271,6 @@
       "why": "forgot",
       "ref": "PR-20261016-6C13",
       "at": "2026-10-16T09:40:56+00:00"
-    },
-    "manager.service@marikar.in": {
-      "hash": "a07fabdc7e67d3b499a683fb39e38a162a6a28952fae7b9a022497ff861dbbe0",
-      "code": "9059b63a91dd1278612d2cad3c9e572668e95ea9e6a56ba2a6438d845b43cec5",
-      "exp": "2026-10-18T04:38:59+00:00",
-      "why": "forgot",
-      "ref": "PR-20261017-773B",
-      "at": "2026-10-17T04:38:50+00:00"
     },
     "process@bpropms.com": {
       "hash": "0afac4c5e85b8077fdfce7d30d45dd368e6fda5eff349ab0049b122d3300b087",
@@ -822,6 +814,13 @@
       "who": "manager.service@marikar.in",
       "by": "forgot password",
       "detail": "PR-20261017-773B"
+    },
+    {
+      "at": "2026-10-17T04:44:10+00:00",
+      "action": "password",
+      "who": "manager.service@marikar.in",
+      "by": "the account owner, by link",
+      "detail": "forgot"
     }
   ]
 }
