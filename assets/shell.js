@@ -1,5 +1,5 @@
 // The hub's navigation shell, mounted on every signed-in page: the menu (as a top bar or a sidebar, each reader's
-// choice), a Light / Dark / System theme switch, the signed-in name, Settings and Sign out. Phones get a drawer.
+// choice, switchable from the bar by everyone), a Light / Dark / System theme switch, the signed-in name, Settings and Sign out. Phones get a drawer.
 // Menu structure: main items -> submenus -> division groups (consolidations of several divisions).
 (() => {
   // Division groups: a group page (divisions.html#g=KEY) shows those divisions together. Keep in step with
@@ -43,7 +43,7 @@
     ] },
     { label: 'HOD action tracker', href: 'tracker.html', icon: 'track' },
     { label: 'Verify a document', href: 'verify.html', icon: 'verify' },
-    // administration: super admins and admins only; viewers have the theme switch and Refresh in the bar instead
+    // administration: super admins and admins only; everyone has Refresh, the menu position and the theme in the bar
     { label: 'Settings', href: 'settings.html', icon: 'gear', role: ['superadmin', 'admin'], children: [
       { label: 'People', href: 'settings.html#people' },
       { label: 'Account changes', href: 'settings.html#changes' },
@@ -98,7 +98,13 @@
         const go = () => location.reload();
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then((r) => r ? r.update() : null).catch(() => {}).finally(go); else go();
       });
-      right.append(rf, tsw);
+      // ----- menu position (top bar or sidebar): for everyone, next to the theme, like the theme switch
+      const lsw = el('div', 'mg-theme mg-navsw'); lsw.setAttribute('role', 'group'); lsw.setAttribute('aria-label', 'Menu position');
+      [['top', 'Menu on top', I.top], ['side', 'Menu at the side', I.side]].forEach(([k, n, ic]) => {
+        const b = el('button'); b.type = 'button'; b.title = n; b.setAttribute('aria-label', n); b.setAttribute('aria-pressed', String(mode === k)); b.append(svg(ic));
+        b.addEventListener('click', () => { if (mode !== k) { Shell.nav(k); location.reload(); } }); lsw.append(b);
+      });
+      right.append(rf, lsw, tsw);
 
       if (user) {
         const who = el('div', 'mg-who');

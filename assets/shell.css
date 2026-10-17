@@ -21,11 +21,12 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
 .mg-brand small { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; margin-left: 2px; }
 /* the bar compresses in steps: shorter labels, then icons only, then the drawer */
 @media (max-width: 1560px) { .mg-brand small, .mg-who .nm small { display: none; } .mg-top-a { padding: 8px 9px; font-size: 13px; } }
-@media (max-width: 1440px) { .mg-who .nm { display: none; } }
 /* with the Install app button in the bar, everything compresses a step earlier */
 @media (max-width: 1720px) { body.mg-has-install .mg-brand small, body.mg-has-install .mg-who .nm { display: none; } body.mg-has-install .mg-top-a { padding: 8px 9px; font-size: 13px; } }
 @media (min-width: 901px) and (max-width: 1480px) { body.mg-has-install .mg-top-a .lbl { display: none; } body.mg-has-install .mg-top-a { padding: 8px 10px; } body.mg-has-install .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } body.mg-has-install .mg-top-a .chev { display: none; } body.mg-has-install .mg-who .nm { display: none; } }
 @media (min-width: 901px) and (max-width: 1280px) { .mg-top-a .lbl { display: none; } .mg-top-a { padding: 8px 10px; } .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } .mg-top-a .chev { display: none; } }
+/* administrators' bar has one item more (Settings): it turns to icons a little earlier */
+@media (min-width: 901px) and (max-width: 1400px) { .mg-topnav:has(> ul > li:nth-child(6)) .mg-top-a .lbl { display: none; } .mg-topnav:has(> ul > li:nth-child(6)) .mg-top-a { padding: 8px 10px; } .mg-topnav:has(> ul > li:nth-child(6)) .mg-top-a .ic { width: 21px; height: 21px; opacity: 1; } .mg-topnav:has(> ul > li:nth-child(6)) .mg-top-a .chev { display: none; } }
 
 /* ----- top menu */
 .mg-topnav { flex: 1 1 auto; min-width: 0; display: flex; justify-content: center; }
@@ -68,6 +69,8 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
 .mg-who .nm { display: flex; flex-direction: column; line-height: 1.15; }
 .mg-who .nm b { font-size: 13px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mg-who .nm small { font-size: 10.5px; opacity: .7; letter-spacing: .06em; text-transform: uppercase; }
+/* the name shows on wide screens only (the initials and their tooltip stay); placed after .mg-who .nm so it applies */
+@media (max-width: 1760px) { .mg-who .nm { display: none; } }
 .mg-out { font: inherit; font-size: 12.5px; font-weight: 700; color: #1d1408; background: var(--mg-amber); border: 0; border-radius: 999px; padding: 7px 12px; cursor: pointer; text-decoration: none; white-space: nowrap; }
 .mg-out:hover { filter: brightness(1.08); }
 
@@ -117,5 +120,9 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
   .mg-sidenav { width: min(var(--mg-side-w), 86vw); }
 }
 @media (max-width: 480px) { .mg-theme button:not([aria-pressed="true"]) { display: none; } .mg-theme { padding: 2px; } }
+/* the bar holds Refresh, menu position, theme and the name: Refresh keeps its gold icon, its word goes first */
+@media (min-width: 901px) and (max-width: 1660px) { .mg-refresh { padding: 0; width: 38px; } .mg-refresh .lbl { display: none; } }
+/* phones always use the drawer, so the menu-position switch is for tablets and computers */
+@media (max-width: 900px) { .mg-navsw { display: none; } }
 @media (prefers-reduced-motion: reduce) { .mg-sidenav, .mg-scrim, .mg-sidenav .tg svg { transition: none; } }
 @media print { .mg-bar, .mg-sidenav, .mg-scrim { display: none !important; } body { padding: 0 !important; } }
