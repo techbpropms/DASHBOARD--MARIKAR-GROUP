@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T05:34:41+00:00",
+  "updated": "2026-10-17T05:37:49+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -292,14 +292,6 @@
       "why": "admin",
       "ref": "PR-20261016-26C5",
       "at": "2026-10-16T12:03:20+00:00"
-    },
-    "hrmanager@marikarmotors.com": {
-      "hash": "e48493e25ec17d05cf8a4fb8a7ed47d34b79e85f7f8feb4be8b877d16339a4b6",
-      "code": "6c4864acc8e33b432708d199290c1de230b88a097820806d02ca16d55b733412",
-      "exp": "2026-10-18T05:34:51+00:00",
-      "why": "forgot",
-      "ref": "PR-20261017-824D",
-      "at": "2026-10-17T05:34:41+00:00"
     }
   },
   "feedback": [
@@ -842,6 +834,13 @@
       "who": "hrmanager@marikarmotors.com",
       "by": "forgot password",
       "detail": "PR-20261017-824D"
+    },
+    {
+      "at": "2026-10-17T05:37:49+00:00",
+      "action": "password",
+      "who": "hrmanager@marikarmotors.com",
+      "by": "the account owner, by link",
+      "detail": "forgot"
     }
   ]
 }
