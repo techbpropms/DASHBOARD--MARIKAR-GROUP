@@ -59,9 +59,13 @@ jobs:
             --exclude '.git' --exclude '.github' --exclude 'server' --exclude 'scripts' --exclude 'deploy' \
             --exclude '__pycache__' --exclude '*.xls' --exclude '*.xlsx' --exclude 'TEMPLATE.md' \
             --exclude 'assets/auth.js' --exclude 'data/requests/inbox.json' \
+            --exclude '/README.md' --exclude '/.gitignore' --exclude '/CNAME' --exclude '/docs/OPERATIONS.md' --exclude '/docs/mail' \
+            --exclude '/docs/manual/build.js' --exclude '/docs/manual/doc.json' --exclude '/docs/manual/toc.py' \
             -e "$ssh_cmd" \
             ./ "${VPS_USER:-$user_default}@$VPS_HOST:$VPS_PATH/"
           echo "deployed $(git rev-parse --short HEAD) to $VPS_HOST:$VPS_PATH"
+          # housekeeping files earlier deploys published (excluded files are left alone by --delete, so remove them once)
+          $ssh_cmd "${VPS_USER:-$user_default}@$VPS_HOST" "cd '$VPS_PATH' && rm -rf README.md TEMPLATE.md .gitignore CNAME docs/OPERATIONS.md docs/mail docs/manual/build.js docs/manual/doc.json docs/manual/toc.py" || true
       - name: Check the site answers
         if: env.skip != '1'
         env:

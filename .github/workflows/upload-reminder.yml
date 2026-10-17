@@ -1,0 +1,38 @@
+# Each month, on the 2nd, e-mails the hub's super admins and admins the Tally files still due from each unit for the
+# month just closed (scripts/upload_reminder.py builds the list from the committed summaries; scripts/send_mail.py
+# sends it from the hub mailbox). Can also be run from the Actions tab, as a dry run or to a test address.
+# Needs the MAIL_PASSWORD secret. Addresses are masked in the log.
+name: Upload reminder
+on:
+  schedule:
+    - cron: '17 3 2 * *'   # 08:47 IST on the 2nd
+  workflow_dispatch:
+    inputs:
+      to:
+        description: 'Recipients: "admins" (every super admin and admin), or a comma-separated list of user IDs'
+        required: true
+        default: 'admins'
+      dry:
+        description: 'Dry run: show the text, send nothing (yes/no)'
+        required: false
+        default: 'no'
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send
+        env:
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_USER: ${{ vars.MAIL_USER }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          TO: ${{ github.event.inputs.to || 'admins' }}
+          DRY: ${{ github.event.inputs.dry || 'no' }}
+        run: |
+          for v in MAIL_USER SMTP_HOST; do [ -n "${!v}" ] || unset "$v"; done
+          [ "$DRY" = "yes" ] && export DRY_RUN=1
+          # written next to the other templates so send_mail.py finds the salutations; never committed
+          out=$(python3 scripts/upload_reminder.py --out docs/mail/_upload-reminder.html)
+          subject=$(printf '%s\n' "$out" | head -1); admins=$(printf '%s\n' "$out" | tail -1)
+          [ "$TO" = admins ] && TO="$admins"
+          python3 scripts/send_mail.py --template docs/mail/_upload-reminder.html --subject "Marikar hub: $subject" --to "$TO"

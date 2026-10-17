@@ -294,7 +294,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
       const days = Number($('signins-days').value);
       note.textContent = 'Loading…';
       let fails = [];
-      try { rows = await MGAuth.signins.report(days); fails = rows.filter((r) => r.role === 'failed'); rows = rows.filter((r) => r.role !== 'failed'); } catch (e) { note.textContent = 'The sign-in log is kept by the hub\'s own server and is not reachable from this address (' + e.message + '). It fills in once the hub is served from the VPS at mmlpbi.bpropms.in.'; return; }
+      try { rows = await MGAuth.signins.report(days); fails = rows.filter((r) => r.role === 'failed'); rows = rows.filter((r) => r.role !== 'failed'); } catch (e) { if (/report 40[13]/.test(e.message)) { note.textContent = 'The sign-in report is now protected on the server. Sign out and sign in again once to load it (security update).'; return; } note.textContent = 'The sign-in log is kept by the hub\'s own server and is not reachable from this address (' + e.message + '). It fills in once the hub is served from the VPS at mmlpbi.bpropms.in.'; return; }
       const by = new Map();
       rows.forEach((r) => { const k = (r.id || '').toLowerCase(); const e = by.get(k) || { id: k, name: r.name, role: r.role, last: '', device: '', n: 0 }; e.n += 1; if ((r.at || '') > e.last) { e.last = r.at; e.device = r.device; e.name = r.name || e.name; e.role = r.role || e.role; } by.set(k, e); });
       const list = [...by.values()].sort((a, b) => b.last.localeCompare(a.last));

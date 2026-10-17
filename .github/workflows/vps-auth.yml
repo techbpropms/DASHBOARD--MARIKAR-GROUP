@@ -1,0 +1,66 @@
+# Installs (or refreshes) the hub's server-side sign-in on the Hostinger VPS: deploy/hub-auth.py as hub-auth.service
+# on 127.0.0.1:8790 and the nginx rules from deploy/auth-setup.sh (rate-limited /auth/login, and the sign-in log
+# served only to signed-in super admins and admins). The site file is restored automatically if nginx refuses the
+# new rules. Needs the same secrets as "Set up VPS" (VPS_HOST and VPS_SSH_KEY or VPS_PASSWORD). Run it from the
+# Actions tab; run it again whenever deploy/hub-auth.py or deploy/auth-setup.sh changes.
+name: Install sign-in service on VPS
+on:
+  workflow_dispatch:
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the secrets
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          if [ -z "$VPS_HOST" ] || { [ -z "$VPS_PASSWORD" ] && [ -z "$VPS_SSH_KEY" ]; }; then
+            echo "::error::Add the repository secrets VPS_HOST and VPS_SSH_KEY (or VPS_PASSWORD) first: Settings > Secrets and variables > Actions."; exit 1
+          fi
+      - name: Reach the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan -T 15 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          if [ -n "$VPS_SSH_KEY" ]; then
+            printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+            if ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=accept-new "root@$VPS_HOST" true 2>/dev/null; then
+              echo "ssh_cmd=ssh -i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"; echo "Signed in with the key."; exit 0
+            fi
+            echo "::warning::The server did not accept the key in VPS_SSH_KEY. Trying the password."
+          fi
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          [ -n "$SSHPASS" ] || { echo "::error::No password to try and the key was refused."; exit 1; }
+          sudo apt-get install -y -qq sshpass >/dev/null
+          if sshpass -e ssh -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password "root@$VPS_HOST" true 2>/dev/null; then
+            echo "ssh_cmd=sshpass -e ssh -o StrictHostKeyChecking=accept-new" >> "$GITHUB_ENV"; echo "Signed in with the password."
+          else
+            echo "::error::The server accepted neither the key nor the password; see the Set up VPS workflow for the remedies."; exit 1
+          fi
+      - name: Install the sign-in service
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          $ssh_cmd "root@$VPS_HOST" 'mkdir -p /srv/hub/auth && cat > /srv/hub/auth/hub-auth.py' < deploy/hub-auth.py
+          $ssh_cmd "root@$VPS_HOST" 'bash -s' < deploy/auth-setup.sh
+      - name: Check it works
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          SSHPASS: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          export SSHPASS="$(printf %s "$SSHPASS" | tr -d '\r\n')"
+          $ssh_cmd "root@$VPS_HOST" 'bash -s' <<'SH'
+          set -u
+          u=https://mmlpbi.bpropms.in
+          r() { curl -sk -o /dev/null -w '%{http_code}' --resolve mmlpbi.bpropms.in:443:127.0.0.1 "$@"; }
+          a=$(r "$u/signins.log"); b=$(r -X POST -H 'Content-Type: application/json' -d '{"id":"nobody@example.invalid","password":"x"}' "$u/auth/login"); c=$(r "$u/")
+          echo "sign-in log without a session: $a (want 401)"; echo "wrong sign-in: $b (want 401)"; echo "home page: $c (want 200)"
+          [ "$a" = 401 ] && [ "$b" = 401 ] && [ "$c" = 200 ] || { echo "::error::a check failed"; exit 1; }
+          SH
