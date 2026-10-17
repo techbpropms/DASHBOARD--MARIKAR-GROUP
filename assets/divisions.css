@@ -65,3 +65,8 @@
 .dv-dash a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 10px; background: var(--mg-gold, #d49a3a); color: #1d1408; font-weight: 800; font-size: 14px; text-decoration: none; }
 .dv-dash a::after { content: "→"; }
 .dv-dash a:hover { filter: brightness(1.06); }
+/* vehicle divisions: a Sales section, then Service (labour & parts) */
+#d-split { display: grid; gap: var(--cds-gap-xl, 28px); }
+.dv-section { display: grid; gap: var(--cds-gap-md, 16px); }
+.dv-section > .hd-section-title { margin: 0; padding-bottom: 6px; border-bottom: 2px solid var(--color-border-line, #e6dccc); }
+.dv-none { margin: 0; }

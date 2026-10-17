@@ -125,26 +125,103 @@
   }
   function list(id, items) { $(id).replaceChildren(...(items || []).map((t) => el('li', null, t))); }
 
+  // ---------- vehicle divisions: Sales, and Service (labour & parts) ----------
+  const REGION_NAME = { KER: 'Kerala', TN: 'Tamil Nadu' };
+  const regionText = (r) => (r || '').split(/\s*&\s*/).map((k) => `${REGION_NAME[k] || k} (${k})`).join(' & ');
+  const vehicle = (d) => (((DATA.groups || []).find((g) => g.key === 'AUTO') || {}).divisions || []).includes(d.key);
+  // what a figure is about, from its own name: service work (labour, spares, job cards, workshop) or sales
+  const isService = (t) => /service|workshop|labou?r|job card|spare|parts|\bAMC\b|\bVAS\b|repair/i.test(t || '');
+  // Honda's service units report through Tally: labour and parts per unit, Apr-Sep, from data/streams.csv
+  const TALLY = { HONDA: 'KER', AMZES: 'TN' };
+  let tally = null;
+  const loadTally = () => tally || (tally = Promise.all(['streams', 'regions', 'companies'].map((f) => d3.csv(`data/${f}.csv`))).catch(() => null));
+  async function tallyCards(d) {
+    const got = await loadTally(); if (!got) return [];
+    const [streams, regions, companies] = got, region = TALLY[d.key];
+    const units = regions.filter((r) => r.region === region).map((r) => r.company);
+    const name = (c) => ((companies.find((r) => r.company === c) || {}).name || c).replace(/^HD /, '');
+    const H = { cur: ['2026-04', '2026-09'], pre: ['2025-04', '2025-09'] };
+    const COLS = [['Labour & service charges', 'Labour'], ['Spare parts', 'Parts'], ['Accessories', 'Accessories'], ['AMC & warranty', 'AMC & warranty']];
+    const tot = (c, stream, h) => streams.filter((r) => r.company === c && r.stream === stream && r.month >= H[h][0] && r.month <= H[h][1]).reduce((a, r) => a + +r.amount, 0);
+    const both = units.filter((c) => tot(c, 'Labour & service charges', 'pre') > 0);
+    const sumOf = (stream, h, list) => list.reduce((a, c) => a + tot(c, stream, h), 0);
+    const kpi = (stream, label) => ({ name: `${label}, Apr–Sep (Tally, ${units.length} units)`, unit: '₹', h1_fy27: sumOf(stream, 'cur', units),
+      h1_fy26: both.length ? sumOf(stream, 'pre', both) : null, note: both.length < units.length ? `Last year: the ${both.length} units with both years.` : null,
+      source: 'TallyPrime service bill registers of the ' + REGION_NAME[region] + ' units (Sales & inventory)' });
+    const tiles = el('div', 'hd-kpis dv-kpis'); tiles.append(kpiTile(kpi('Labour & service charges', 'Labour')), kpiTile(kpi('Spare parts', 'Parts (spares)')));
+    const card = el('div', 'hd-card'); card.append(el('h2', null, `Labour and parts by unit, Apr–Sep 2026 · ${regionText(region)}`),
+      el('p', 'note', 'Ex-GST, before discounts, from each unit\'s Tally service bill register. Change compares Apr–Sep 2025, where the unit has that year.'));
+    const wrap = el('div', 'dv-tbl'), tb = el('table'), th = tb.createTHead().insertRow(), body = tb.createTBody();
+    ['Unit', ...COLS.map((c) => c[1]), 'Total', 'Change'].forEach((h, i) => th.append(el('th', i ? 'n' : '', h)));
+    const T = { cur: COLS.map(() => 0), tc: 0, tp: 0 };
+    const row = (label, vals, cur, pre, cls) => {
+      const tr = body.insertRow(); if (cls) tr.className = cls; tr.insertCell().textContent = label;
+      vals.forEach((v) => { const c = tr.insertCell(); c.className = 'n'; c.textContent = fmt(v, '₹'); });
+      const t = tr.insertCell(); t.className = 'n'; t.textContent = fmt(cur, '₹');
+      const ch = change(cur, pre, '₹'), c = tr.insertCell(); c.className = 'n'; c.textContent = ch ? ch.text : '—';
+    };
+    units.forEach((c) => {
+      const v = COLS.map(([s]) => tot(c, s, 'cur')), cur = d3.sum(v), pre = d3.sum(COLS, ([s]) => tot(c, s, 'pre'));
+      v.forEach((x, i) => { T.cur[i] += x; }); T.tc += cur; if (pre) T.tp += cur;
+      row(name(c), v, cur, pre || null);
+    });
+    row('Total', T.cur, T.tc, both.length ? d3.sum(both, (c) => d3.sum(COLS, ([s]) => tot(c, s, 'pre'))) : null, 'total');
+    if (both.length < units.length) body.lastChild.cells[body.lastChild.cells.length - 1].title = `Change for the ${both.length} units with both years`;
+    wrap.append(tb); card.append(wrap, el('p', 'note', 'Source: TallyPrime registers, as on the Sales & inventory dashboard.'));
+    return [tiles, card];
+  }
+  // one section (Sales, or Service) of a vehicle division: its tiles, charts and tables
+  function section(title, kpis, monthly, breakdowns, extra) {
+    const sec = el('section', 'dv-section'); sec.append(el('h2', 'hd-section-title', title));
+    if (kpis.length) { const t = el('div', 'hd-kpis dv-kpis'); t.append(...kpis.map(kpiTile)); sec.append(t); }
+    (extra || []).forEach((x) => sec.append(x));
+    const charts = el('div', 'dv-grid'), boxes = monthly.map((m) => {
+      const card = el('div', 'hd-card'); card.append(el('h2', null, m.metric + unitHint(m.unit)));
+      if (m.note) card.append(el('p', 'note', m.note));
+      const box = el('div', 'dv-chart'); card.append(box, el('p', 'note', 'Source: ' + (m.source || '—'))); charts.append(card); return [box, m];
+    });
+    if (monthly.length) sec.append(charts);
+    if (breakdowns.length) { const g = el('div', 'dv-grid'); g.append(...breakdowns.map(table)); sec.append(g); }
+    if (!kpis.length && !monthly.length && !breakdowns.length && !(extra || []).length) sec.append(el('p', 'note dv-none', 'No figures for this yet in the division\'s reports.'));
+    return [sec, boxes];
+  }
+  let shown = 0;
+  async function showSplit(d) {
+    const me = ++shown, split = $('d-split'), K = d.kpis || [], M = d.monthly || [], B = d.breakdowns || [];
+    const svc = (x) => isService(x.name || x.metric || x.title);
+    const extra = TALLY[d.key] ? await tallyCards(d) : [];
+    if (me !== shown) return;   // another division was opened meanwhile
+    const [s1, b1] = section('Sales', K.filter((x) => !svc(x)), M.filter((x) => !svc(x)), B.filter((x) => !svc(x)));
+    const [s2, b2] = section('Service · labour & parts', K.filter(svc), M.filter(svc), B.filter(svc), extra);
+    split.replaceChildren(s1, s2);
+    b1.concat(b2).forEach(([box, m]) => monthlyChart(box, m));
+  }
+
   function showDivision(d) {
     $('overview').hidden = true; $('division').hidden = false;
-    $('d-eyebrow').textContent = d.what || '';
+    $('d-eyebrow').textContent = (d.region ? regionText(d.region) + ' · ' : '') + (d.what || '');
     $('d-name').textContent = d.name;
     $('d-tagline').textContent = d.tagline || '';
     // a division with its own Tally dashboard links to it (data/divisions.json "dashboard": {href, label})
     const dl = $('d-dash'); dl.replaceChildren(); dl.hidden = !d.dashboard;
     if (d.dashboard) { const a = el('a', 'btn', d.dashboard.label); a.href = d.dashboard.href; dl.append(a); }
     const st = $('d-status'); st.className = 'dv-status ' + (d.status || 'plan'); st.textContent = d.status_label || '';
-    $('d-kpis').replaceChildren(...(d.kpis || []).map(kpiTile)); $('d-kpis').hidden = !(d.kpis || []).length;
+    // vehicle divisions read as Sales, then Service (labour & parts); the others keep one block
+    const split = vehicle(d);
+    $('d-split').replaceChildren(); $('d-split').hidden = !split;
+    ['d-kpis', 'd-charts', 'd-tables'].forEach((id) => { $(id).hidden = split; });
+    if (split) showSplit(d); else shown++;
+    $('d-kpis').replaceChildren(...(split ? [] : (d.kpis || []).map(kpiTile))); if (!split) $('d-kpis').hidden = !(d.kpis || []).length;
     $('d-charts').replaceChildren();
     // lay out every card first, so each chart is drawn at its final width
-    const boxes = (d.monthly || []).map((s) => {
+    const boxes = (split ? [] : (d.monthly || [])).map((s) => {
       const card = el('div', 'hd-card'); card.append(el('h2', null, s.metric + unitHint(s.unit)));
       if (s.note) card.append(el('p', 'note', s.note));
       const box = el('div', 'dv-chart'); card.append(box, el('p', 'note', 'Source: ' + (s.source || '—')));
       $('d-charts').append(card); return [box, s];
     });
     boxes.forEach(([box, s]) => monthlyChart(box, s));
-    $('d-tables').replaceChildren(...(d.breakdowns || []).map(table));
+    $('d-tables').replaceChildren(...(split ? [] : (d.breakdowns || []).map(table)));
     list('d-high', d.highlights); list('d-conc', d.concerns); list('d-act', d.actions); list('d-gaps', d.gaps);
     $('d-files').replaceChildren(...(d.files || []).map((f) => { const li = el('li', null, f.title + ' '); if (f.period) li.append(el('small', null, `(${f.period})`)); return li; }));
   }
@@ -158,7 +235,7 @@
     $('overview').replaceChildren(...divs.map((d) => {
       const c = el('button', 'dv-card'); c.type = 'button';
       const row = el('div', 'row'); row.append(el('span', 'nm', d.name), el('span', 'dv-status ' + (d.status || 'plan'), d.status_label || ''));
-      c.append(row, el('span', 'what', d.what || ''));
+      c.append(row, el('span', 'what', (d.region ? d.region + ' · ' : '') + (d.what || '')));
       if (d.headline) c.append(el('span', 'big', isNum(d.headline.value) ? fmt(d.headline.value, d.headline.unit) : d.headline.text || '—'), el('span', 'cap', d.headline.caption || ''));
       c.addEventListener('click', () => { location.hash = d.key; });
       return c;

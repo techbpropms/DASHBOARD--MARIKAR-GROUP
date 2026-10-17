@@ -4,6 +4,7 @@
   "divisions": [
     {
       "key": "GROUP",
+      "region": "KER & TN",
       "name": "Group vehicle sales",
       "what": "All automobile brands",
       "status": "strong",
@@ -203,6 +204,7 @@
     },
     {
       "key": "CSPW",
+      "region": "KER",
       "name": "CSPW",
       "what": "Royal Enfield parts distribution & warehouse",
       "status": "strong",
@@ -533,6 +535,7 @@
     },
     {
       "key": "HONDA",
+      "region": "KER",
       "name": "Honda Kerala",
       "what": "Honda two-wheelers: Trivandrum sales & service",
       "status": "strong",
@@ -869,6 +872,7 @@
     },
     {
       "key": "AMZES",
+      "region": "TN",
       "name": "AMZES",
       "what": "Honda Tamil Nadu: Nagercoil sales & Kanyakumari service",
       "status": "strong",
@@ -1197,6 +1201,7 @@
     },
     {
       "key": "NISSAN",
+      "region": "KER",
       "name": "Nissan",
       "what": "Nissan cars: Trivandrum sales",
       "status": "strong",
@@ -1480,6 +1485,7 @@
     },
     {
       "key": "RE",
+      "region": "KER",
       "name": "Royal Enfield",
       "what": "Royal Enfield sales & service: Trivandrum, Kollam, Pathanamthitta",
       "status": "strong",
@@ -1837,6 +1843,7 @@
     },
     {
       "key": "BIGWING",
+      "region": "TN",
       "name": "BigWing",
       "what": "Honda premium motorcycles: Nagercoil sales & service",
       "status": "mixed",
@@ -2178,6 +2185,7 @@
     },
     {
       "key": "CANON",
+      "region": "KER",
       "name": "Canon / OAIP",
       "dashboard": { "href": "canon.html", "label": "Open Canon sales & inventory (from Tally)" },
       "what": "Office automation: copiers, printers, scanners & service",

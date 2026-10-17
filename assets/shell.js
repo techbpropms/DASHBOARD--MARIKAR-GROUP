@@ -5,9 +5,10 @@
   // Division groups: a group page (divisions.html#g=KEY) shows those divisions together. Keep in step with
   // data/divisions.json "groups", which the divisions page reads.
   const GROUPS = [
-    { key: 'AUTO', label: 'Automotive', divisions: [['GROUP', 'Group vehicle sales (consolidated)'], ['HONDA', 'Honda Kerala'], ['AMZES', 'AMZES (Honda Tamil Nadu)'], ['BIGWING', 'BigWing'], ['RE', 'Royal Enfield'], ['NISSAN', 'Nissan']] },
-    { key: 'PARTS', label: 'Parts & distribution', divisions: [['CSPW', 'CSPW']] },
-    { key: 'OA', label: 'Office automation', divisions: [['CANON', 'Canon / OAIP']] },
+    // vehicle divisions by state: Kerala (KER) first, then Tamil Nadu (TN)
+    { key: 'AUTO', label: 'Automotive', divisions: [['GROUP', 'Group vehicle sales (KER & TN)'], ['HONDA', 'Honda Kerala · KER'], ['RE', 'Royal Enfield · KER'], ['NISSAN', 'Nissan · KER'], ['AMZES', 'AMZES, Honda Tamil Nadu · TN'], ['BIGWING', 'BigWing · TN']] },
+    { key: 'PARTS', label: 'Parts & distribution', divisions: [['CSPW', 'CSPW · KER']] },
+    { key: 'OA', label: 'Office automation', divisions: [['CANON', 'Canon / OAIP · KER']] },
     { key: 'PEOPLE', label: 'People', divisions: [['HR', 'HR']] },
   ];
   const I = {
