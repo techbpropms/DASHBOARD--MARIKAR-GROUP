@@ -1,14 +1,22 @@
 {
   "code": "HD-ATL",
   "name": "HD Attingal",
-  "register_from": "2026-04-10",
+  "register_from": "2025-04-09",
   "register_to": "2026-09-30",
   "fys": [
+    "2025-26",
     "2026-27"
   ],
-  "bills": 7677,
-  "gross": 10252514.46,
+  "bills": 21344,
+  "gross": 28469454.28,
   "registers": [
+    {
+      "register_from": "2025-04-09",
+      "register_to": "2026-03-31",
+      "bills": 13667,
+      "gross": 18216939.82,
+      "distinct_items": 2163
+    },
     {
       "register_from": "2026-04-10",
       "register_to": "2026-09-30",
@@ -22,7 +30,7 @@
       "as_at": "2026-03-31",
       "value": 504589.14,
       "lines": 641,
-      "sales_months": 0
+      "sales_months": 12
     },
     {
       "as_at": "2026-09-30",
@@ -32,6 +40,7 @@
     }
   ],
   "received": [
+    "Sales register FY 2025-26",
     "Sales register FY 2026-27 Apr-Sep",
     "Stock summary As at 30 Sep 2026",
     "Stock summary As at 31 Mar 2026"
