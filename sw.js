@@ -4,7 +4,7 @@
 // "update available" message, and the new version takes over when the reader taps Update.
 const VERSION = '2026.10.17b';
 const CACHE = 'marikar-hub-' + VERSION;
-const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html',
+const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html', 'password-help.html',
   'assets/theme.css', 'assets/shell.css', 'assets/shell.js', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
   'assets/img/marikar-group.png', 'assets/img/bpro.png', 'assets/img/icon-192.png', 'manifest.webmanifest'];
 
