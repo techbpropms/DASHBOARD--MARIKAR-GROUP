@@ -1,14 +1,22 @@
 {
   "code": "CN-EKM",
   "name": "Canon Ernakulam",
-  "register_from": "2026-04-06",
+  "register_from": "2025-04-07",
   "register_to": "2026-09-30",
   "fys": [
+    "2025-26",
     "2026-27"
   ],
-  "bills": 1674,
-  "gross": 24144034.81,
+  "bills": 4968,
+  "gross": 67844606.4,
   "registers": [
+    {
+      "register_from": "2025-04-07",
+      "register_to": "2026-03-31",
+      "bills": 3294,
+      "gross": 43700571.59,
+      "distinct_items": 304
+    },
     {
       "register_from": "2026-04-06",
       "register_to": "2026-09-30",
@@ -17,8 +25,24 @@
       "distinct_items": 170
     }
   ],
-  "stock": [],
+  "stock": [
+    {
+      "as_at": "2026-03-31",
+      "value": 8659101.82,
+      "lines": 558,
+      "sales_months": 12
+    },
+    {
+      "as_at": "2026-09-30",
+      "value": 7767430.72,
+      "lines": 546,
+      "sales_months": 6
+    }
+  ],
   "received": [
-    "Sales register FY 2026-27 Apr-Sep"
+    "Sales register FY 2025-26",
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026",
+    "Stock summary As at 31 Mar 2026"
   ]
 }

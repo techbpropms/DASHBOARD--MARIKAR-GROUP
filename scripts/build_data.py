@@ -139,8 +139,10 @@ def classify_canon(h):
 # Canon stock sub-groups (under the "CN" group) carry a code and the GST rate: "CM 18 %", "CO18%"
 CANON_CATS = {'AC': 'Canon accessories', 'CA': 'Canon cameras', 'CM': 'Canon copier machines', 'CO': 'Canon consumables (toner, drums)',
               'CT': 'Canon cartridges', 'DR': 'Canon document scanners', 'IC': 'Canon printers', 'PR': 'Canon printers',
-              'PT': 'Canon plotters', 'SP': 'Canon spares', 'SUPPLYS': 'Canon supplies'}
-CANON_GROUPS = {'BENQ': 'BenQ flat panels', 'CANON DEMO STOCK': 'Demo stock', 'CANON LEASE STOCK': 'Lease stock', 'PITNEY BOWES': 'Pitney Bowes'}
+              'PT': 'Canon plotters', 'SP': 'Canon spares', 'SUPPLYS': 'Canon supplies', 'SUPPLIES': 'Canon supplies',
+              'PBW': 'Pitney Bowes'}
+CANON_GROUPS = {'BENQ': 'BenQ flat panels', 'CANON DEMO STOCK': 'Demo stock', 'CANON LEASE STOCK': 'Lease stock', 'PITNEY BOWES': 'Pitney Bowes',
+                'CIS': 'CIS'}
 
 
 def head_name(h):
@@ -170,8 +172,8 @@ def category(group, sub):
         return group
     g = re.sub(r'\s*\d+\s*%$', '', clean(group)).upper()
     if sub and g == 'CN':
-        code = re.sub(r'[\d%\s]+$', '', clean(sub)).split(' ')[0].upper()
-        return CANON_CATS.get(code, 'Canon ' + clean(sub).title())
+        name = re.sub(r'[\d%\s]+$', '', clean(sub))
+        return CANON_CATS.get(name.split(' ')[0].upper(), 'Canon ' + name.lower())
     return CANON_GROUPS.get(g, clean(group).title())
 
 
@@ -297,7 +299,7 @@ def stock_summary(path):
     at = next(i for i, r in enumerate(rows) if r[0].value == 'Particulars')
     period = clean(rows[at][1].value)
     as_at = datetime.datetime.strptime(period.split(' to ')[-1], '%d-%b-%y').date().isoformat()
-    groups, its, stated, g, sg = [], [], None, None, None
+    groups, its, stated, g, sg, item_ind = [], [], None, None, None, None
     body = [r for r in rows[at + 3:] if r[0].value not in (None, '')]
     ind = lambda r: r[0].alignment.indent or 0
     for k, r in enumerate(body):
@@ -307,12 +309,14 @@ def stock_summary(path):
             stated = num(r[3].value) if r[3].value is not None else num(r[2].value)
             break
         if c.font.b and not c.alignment.indent:
-            g, sg = clean(c.value).title(), None
+            g, sg, item_ind = clean(c.value).title(), None, None
             groups.append([g, q, v])
+        elif not c.font.i and item_ind is not None and ind(r) > item_ind:
+            continue   # a batch or godown line under the item above ("Ob"): part of that item, not another one
         elif not c.font.i and k + 1 < len(body) and ind(body[k + 1]) > ind(r) and body[k + 1][0].value != 'Grand Total':
-            sg = clean(c.value)   # a sub-group (Canon's "CM 18 %"): plain, not italic like items, its lines indented deeper
+            sg, item_ind = clean(c.value), None   # a sub-group (Canon's "CM 18 %"): plain, not italic like items, its lines indented deeper
         else:
-            its.append([clean(c.value), g, q, v, category(g, sg)])
+            its.append([clean(c.value), g, q, v, category(g, sg)]); item_ind = ind(r)
     total = round(sum(x[3] for x in its), 2)
     if stated is None or abs(total - stated) > 1:
         raise SystemExit(f'{os.path.basename(path)}: items add up to {total:,.2f} but the Grand Total says {stated}')
