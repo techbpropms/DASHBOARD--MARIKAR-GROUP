@@ -6,12 +6,14 @@
     DRY_RUN=1 python3 scripts/send_mail.py ...                                           # print, send nothing
 
 --to all means every account in assets/auth.js except the BPro service accounts (*@bpropms.com). Placeholders in
-the template: {{first}} (first name), {{name}}, {{id}} (user ID), {{form}} (feedback.html on the hub with the
+the template: {{first}} (first name), {{salute}} (the form of address from docs/mail/salutations.json, such as
+"Mr. Zulfiquar"; the first name when the file has no entry), {{name}}, {{id}} (user ID), {{form}} (feedback.html on the hub with the
 person's name and ID prefilled; a score can be appended as &q1=4). The mail goes out as HTML with a plain-text
 alternative made from the same template. Environment: MAIL_PASSWORD (required), MAIL_USER, SMTP_HOST, HUB_URL,
 MAIL_FROM_NAME (default "Dr. Babu B, Marikar Group performance hub"), REPLY_TO (default the mailbox).
 """
 import argparse
+import json
 import html
 import os
 import re
@@ -63,6 +65,10 @@ def main():
     else:
         ids = [a.strip().lower() for a in args.to.split(',') if a.strip()]
     tpl = open(args.template, encoding='utf-8').read()
+    try:
+        salutes = {k.lower(): v for k, v in json.load(open(os.path.join(os.path.dirname(args.template), 'salutations.json'), encoding='utf-8')).items()}
+    except (OSError, ValueError):
+        salutes = {}
     hub = HUB_URL.rstrip('/') + '/'
     sent = 0
     for uid in ids:
@@ -73,7 +79,8 @@ def main():
         if first.isupper():
             first = first.title()
         form = f"{hub}feedback.html?u={urllib.parse.quote(uid)}&n={urllib.parse.quote(name)}"
-        body = tpl.replace('{{first}}', html.escape(first)).replace('{{name}}', html.escape(name)).replace('{{id}}', html.escape(uid)).replace('{{form}}', html.escape(form, quote=True))
+        salute = salutes.get(uid) or first
+        body = tpl.replace('{{salute}}', html.escape(salute)).replace('{{first}}', html.escape(first)).replace('{{name}}', html.escape(name)).replace('{{id}}', html.escape(uid)).replace('{{form}}', html.escape(form, quote=True))
         msg = EmailMessage()
         msg['From'] = formataddr((os.environ.get('MAIL_FROM_NAME', 'Dr. Babu B, Marikar Group performance hub'), MAIL_USER))
         msg['To'] = formataddr((name, uid))
