@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T12:03:09+00:00",
+  "updated": "2026-10-17T15:10:09+00:00",
   "reminded_at": "",
   "pending": [
     {
@@ -291,9 +291,25 @@
       "at": "2026-10-17T10:43:06+00:00",
       "by": "automatic",
       "email": "mi.accounts@marikarindustries.in"
+    },
+    "PR-20261017-5136": {
+      "status": "link",
+      "at": "2026-10-17T15:10:09+00:00",
+      "by": "automatic",
+      "email": "gopakumar@marikarengineers.com"
     }
   },
-  "links": {},
+  "links": {
+    "gopakumar@marikarengineers.com": {
+      "hash": "d145483a0074649f0dd3532a2c131690d325449c2e8e572f2b364ef68338717c",
+      "code": "c227fcdfadd443a2f40b35824e78ef701d0551ae79ee53a5a33a797f0f6dce36",
+      "exp": "2026-10-18T15:10:40+00:00",
+      "why": "forgot",
+      "ref": "PR-20261017-5136",
+      "at": "2026-10-17T15:10:09+00:00",
+      "prev": []
+    }
+  },
   "feedback": [
     {
       "ref": "FB-20261016-9167",
@@ -855,6 +871,13 @@
       "who": "mi.accounts@marikarindustries.in",
       "by": "the account owner, by link",
       "detail": "forgot"
+    },
+    {
+      "at": "2026-10-17T15:10:09+00:00",
+      "action": "reset link",
+      "who": "gopakumar@marikarengineers.com",
+      "by": "forgot password",
+      "detail": "PR-20261017-5136"
     }
   ]
 }
