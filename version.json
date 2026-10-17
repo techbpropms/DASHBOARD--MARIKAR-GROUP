@@ -1,8 +1,9 @@
 {
-  "version": "2026.10.17b",
-  "title": "Sign-in after a password change fixed",
+  "version": "2026.10.17c",
+  "title": "Updates apply by themselves",
   "notes": [
-    "A new password works the moment the page says it is live: browsers no longer keep the old account file, and sign-in double-checks with the server",
-    "Clear answers when a code is not accepted (from the previous release)"
+    "Every device now switches to a new version of the hub by itself, within minutes, with a short notice and a reload; nobody keeps an old copy",
+    "A new password works the moment the page says it is live (from the previous release)",
+    "Step-by-step sign-in and password help, linked under the sign-in button"
   ]
 }

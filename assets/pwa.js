@@ -1,5 +1,5 @@
-// Makes the hub an installable app, invites every visitor to install it, and shows an update message when a new
-// version is published (the message lists the notes from version.json; Update switches over and reloads).
+// Makes the hub an installable app, invites every visitor to install it, and applies a new version as soon as it is
+// published: a short notice, then the page reloads on it (no tap needed).
 //
 // Install invitation: on Android, Chrome and Edge the browser raises `beforeinstallprompt`; we keep that event and
 // open the native install dialog from an "Install the app" card at the foot of the page and an "Install app" button
@@ -68,33 +68,32 @@
 
   // ----- updates
   if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
-  const banner = (reg, info) => {
-    if (document.getElementById('hub-update')) return;
-    const b = el('div', 'position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:51;width:min(560px,calc(100% - 24px));background:#131c38;color:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:14px 16px;font:14px/1.45 ' + FONT + ';display:flex;gap:12px;align-items:flex-start;border-top:4px solid #d49a3a');
-    b.id = 'hub-update'; b.setAttribute('role', 'status');
-    const txt = el('div', 'flex:1');
-    txt.append(el('b', null, 'Update available' + (info && info.title ? ': ' + info.title : '')));
-    if (info && info.notes && info.notes.length) { const ul = el('ul', 'margin:6px 0 0;padding-left:18px;opacity:.9;font-size:13px'); info.notes.slice(0, 4).forEach((n) => ul.append(el('li', null, n))); txt.append(ul); }
-    const go = el('button', 'font:inherit;font-weight:700;border:0;border-radius:10px;padding:8px 14px;background:#d49a3a;color:#1d1408;cursor:pointer', 'Update'); go.type = 'button';
-    const later = el('button', 'font:inherit;border:0;background:transparent;color:#fff;opacity:.75;cursor:pointer;padding:8px 4px', 'Later'); later.type = 'button'; later.setAttribute('aria-label', 'Dismiss');
-    go.onclick = () => { if (reg.waiting) reg.waiting.postMessage('skip-waiting'); else location.reload(); };
-    later.onclick = () => b.remove();
-    b.append(txt, go, later); document.body.append(b);
-  };
   const notes = () => fetch('version.json', { cache: 'no-store' }).then((r) => r.json()).catch(() => null);
+  // the notice shown for the second or two before the page reloads on the new version
+  const updating = (info) => {
+    if (document.getElementById('hub-update')) return;
+    const b = el('div', 'position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:51;width:min(520px,calc(100% - 24px));background:#131c38;color:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:12px 16px;font:14px/1.45 ' + FONT + ';border-top:4px solid #d49a3a');
+    b.id = 'hub-update'; b.setAttribute('role', 'status');
+    b.append(el('b', null, 'Updating to the latest version' + (info && info.version ? ' (' + info.version + ')' : '') + '…'));
+    document.body.append(b);
+  };
   let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloading) { reloading = true; location.reload(); } });
-  navigator.serviceWorker.register('sw.js').then((reg) => {
-    const offer = () => notes().then((info) => banner(reg, info));
-    if (reg.waiting && navigator.serviceWorker.controller) offer();
+  // a page where someone is midway through setting a password is left as it is; it picks the version up on its next load
+  const busy = () => !!document.querySelector('#setpw:not([hidden]), #s-wait:not([hidden]), #f-done:not([hidden])');
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloading && !busy()) { reloading = true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
+    // a new version is applied at once, never left waiting for a tap: a short notice, then the page reloads on it
+    const apply = (w) => { if (!w || !navigator.serviceWorker.controller) return; w.postMessage('skip-waiting'); if (!busy()) notes().then((info) => updating(info)); };
+    if (reg.waiting) apply(reg.waiting);
     reg.addEventListener('updatefound', () => {
       const nw = reg.installing;
-      nw && nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) offer(); });
+      nw && nw.addEventListener('statechange', () => { if (nw.state === 'installed') apply(nw); });
     });
-    // Check for a new version when the app is reopened and every 30 minutes while it stays open.
+    // Check for a new version on every load, when the app is reopened, and every 5 minutes while it stays open.
     const check = () => reg.update().catch(() => {});
+    check();
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
-    setInterval(check, 30 * 60 * 1000);
+    setInterval(check, 5 * 60 * 1000);
   }).catch(() => {});
   window.MGInstall = { install: () => install(null), available: () => !!deferred };
 })();
