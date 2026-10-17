@@ -34,6 +34,10 @@ jobs:
           tail -3 /srv/hub/log/signins.log 2>/dev/null | sed -E 's/"id":"[^"]*"/"id":"…"/; s/"name":"[^"]*"/"name":"…"/; s/"ip":"[^"]*"/"ip":"…"/'
           grep -c 'signin-log' /etc/nginx/sites-available/mmlpbi.bpropms.in 2>/dev/null | sed 's/^/signin-log locations in the site file: /'; nginx -T 2>/dev/null | grep -c 'log_format hub_signins' | sed 's/^/hub_signins log format loaded: /'
           grep -i 'signin\|hub' /var/log/nginx/error.log 2>/dev/null | tail -3
+          echo; echo "== clerk (status, timers, and what the last runs acted on; addresses are masked by the clerk)"; cat /srv/hub/log/clerk.json 2>/dev/null; echo
+          systemctl is-active hub-clerk.timer hub-clerk.path 2>/dev/null | paste -sd' ' | sed 's/^/timer, path: /'
+          grep -E "password|ignored|reset|feedback|returned|failed|approved|added|bounce|Traceback|Error" /srv/hub/clerk/clerk.log 2>/dev/null | grep -v "^ *approver e-mail" | tail -25
+          echo "submissions in the last 24 h: $(awk -v d="$(date -u -d '24 hours ago' +%FT%T)" -F'"at":"' 'NF>1{split($2,a,"\""); if (a[1] > d) n++} END{print n+0}' /srv/hub/log/submit.log 2>/dev/null)"
           echo; echo "== firewall"; ufw status 2>/dev/null | head -8
           echo; echo "== disk and memory"; df -h / | tail -1; free -m | awk 'NR<=2'
           REMOTE
