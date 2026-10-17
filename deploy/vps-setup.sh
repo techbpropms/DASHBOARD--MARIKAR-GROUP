@@ -52,6 +52,14 @@ else
   # certified earlier: certbot owns the file now, so missing locations are inserted into every server block
   grep -q 'signin-log' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /signin-log { access_log /srv/hub/log/signins.log hub_signins; add_header Cache-Control no-store; return 204; }\n\1location = /signins.log { alias /srv/hub/log/signins.log; default_type text/plain; add_header Cache-Control "no-cache, no-store, must-revalidate"; }\n\1location / { try_files#' "$CONF"
   grep -q 'error_page 404' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1error_page 404 /404.html;\n\1location / { try_files#' "$CONF"
+  python3 - "$CONF" <<'PY'
+import re, sys
+p = sys.argv[1]; s = open(p).read()
+for f in ('/assets/auth.js', '/sw.js', '/version.json'):
+    if 'location = %s ' % f not in s:
+        s = re.sub(r'^(\s*)location / \{ try_files', lambda m: '%slocation = %s { add_header Cache-Control "no-cache, no-store, must-revalidate"; add_header X-Content-Type-Options nosniff; }\n%s' % (m.group(1), f, m.group(0)), s, flags=re.M)
+open(p, 'w').write(s)
+PY
   grep -q 'results.json' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /results.json { alias /srv/hub/log/results.json; default_type application/json; add_header Cache-Control "no-store"; }\n\1location / { try_files#' "$CONF"
   grep -q 'clerk.json' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /clerk.json { alias /srv/hub/log/clerk.json; default_type application/json; add_header Cache-Control "no-store"; }\n\1location / { try_files#' "$CONF"
   grep -q '/submit ' "$CONF" || sed -i 's#^\(\s*\)location / { try_files#\1location = /submit { access_log /srv/hub/log/submit.log hub_submit; add_header Cache-Control no-store; return 204; }\n\1location / { try_files#' "$CONF"

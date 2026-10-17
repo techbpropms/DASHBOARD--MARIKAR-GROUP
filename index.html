@@ -20,7 +20,7 @@
 <link rel="preload" as="image" href="assets/img/marikar-group.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/brand.css">
-<script src="assets/auth.js"></script>
+<script src="assets/auth.js?v=20261017b"></script>
 <style>
 /* Landing and sign-in: brand panel on the left, sign-in card on the right; stacked on phones.
    Nothing on this page shows business figures, because it is seen before sign-in. */
@@ -560,7 +560,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     };
     setTimeout(tick, 5000);
   });
-  $('s-signin').addEventListener('click', () => { $('uid').value = $('s-id').value.trim().toLowerCase(); pane('signin'); $('pw').value = ''; $('pw').focus(); });
+  $('s-signin').addEventListener('click', () => { location.href = 'index.html?u=' + encodeURIComponent($('s-id').value.trim().toLowerCase()) + '&t=' + Date.now(); });
 
   // Focus the user ID only where a keyboard is likely; on phones it would pop the keyboard over the page.
   if (!location.hash && matchMedia('(hover: hover) and (min-width: 901px)').matches) $('uid').focus();
