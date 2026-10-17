@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T05:41:10+00:00",
+  "updated": "2026-10-17T08:28:50+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -261,6 +261,12 @@
       "at": "2026-10-17T05:34:41+00:00",
       "by": "automatic",
       "email": "hrmanager@marikarmotors.com"
+    },
+    "PR-20261017-D2E1": {
+      "status": "throttled",
+      "at": "2026-10-17T08:28:50+00:00",
+      "by": "automatic",
+      "email": "gopakumar@marikarengineers.com"
     }
   },
   "links": {
