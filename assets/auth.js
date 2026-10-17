@@ -10,7 +10,7 @@
     { id: 'manikuttan@marikar.in', name: "Manikuttan P", role: 'viewer', salt: 'b72fd5e5f9c3f0478fd45ea6faf2b509', hash: '2fe6c1a680e9a28fa549f975ae3b490542a0a9b952c23bf5eff34e6abea50ea5' },
     { id: 'mi.accounts@marikarindustries.in', name: "Vinod S", role: 'viewer', salt: 'c723006a87864899ef4515f7dd23cbfb', hash: '0585ebed326d435559974f66d182186fcf0861faef389900dad2158eec90b6a7' },
     { id: 'amul.verghese@marikar.in', name: "AMUL VERGHESE", role: 'viewer', salt: '5013e656bba12ff2a1ccb178eae7f094', hash: '3a705ba4118808a8475a70f40f97a13f9d86dab3ad3c55d8b7fb645f7cf5c092' },
-    { id: 'gopakumar@marikarengineers.com', name: "GOPAKUMAR.H", role: 'viewer', salt: 'e10cf8ed5b0bb981d903a9e9d8d59276', hash: 'f63d306a1555a8027687abb89203304d650b12638f3d47d663ac76d73eed8f8a' },
+    { id: 'gopakumar@marikarengineers.com', name: "GOPAKUMAR.H", role: 'viewer', salt: 'ae525e2f527372021cdcbaccbdbb18c0', hash: 'e373d1b72844fff5b9c2e5b9b44d2ff465b95b23388b4528925d3c0ee5e6596e' },
     { id: 'zmarikar@marikargroup.com', name: "Zulfiquar Marikar", role: 'viewer', salt: 'c717eeb942fc5828d4f5504607a49180', hash: 'f30fe27d236e5a4f4ffdf159688a98a962d86d79ebbb432e7a168deed1929a42' },
     { id: 'kintin@marikar.in', name: "Kintin", role: 'viewer', salt: '111923e54d350ab3a611f7d3487d4d33', hash: '9528295ebbde80f127f581fc83776b8e5421ad9af13c283941574d0236b92486' },
     { id: 'cspw@marikar.in', name: "Biju S", role: 'viewer', salt: '1833f91a408ba5969a444ff938fa5413', hash: 'e111d01925487acf07ecbd38c0eae01f77791b9ee0a09f0006cf47dcf12060be', divisions: ['CSPW'] },
