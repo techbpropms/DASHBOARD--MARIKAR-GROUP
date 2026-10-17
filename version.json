@@ -1,10 +1,10 @@
 {
-  "version": "2026.10.17h",
-  "title": "Canon Ernakulam complete",
+  "version": "2026.10.17i",
+  "title": "HD Marthandam FY 2025-26",
   "notes": [
+    "HD Marthandam: FY 2025-26 register added, so it now shows year on year (Apr-Sep +4.9%) and idle stock against a full year of sales",
     "Canon Ernakulam: FY 2025-26 register and stock at 31 Mar and 30 Sep 2026 added, so both branches now show year on year and inventory",
     "Canon sales & inventory from Tally: Thiruvananthapuram (FY 2025-26 and Apr-Sep 2026, stock at Mar and Sep 2026) and Ernakulam (Apr-Sep 2026), under Sales & inventory and on the Canon division page",
-    "The Marikar logo animates wherever the hub is working: signing in, setting a password, loading figures, refreshing and updating",
-    "A crisp Marikar \"M\" as the browser-tab icon"
+    "The Marikar logo animates wherever the hub is working: signing in, setting a password, loading figures, refreshing and updating"
   ]
 }
