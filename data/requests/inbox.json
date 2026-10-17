@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T02:59:10+00:00",
+  "updated": "2026-10-17T03:40:42+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -231,6 +231,12 @@
       "at": "2026-10-16T13:56:10+00:00",
       "by": "automatic",
       "email": "gopakumar@marikarengineers.com"
+    },
+    "PR-20261017-F18E": {
+      "status": "link",
+      "at": "2026-10-17T03:40:42+00:00",
+      "by": "automatic",
+      "email": "gopakumar@marikarengineers.com"
     }
   },
   "links": {
@@ -271,12 +277,12 @@
       "at": "2026-10-16T12:03:20+00:00"
     },
     "gopakumar@marikarengineers.com": {
-      "hash": "3460f55d401b5941a6e5fdedf145ec4265ef69640736a4594c0e1d72f91fd44d",
-      "code": "de12fb0aecb23055ca83657c798b5a7978d080ac24c1f306f557012b25670a12",
-      "exp": "2026-10-17T13:56:21+00:00",
+      "hash": "4cc489852910b487273d7edcc847f43d2d77cb869ccf0400212776a772f559c1",
+      "code": "1b1b15299e60e922a5d2a4388771620d1a3a12705b73311580993171dafde5b0",
+      "exp": "2026-10-18T03:40:53+00:00",
       "why": "forgot",
-      "ref": "PR-20261016-BC79",
-      "at": "2026-10-16T13:56:10+00:00"
+      "ref": "PR-20261017-F18E",
+      "at": "2026-10-17T03:40:42+00:00"
     }
   },
   "feedback": [
@@ -770,6 +776,13 @@
       "who": "seniormanager.re@marikar.in",
       "by": "seniormanager.re@marikar.in",
       "detail": "survey answers FB-20261017-6005"
+    },
+    {
+      "at": "2026-10-17T03:40:42+00:00",
+      "action": "reset link",
+      "who": "gopakumar@marikarengineers.com",
+      "by": "forgot password",
+      "detail": "PR-20261017-F18E"
     }
   ]
 }
