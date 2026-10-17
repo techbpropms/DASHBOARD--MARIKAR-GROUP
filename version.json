@@ -1,10 +1,10 @@
 {
-  "version": "2026.10.17e",
-  "title": "Menu position for everyone",
+  "version": "2026.10.17f",
+  "title": "Marikar logo throughout",
   "notes": [
-    "Choose the menu on top or at the side from the bar, next to the theme switch (every user)",
-    "Stay signed in on your device for 30 days (ticked for you), so the password is not asked at every visit",
-    "Pressed \"E-mail me a code\" more than once? Any of your last three codes now works",
-    "New passwords need 8 characters (was 10), with a number or symbol"
+    "The Marikar logo animates wherever the hub is working: signing in, setting a password, loading figures, refreshing and updating",
+    "A crisp Marikar \"M\" as the browser-tab icon",
+    "The Refresh button always says \"Refresh\"",
+    "Choose the menu on top or at the side from the bar, next to the theme switch (every user)"
   ]
 }

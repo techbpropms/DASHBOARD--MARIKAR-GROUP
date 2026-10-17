@@ -6,7 +6,8 @@
 <title>Marikar Group Performance Hub</title>
 <meta name="description" content="Sign in to the Marikar Group performance hub: division dashboards, sales and inventory, the HOD action tracker and verified reports.">
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="assets/img/marikar-group.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#131c38">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -67,6 +68,7 @@ a { color: var(--link); }
 .hero { max-width: 36rem; }
 .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
   background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 5px 12px; }
+.eyebrow .eb-mark { width: 12px; height: 15px; }
 .eyebrow i { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px rgba(212,154,58,.25); animation: pulse 2.4s ease-in-out infinite; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(212,154,58,0); } }
 .hero h1 { font-size: clamp(30px, 3.6vw, 46px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; margin: 14px 0 12px; text-wrap: balance; }
@@ -188,7 +190,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
   box-shadow: 0 8px 20px rgba(19,28,56,.28); transition: transform .12s, box-shadow .12s; display: inline-flex; justify-content: center; align-items: center; gap: 10px; }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(19,28,56,.32); }
 .btn[disabled] { opacity: .75; cursor: progress; transform: none; }
-.spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; animation: spin .8s linear infinite; display: none; }
+.spin { width: 18px; height: 22px; object-fit: contain; animation: none; display: none; }
 .btn[disabled] .spin { display: inline-block; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spin { animation: none; } .btn { transition: none; } }
@@ -234,7 +236,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
     </div>
     <div class="mid">
     <div class="hero">
-      <span class="eyebrow"><i></i>H1 FY 2026–27 review</span>
+      <span class="eyebrow"><img class="eb-mark" src="assets/img/mark-loader-light.svg" alt="" aria-hidden="true">H1 FY 2026–27 review</span>
       <h1>Data that drives <em>every decision.</em></h1>
       <p>Division dashboards, sales and inventory from TallyPrime, the HOD action tracker and verified reports, in one place for the leadership team.</p>
     </div>
@@ -295,7 +297,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
             <label><input type="checkbox" id="remember" checked> Keep me signed in on this device for 30 days</label>
             <a href="#forgot" id="forgot-link">Forgot password?</a> <a href="password-help.html" class="help-link" style="margin-left:10px;font-size:13px">Step-by-step help</a>
           </div>
-          <button class="btn" type="submit" id="go"><span class="spin" aria-hidden="true"></span><span id="go-text">Sign in</span></button>
+          <button class="btn" type="submit" id="go"><img class="spin" src="assets/img/mark-loader-light.svg" alt="" aria-hidden="true"><span id="go-text">Sign in</span></button>
         </form>
         <p class="help">New here? <a href="#request" id="to-req">Request access</a> and the administrator will set you up.</p>
       </section>
@@ -336,7 +338,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
           <div class="field"><label for="r-reason">What do you need the hub for? <small class="opt">(optional)</small></label><textarea id="r-reason" name="reason" rows="2" maxlength="300"></textarea></div>
           <div class="hp" aria-hidden="true"><label for="r-web">Website</label><input id="r-web" name="website" tabindex="-1" autocomplete="off"></div>
           <label class="consent"><input type="checkbox" id="r-consent" required> I am a Marikar Group employee or an authorised partner, and I agree that the details above are shared with the hub administrator.</label>
-          <button class="btn" type="submit" id="r-go"><span class="spin" aria-hidden="true"></span><span id="r-go-text">Send request</span></button>
+          <button class="btn" type="submit" id="r-go"><img class="spin" src="assets/img/mark-loader-light.svg" alt="" aria-hidden="true"><span id="r-go-text">Send request</span></button>
         </form>
         <div class="done" id="req-done" hidden>
           <div class="done-ic" aria-hidden="true">✓</div>
@@ -356,7 +358,7 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
         <div class="alert" id="f-alert" role="alert"></div>
         <form id="forgot" novalidate>
           <div class="field"><label for="f-id">User ID (e-mail)</label><input id="f-id" type="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
-          <button class="btn" type="submit" id="f-go"><span class="spin" aria-hidden="true"></span><span id="f-go-text">E-mail me a code</span></button>
+          <button class="btn" type="submit" id="f-go"><img class="spin" src="assets/img/mark-loader-light.svg" alt="" aria-hidden="true"><span id="f-go-text">E-mail me a code</span></button>
           <p class="help" style="margin-top:10px">A code reaches your own mailbox within a minute. <a href="#code" id="f-have">I already have a code</a></p>
         </form>
         <form id="setpw" novalidate hidden>
@@ -365,11 +367,11 @@ label { display: block; font-size: 13px; font-weight: 700; margin: 0 0 6px; }
           <div class="field"><label for="s-pw1">New password</label><input id="s-pw1" type="password" autocomplete="new-password" required><button class="eye" type="button" id="s-eye" aria-controls="s-pw1">Show</button></div>
           <ul class="rules" id="s-rules"><li data-r="len">At least 8 characters</li><li data-r="mix">Letters and at least one number or symbol</li><li data-r="id">Not your user ID</li></ul>
           <div class="field"><label for="s-pw2">New password again</label><input id="s-pw2" type="password" autocomplete="new-password" required></div>
-          <button class="btn" type="submit" id="s-go"><span class="spin" aria-hidden="true"></span><span id="s-go-text">Set my password</span></button>
+          <button class="btn" type="submit" id="s-go"><img class="spin" src="assets/img/mark-loader-light.svg" alt="" aria-hidden="true"><span id="s-go-text">Set my password</span></button>
           <p class="help" style="margin-top:10px"><a href="#forgot" id="s-new">Send me a new code</a></p>
         </form>
         <div class="done" id="s-wait" hidden>
-          <div class="done-ic" aria-hidden="true">…</div>
+          <div class="done-ic" aria-hidden="true"><img src="assets/img/mark-loader.svg" alt="" width="26" height="33"></div>
           <h3>Setting your password</h3>
           <p id="s-wait-p">The hub is applying it. This takes a few seconds.</p>
         </div>

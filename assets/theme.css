@@ -88,10 +88,14 @@ body {
 .dash-skeleton { color: transparent !important; position: relative; }
 .dash-skeleton::after {
   content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-  width: min(8rem, 100%); height: .8em; border-radius: 6px; background: var(--cds-chart-muted);
+  width: 1.1em; height: 1.4em; min-height: 18px; min-width: 14px; background: url(img/mark-loader.svg) no-repeat center / contain;
 }
-.dash-skeleton:empty::after { top: 0; transform: none; width: 100%; height: 100%; }
-@media (prefers-reduced-motion: no-preference) { .dash-skeleton::after { animation: dash-pulse 1.4s ease-in-out infinite; } }
+.dash-skeleton:empty::after { left: 50%; top: 50%; transform: translate(-50%, -50%); width: 34px; height: 44px; }
+/* on dark the navy triangle would vanish: the light version of the logo */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .dash-skeleton::after { background-image: url(img/mark-loader-light.svg); } }
+:root[data-theme="dark"] .dash-skeleton::after { background-image: url(img/mark-loader-light.svg); }
+/* the page header is dark in both themes */
+.hd-head .dash-skeleton::after { background-image: url(img/mark-loader-light.svg); }
 
 .dash-footer { margin-top: var(--cds-gap-xl); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
 
