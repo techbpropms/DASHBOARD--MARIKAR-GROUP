@@ -1,7 +1,25 @@
 {
-  "updated": "2026-10-17T09:41:10+00:00",
+  "updated": "2026-10-17T09:42:56+00:00",
   "reminded_at": "",
-  "pending": [],
+  "pending": [
+    {
+      "ref": "AR-20261017-066B",
+      "kind": "access",
+      "name": "Aman MC",
+      "email": "manager.tvm@marikarhonda.in",
+      "unit": "Honda Sales",
+      "scope": "Honda Kerala",
+      "title": "Deputy Manager",
+      "at": "2026-10-17T09:42:49.898Z",
+      "divisions": [
+        "HONDA"
+      ],
+      "received": "2026-10-17T09:42:50+00:00",
+      "from": "hub-submission@localhost",
+      "mid": "",
+      "acked": "2026-10-17T09:42:56+00:00"
+    }
+  ],
   "handled": {
     "AR-20261015-0F99": {
       "status": "approved",
