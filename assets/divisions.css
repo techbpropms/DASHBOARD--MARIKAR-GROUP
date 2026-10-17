@@ -60,3 +60,8 @@
   .hd-card, .hd-kpi { break-inside: avoid; }
 }
 .dv-overview[hidden], .dv-kpis[hidden] { display: none; }
+/* the link from a division to its own Tally dashboard (Canon) */
+.dv-dash { margin: 10px 0 0; }
+.dv-dash a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 10px; background: var(--mg-gold, #d49a3a); color: #1d1408; font-weight: 800; font-size: 14px; text-decoration: none; }
+.dv-dash a::after { content: "→"; }
+.dv-dash a:hover { filter: brightness(1.06); }

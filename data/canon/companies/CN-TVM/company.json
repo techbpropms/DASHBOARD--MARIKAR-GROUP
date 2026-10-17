@@ -1,0 +1,48 @@
+{
+  "code": "CN-TVM",
+  "name": "Canon Thiruvananthapuram",
+  "register_from": "2025-04-07",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2025-26",
+    "2026-27"
+  ],
+  "bills": 3694,
+  "gross": 43104997.6,
+  "registers": [
+    {
+      "register_from": "2025-04-07",
+      "register_to": "2026-03-31",
+      "bills": 2587,
+      "gross": 29803744.38,
+      "distinct_items": 328
+    },
+    {
+      "register_from": "2026-04-06",
+      "register_to": "2026-09-30",
+      "bills": 1107,
+      "gross": 13301253.22,
+      "distinct_items": 179
+    }
+  ],
+  "stock": [
+    {
+      "as_at": "2026-03-31",
+      "value": 4826786.32,
+      "lines": 333,
+      "sales_months": 12
+    },
+    {
+      "as_at": "2026-09-30",
+      "value": 5782382.98,
+      "lines": 349,
+      "sales_months": 6
+    }
+  ],
+  "received": [
+    "Sales register FY 2025-26",
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026",
+    "Stock summary As at 31 Mar 2026"
+  ]
+}

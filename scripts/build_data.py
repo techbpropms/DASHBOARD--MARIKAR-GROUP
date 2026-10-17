@@ -3,6 +3,11 @@
 Usage:
     python3 scripts/build_data.py <file> [<file> ...] --company HD-ATL --name "HD Attingal" [--out data]
     python3 scripts/build_data.py --merge-only [--out data]
+    python3 scripts/build_data.py <file> ... --profile canon --company CN-TVM --name "Canon Thiruvananthapuram" --out data/canon
+
+--profile picks the business the registers come from: honda (the default: two-wheeler service bill registers) or
+canon (Canon office-automation sales registers: machines, printers and scanners, consumables, spares, service
+and TG contracts). Each profile keeps its own output folder.
 
 Pass every file one company sent in a single run: its Service Bill Registers (one per financial year)
 and its Stock Summaries. Each file is recognised by its contents, so names do not matter. The run
@@ -31,6 +36,11 @@ import re
 SERVICE = {'Service Bill', 'AMC Service Bill'}
 TRANSFER = {'Branch Transfer Out Spare', 'Branch Transfer Out Warranty'}
 STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers', 'Other sales']
+# six streams, like the Honda ones, so the dashboard's validated six-colour palette covers them; the ledger view keeps
+# every head apart
+CANON_STREAMS = ['Copiers & machines', 'Printers & scanners', 'Consumables & spares', 'Service & TG contracts',
+                 'Branch transfers', 'Other sales']
+CANON_SERVICE = {'Service Bill Invoice', 'TG BILL INVOICE'}   # service visits, and TG meter-reading bills
 META = {'DATE', 'PARTICULARS', 'VOUCHER TYPE', 'VOUCHER NO.', 'VOUCHER REF. NO.', 'GSTIN/UIN', 'QUANTITY', 'VALUE', 'GROSS TOTAL'}
 
 # The data request playbook (sections 02-03): six files per company.
@@ -99,6 +109,72 @@ def classify(h):
     return 'Labour & service charges'
 
 
+def classify_canon(h):
+    """A Canon register column. TG (cost-per-copy contract) ledgers are matched before the product words they also
+    carry ("Sales CIPL TG Consumables", "Service Charge - TG")."""
+    u = clean(h).upper()
+    if u in META:
+        return 'meta'
+    if u in ('CGST', 'SGST', 'IGST'):
+        return 'gst'
+    if u == 'ROUND OFF':
+        return 'round'
+    if 'DISCOUNT' in u:
+        return 'discount'
+    if 'TRANSFER' in u:
+        return 'Branch transfers'
+    if re.search(r'\bTG\b', u):
+        return 'Service & TG contracts'
+    if 'MACHINE' in u or 'PLOTTER' in u:
+        return 'Copiers & machines'
+    if 'PRINTER' in u or 'SCANNER' in u:
+        return 'Printers & scanners'
+    if 'CONSUMABLE' in u or 'CARTRIDGE' in u or 'SPARE' in u:
+        return 'Consumables & spares'
+    if 'SERVICE CHARGE' in u:
+        return 'Service & TG contracts'
+    return 'Other sales'   # buyback, postage and courier, and sales ledgers kept under a person's name
+
+
+# Canon stock sub-groups (under the "CN" group) carry a code and the GST rate: "CM 18 %", "CO18%"
+CANON_CATS = {'AC': 'Canon accessories', 'CA': 'Canon cameras', 'CM': 'Canon copier machines', 'CO': 'Canon consumables (toner, drums)',
+              'CT': 'Canon cartridges', 'DR': 'Canon document scanners', 'IC': 'Canon printers', 'PR': 'Canon printers',
+              'PT': 'Canon plotters', 'SP': 'Canon spares', 'SUPPLYS': 'Canon supplies'}
+CANON_GROUPS = {'BENQ': 'BenQ flat panels', 'CANON DEMO STOCK': 'Demo stock', 'CANON LEASE STOCK': 'Lease stock', 'PITNEY BOWES': 'Pitney Bowes'}
+
+
+def head_name(h):
+    """A ledger as published: Canon books some sales to ledgers named after a person ("NAME PLACE(SALES)"); the
+    published data shows those as agent sales, without the name."""
+    return 'Agent sales' if PROFILE == 'canon' and re.search(r'\(\s*SALES\s*\)', h, re.I) else h
+
+
+def is_transfer(t):
+    return t in TRANSFER or 'TRFR' in (t or '').upper() or 'TRANSFER' in (t or '').upper()
+
+
+def use_profile(name):
+    """Point the summaries at one business's ledgers and vouchers."""
+    global STREAMS, SERVICE, classify, PROFILE
+    PROFILE = name
+    if name == 'canon':
+        STREAMS, SERVICE, classify = CANON_STREAMS, CANON_SERVICE, classify_canon
+
+
+PROFILE = 'honda'
+
+
+def category(group, sub):
+    """The name a stock line is reported under: its group, or for Canon the readable name of its sub-group."""
+    if PROFILE != 'canon':
+        return group
+    g = re.sub(r'\s*\d+\s*%$', '', clean(group)).upper()
+    if sub and g == 'CN':
+        code = re.sub(r'[\d%\s]+$', '', clean(sub)).split(' ')[0].upper()
+        return CANON_CATS.get(code, 'Canon ' + clean(sub).title())
+    return CANON_GROUPS.get(g, clean(group).title())
+
+
 def sheet_rows(path):
     import openpyxl
     ws = openpyxl.load_workbook(open(path, 'rb'), read_only=True, data_only=True).worksheets[0]
@@ -162,7 +238,7 @@ def summarise(path, rows):
                 M['service_jobs'] += 1; M['service_gross'] += g
             for i, grp in income.items():
                 if num(r[i]):
-                    stream[(m, grp)] += num(r[i]); heads[(fy, hdr[i], grp)] += num(r[i])
+                    stream[(m, grp)] += num(r[i]); heads[(fy, head_name(hdr[i]), grp)] += num(r[i])
             stream[(m, 'Discounts')] -= disc
             for i in disc_cols:
                 if num(r[i]):
@@ -174,7 +250,7 @@ def summarise(path, rows):
             name, pn = split_item(r[1])
             I = items[(cur_fy, pn, name)]
             I[0] += num(r[i_qty]); I[1] += num(r[i_val]); I[2] += 1; I[3][cur] += 1
-            if cur not in TRANSFER:
+            if not is_transfer(cur):
                 sold[clean(r[1])][cur_m] += num(r[i_qty])
                 if pn:
                     sold['[' + pn + ']'][cur_m] += num(r[i_qty])
@@ -183,7 +259,7 @@ def summarise(path, rows):
         n = sum(c.values())
         if sum(c[s] for s in SERVICE) >= n / 2:
             return 'Service'
-        if sum(c[s] for s in TRANSFER) >= n / 2:
+        if sum(c[s] for s in c if is_transfer(s)) >= n / 2:
             return 'Branch transfer'
         return 'Counter sale'
 
@@ -221,20 +297,22 @@ def stock_summary(path):
     at = next(i for i, r in enumerate(rows) if r[0].value == 'Particulars')
     period = clean(rows[at][1].value)
     as_at = datetime.datetime.strptime(period.split(' to ')[-1], '%d-%b-%y').date().isoformat()
-    groups, its, stated, g = [], [], None, None
-    for r in rows[at + 3:]:
+    groups, its, stated, g, sg = [], [], None, None, None
+    body = [r for r in rows[at + 3:] if r[0].value not in (None, '')]
+    ind = lambda r: r[0].alignment.indent or 0
+    for k, r in enumerate(body):
         c = r[0]
-        if c.value in (None, ''):
-            continue
         q, v = num(r[1].value), num(r[3].value)
         if c.value == 'Grand Total':
             stated = num(r[3].value) if r[3].value is not None else num(r[2].value)
             break
         if c.font.b and not c.alignment.indent:
-            g = clean(c.value).title()
+            g, sg = clean(c.value).title(), None
             groups.append([g, q, v])
+        elif not c.font.i and k + 1 < len(body) and ind(body[k + 1]) > ind(r) and body[k + 1][0].value != 'Grand Total':
+            sg = clean(c.value)   # a sub-group (Canon's "CM 18 %"): plain, not italic like items, its lines indented deeper
         else:
-            its.append([clean(c.value), g, q, v])
+            its.append([clean(c.value), g, q, v, category(g, sg)])
     total = round(sum(x[3] for x in its), 2)
     if stated is None or abs(total - stated) > 1:
         raise SystemExit(f'{os.path.basename(path)}: items add up to {total:,.2f} but the Grand Total says {stated}')
@@ -254,16 +332,16 @@ def stock_rows(as_at, its, sold):
                      if m <= end and fy_of(datetime.date(int(m[:4]), int(m[5:7]), 1)) == fy})
     cats = collections.defaultdict(lambda: [0, 0.0, 0.0, 0, 0.0])
     detail = []
-    for key, g, q, v in its:
+    for key, g, q, v, cat in its:
         name, pn = split_item(key)
         # Same name as in the register, else the same bracketed code (names are sometimes edited).
         hist = sold.get(key) or sold.get('[' + pn + ']', {}) if pn else sold.get(key, {})
         s = sum(hist.get(m, 0) for m in months)
-        C = cats[g or 'Ungrouped']; C[0] += 1; C[1] += q; C[2] += v
+        C = cats[cat or g or 'Ungrouped']; C[0] += 1; C[1] += q; C[2] += v
         if months and s <= 0 and v > 0:
             C[3] += 1; C[4] += v
         rate = s / len(months) if months else 0
-        detail.append([as_at, pn or name, name, g, q, round(v, 2), s if months else '', len(months) or '',
+        detail.append([as_at, pn or name, name, cat or g, q, round(v, 2), s if months else '', len(months) or '',
                        round(q / rate, 1) if rate > 0 else ''])
     detail.sort(key=lambda x: -x[5])
     cat_rows = [[as_at, c, n, q, round(v, 2), n2 if months else '', round(v2, 2) if months else '']
@@ -379,8 +457,10 @@ def main():
     ap.add_argument('--company', help='agreed company code, e.g. PC01 (letters, digits, - and _)')
     ap.add_argument('--name', help='company name as shown on the dashboard')
     ap.add_argument('--out', default='data')
+    ap.add_argument('--profile', choices=['honda', 'canon'], default='honda', help='the business the registers come from')
     ap.add_argument('--merge-only', action='store_true', help='only rebuild the group files')
     a = ap.parse_args()
+    use_profile(a.profile)
     if not a.merge_only:
         if not (a.files and a.company and a.name):
             ap.error('files, --company and --name are required unless --merge-only')

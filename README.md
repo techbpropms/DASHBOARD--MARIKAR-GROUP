@@ -97,6 +97,18 @@ completeness table shows it, then run `python3 scripts/build_data.py --merge-onl
 
 Use the company codes agreed with Finance; the `HD-` codes above stand until they are agreed.
 
+**Canon (office automation).** The Canon division's Tally sales registers and stock summaries build the same way
+with `--profile canon`, into their own folder, which `canon.html` reads (open to accounts with the Canon division):
+
+```sh
+python3 scripts/build_data.py exports/CanonTVM/*.xls --profile canon --company CN-TVM --name "Canon Thiruvananthapuram" --out data/canon
+python3 scripts/build_data.py exports/CanonEKM/*.xls --profile canon --company CN-EKM --name "Canon Ernakulam" --out data/canon
+```
+
+Canon ledgers fold into six streams (copiers & machines, printers & scanners, consumables & spares, service & TG
+contracts, branch transfers, other sales); service visits and TG meter-reading bills count as service bills. Sales
+ledgers named after a person are published as "Agent sales".
+
 Tally's `.xls` export is actually an `.xlsx` file; the script handles that.
 
 **Privacy:** only aggregated figures are committed. Raw register exports contain customer names, phone

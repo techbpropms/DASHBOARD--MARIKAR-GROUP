@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="assets/auth.js?v=20261017d"></script>
+<script>MGAuth.guard('CANON');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canon Sales &amp; Inventory</title>
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131c38">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Marikar Hub">
+<meta name="application-name" content="Marikar Hub">
+<link rel="apple-touch-icon" href="assets/img/icon-192.png">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="stylesheet" href="assets/shell.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/theme.css">
+<link rel="stylesheet" href="assets/dashboard.css">
+</head>
+<body>
+<nav class="dash-nav"><a href="hub.html">← Marikar Group performance hub</a><a href="divisions.html#CANON">Canon / OAIP division page</a></nav>
+<div id="dash-root">
+<div class="hd">
+  <header class="hd-head" id="overview">
+    <div class="hd-logo"><img src="assets/img/marikar-group.png" alt="Marikar Group, since 1910"></div>
+    <div class="hd-head-text">
+      <div class="eyebrow">Canon / OAIP · Marikar Motors Ltd, Canon division</div>
+      <h1>Canon sales &amp; inventory</h1>
+      <p id="takeaway"><span class="dash-skeleton">Loading</span></p>
+    </div>
+  </header>
+
+  <div class="hd-bar" id="filters">
+    <label for="company-sel">Branch</label>
+    <select class="hd-select" id="company-sel" data-source="companies"><option value="">Both branches</option></select>
+    <label for="fy-sel">Financial year</label>
+    <select class="hd-select" id="fy-sel" data-source="monthly"><option value="">All years</option></select>
+    <span class="note hd-legend" id="scope-note"></span>
+  </div>
+
+  <section class="hd-kpis" id="kpis">
+    <div class="hd-kpi"><span class="lbl">Gross billing (incl. GST)</span><span class="val dash-skeleton" data-source="kpis" data-field="gross" data-where="company=ALL">—</span><span class="sub" id="sub-gross">&nbsp;</span></div>
+    <div class="hd-kpi"><span class="lbl">Net revenue (after discount, ex-GST)</span><span class="val dash-skeleton" data-source="kpis" data-field="taxable" data-where="company=ALL">—</span><span class="sub">GST collected <b data-source="kpis" data-field="gst" data-where="company=ALL">—</b></span></div>
+    <div class="hd-kpi"><span class="lbl">Service &amp; TG meter bills</span><span class="val dash-skeleton" data-source="kpis" data-field="service_jobs" data-where="company=ALL">—</span><span class="sub">Service visits + TG meter-reading bills</span></div>
+    <div class="hd-kpi"><span class="lbl">Avg service / TG bill</span><span class="val dash-skeleton" data-source="kpis" data-field="avg_job" data-where="company=ALL">—</span><span class="sub">Gross, incl. GST</span></div>
+    <div class="hd-kpi"><span class="lbl">Discounts given</span><span class="val dash-skeleton" data-source="kpis" data-field="discount" data-where="company=ALL">—</span><span class="sub"><b data-source="kpis" data-field="discount_rate" data-where="company=ALL">—</b> of revenue before discount</span></div>
+  </section>
+
+  <h2 class="hd-section-title" id="sales">Sales lens</h2>
+  <section class="hd-grid">
+    <div class="hd-card" id="monthly-card">
+      <h2>Gross billing by month</h2>
+      <p class="note">Incl. GST. Both branches' FY 2026–27 registers start on 6 April.</p>
+      <div class="hd-chart dash-skeleton" id="ch-monthly" data-source="monthly"></div>
+    </div>
+    <div class="hd-card" id="mix-card">
+      <h2>Revenue mix by month</h2>
+      <p class="note">Ex-GST, before discounts.</p>
+      <div class="hd-legend" id="lg-mix" data-source="streams"></div>
+      <div class="hd-chart dash-skeleton" id="ch-mix" data-source="streams"></div>
+    </div>
+  </section>
+
+  <section class="hd-grid">
+    <div class="hd-card" id="yoy-card">
+      <h2>Apr–Sep 2026 vs Apr–Sep 2025</h2>
+      <p class="note">Same months, same branches: a branch is compared only once its FY 2025–26 register is in (Thiruvananthapuram so far; Ernakulam's is awaited).</p>
+      <div class="hd-legend" id="lg-yoy" data-source="monthly"></div>
+      <div class="hd-chart" id="ch-yoy" data-source="monthly"></div>
+      <div class="hd-tablebox">
+        <table id="tb-yoy" data-source="monthly" data-row-key="company">
+          <thead><tr>
+            <th>Branch</th>
+            <th class="num">Apr–Sep 2025</th>
+            <th class="num">Apr–Sep 2026</th>
+            <th class="num">Change</th>
+            <th class="num hide-sm">Service &amp; TG bills</th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <p class="note" id="yoy-wait" data-source="completeness"></p>
+    </div>
+    <div class="hd-card" id="stock-card">
+      <h2>Inventory lens</h2>
+      <p class="note">Closing stock at cost from each unit's Stock Summary. Idle = held at 30 Sep with no sale since 1 April.</p>
+      <div class="hd-legend" id="lg-stock" data-source="stock"></div>
+      <div class="hd-chart" id="ch-stock" data-source="stock"></div>
+      <div class="hd-tablebox">
+        <table id="tb-stock" data-source="stock" data-row-key="company">
+          <thead><tr>
+            <th id="stock-key">Branch</th>
+            <th class="num">31 Mar 2026</th>
+            <th class="num">30 Sep 2026</th>
+            <th class="num">Change</th>
+            <th class="num">Idle 30 Sep</th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="hd-card" id="idle-card">
+    <h2>Stock held but not sold since April</h2>
+    <p class="note">The costliest lines on hand at 30 Sep 2026 with no sale from April to September; branch transfers do not count as sales. Demo and lease stock is held by design, so it always shows here. Once the stock movement reports arrive, this list will also show each line's age.</p>
+    <p id="idle-sum" class="hd-legend" data-source="stock"></p>
+    <div class="hd-tablebox">
+      <table id="tb-idle" data-source="stock_items" data-row-key="company,part_no">
+        <thead><tr>
+          <th class="hide-sm">Branch</th>
+          <th>Item</th>
+          <th class="hide-sm">Part no.</th>
+          <th class="hide-sm">Category</th>
+          <th class="num">Qty</th>
+          <th class="num">Value</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="hd-card" id="daily-card">
+    <h2>Daily billing</h2>
+    <p class="note">Gross billing per billing day, incl. GST.</p>
+    <div class="hd-chart dash-skeleton" id="ch-daily" data-source="daily"></div>
+  </section>
+
+  <section class="hd-grid">
+    <div class="hd-card" id="heads-card">
+      <h2>Where the revenue comes from</h2>
+      <p class="note">Each income ledger for the period, ex-GST, before discounts.</p>
+      <div class="hd-legend" id="lg-heads" data-source="heads"></div>
+      <div class="hd-chart tall dash-skeleton" id="ch-heads" data-source="heads"></div>
+    </div>
+    <div class="hd-card" id="types-card">
+      <h2>By voucher type</h2>
+      <p class="note">Bill counts and value for the period.</p>
+      <div class="hd-tablebox">
+        <table id="tb-types" data-source="voucher_types" data-row-key="company,fy,voucher_type">
+          <thead><tr>
+            <th data-field="company">Branch</th>
+            <th class="hide-sm" data-field="fy">Year</th>
+            <th data-field="voucher_type">Voucher type</th>
+            <th class="num" data-field="invoices">Bills</th>
+            <th class="num" data-field="gross">Gross</th>
+            <th class="num hide-sm" data-field="taxable">Net ex-GST</th>
+            <th class="num" data-source="vt_avg" data-field="avg_bill">Avg bill</th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="hd-card" id="items-card">
+    <h2>Top products sold</h2>
+    <p class="note">Each branch's top 150 items per year by value (ex-GST, before discount). Channel = where the item mostly sold.</p>
+    <input class="hd-search" id="item-search" type="search" placeholder="Search item or part no." aria-label="Search items">
+    <div class="hd-tablebox">
+      <table id="tb-items" data-source="items" data-row-key="company,fy,part_no">
+        <thead><tr>
+          <th class="hide-sm" data-field="company"><button data-k="company">Branch</button></th>
+          <th class="hide-sm" data-field="fy"><button data-k="fy">Year</button></th>
+          <th data-field="item"><button data-k="item">Item</button></th>
+          <th class="hide-sm" data-field="part_no"><button data-k="part_no">Part no.</button></th>
+          <th class="hide-sm" data-field="main_channel"><button data-k="main_channel">Channel</button></th>
+          <th class="num" data-field="qty"><button data-k="qty">Qty</button></th>
+          <th class="num" data-field="value"><button data-k="value">Value</button></th>
+          <th class="hide-sm" aria-hidden="true"></th>
+        </tr></thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <h2 class="hd-section-title" id="control">Control lens</h2>
+  <section class="hd-grid">
+    <div class="hd-card" id="companies-card">
+      <h2>Branches on the dashboard</h2>
+      <p class="note">Register period loaded and how many of the six requested files have arrived.</p>
+      <div class="hd-tablebox">
+        <table id="tb-companies" data-source="companies" data-row-key="company">
+          <thead><tr>
+            <th data-field="company">Code</th>
+            <th data-field="name">Branch</th>
+            <th class="hide-sm" data-field="register_from">From</th>
+            <th class="hide-sm" data-field="register_to">To</th>
+            <th class="num" data-field="bills">Bills</th>
+            <th class="num" data-field="gross">Gross</th>
+            <th class="num" data-source="coverage" data-field="received">Files</th>
+          </tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="hd-card" id="completeness-card">
+      <h2>Data completeness</h2>
+      <p class="note">The six files the data request asks of every branch, under its agreed file names.</p>
+      <div class="hd-tablebox">
+        <table id="tb-completeness" data-source="completeness" data-row-key="company,file">
+          <thead><tr>
+            <th data-field="company">Code</th>
+            <th data-field="file">File</th>
+            <th class="hide-sm" data-field="filename">Expected file name</th>
+            <th data-field="status">Status</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <footer class="hd-credit bpro-credit"><a class="bpro-logo" href="https://www.bpropms.com" target="_blank" rel="noopener" aria-label="BPro, www.bpropms.com"><img src="assets/img/bpro.png" alt="BPro: HRMS, PMS, LMS, Consulting, Process.ai" width="77" height="46"></a><span class="bpro-text"><small>Analytics partner</small><span>D&amp;D by Dr.Babu.B. Bpro Consulting &amp; Technologies · <a href="https://www.drbabu.in" target="_blank" rel="noopener">www.drbabu.in</a> | <a href="https://www.bpropms.com" target="_blank" rel="noopener">www.bpropms.com</a></span></span></footer>
+</div>
+
+<p class="dash-footer">Source: TallyPrime sales registers (one per branch per year) and Stock Summaries of the Canon division, Thiruvananthapuram (MG Road) and Ernakulam. "TG" = Canon cost-per-copy contracts: consumables, spares and meter-reading service billed under them. Customer names never leave the registers; two sales ledgers named after people show as "Agent sales". Amounts in INR; stock at cost. Every register and stock summary reconciles to its own Grand Total.</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+  // Canon data and wording for the shared dashboard code (dash-shim.js, dashboard.js)
+  window.DASH_DATA = 'data/canon/';
+  window.DASH_PROFILE = { streams: ['Copiers & machines', 'Printers & scanners', 'Consumables & spares', 'Service & TG contracts', 'Branch transfers', 'Other sales'], jobs: 'service & TG meter bills', whole: 'The Canon division',
+    unit: { one: 'branch', many: 'branches', all: 'Both branches', whose: "the Canon division's branches" } };
+</script>
+<script src="assets/dash-shim.js"></script>
+<script src="assets/dashboard.js"></script>
+<script src="assets/pwa.js" defer></script>
+<script src="assets/shell.js"></script>
+</body>
+</html>

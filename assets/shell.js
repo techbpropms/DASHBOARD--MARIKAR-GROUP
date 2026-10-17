@@ -36,10 +36,12 @@
       { label: 'All divisions', href: 'divisions.html' },
       ...GROUPS.map((g) => ({ label: g.label, href: 'divisions.html#g=' + g.key, group: true, children: g.divisions.map(([k, n]) => ({ label: n, href: 'divisions.html#' + k, div: k })) })),
     ] },
-    { label: 'Sales & inventory', href: 'dashboard.html', icon: 'sales', need: 'sales', children: [
-      { label: 'Dashboard', href: 'dashboard.html' },
-      { label: 'Report builder (PDF / Excel)', href: 'report.html' },
-      { label: 'Reconciliation note', href: 'note.html' },
+    // Honda (TallyPrime service registers) and Canon (Tally sales registers): each account sees the ones in its scope
+    { label: 'Sales & inventory', href: 'dashboard.html', icon: 'sales', need: ['sales', 'CANON'], children: [
+      { label: 'Honda dashboard', href: 'dashboard.html', need: 'sales' },
+      { label: 'Report builder (PDF / Excel)', href: 'report.html', need: 'sales' },
+      { label: 'Reconciliation note', href: 'note.html', need: 'sales' },
+      { label: 'Canon sales & inventory', href: 'canon.html', need: 'CANON' },
     ] },
     { label: 'HOD action tracker', href: 'tracker.html', icon: 'track' },
     { label: 'Verify a document', href: 'verify.html', icon: 'verify' },
@@ -69,8 +71,11 @@
       const mode = Shell.nav();
       // The menu an account sees: divisions outside its scope, groups left empty by that, and Sales & inventory
       // (the Honda divisions' TallyPrime data) for accounts without a Honda division are left out.
-      const inScope = (it) => (!it.div || MGAuth.canSee(it.div)) && (!it.need || (it.need === 'sales' ? MGAuth.canSales() : MGAuth.canSee(it.need)));
-      const scoped = (items) => items.filter(inScope).map((it) => it.children ? { ...it, children: scoped(it.children) } : it).filter((it) => !it.group || it.children.length);
+      const has = (n) => (n === 'sales' ? MGAuth.canSales() : MGAuth.canSee(n));
+      const inScope = (it) => (!it.div || MGAuth.canSee(it.div)) && (!it.need || [].concat(it.need).some(has));
+      // a parent whose own page is out of scope opens its first child in scope instead (Canon-only accounts: canon.html)
+      const scoped = (items) => items.filter(inScope).map((it) => it.children ? { ...it, children: scoped(it.children) } : it).filter((it) => !it.group || it.children.length)
+        .map((it) => it.children && it.children.length && !it.children.some((k) => k.href === it.href) ? { ...it, href: it.children[0].href } : it);
       const forRole = (it) => !it.role || (user && [].concat(it.role).includes(user.role));
       const TREE = (user ? scoped(MENU) : MENU).filter(forRole);
       document.body.classList.add('mg-nav-' + mode);

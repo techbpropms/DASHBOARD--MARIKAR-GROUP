@@ -2,9 +2,9 @@
 // revalidated with the server, cached copy offline), so a change such as a new account in auth.js applies on the next
 // load; images come from the cache. Bump VERSION with each release: the new version installs, takes over at once and
 // the open hub pages reload on it on every device (no tap needed), so nobody keeps running an old copy.
-const VERSION = '2026.10.17f';
+const VERSION = '2026.10.17g';
 const CACHE = 'marikar-hub-' + VERSION;
-const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html', 'password-help.html',
+const CORE = ['./', 'index.html', 'hub.html', 'assets/auth.js', 'divisions.html', 'dashboard.html', 'tracker.html', 'canon.html', 'report.html', 'note.html', 'verify.html', 'settings.html', 'reset.html', '404.html', 'feedback.html', 'password-help.html',
   'assets/theme.css', 'assets/shell.css', 'assets/shell.js', 'assets/dashboard.css', 'assets/divisions.css', 'assets/brand.css', 'assets/pwa.js',
   'assets/img/marikar-group.png', 'assets/img/bpro.png', 'assets/img/icon-192.png', 'assets/img/favicon.svg', 'assets/img/favicon-32.png', 'assets/img/mark-loader.svg', 'assets/img/mark-loader-light.svg', 'assets/img/mark-loader-dark.svg', 'manifest.webmanifest'];
 

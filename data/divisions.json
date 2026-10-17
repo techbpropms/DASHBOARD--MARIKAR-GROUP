@@ -2179,6 +2179,7 @@
     {
       "key": "CANON",
       "name": "Canon / OAIP",
+      "dashboard": { "href": "canon.html", "label": "Open Canon sales & inventory (from Tally)" },
       "what": "Office automation: copiers, printers, scanners & service",
       "status": "attention",
       "status_label": "Needs attention",
