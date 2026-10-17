@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T13:56:10+00:00",
+  "updated": "2026-10-17T02:41:28+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -322,6 +322,28 @@
         "q8": ""
       },
       "received": "2026-10-16T04:00:46+00:00"
+    },
+    {
+      "ref": "FB-20261017-23B7",
+      "id": "cspw@marikar.in",
+      "name": "Biju S",
+      "at": "2026-10-17T02:41:23.413Z",
+      "a": {
+        "q1": "5",
+        "q2": "Yes",
+        "q2t": "",
+        "q3": "5",
+        "q4": "5",
+        "q5": "Target Vs Achievement YOY & Growth.",
+        "q6": "All Are Covered.",
+        "q7": [
+          "Monthly target vs actual",
+          "Year-on-year comparison",
+          "Stock ageing"
+        ],
+        "q8": "I recommend developing a Marikar All-Units Daily Sales Performance Dashboard that consolidates the daily sales performance of every Marikar unit into one management dashboard. This will help the management and HODs monitor sales, target achievement, branch-wise performance, and the balance targets in a single view."
+      },
+      "received": "2026-10-17T02:41:28+00:00"
     }
   ],
   "log": [
@@ -716,6 +738,13 @@
       "who": "gopakumar@marikarengineers.com",
       "by": "forgot password",
       "detail": "PR-20261016-BC79"
+    },
+    {
+      "at": "2026-10-17T02:41:28+00:00",
+      "action": "feedback",
+      "who": "cspw@marikar.in",
+      "by": "cspw@marikar.in",
+      "detail": "survey answers FB-20261017-23B7"
     }
   ]
 }
