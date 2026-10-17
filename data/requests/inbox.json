@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T05:37:49+00:00",
+  "updated": "2026-10-17T05:41:10+00:00",
   "reminded_at": "",
   "pending": [],
   "handled": {
@@ -264,13 +264,6 @@
     }
   },
   "links": {
-    "serm@marikar.in": {
-      "hash": "c95a6d312c391ba137889db4a13c207e727ab3857351c729485e6c5258ac1764",
-      "exp": "2026-10-17T05:40:56+00:00",
-      "why": "approved",
-      "ref": "",
-      "at": "2026-10-16T05:40:46+00:00"
-    },
     "zmarikar@marikargroup.com": {
       "hash": "03398c8ca4cf4d0076e85b995f01b8f67c5afd1e5ab8fcee5d9f610cba14837d",
       "exp": "2026-10-17T09:41:05+00:00",
