@@ -13,6 +13,7 @@ window.dash = (() => {
     completeness: BASE + 'completeness.csv',
     stock: BASE + 'stock.csv',
     stock_items: BASE + 'stock_items.csv',
+    regions: BASE + 'regions.csv',   // company,region (KER, TN): the state each unit is in
   };
   const DEFAULT_PARAMS = { company: null, fy: null };
   let params = { ...DEFAULT_PARAMS };

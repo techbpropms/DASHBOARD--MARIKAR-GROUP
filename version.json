@@ -1,10 +1,11 @@
 {
-  "version": "2026.10.17l",
-  "title": "HD Anjugramam added",
+  "version": "2026.10.17m",
+  "title": "Kerala and Tamil Nadu; Sales and Service",
   "notes": [
-    "HD Anjugramam joins the Honda dashboard with both years and both stock dates (Apr-Sep +23.2%)",
-    "HD Aralvaymozhi joins the Honda dashboard (Apr-Sep 2026 register and stock at 30 Sep 2026)",
-    "HD Attingal: FY 2025-26 register added; all five Honda units now compare year on year (Apr-Sep +12.6% for the group)",
-    "HD Marthandam: FY 2025-26 register added, so it now shows year on year (Apr-Sep +4.9%) and idle stock against a full year of sales"
+    "Honda dashboard: pick Kerala (KER) or Tamil Nadu (TN) for a state's figures; state subtotals in the year-on-year, stock and unit tables",
+    "Vehicle divisions (Honda, AMZES, RE, Nissan, BigWing, Group) now read as Sales, then Service (labour & parts)",
+    "Honda Kerala and AMZES show labour and parts per unit from Tally",
+    "Every division is tagged KER or TN in the menu and on its page",
+    "HD Anjugramam joins the Honda dashboard with both years and both stock dates (Apr-Sep +23.2%)"
   ]
 }

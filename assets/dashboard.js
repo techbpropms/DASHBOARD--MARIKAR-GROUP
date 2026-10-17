@@ -1,9 +1,13 @@
 const num = (x) => +x || 0;
+// The state each unit is in (data/regions.csv): KER, TN. "R:KER" selects every Kerala unit, like a company code.
+const regMap = (regions) => Object.fromEntries((regions || []).map(r => [r.company, r.region]));
+const inCode = (code, c, reg) => c === 'ALL' || (c.startsWith('R:') ? reg[code] === c.slice(2) : code === c);
 dash.calc('kpis', {
-  inputs: ['monthly'],
+  inputs: ['monthly', 'regions'],
   title: 'Headline figures by company and year',
   description: 'Sums each monthly column per company and financial year, with ALL for the group and for all years; average bill = service gross / service jobs; discount rate = discount / (net + discount); last month vs the one before.',
-  fn: (monthly) => {
+  fn: (monthly, regions) => {
+    const reg = regMap(regions);
     const sum = (rows) => {
       const s = (k) => rows.reduce((a, r) => a + (+r[k] || 0), 0);
       const byMonth = {};
@@ -19,10 +23,10 @@ dash.calc('kpis', {
         mom: prev ? byMonth[last] / byMonth[prev] - 1 : null
       };
     };
-    const codes = ['ALL', ...new Set(monthly.map(r => r.company))], fys = ['ALL', ...new Set(monthly.map(r => r.fy))];
+    const codes = ['ALL', ...[...new Set(Object.values(reg))].map(x => 'R:' + x), ...new Set(monthly.map(r => r.company))], fys = ['ALL', ...new Set(monthly.map(r => r.fy))];
     const out = [];
     codes.forEach(c => fys.forEach(f => {
-      const rows = monthly.filter(r => (c === 'ALL' || r.company === c) && (f === 'ALL' || r.fy === f));
+      const rows = monthly.filter(r => inCode(r.company, c, reg) && (f === 'ALL' || r.fy === f));
       if (rows.length) out.push({ company: c, fy: f, ...sum(rows) });
     }));
     return out;
@@ -34,26 +38,26 @@ dash.calc('vt_avg', {
   description: 'Gross value divided by number of bills, per company, year and voucher type.',
   fn: (voucher_types) => voucher_types.map(r => ({ company: r.company, fy: r.fy, voucher_type: r.voucher_type, avg_bill: +r.gross / +r.invoices }))
 });
-// Subtotals (per company and year) and grand totals (ALL), used by the tables' total rows.
-const totalsBy = (rows, vals) => {
+// Subtotals (per company, per state and year) and grand totals (ALL), used by the tables' total rows.
+const totalsBy = (rows, vals, reg = {}) => {
   const out = {};
-  rows.forEach(r => [[r.company, r.fy], [r.company, 'ALL'], ['ALL', r.fy], ['ALL', 'ALL']].forEach(([c, f]) => {
+  rows.forEach(r => [[r.company, r.fy], [r.company, 'ALL'], ['ALL', r.fy], ['ALL', 'ALL']].concat(reg[r.company] ? [['R:' + reg[r.company], r.fy], ['R:' + reg[r.company], 'ALL']] : []).forEach(([c, f]) => {
     const k = c + '|' + f, o = out[k] || (out[k] = { company: c, fy: f, rows: 0 });
     o.rows++; vals.forEach(v => { o[v] = (o[v] || 0) + (+r[v] || 0); });
   }));
   return Object.values(out);
 };
 dash.calc('vt_totals', {
-  inputs: ['voucher_types'],
+  inputs: ['voucher_types', 'regions'],
   title: 'Voucher type totals',
   description: 'Bills, gross and net summed per company and year (subtotals) and for ALL (grand totals); average bill = gross / bills.',
-  fn: (voucher_types) => totalsBy(voucher_types, ['invoices', 'gross', 'taxable']).map(o => ({ ...o, avg_bill: o.gross / o.invoices }))
+  fn: (voucher_types, regions) => totalsBy(voucher_types, ['invoices', 'gross', 'taxable'], regMap(regions)).map(o => ({ ...o, avg_bill: o.gross / o.invoices }))
 });
 dash.calc('item_totals', {
-  inputs: ['items'],
+  inputs: ['items', 'regions'],
   title: 'Top items totals',
   description: 'Quantity and value of the listed top items, summed per company and year (subtotals) and for ALL (grand totals).',
-  fn: (items) => totalsBy(items, ['qty', 'value'])
+  fn: (items, regions) => totalsBy(items, ['qty', 'value'], regMap(regions))
 });
 dash.calc('company_totals', {
   inputs: ['companies', 'coverage'],
@@ -100,11 +104,19 @@ const UNIT = PROFILE.unit || { one: 'company', many: 'companies', all: 'All comp
 // The company filter lives in the page: every dataset carries a `company` column.
 const picked = () => dash.params().company || null;
 const pickedFy = () => dash.params().fy || null;
+const REGION = Object.assign({ KER: 'Kerala', TN: 'Tamil Nadu' }, PROFILE.regionNames || {});
+const regionOf = (code) => { const d = dash.data('regions'); return d.status === 'ok' ? (d.data.find(r => r.company === code) || {}).region || '' : ''; };
+const isRegion = (c) => !!c && c.startsWith('R:');
+const unitPicked = () => (isRegion(picked()) ? null : picked());   // one unit, not a state
+const regionLabel = (k) => `${REGION[k] || k} (${k})`;
+const inPick = (code) => { const c = picked(); return !c || (isRegion(c) ? regionOf(code) === c.slice(2) : code === c); };
 const rowsOf = (id) => {
   const d = dash.data(id); if (d.status !== 'ok') return [];
-  const c = picked(), f = pickedFy();
-  return d.data.filter(r => (!c || r.company === c) && (!f || r.fy === undefined || r.fy === f));
+  const f = pickedFy();
+  return d.data.filter(r => inPick(r.company) && (!f || r.fy === undefined || r.fy === f));
 };
+// the states present, in order, each with its units (for subtotal rows)
+const regionsIn = (codes) => [...new Set(codes.map(regionOf).filter(Boolean))].sort();
 const fyLabel = (f) => 'FY ' + f.replace('-', '–');
 const whereOf = (c, f) => 'company=' + encodeURIComponent(c) + '&fy=' + encodeURIComponent(f);
 const sumBy = (rows, keys, vals) => {
@@ -174,13 +186,30 @@ function legend(el, items) {
   el.replaceChildren();
   items.forEach(([c, n]) => { const s = document.createElement('span'); const i = document.createElement('i'); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); el.appendChild(s); });
 }
+// A state's subtotal row (Kerala, Tamil Nadu) inside a table's body
+function subRow(tbody, label, texts) {
+  const tr = document.createElement('tr'); tr.className = 'hd-subtotal';
+  const th = document.createElement('th'); th.scope = 'row'; th.textContent = label; tr.appendChild(th);
+  texts.forEach(([t, c]) => cell(tr, t, c)); tbody.appendChild(tr);
+}
+const groupByRegion = (codes) => (!picked() && regionsIn(codes).length > 1)
+  ? regionsIn(codes).map(k => [k, codes.filter(c => regionOf(c) === k)]).concat(codes.some(c => !regionOf(c)) ? [[null, codes.filter(c => !regionOf(c))]] : [])
+  : [[null, codes]];
 function cell(tr, text, cls) { const td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; tr.appendChild(td); return td; }
 
 function drawFilter() {
   const c = dash.data('companies');
   const list = c.status === 'ok' ? c.data : [];
   if (document.activeElement !== sel) {
-    sel.replaceChildren(new Option(UNIT.all, ''), ...list.map(r => new Option(`${r.name} (${r.company})`, r.company)));
+    const opts = [new Option(UNIT.all, '')], regs = regionsIn(list.map(r => r.company));
+    regs.forEach(k => {
+      const units = list.filter(r => regionOf(r.company) === k), og = document.createElement('optgroup'); og.label = regionLabel(k);
+      og.append(new Option(`All ${REGION[k] || k} ${UNIT.many} (${units.length})`, 'R:' + k), ...units.map(r => new Option(`${r.name} (${r.company})`, r.company)));
+      opts.push(og);
+    });
+    list.filter(r => !regionOf(r.company)).forEach(r => opts.push(new Option(`${r.name} (${r.company})`, r.company)));
+    if (regs.length < 2) { opts.length = 1; list.forEach(r => opts.push(new Option(`${r.name} (${r.company})`, r.company))); }   // one state: no grouping needed
+    sel.replaceChildren(...opts);
     sel.value = picked() || '';
   }
   const m = dash.data('monthly'), fys = [...new Set((m.status === 'ok' ? m.data : []).map(r => r.fy))].sort().reverse();
@@ -217,7 +246,7 @@ function drawKpis() {
   const where = whereOf(r.company, r.fy);
   const b = (t, field) => { const e = document.createElement('b'); e.textContent = t; e.dataset.source = 'kpis'; e.dataset.field = field; e.dataset.where = where; return e; };
   const comps = dash.data('companies'), names = comps.status === 'ok' ? comps.data : [];
-  const who = picked() ? ((names.find(x => x.company === picked()) || {}).name || picked()) : (names.length === 1 ? names[0].name + `, the only ${UNIT.one} loaded so far,` : PROFILE.whole || 'The group');
+  const who = isRegion(picked()) ? `The ${REGION[picked().slice(2)] || picked().slice(2)} ${UNIT.many}` : picked() ? ((names.find(x => x.company === picked()) || {}).name || picked()) : (names.length === 1 ? names[0].name + `, the only ${UNIT.one} loaded so far,` : PROFILE.whole || 'The group');
   tk.replaceChildren(
     `${who} billed `, b(inr(r.gross), 'gross'), ' including GST, with ', b(cnt(r.service_jobs), 'service_jobs'), ` ${JOBS}. `,
     ...(r.mom != null ? [lm + ' closed at ', b(inr(r.last_gross), 'last_gross'), ', ', b((r.mom >= 0 ? 'up ' : 'down ') + pct(Math.abs(r.mom)), 'mom'), ' on ' + pm + '. '] : []),
@@ -351,7 +380,7 @@ function chgCell(tr, a, b) {
   if (v != null) td.classList.add(v >= 0 ? 'hd-up' : 'hd-down');
   return td;
 }
-const nameOf = (code) => { const c = dash.data('companies'); return ((c.status === 'ok' ? c.data : []).find(r => r.company === code) || {}).name || code; };
+const nameOf = (code) => { if (isRegion(code)) return regionLabel(code.slice(2)); const c = dash.data('companies'); return ((c.status === 'ok' ? c.data : []).find(r => r.company === code) || {}).name || code; };
 
 // Year on year: Apr-Sep of each year, for the companies that have both.
 function drawYoy() {
@@ -361,7 +390,7 @@ function drawYoy() {
   if (!gate(el, 'monthly')) return;
   const PRE = ['2025-04', '2025-09'], CUR = ['2026-04', '2026-09'];
   const inR = (m, r) => m >= r[0] && m <= r[1];
-  const all = dash.data('monthly').data.filter(r => !picked() || r.company === picked());
+  const all = dash.data('monthly').data.filter(r => inPick(r.company));
   const by = {};
   all.forEach(r => {
     const side = inR(r.month, PRE) ? 0 : inR(r.month, CUR) ? 1 : -1; if (side < 0) return;
@@ -370,7 +399,7 @@ function drawYoy() {
   });
   const pairs = Object.keys(by).filter(c => by[c][0].g && by[c][1].g).sort();
   const cm = dash.data('completeness');
-  const missing = (cm.status === 'ok' ? cm.data : []).filter(r => r.file === 'Sales register FY 2025-26' && r.status !== 'Received' && (!picked() || r.company === picked())).map(r => nameOf(r.company));
+  const missing = (cm.status === 'ok' ? cm.data : []).filter(r => r.file === 'Sales register FY 2025-26' && r.status !== 'Received' && inPick(r.company)).map(r => nameOf(r.company));
   if (missing.length) wait.textContent = `Waiting for the FY 2025–26 register from ${missing.join(', ')}.`;
   if (!pairs.length) { el.replaceChildren(); const d = document.createElement('div'); d.className = 'hd-wait'; d.textContent = `No ${UNIT.one} has both years loaded yet.`; el.appendChild(d); return; }
   const months = ['04', '05', '06', '07', '08', '09'];
@@ -380,12 +409,19 @@ function drawYoy() {
   lg.append(pairs.length === 1 ? nameOf(pairs[0]) : `${pairs.length} ${UNIT.many}`);
   pairedBars(el, months, ser, k => monName('2026-' + k));
   const T = [{ g: 0, j: 0 }, { g: 0, j: 0 }];
-  pairs.forEach(c => {
-    const [p, q] = by[c]; T[0].g += p.g; T[1].g += q.g; T[0].j += p.j; T[1].j += q.j;
-    const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(c);
-    cell(tr, nameOf(c)); cell(tr, inr(p.g), 'num'); cell(tr, inr(q.g), 'num'); chgCell(tr, p.g, q.g);
-    const td = cell(tr, `${cnt(p.j)} → ${cnt(q.j)}`, 'num hide-sm nw'); td.title = Jobs + ', 2025 → 2026';
-    tb.appendChild(tr);
+  groupByRegion(pairs).forEach(([k, codes]) => {
+    const R = [{ g: 0, j: 0 }, { g: 0, j: 0 }];
+    codes.forEach(c => {
+      const [p, q] = by[c]; T[0].g += p.g; T[1].g += q.g; T[0].j += p.j; T[1].j += q.j; R[0].g += p.g; R[1].g += q.g; R[0].j += p.j; R[1].j += q.j;
+      const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(c);
+      cell(tr, nameOf(c)); cell(tr, inr(p.g), 'num'); cell(tr, inr(q.g), 'num'); chgCell(tr, p.g, q.g);
+      const td = cell(tr, `${cnt(p.j)} → ${cnt(q.j)}`, 'num hide-sm nw'); td.title = Jobs + ', 2025 → 2026';
+      tb.appendChild(tr);
+    });
+    if (k) {
+      subRow(tb, regionLabel(k), [[inr(R[0].g), 'num'], [inr(R[1].g), 'num']]);
+      chgCell(tb.lastChild, R[0].g, R[1].g); cell(tb.lastChild, `${cnt(R[0].j)} → ${cnt(R[1].j)}`, 'num hide-sm nw');
+    }
   });
   if (pairs.length > 1) {
     const tr = Object.assign(document.createElement('tr'), { className: 'hd-total' });
@@ -403,8 +439,8 @@ function drawStock() {
   if (!gate(el, 'stock')) return;
   const rows = rowsOf('stock'), dates = [...new Set(rows.map(r => r.as_at))].sort();
   const [d0, d1] = [dates[0], dates[dates.length - 1]];
-  const keyOf = picked() ? (r => r.category) : (r => r.company);
-  document.getElementById('stock-key').textContent = picked() ? 'Category' : UNIT.one[0].toUpperCase() + UNIT.one.slice(1);
+  const keyOf = unitPicked() ? (r => r.category) : (r => r.company);
+  document.getElementById('stock-key').textContent = unitPicked() ? 'Category' : UNIT.one[0].toUpperCase() + UNIT.one.slice(1);
   const by = {};
   rows.forEach(r => {
     const o = by[keyOf(r)] || (by[keyOf(r)] = { a: 0, b: 0, idle: 0, idleKnown: false });
@@ -420,17 +456,22 @@ function drawStock() {
     ck = keys.slice(0, 5).concat(['Other']);
     byC.Other = keys.slice(5).reduce((o, k) => ({ a: o.a + by[k].a, b: o.b + by[k].b }), { a: 0, b: 0 });
   }
-  const short = (k) => k === 'Other' ? `Other (${keys.length - 5})` : (picked() ? k.replace(/^Canon /, '').replace(/\s*\(.*\)$/, '').replace(/^./, (c) => c.toUpperCase()) : nameOf(k));
+  const short = (k) => k === 'Other' ? `Other (${keys.length - 5})` : (unitPicked() ? k.replace(/^Canon /, '').replace(/\s*\(.*\)$/, '').replace(/^./, (c) => c.toUpperCase()) : nameOf(k));
   const ser = [{ n: dl(d0), c: SER[5], v: k => byC[k].a }, { n: dl(d1), c: SER[2], v: k => byC[k].b }];
   legend(lg, ser.map(s => [s.c, s.n]));
   pairedBars(el, ck, ser, short);
+  const G = unitPicked() ? [[null, keys]] : groupByRegion(keys);
   const T = { a: 0, b: 0, idle: 0 };
-  keys.forEach(k => {
-    const o = by[k]; T.a += o.a; T.b += o.b; T.idle += o.idle;
-    const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(k);
-    cell(tr, picked() ? k : nameOf(k)); cell(tr, inr(o.a), 'num'); cell(tr, inr(o.b), 'num'); chgCell(tr, o.a, o.b);
-    cell(tr, o.idleKnown ? `${inr(o.idle)} · ${pct(o.b ? o.idle / o.b : 0)}` : '—', 'num nw');
-    tb.appendChild(tr);
+  G.forEach(([rk, ks]) => {
+    const R = { a: 0, b: 0, idle: 0 };
+    ks.forEach(k => {
+      const o = by[k]; T.a += o.a; T.b += o.b; T.idle += o.idle; R.a += o.a; R.b += o.b; R.idle += o.idle;
+      const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(k);
+      cell(tr, unitPicked() ? k : nameOf(k)); cell(tr, inr(o.a), 'num'); cell(tr, inr(o.b), 'num'); chgCell(tr, o.a, o.b);
+      cell(tr, o.idleKnown ? `${inr(o.idle)} · ${pct(o.b ? o.idle / o.b : 0)}` : '—', 'num nw');
+      tb.appendChild(tr);
+    });
+    if (rk) { subRow(tb, regionLabel(rk), [[inr(R.a), 'num'], [inr(R.b), 'num']]); chgCell(tb.lastChild, R.a, R.b); cell(tb.lastChild, `${inr(R.idle)} · ${pct(R.b ? R.idle / R.b : 0)}`, 'num nw'); }
   });
   const tr = Object.assign(document.createElement('tr'), { className: 'hd-total' });
   const th = document.createElement('th'); th.scope = 'row'; th.textContent = 'Total'; tr.appendChild(th);
@@ -536,16 +577,29 @@ function drawCompanies() {
   const tb = document.querySelector('#tb-companies tbody'), cv = dash.data('coverage');
   tb.replaceChildren();
   const cov = new Map((cv.status === 'ok' ? cv.data : []).map(r => [r.company, r]));
-  rowsOf('companies').forEach(r => {
-    const tr = document.createElement('tr');
-    cell(tr, r.company); cell(tr, r.name); cell(tr, dayFmt(r.register_from), 'hide-sm'); cell(tr, dayFmt(r.register_to), 'hide-sm');
-    cell(tr, cnt(num(r.bills)), 'num'); cell(tr, inr(num(r.gross)), 'num');
-    const c = cov.get(r.company); cell(tr, c ? `${c.received} of ${c.required}` : '—', 'num');
-    tb.appendChild(tr);
+  const rows = rowsOf('companies'), byCode = new Map(rows.map(r => [r.company, r]));
+  const sumOf = (codes) => codes.reduce((o, c) => { const r = byCode.get(c), v = cov.get(c) || {}; o.b += num(r.bills); o.g += num(r.gross); o.rc += v.received || 0; o.rq += v.required || 0; return o; }, { b: 0, g: 0, rc: 0, rq: 0 });
+  groupByRegion(rows.map(r => r.company)).forEach(([k, codes]) => {
+    codes.forEach(code => {
+      const r = byCode.get(code), tr = document.createElement('tr');
+      cell(tr, r.company); cell(tr, r.name); cell(tr, dayFmt(r.register_from), 'hide-sm'); cell(tr, dayFmt(r.register_to), 'hide-sm');
+      cell(tr, cnt(num(r.bills)), 'num'); cell(tr, inr(num(r.gross)), 'num');
+      const c = cov.get(r.company); cell(tr, c ? `${c.received} of ${c.required}` : '—', 'num');
+      tb.appendChild(tr);
+    });
+    if (k) {
+      const o = sumOf(codes);
+      subRow(tb, `${regionLabel(k)} · ${codes.length} ${codes.length === 1 ? UNIT.one : UNIT.many}`, [[cnt(o.b), 'num'], [inr(o.g), 'num'], [`${o.rc} of ${o.rq}`, 'num']]);
+      tb.lastChild.firstChild.colSpan = 4;
+    }
   });
   const tf = document.querySelector('#tb-companies tfoot'), ct = dash.data('company_totals');
   tf.replaceChildren();
   const o = ct.status === 'ok' ? ct.data[0] : null;
+  if (isRegion(picked())) {
+    const t = sumOf(rows.map(r => r.company));
+    totalRow(tf, 'hd-total', null, null, `Total · ${regionLabel(picked().slice(2))} · ${rows.length} ${rows.length === 1 ? UNIT.one : UNIT.many}`, [[cnt(t.b), null, 'num'], [inr(t.g), null, 'num'], [`${t.rc} of ${t.rq}`, null, 'num']], 4);
+  }
   if (o && !picked()) totalRow(tf, 'hd-total', 'company_totals', 'company=ALL', `Total · ${o.companies} ${o.companies === 1 ? UNIT.one : UNIT.many}`,
     [[cnt(o.bills), 'bills', 'num'], [inr(o.gross), 'gross', 'num'], [`${o.received} of ${o.required}`, 'received', 'num']], 4);
 }
