@@ -1,0 +1,24 @@
+{
+  "code": "CN-EKM",
+  "name": "Canon Ernakulam",
+  "register_from": "2026-04-06",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2026-27"
+  ],
+  "bills": 1674,
+  "gross": 24144034.81,
+  "registers": [
+    {
+      "register_from": "2026-04-06",
+      "register_to": "2026-09-30",
+      "bills": 1674,
+      "gross": 24144034.81,
+      "distinct_items": 170
+    }
+  ],
+  "stock": [],
+  "received": [
+    "Sales register FY 2026-27 Apr-Sep"
+  ]
+}

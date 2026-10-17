@@ -90,7 +90,12 @@ const monName = (m) => d3.utcFormat('%b')(new Date(m + '-01'));
 const dayFmt = (d) => d3.utcFormat('%-d %b %Y')(new Date(d));
 // Series colours come from the group palette (dashboard.css), so light and dark both follow it.
 const SER = ['var(--hd-s1)', 'var(--hd-s2)', 'var(--hd-s3)', 'var(--hd-s4)', 'var(--hd-s5)', 'var(--hd-s6)'];
-const STREAMS = ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers', 'Other sales'];
+// The business the page shows (window.DASH_PROFILE, set by the page): Honda service by default, Canon on canon.html.
+const PROFILE = window.DASH_PROFILE || {};
+const STREAMS = PROFILE.streams || ['Spare parts', 'Accessories', 'Labour & service charges', 'AMC & warranty', 'Branch transfers', 'Other sales'];
+const JOBS = PROFILE.jobs || 'service jobs';
+const Jobs = JOBS[0].toUpperCase() + JOBS.slice(1);
+const UNIT = PROFILE.unit || { one: 'company', many: 'companies', all: 'All companies', whose: "the group's companies" };
 
 // The company filter lives in the page: every dataset carries a `company` column.
 const picked = () => dash.params().company || null;
@@ -175,7 +180,7 @@ function drawFilter() {
   const c = dash.data('companies');
   const list = c.status === 'ok' ? c.data : [];
   if (document.activeElement !== sel) {
-    sel.replaceChildren(new Option('All companies', ''), ...list.map(r => new Option(`${r.name} (${r.company})`, r.company)));
+    sel.replaceChildren(new Option(UNIT.all, ''), ...list.map(r => new Option(`${r.name} (${r.company})`, r.company)));
     sel.value = picked() || '';
   }
   const m = dash.data('monthly'), fys = [...new Set((m.status === 'ok' ? m.data : []).map(r => r.fy))].sort().reverse();
@@ -184,7 +189,7 @@ function drawFilter() {
     fySel.value = pickedFy() || '';
   }
   const note = document.getElementById('scope-note');
-  note.textContent = c.status === 'ok' ? `${list.length} of the group's companies loaded so far · more appear as their exports arrive` : '';
+  note.textContent = c.status === 'ok' ? `${list.length} of ${UNIT.whose} loaded so far · more appear as their exports arrive` : '';
   // Headline marks point at the picked company's row of the calculation.
   document.querySelectorAll('.hd-kpis [data-source="kpis"]').forEach(e => { e.dataset.where = whereOf(picked() || 'ALL', pickedFy() || 'ALL'); });
 }
@@ -212,9 +217,9 @@ function drawKpis() {
   const where = whereOf(r.company, r.fy);
   const b = (t, field) => { const e = document.createElement('b'); e.textContent = t; e.dataset.source = 'kpis'; e.dataset.field = field; e.dataset.where = where; return e; };
   const comps = dash.data('companies'), names = comps.status === 'ok' ? comps.data : [];
-  const who = picked() ? ((names.find(x => x.company === picked()) || {}).name || picked()) : (names.length === 1 ? names[0].name + ', the only company loaded so far,' : 'The group');
+  const who = picked() ? ((names.find(x => x.company === picked()) || {}).name || picked()) : (names.length === 1 ? names[0].name + `, the only ${UNIT.one} loaded so far,` : PROFILE.whole || 'The group');
   tk.replaceChildren(
-    `${who} billed `, b(inr(r.gross), 'gross'), ' including GST, with ', b(cnt(r.service_jobs), 'service_jobs'), ' service jobs. ',
+    `${who} billed `, b(inr(r.gross), 'gross'), ' including GST, with ', b(cnt(r.service_jobs), 'service_jobs'), ` ${JOBS}. `,
     ...(r.mom != null ? [lm + ' closed at ', b(inr(r.last_gross), 'last_gross'), ', ', b((r.mom >= 0 ? 'up ' : 'down ') + pct(Math.abs(r.mom)), 'mom'), ' on ' + pm + '. '] : []),
     'Discounts took ', b(pct(r.discount_rate), 'discount_rate'), ' of revenue before discount.'
   );
@@ -235,7 +240,7 @@ function drawMonthly() {
   svg.selectAll('rect.b').data(rows).join('rect').attr('class', 'b')
     .attr('x', r => x(r.m) + Math.max(0, (x.bandwidth() - 32) / 2)).attr('width', Math.min(32, x.bandwidth()))
     .attr('y', r => y(r.g)).attr('height', r => y(0) - y(r.g)).attr('rx', 4).attr('fill', SER[0])
-    .on('mousemove', (ev, r) => tip.show(ev, d3.utcFormat('%B %Y')(new Date(r.m + '-01')), [[null, 'Gross', inrFull(r.g)], [null, 'Bills', cnt(r.inv)], [null, 'Service jobs', cnt(r.sj)]]))
+    .on('mousemove', (ev, r) => tip.show(ev, d3.utcFormat('%B %Y')(new Date(r.m + '-01')), [[null, 'Gross', inrFull(r.g)], [null, 'Bills', cnt(r.inv)], [null, Jobs, cnt(r.sj)]]))
     .on('mouseleave', () => tip.hide());
   svg.selectAll('text.vlab').data(rows).join('text').attr('class', 'vlab').attr('text-anchor', 'middle')
     .attr('x', r => x(r.m) + x.bandwidth() / 2).attr('y', r => y(r.g) - 5).text(r => inr(r.g));
@@ -287,7 +292,7 @@ function drawDaily() {
   const tip = tipFor(el);
   svg.selectAll('rect').data(rows).join('rect').attr('x', r => x(r.d)).attr('width', bw)
     .attr('y', r => y(r.g)).attr('height', r => y(0) - y(r.g)).attr('rx', Math.min(2, bw / 2)).attr('fill', SER[0])
-    .on('mousemove', (ev, r) => tip.show(ev, d3.utcFormat('%a %-d %b')(r.d), [[null, 'Gross', inrFull(r.g)], [null, 'Bills', cnt(r.inv)], [null, 'Service jobs', cnt(r.sj)]]))
+    .on('mousemove', (ev, r) => tip.show(ev, d3.utcFormat('%a %-d %b')(r.d), [[null, 'Gross', inrFull(r.g)], [null, 'Bills', cnt(r.inv)], [null, Jobs, cnt(r.sj)]]))
     .on('mouseleave', () => tip.hide());
   d3.utcMonth.range(d3.utcMonth.ceil(x0), x1).concat([x0]).forEach(m => {
     svg.append('text').attr('x', x(m) + 2).attr('y', H - 6).text(d3.utcFormat('%b')(m));
@@ -367,19 +372,19 @@ function drawYoy() {
   const cm = dash.data('completeness');
   const missing = (cm.status === 'ok' ? cm.data : []).filter(r => r.file === 'Sales register FY 2025-26' && r.status !== 'Received' && (!picked() || r.company === picked())).map(r => nameOf(r.company));
   if (missing.length) wait.textContent = `Waiting for the FY 2025–26 register from ${missing.join(', ')}.`;
-  if (!pairs.length) { el.replaceChildren(); const d = document.createElement('div'); d.className = 'hd-wait'; d.textContent = 'No company has both years loaded yet.'; el.appendChild(d); return; }
+  if (!pairs.length) { el.replaceChildren(); const d = document.createElement('div'); d.className = 'hd-wait'; d.textContent = `No ${UNIT.one} has both years loaded yet.`; el.appendChild(d); return; }
   const months = ['04', '05', '06', '07', '08', '09'];
   const sumM = (side, mm) => pairs.reduce((a, c) => a + (by[c][side].m[mm] || 0), 0);
   const ser = [{ n: 'Apr–Sep 2025', c: SER[5], v: k => sumM(0, k) }, { n: 'Apr–Sep 2026', c: SER[0], v: k => sumM(1, k) }];
   legend(lg, ser.map(s => [s.c, s.n]));
-  lg.append(pairs.length === 1 ? nameOf(pairs[0]) : `${pairs.length} companies`);
+  lg.append(pairs.length === 1 ? nameOf(pairs[0]) : `${pairs.length} ${UNIT.many}`);
   pairedBars(el, months, ser, k => monName('2026-' + k));
   const T = [{ g: 0, j: 0 }, { g: 0, j: 0 }];
   pairs.forEach(c => {
     const [p, q] = by[c]; T[0].g += p.g; T[1].g += q.g; T[0].j += p.j; T[1].j += q.j;
     const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(c);
     cell(tr, nameOf(c)); cell(tr, inr(p.g), 'num'); cell(tr, inr(q.g), 'num'); chgCell(tr, p.g, q.g);
-    const td = cell(tr, `${cnt(p.j)} → ${cnt(q.j)}`, 'num hide-sm nw'); td.title = 'Service jobs, 2025 → 2026';
+    const td = cell(tr, `${cnt(p.j)} → ${cnt(q.j)}`, 'num hide-sm nw'); td.title = Jobs + ', 2025 → 2026';
     tb.appendChild(tr);
   });
   if (pairs.length > 1) {
@@ -399,7 +404,7 @@ function drawStock() {
   const rows = rowsOf('stock'), dates = [...new Set(rows.map(r => r.as_at))].sort();
   const [d0, d1] = [dates[0], dates[dates.length - 1]];
   const keyOf = picked() ? (r => r.category) : (r => r.company);
-  document.getElementById('stock-key').textContent = picked() ? 'Category' : 'Company';
+  document.getElementById('stock-key').textContent = picked() ? 'Category' : UNIT.one[0].toUpperCase() + UNIT.one.slice(1);
   const by = {};
   rows.forEach(r => {
     const o = by[keyOf(r)] || (by[keyOf(r)] = { a: 0, b: 0, idle: 0, idleKnown: false });
@@ -409,9 +414,16 @@ function drawStock() {
   const keys = Object.keys(by).sort((p, q) => by[q].b - by[p].b);
   if (!keys.length) { el.replaceChildren(); return; }
   const dl = (d) => dayFmt(d);
-  const ser = [{ n: dl(d0), c: SER[5], v: k => by[k].a }, { n: dl(d1), c: SER[2], v: k => by[k].b }];
+  // the chart shows the five largest and the rest as Other, so its labels stay legible; the table lists every one
+  const byC = { ...by }; let ck = keys;
+  if (keys.length > 6) {
+    ck = keys.slice(0, 5).concat(['Other']);
+    byC.Other = keys.slice(5).reduce((o, k) => ({ a: o.a + by[k].a, b: o.b + by[k].b }), { a: 0, b: 0 });
+  }
+  const short = (k) => k === 'Other' ? `Other (${keys.length - 5})` : (picked() ? k.replace(/^Canon /, '').replace(/\s*\(.*\)$/, '').replace(/^./, (c) => c.toUpperCase()) : nameOf(k));
+  const ser = [{ n: dl(d0), c: SER[5], v: k => byC[k].a }, { n: dl(d1), c: SER[2], v: k => byC[k].b }];
   legend(lg, ser.map(s => [s.c, s.n]));
-  pairedBars(el, keys, ser, k => picked() ? k : nameOf(k));
+  pairedBars(el, ck, ser, short);
   const T = { a: 0, b: 0, idle: 0 };
   keys.forEach(k => {
     const o = by[k]; T.a += o.a; T.b += o.b; T.idle += o.idle;
@@ -534,7 +546,7 @@ function drawCompanies() {
   const tf = document.querySelector('#tb-companies tfoot'), ct = dash.data('company_totals');
   tf.replaceChildren();
   const o = ct.status === 'ok' ? ct.data[0] : null;
-  if (o && !picked()) totalRow(tf, 'hd-total', 'company_totals', 'company=ALL', `Total · ${o.companies} ${o.companies === 1 ? 'company' : 'companies'}`,
+  if (o && !picked()) totalRow(tf, 'hd-total', 'company_totals', 'company=ALL', `Total · ${o.companies} ${o.companies === 1 ? UNIT.one : UNIT.many}`,
     [[cnt(o.bills), 'bills', 'num'], [inr(o.gross), 'gross', 'num'], [`${o.received} of ${o.required}`, 'received', 'num']], 4);
 }
 

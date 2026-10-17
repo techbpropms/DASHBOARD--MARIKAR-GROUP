@@ -1,17 +1,18 @@
-// Minimal data layer for the dashboard: loads the CSVs in data/ and exposes
+// Minimal data layer for the dashboard: loads the CSVs in data/ (or the folder the page names in DASH_DATA) and exposes
 // dash.data / dash.onData / dash.calc / dash.params / dash.colors to assets/dashboard.js.
 window.dash = (() => {
+  const BASE = window.DASH_DATA || 'data/';
   const FILES = {
-    monthly: 'data/monthly.csv',
-    streams: 'data/streams.csv',
-    heads: 'data/heads.csv',
-    voucher_types: 'data/voucher_types.csv',
-    daily: 'data/daily.csv',
-    items: 'data/items.csv',
-    companies: 'data/companies.csv',
-    completeness: 'data/completeness.csv',
-    stock: 'data/stock.csv',
-    stock_items: 'data/stock_items.csv',
+    monthly: BASE + 'monthly.csv',
+    streams: BASE + 'streams.csv',
+    heads: BASE + 'heads.csv',
+    voucher_types: BASE + 'voucher_types.csv',
+    daily: BASE + 'daily.csv',
+    items: BASE + 'items.csv',
+    companies: BASE + 'companies.csv',
+    completeness: BASE + 'completeness.csv',
+    stock: BASE + 'stock.csv',
+    stock_items: BASE + 'stock_items.csv',
   };
   const DEFAULT_PARAMS = { company: null, fy: null };
   let params = { ...DEFAULT_PARAMS };

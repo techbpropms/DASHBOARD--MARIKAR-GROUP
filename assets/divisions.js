@@ -130,6 +130,9 @@
     $('d-eyebrow').textContent = d.what || '';
     $('d-name').textContent = d.name;
     $('d-tagline').textContent = d.tagline || '';
+    // a division with its own Tally dashboard links to it (data/divisions.json "dashboard": {href, label})
+    const dl = $('d-dash'); dl.replaceChildren(); dl.hidden = !d.dashboard;
+    if (d.dashboard) { const a = el('a', 'btn', d.dashboard.label); a.href = d.dashboard.href; dl.append(a); }
     const st = $('d-status'); st.className = 'dv-status ' + (d.status || 'plan'); st.textContent = d.status_label || '';
     $('d-kpis').replaceChildren(...(d.kpis || []).map(kpiTile)); $('d-kpis').hidden = !(d.kpis || []).length;
     $('d-charts').replaceChildren();
