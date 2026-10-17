@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<script src="assets/auth.js?v=20261017b"></script>
+<script src="assets/auth.js?v=20261017d"></script>
 <script>MGAuth.guard('admin');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Settings</title>
@@ -227,6 +227,7 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     <h2>Sign-in report</h2>
     <p class="muted" id="signins-note"></p>
     <div class="tbl"><table id="signins-table"><thead><tr><th>Person</th><th>Role</th><th>Last sign-in</th><th>Device</th><th>Sign-ins</th></tr></thead><tbody></tbody></table></div>
+    <div class="tbl" id="fails-wrap" hidden style="margin-top:14px"><h3 style="margin:0 0 6px">Could not sign in</h3><p class="muted" style="margin:0 0 6px">Failed attempts in the period, with the reason. A wrong password: the person can use Forgot password (or you can send a reset). No such user ID: a misspelt address, or someone without an account.</p><table id="fails-table"><thead><tr><th>User ID typed</th><th>Reason</th><th>Last try</th><th>Device</th><th>Tries</th><th>Signed in since?</th></tr></thead><tbody></tbody></table></div>
     <div class="actions" style="margin-top:10px"><button class="btn sec sm" type="button" id="signins-csv" hidden>Download CSV</button><label class="inline" id="signins-days-wrap" hidden>Period <select id="signins-days"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></label></div>
     <div class="tbl" id="signins-mine-wrap" style="margin-top:14px"><h3 style="margin:0 0 6px">Sign-ins on this device</h3><table id="signins-mine"><thead><tr><th>When</th><th>Person</th><th>Device</th></tr></thead><tbody></tbody></table></div>
   </section>
@@ -291,12 +292,22 @@ details { margin-top: 10px; font-size: 13.5px; } summary { cursor: pointer; font
     const load = async () => {
       const days = Number($('signins-days').value);
       note.textContent = 'Loading…';
-      try { rows = await MGAuth.signins.report(days); } catch (e) { note.textContent = 'The sign-in log is kept by the hub\'s own server and is not reachable from this address (' + e.message + '). It fills in once the hub is served from the VPS at mmlpbi.bpropms.in.'; return; }
+      let fails = [];
+      try { rows = await MGAuth.signins.report(days); fails = rows.filter((r) => r.role === 'failed'); rows = rows.filter((r) => r.role !== 'failed'); } catch (e) { note.textContent = 'The sign-in log is kept by the hub\'s own server and is not reachable from this address (' + e.message + '). It fills in once the hub is served from the VPS at mmlpbi.bpropms.in.'; return; }
       const by = new Map();
       rows.forEach((r) => { const k = (r.id || '').toLowerCase(); const e = by.get(k) || { id: k, name: r.name, role: r.role, last: '', device: '', n: 0 }; e.n += 1; if ((r.at || '') > e.last) { e.last = r.at; e.device = r.device; e.name = r.name || e.name; e.role = r.role || e.role; } by.set(k, e); });
       const list = [...by.values()].sort((a, b) => b.last.localeCompare(a.last));
       const body = table.querySelector('tbody'); body.replaceChildren();
       list.forEach((e) => { const tr = document.createElement('tr'); [e.name || e.id, roleName(e.role), fmtWhen(e.last), e.device, String(e.n)].forEach((t, i) => { const td = document.createElement('td'); td.textContent = t; if (i === 0) td.title = e.id; tr.appendChild(td); }); body.appendChild(tr); });
+      // failed attempts, by the ID typed: the reason, how often, and whether the person got in afterwards
+      const fb = new Map();
+      fails.forEach((r) => { const k = r.id + '|' + r.name; const e = fb.get(k) || { id: r.id, why: r.name, last: '', device: '', n: 0 }; e.n += 1; if (r.at > e.last) { e.last = r.at; e.device = r.device; } fb.set(k, e); });
+      const fbody = document.querySelector('#fails-table tbody'); fbody.replaceChildren();
+      [...fb.values()].sort((a, b) => b.last.localeCompare(a.last)).forEach((e) => {
+        const ok = by.get(e.id); const since = ok && ok.last > e.last ? 'Yes, ' + fmtWhen(ok.last) : 'Not yet';
+        const tr = document.createElement('tr'); [e.id, e.why, fmtWhen(e.last), e.device, String(e.n), since].forEach((t, i) => { const td = document.createElement('td'); td.textContent = t; if (i === 5 && since === 'Not yet') td.style.cssText = 'color:var(--bad,#b3261e);font-weight:700'; tr.appendChild(td); }); fbody.appendChild(tr);
+      });
+      $('fails-wrap').hidden = !fb.size;
       const never = MGAuth.list().filter((a) => !by.has(a.id));
       note.textContent = `${rows.length} sign-in${rows.length === 1 ? '' : 's'} by ${list.length} ${list.length === 1 ? 'person' : 'people'} in the last ${days} days.` + (never.length ? ` Not signed in: ${never.map((a) => a.name).join(', ')}.` : '');
     };

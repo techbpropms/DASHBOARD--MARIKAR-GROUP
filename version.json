@@ -1,9 +1,10 @@
 {
-  "version": "2026.10.17c",
-  "title": "Updates apply by themselves",
+  "version": "2026.10.17d",
+  "title": "Easier sign-in and password reset",
   "notes": [
-    "Every device now switches to a new version of the hub by itself, within minutes, with a short notice and a reload; nobody keeps an old copy",
-    "A new password works the moment the page says it is live (from the previous release)",
-    "Step-by-step sign-in and password help, linked under the sign-in button"
+    "Stay signed in on your device for 30 days (ticked for you), so the password is not asked at every visit",
+    "Pressed \"E-mail me a code\" more than once? Any of your last three codes now works",
+    "New passwords need 8 characters (was 10), with a number or symbol",
+    "Administrators see who could not sign in, and why, under Settings > Sign-ins"
   ]
 }
