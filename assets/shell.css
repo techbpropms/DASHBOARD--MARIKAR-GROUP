@@ -57,8 +57,11 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
 .mg-refresh svg { width: 19px; height: 19px; stroke-width: 2.4; }
 .mg-refresh:hover { filter: brightness(1.08); }
 .mg-refresh:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-@media (max-width: 640px) { .mg-refresh { padding: 0; width: 38px; height: 38px; } .mg-refresh .lbl { display: none; } }
-.mg-refresh.is-busy svg { animation: mg-spin .8s linear infinite; }
+@media (max-width: 640px) { .mg-refresh { height: 38px; padding: 0 11px 0 9px; gap: 5px; font-size: 12.5px; } }
+/* small phones: the word Refresh stays; the brand keeps its logo tile */
+@media (max-width: 480px) { .mg-brand b, .mg-brand small { display: none; } }
+.mg-refresh .mg-ld { width: 16px; height: 20px; }
+.mg-refresh:disabled { opacity: 1; background: var(--mg-gold); color: #1d1408; cursor: progress; }
 @keyframes mg-spin { to { transform: rotate(360deg); } }
 .mg-theme { display: inline-flex; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 3px; }
 .mg-theme button { width: 32px; height: 28px; border: 0; border-radius: 999px; background: transparent; color: rgba(255,255,255,.8); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
@@ -120,8 +123,9 @@ body { padding-top: calc(var(--mg-bar-h) + env(safe-area-inset-top)); padding-bo
   .mg-sidenav { width: min(var(--mg-side-w), 86vw); }
 }
 @media (max-width: 480px) { .mg-theme button:not([aria-pressed="true"]) { display: none; } .mg-theme { padding: 2px; } }
-/* the bar holds Refresh, menu position, theme and the name: Refresh keeps its gold icon, its word goes first */
-@media (min-width: 901px) and (max-width: 1660px) { .mg-refresh { padding: 0; width: 38px; } .mg-refresh .lbl { display: none; } }
+/* the bar holds Refresh (always with its word), menu position, theme and the initials: on mid-size screens the
+   brand keeps its logo tile and drops the words to make room */
+@media (min-width: 901px) and (max-width: 1700px) { .mg-brand b, .mg-brand small { display: none; } }
 /* phones always use the drawer, so the menu-position switch is for tablets and computers */
 @media (max-width: 900px) { .mg-navsw { display: none; } }
 @media (prefers-reduced-motion: reduce) { .mg-sidenav, .mg-scrim, .mg-sidenav .tg svg { transition: none; } }

@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Choose your password · Marikar Group Performance Hub</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="assets/img/marikar-group.png">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <meta name="theme-color" content="#131c38">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,13 +138,15 @@ input[aria-invalid="true"] { border-color: var(--bad); }
     const mail = $('done-mail'); mail.href = built.mailto; mail.textContent = 'Send by e-mail'; mail.hidden = r.sent; $('done-copy').hidden = r.sent;
     $('done-copy').onclick = () => navigator.clipboard.writeText(built.text).then(() => { $('done-copy').textContent = 'Copied. Paste it into a message to ' + MGAuth.requests.config.to; }).catch(() => { $('done-copy').textContent = 'Select and copy the message instead'; });
     $('done').hidden = false;
+    const ic = $('done').querySelector('.ic');
+    if (r.sent) ic.innerHTML = '<img src="assets/img/mark-loader.svg" alt="" width="26" height="33">';
     if (r.sent) {
       const fp = async () => { try { const t = await (await fetch('assets/auth.js', { cache: 'no-store' })).text(); const m = t.match(new RegExp("id: '" + id.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + "'[^\\n]*hash: '([0-9a-f]{64})'")); return m ? m[1] : null; } catch (e) { return null; } };
       const before = window.__fpBefore || null; const started = Date.now();
       const tick = async () => {
         const now = await fp();
-        if (now && now !== before) { $('done-h').textContent = 'Your password is live'; $('done-p').textContent = 'Sign in with it now. Sign-ins on other devices have been ended.'; const a = $('done-mail'); a.hidden = false; a.textContent = 'Sign in'; a.href = 'index.html?u=' + encodeURIComponent(id); return; }
-        try { const rr = await fetch('results.json', { cache: 'no-store' }); const v = rr.ok ? (await rr.json())[built.req.ref] : null; if (v && v.ok === false) { $('done-h').textContent = 'Not accepted'; $('done-p').textContent = v.msg.replace('Press "Send me a new code"', 'Request a new code from Forgot password on the sign-in page'); return; } } catch (e) { /* keep waiting */ }
+        if (now && now !== before) { ic.textContent = '✓'; $('done-h').textContent = 'Your password is live'; $('done-p').textContent = 'Sign in with it now. Sign-ins on other devices have been ended.'; const a = $('done-mail'); a.hidden = false; a.textContent = 'Sign in'; a.href = 'index.html?u=' + encodeURIComponent(id); return; }
+        try { const rr = await fetch('results.json', { cache: 'no-store' }); const v = rr.ok ? (await rr.json())[built.req.ref] : null; if (v && v.ok === false) { ic.textContent = '!'; $('done-h').textContent = 'Not accepted'; $('done-p').textContent = v.msg.replace('Press "Send me a new code"', 'Request a new code from Forgot password on the sign-in page'); return; } } catch (e) { /* keep waiting */ }
         if (Date.now() - started > 150000) { $('done-p').textContent = 'The hub has not accepted it yet. If this link was already used, request a new one from Forgot password on the sign-in page.'; return; }
         setTimeout(tick, 4000);
       };

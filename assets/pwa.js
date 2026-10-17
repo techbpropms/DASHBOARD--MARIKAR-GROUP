@@ -74,7 +74,8 @@
     if (document.getElementById('hub-update')) return;
     const b = el('div', 'position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:51;width:min(520px,calc(100% - 24px));background:#131c38;color:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:12px 16px;font:14px/1.45 ' + FONT + ';border-top:4px solid #d49a3a');
     b.id = 'hub-update'; b.setAttribute('role', 'status');
-    b.append(el('b', null, 'Updating to the latest version' + (info && info.version ? ' (' + info.version + ')' : '') + '…'));
+    const ld = el('img', 'width:18px;height:23px;vertical-align:-5px;margin-right:9px'); ld.src = 'assets/img/mark-loader-light.svg'; ld.alt = '';
+    b.append(ld, el('b', null, 'Updating to the latest version' + (info && info.version ? ' (' + info.version + ')' : '') + '…'));
     document.body.append(b);
   };
   let reloading = false;

@@ -95,6 +95,7 @@
       const rf = el('button', 'mg-ic mg-refresh'); rf.type = 'button'; rf.title = 'Refresh: check for a new version and reload with fresh data'; rf.setAttribute('aria-label', 'Refresh'); rf.append(svg(I.refresh), el('span', 'lbl', 'Refresh'));
       rf.addEventListener('click', () => {
         rf.classList.add('is-busy'); rf.disabled = true;
+        const ld = el('img', 'mg-ld'); ld.src = 'assets/img/mark-loader-dark.svg'; ld.alt = ''; rf.querySelector('svg').replaceWith(ld);
         const go = () => location.reload();
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then((r) => r ? r.update() : null).catch(() => {}).finally(go); else go();
       });

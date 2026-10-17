@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="27 8 109 139" role="img" aria-label="Loading">
+<style>
+.p, .t { transform-box: fill-box; }
+.p { transform-origin: 50% 100%; animation: rise 1.4s ease-in-out infinite; }
+.r { animation-delay: .18s; }
+.t { transform-origin: 50% 0%; animation: drop 1.4s ease-in-out infinite; }
+@keyframes rise { 0%, 100% { transform: scaleY(.35); opacity: .55; } 45% { transform: scaleY(1); opacity: 1; } }
+@keyframes drop { 0%, 100% { transform: translateY(-14px) scaleY(.7); opacity: .45; } 55% { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .p, .t { animation: none; } }
+</style>
+<path class="p" fill="rgba(255,255,255,.6)" d="M31 58 H33 L60 143 H31 Z"/><path class="p r" fill="rgba(255,255,255,.6)" d="M132 58 H130 L103 143 H132 Z"/><path class="t" fill="#FFFFFF" d="M48 12 H115 L81.5 98 Z"/></svg>
