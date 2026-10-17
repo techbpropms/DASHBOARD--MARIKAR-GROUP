@@ -71,8 +71,12 @@ systemctl enable --now hub-clerk.path >/dev/null
 systemctl list-timers hub-clerk.timer --no-pager | sed -n 2p
 systemctl is-active hub-clerk.path | sed 's/^/hub-clerk.path: /'
 
-echo "== nginx: /clerk.json for the Settings page"
+echo "== nginx: /clerk.json for the Settings page, /results.json for the sign-in and reset pages"
 CONF=/etc/nginx/sites-available/mmlpbi.bpropms.in
+if [ -f "$CONF" ] && ! grep -q 'results.json' "$CONF"; then
+  sed -i 's#^\(\s*\)location / { try_files#\1location = /results.json { alias /srv/hub/log/results.json; default_type application/json; add_header Cache-Control "no-store"; }\n\1location / { try_files#' "$CONF"
+  nginx -t && systemctl reload nginx
+fi
 if [ -f "$CONF" ] && ! grep -q 'clerk.json' "$CONF"; then
   sed -i 's#^\(\s*\)location / { try_files#\1location = /clerk.json { alias /srv/hub/log/clerk.json; default_type application/json; add_header Cache-Control "no-store"; }\n\1location / { try_files#' "$CONF"
   nginx -t && systemctl reload nginx

@@ -1,9 +1,9 @@
 {
-  "version": "2026.10.16g",
-  "title": "Password reset on the sign-in page",
+  "version": "2026.10.17a",
+  "title": "Clear answers on password codes",
   "notes": [
-    "Forgot password: a code reaches your mailbox within a minute; enter it with your new password on the sign-in page itself, and sign in as soon as the page says it is live",
-    "The e-mailed link still works too, and tells you when the password is live",
-    "Submissions on the hub are handled within seconds"
+    "The sign-in page says at once why a code was not accepted (already used, replaced by a newer code, expired) or why no new code was sent",
+    "A mistyped user ID is named as such at sign-in and at Forgot password",
+    "Password reset on the sign-in page (from the previous release)"
   ]
 }

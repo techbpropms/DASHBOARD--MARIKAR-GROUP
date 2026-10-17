@@ -46,7 +46,7 @@ for f in assets/auth.js data/requests/inbox.json; do cmp -s "$f" "$SITE/$f" || i
 
 cp -f "$LOG/submit.log" "$D/submissions.jsonl" 2>/dev/null || : > "$D/submissions.jsonl"
 export APPROVERS="${APPROVERS:-drbabukollam@gmail.com,babukadavoor@gmail.com}"
-python3 scripts/read_requests.py --submissions "$D/submissions.jsonl"; rc=$?
+python3 scripts/read_requests.py --submissions "$D/submissions.jsonl" --results "$LOG/results.json"; rc=$?
 rm -f "$D/submissions.jsonl"
 if [ $rc -ne 0 ]; then status false "the clerk script failed (exit $rc); see /srv/hub/clerk/clerk.log"; exit 0; fi
 

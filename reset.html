@@ -143,6 +143,7 @@ input[aria-invalid="true"] { border-color: var(--bad); }
       const tick = async () => {
         const now = await fp();
         if (now && now !== before) { $('done-h').textContent = 'Your password is live'; $('done-p').textContent = 'Sign in with it now. Sign-ins on other devices have been ended.'; const a = $('done-mail'); a.hidden = false; a.textContent = 'Sign in'; a.href = 'index.html?u=' + encodeURIComponent(id); return; }
+        try { const rr = await fetch('results.json', { cache: 'no-store' }); const v = rr.ok ? (await rr.json())[built.req.ref] : null; if (v && v.ok === false) { $('done-h').textContent = 'Not accepted'; $('done-p').textContent = v.msg.replace('Press "Send me a new code"', 'Request a new code from Forgot password on the sign-in page'); return; } } catch (e) { /* keep waiting */ }
         if (Date.now() - started > 150000) { $('done-p').textContent = 'The hub has not accepted it yet. If this link was already used, request a new one from Forgot password on the sign-in page.'; return; }
         setTimeout(tick, 4000);
       };
