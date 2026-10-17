@@ -10,11 +10,11 @@ The Marikar Group performance hub. It opens on a sign-in page (`index.html`); af
 - **Pilot reconciliation note** (`note.html`): how the HD Attingal export reconciled to Tally, the playbook checklist, and the files still needed from Accounts. The source text is `docs/reconciliation-note.md`. The editable version lives on claude.ai. A print-ready PDF on BPro letterhead, with a verification QR code, is in `docs/HD_Attingal_Reconciliation_Note_BPro.pdf` (document RN-HDATL-2026-01).
 - **Document verification** (`verify.html`): enter a document ID or scan a document's QR code to confirm it was issued from the hub, and check a digital copy's SHA-256 fingerprint against the register.
 
-**Loaded so far:** six Honda two-wheeler service units of Marikar Motors Ltd: HD Aralvaymozhi (`HD-AAY`),
-HD Attingal (`HD-ATL`), HD Kulasekharam (`HD-KSR`), HD Marthandam (`HD-MDM`), HD Nedumangad (`HD-NDD`) and HD
+**Loaded so far:** seven Honda two-wheeler service units of Marikar Motors Ltd: HD Anjugramam (`HD-ANJ`),
+HD Aralvaymozhi (`HD-AAY`), HD Attingal (`HD-ATL`), HD Kulasekharam (`HD-KSR`), HD Marthandam (`HD-MDM`), HD Nedumangad (`HD-NDD`) and HD
 Varkala (`HD-VKL`). Each has its FY 2026–27 register (April to September) and its stock summary at 30 September
 2026; all but Aralvaymozhi also have the FY 2025–26 register and the stock at 31 March 2026, so the year-on-year
-lens covers those five. The Canon division (Thiruvananthapuram and Ernakulam) is on `canon.html`, see below.
+lens covers those six. The Canon division (Thiruvananthapuram and Ernakulam) is on `canon.html`, see below.
 Other companies appear in the company list as their
 exports are built. The page opens on the latest year; pick "All years" to add the years together.
 

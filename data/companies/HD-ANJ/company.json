@@ -1,0 +1,48 @@
+{
+  "code": "HD-ANJ",
+  "name": "HD Anjugramam",
+  "register_from": "2025-04-12",
+  "register_to": "2026-09-30",
+  "fys": [
+    "2025-26",
+    "2026-27"
+  ],
+  "bills": 10430,
+  "gross": 10112328.09,
+  "registers": [
+    {
+      "register_from": "2026-04-09",
+      "register_to": "2026-09-30",
+      "bills": 3999,
+      "gross": 3832709.09,
+      "distinct_items": 824
+    },
+    {
+      "register_from": "2025-04-12",
+      "register_to": "2026-03-31",
+      "bills": 6431,
+      "gross": 6279619.0,
+      "distinct_items": 1254
+    }
+  ],
+  "stock": [
+    {
+      "as_at": "2026-03-31",
+      "value": 440328.44,
+      "lines": 920,
+      "sales_months": 12
+    },
+    {
+      "as_at": "2026-09-30",
+      "value": 657583.27,
+      "lines": 978,
+      "sales_months": 6
+    }
+  ],
+  "received": [
+    "Sales register FY 2025-26",
+    "Sales register FY 2026-27 Apr-Sep",
+    "Stock summary As at 30 Sep 2026",
+    "Stock summary As at 31 Mar 2026"
+  ]
+}
